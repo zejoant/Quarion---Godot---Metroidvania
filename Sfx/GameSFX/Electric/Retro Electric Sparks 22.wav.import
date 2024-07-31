@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://ci7soulepuu4q"
+path="res://.godot/imported/Retro Electric Sparks 22.wav-fafcd4446976358fb5fdfd4820adc545.sample"
+
+[deps]
+
+source_file="res://Sfx/GameSFX/Electric/Retro Electric Sparks 22.wav"
+dest_files=["res://.godot/imported/Retro Electric Sparks 22.wav-fafcd4446976358fb5fdfd4820adc545.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

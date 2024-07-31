@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://babtaa2xklvxd"
+path="res://.godot/imported/spike hit.wav-4cb37a0de71e6ef43f89771208fb3e35.sample"
+
+[deps]
+
+source_file="res://Sfx/spike hit.wav"
+dest_files=["res://.godot/imported/spike hit.wav-4cb37a0de71e6ef43f89771208fb3e35.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

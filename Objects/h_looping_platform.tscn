@@ -1,0 +1,54 @@
+[gd_scene load_steps=4 format=3 uid="uid://b7gm4hymfn5u0"]
+
+[ext_resource type="Script" path="res://Objects/h_looping_platform.gd" id="1_7l2pl"]
+[ext_resource type="Texture2D" uid="uid://ccrjaw3cup2p7" path="res://Assets/H Looping Platform Sprites.png" id="1_a7ov6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o8rgg"]
+size = Vector2(16, 4)
+
+[node name="HLoopingPlatform" type="Node2D"]
+z_index = 2
+script = ExtResource("1_7l2pl")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+clip_children = 1
+offset_right = 304.0
+offset_bottom = 192.0
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect" groups=["MovingPlatform"]]
+position = Vector2(176, 84)
+collision_mask = 0
+
+[node name="BaseSprite" type="Sprite2D" parent="ColorRect/StaticBody2D"]
+texture = ExtResource("1_a7ov6")
+region_enabled = true
+region_rect = Rect2(0, 0, 352, 8)
+
+[node name="PlatformSprite" type="Sprite2D" parent="ColorRect/StaticBody2D"]
+texture = ExtResource("1_a7ov6")
+region_enabled = true
+region_rect = Rect2(0, 8, 352, 8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+position = Vector2(-40, -1)
+shape = SubResource("RectangleShape2D_o8rgg")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+position = Vector2(16, -1)
+shape = SubResource("RectangleShape2D_o8rgg")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+position = Vector2(128, -1)
+shape = SubResource("RectangleShape2D_o8rgg")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+position = Vector2(72, -1)
+shape = SubResource("RectangleShape2D_o8rgg")
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+position = Vector2(-96, -1)
+shape = SubResource("RectangleShape2D_o8rgg")
+
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+position = Vector2(-152, -1)
+shape = SubResource("RectangleShape2D_o8rgg")

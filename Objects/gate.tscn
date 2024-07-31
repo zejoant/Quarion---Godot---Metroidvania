@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://bw1r3nxt3ya8x"]
+
+[ext_resource type="Texture2D" uid="uid://cla3wwn5xqiav" path="res://Assets/SpikeTrap.png" id="1_i65jj"]
+[ext_resource type="Script" path="res://Objects/gate.gd" id="1_oapr2"]
+[ext_resource type="AudioStream" uid="uid://mdu6xo6r5jy" path="res://Sfx/anvil-hit-2-14845.mp3" id="3_oy5mm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_elht8"]
+size = Vector2(8, 8)
+
+[node name="Gate" type="StaticBody2D"]
+z_index = 2
+collision_mask = 0
+script = ExtResource("1_oapr2")
+
+[node name="SpikeSprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_i65jj")
+region_enabled = true
+region_rect = Rect2(0, 0, 8, 8)
+
+[node name="BaseSprite" type="Sprite2D" parent="."]
+texture_repeat = 2
+position = Vector2(0, 12)
+scale = Vector2(1, 2)
+texture = ExtResource("1_i65jj")
+region_enabled = true
+region_rect = Rect2(0, 8, 8, 8)
+
+[node name="GateColl" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2.38419e-07)
+shape = SubResource("RectangleShape2D_elht8")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_oy5mm")
+volume_db = -30.0

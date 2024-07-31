@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=3 uid="uid://b5wtcfg0peuey"]
+
+[ext_resource type="Script" path="res://Objects/moving_platform.gd" id="1_3fk4n"]
+[ext_resource type="Texture2D" uid="uid://blrke6p7xbb7e" path="res://Assets/Tileset.png" id="2_r408p"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fmnmb"]
+size = Vector2(8, 8)
+
+[node name="MovingPlatform" type="AnimatableBody2D" groups=["MovingPlatform"]]
+z_index = 4
+collision_mask = 0
+sync_to_physics = false
+script = ExtResource("1_3fk4n")
+
+[node name="LeftSprite" type="Sprite2D" parent="."]
+position = Vector2(-8, 0)
+texture = ExtResource("2_r408p")
+region_enabled = true
+region_rect = Rect2(296, 32, 8, 8)
+
+[node name="CenterSprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_r408p")
+region_enabled = true
+region_rect = Rect2(304, 32, 8, 8)
+
+[node name="RightSprite" type="Sprite2D" parent="."]
+position = Vector2(8, 0)
+texture = ExtResource("2_r408p")
+region_enabled = true
+region_rect = Rect2(312, 32, 8, 8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(3, 1)
+shape = SubResource("RectangleShape2D_fmnmb")
+
+[node name="WallRay" type="RayCast2D" parent="."]
+scale = Vector2(1, -1)
+target_position = Vector2(0, 4)
+collision_mask = 3

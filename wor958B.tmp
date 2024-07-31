@@ -1,0 +1,70 @@
+[gd_scene load_steps=9 format=3 uid="uid://chuu2il5usdf4"]
+
+[ext_resource type="Script" path="res://Scripts/world.gd" id="1_8vgew"]
+[ext_resource type="PackedScene" uid="uid://4ythqhswhcg7" path="res://Creatures/player.tscn" id="2_sly73"]
+[ext_resource type="PackedScene" uid="uid://c4y4hleyev5w2" path="res://camera.tscn" id="3_qv8w2"]
+[ext_resource type="PackedScene" uid="uid://djfyasap6w7hd" path="res://polyphonic_audio_player.tscn" id="4_28f0l"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="5_xw1mo"]
+
+[sub_resource type="Gradient" id="Gradient_eymtx"]
+offsets = PackedFloat32Array(0, 0.489362, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.509286, 0.509286, 0.509286, 1, 0.28485, 0.28485, 0.28485, 1)
+
+[sub_resource type="Curve" id="Curve_vgl7x"]
+min_value = -1.0
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Resource" id="Resource_5tlna"]
+script = ExtResource("5_xw1mo")
+sound_effects = Array[Resource("res://Scripts/Classes/sound_effect.gd")]([])
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_8vgew")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+z_index = 1
+position = Vector2(151, 193)
+amount = 50
+lifetime = 20.0
+preprocess = 8.0
+emission_shape = 3
+emission_rect_extents = Vector2(150, 1)
+direction = Vector2(0, -1)
+spread = 6.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 8.0
+initial_velocity_max = 20.0
+scale_amount_max = 3.0
+color = Color(0.235294, 0.301961, 0.305882, 1)
+color_initial_ramp = SubResource("Gradient_eymtx")
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="."]
+position = Vector2(150, 212)
+amount = 25
+lifetime = 25.0
+preprocess = 8.0
+emission_shape = 3
+emission_rect_extents = Vector2(150, 1)
+direction = Vector2(0, -1)
+spread = 6.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 8.0
+initial_velocity_max = 20.0
+angular_velocity_min = -20.0
+angular_velocity_max = 20.0
+scale_amount_min = 20.0
+scale_amount_max = 60.0
+color = Color(0.0634192, 0.0588763, 0.0997861, 0.462745)
+color_initial_ramp = SubResource("Gradient_eymtx")
+hue_variation_min = -0.06
+hue_variation_max = 0.06
+hue_variation_curve = SubResource("Curve_vgl7x")
+
+[node name="Camera" parent="." instance=ExtResource("3_qv8w2")]
+
+[node name="Player" parent="." instance=ExtResource("2_sly73")]
+position = Vector2(71, 63)
+
+[node name="PolyphonicAudioPlayer" parent="." instance=ExtResource("4_28f0l")]
+audio_library = SubResource("Resource_5tlna")

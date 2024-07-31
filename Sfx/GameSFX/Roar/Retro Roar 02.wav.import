@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://ra53qmjg8nil"
+path="res://.godot/imported/Retro Roar 02.wav-146ff0be1f6bbd643e728326f3020b78.sample"
+
+[deps]
+
+source_file="res://Sfx/GameSFX/Roar/Retro Roar 02.wav"
+dest_files=["res://.godot/imported/Retro Roar 02.wav-146ff0be1f6bbd643e728326f3020b78.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

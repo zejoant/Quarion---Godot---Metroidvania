@@ -1,0 +1,172 @@
+[gd_scene load_steps=13 format=3 uid="uid://cgdckard0gbn"]
+
+[ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_4185q"]
+[ext_resource type="Script" path="res://Scripts/lamp.gd" id="1_a8aay"]
+[ext_resource type="AudioStream" uid="uid://cn2kh5pxblyib" path="res://Sfx/checkpoint2.wav" id="3_iqx6t"]
+
+[sub_resource type="Animation" id="Animation_qjckj"]
+resource_name = "Active"
+length = 0.500008
+loop_mode = 1
+step = 0.0833333
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Rect2(32, 64, 8, 24), Rect2(16, 64, 8, 24)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D2:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Color(1, 1, 0.898039, 0.117647)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D2:region_rect")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Rect2(96, 64, 24, 24), Rect2(64, 64, 24, 24)]
+}
+
+[sub_resource type="Animation" id="Animation_ylhau"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.001),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(48, 64, 8, 24)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D2:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Color(1, 1, 0.898039, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D2:region_rect")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(64, 64, 24, 24)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_osmtu"]
+_data = {
+"Active": SubResource("Animation_qjckj"),
+"RESET": SubResource("Animation_ylhau")
+}
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_cahrj"]
+blend_mode = 1
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_sv52y"]
+radius = 3.0
+height = 18.0
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fdnjs"]
+blend_mode = 1
+
+[sub_resource type="Curve" id="Curve_ecnef"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_aiian"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="Curve" id="Curve_uf3rq"]
+min_value = -1.0
+_data = [Vector2(0, -1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="Lamp" type="StaticBody2D" groups=["Checkpoint"]]
+z_index = 2
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_a8aay")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_osmtu")
+}
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -8)
+texture = ExtResource("1_4185q")
+region_enabled = true
+region_rect = Rect2(48, 64, 8, 24)
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 0.898039, 0)
+z_index = 5
+material = SubResource("CanvasItemMaterial_cahrj")
+position = Vector2(0, -14)
+texture = ExtResource("1_4185q")
+region_enabled = true
+region_rect = Rect2(64, 64, 24, 24)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -6)
+shape = SubResource("CapsuleShape2D_sv52y")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_iqx6t")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_fdnjs")
+position = Vector2(0, -12)
+emitting = false
+amount = 50
+lifetime = 3.0
+one_shot = true
+explosiveness = 1.0
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 70.0
+initial_velocity_max = 120.0
+linear_accel_min = -40.0
+linear_accel_max = -30.0
+radial_accel_min = -100.0
+radial_accel_max = -80.0
+scale_amount_max = 2.0
+scale_amount_curve = SubResource("Curve_ecnef")
+color = Color(1, 0.706544, 0.231626, 1)
+color_ramp = SubResource("Gradient_aiian")
+hue_variation_min = -0.38
+hue_variation_max = 0.4
+hue_variation_curve = SubResource("Curve_uf3rq")

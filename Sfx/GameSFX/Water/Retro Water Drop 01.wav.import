@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cuqe6nan1cu75"
+path="res://.godot/imported/Retro Water Drop 01.wav-1c44d20df0c56056d35c1b260792783e.sample"
+
+[deps]
+
+source_file="res://Sfx/GameSFX/Water/Retro Water Drop 01.wav"
+dest_files=["res://.godot/imported/Retro Water Drop 01.wav-1c44d20df0c56056d35c1b260792783e.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0
