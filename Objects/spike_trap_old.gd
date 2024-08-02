@@ -12,16 +12,19 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	if !animating:
-		animating = true
-		
-		await create_tween().tween_interval(0.55).finished
-		create_tween().tween_method(extend_spike, 0, 16, 0.05)
-		$AudioStreamPlayer2D.play()
-		await create_tween().tween_interval(1.2).finished
-		create_tween().tween_method(extend_spike, 16, 0, 0.10)
-		
-		animating = false
+	
+	$Sprite2D.region_rect.position.x += 1
+	
+	#if !animating:
+		#animating = true
+		#
+		#await create_tween().tween_interval(0.55).finished
+		#create_tween().tween_method(extend_spike, 0, 16, 0.05)
+		#$AudioStreamPlayer2D.play()
+		#await create_tween().tween_interval(1.2).finished
+		#create_tween().tween_method(extend_spike, 16, 0, 0.10)
+		#
+		#animating = false
 
 
 func extend_spike(distance):

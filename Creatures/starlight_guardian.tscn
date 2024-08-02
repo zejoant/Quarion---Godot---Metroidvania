@@ -1,18 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://30g7v64cfgce"]
+[gd_scene load_steps=11 format=3 uid="uid://30g7v64cfgce"]
 
 [ext_resource type="Script" path="res://Creatures/starlight_guardian.gd" id="1_3550h"]
 [ext_resource type="Texture2D" uid="uid://b6aii0mfltagh" path="res://Assets/Aim Line.png" id="2_f1le3"]
 [ext_resource type="Texture2D" uid="uid://cs8lmkulj4ssr" path="res://Assets/Sun Boss Green.png" id="2_sn8rk"]
 [ext_resource type="PackedScene" uid="uid://bw1r3nxt3ya8x" path="res://Objects/gate.tscn" id="3_achy8"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_upxv1"]
-size = Vector2(8, 8)
-
-[sub_resource type="Curve2D" id="Curve2D_kgdyh"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 0, 0, -22, 0, 22, 0, 50, -20, 0, 0, 0, 0, 70, 0, 22, 0, -22, 0, 50, 20, 22, 0, -22, 0, -50, -20, 0, 0, 0, 0, -70, 0, -22, 0, 22, 0, -50, 20, 0, 0, 0, 0, 0, 0)
-}
-point_count = 8
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_nl34h"]
 blend_mode = 1
@@ -59,10 +50,53 @@ _data = {
 "RESET": SubResource("Animation_xpdgb")
 }
 
-[node name="StarlightGuardian" type="Area2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_upxv1"]
+size = Vector2(8, 8)
+
+[node name="BossEnvironment" type="Area2D"]
 collision_layer = 0
 collision_mask = 8
 script = ExtResource("1_3550h")
+
+[node name="StarlightGuardian" type="CharacterBody2D" parent="." groups=["Enemy"]]
+z_index = 5
+collision_layer = 2
+collision_mask = 0
+
+[node name="Aim" type="Node2D" parent="StarlightGuardian"]
+
+[node name="AimSprite" type="Sprite2D" parent="StarlightGuardian/Aim"]
+modulate = Color(1, 1, 1, 0.501961)
+material = SubResource("CanvasItemMaterial_nl34h")
+texture = ExtResource("2_f1le3")
+offset = Vector2(0, 136)
+
+[node name="WallRay" type="RayCast2D" parent="StarlightGuardian/Aim"]
+target_position = Vector2(0, 13)
+
+[node name="Base" type="Sprite2D" parent="StarlightGuardian"]
+texture = ExtResource("2_sn8rk")
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 32)
+
+[node name="Spikes" type="Sprite2D" parent="StarlightGuardian"]
+texture = ExtResource("2_sn8rk")
+region_enabled = true
+region_rect = Rect2(48, 0, 32, 32)
+
+[node name="Face" type="Sprite2D" parent="StarlightGuardian"]
+texture = ExtResource("2_sn8rk")
+region_enabled = true
+region_rect = Rect2(32, 0, 16, 16)
+
+[node name="DamageColl" type="CollisionShape2D" parent="StarlightGuardian"]
+shape = SubResource("CircleShape2D_3m5f4")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="StarlightGuardian"]
+libraries = {
+"": SubResource("AnimationLibrary_ch73j")
+}
+autoplay = "Default"
 
 [node name="Gate" parent="." instance=ExtResource("3_achy8")]
 position = Vector2(-56, 0)
@@ -74,53 +108,5 @@ position = Vector2(-68, 0)
 z_index = 5
 position = Vector2(-92, 0)
 shape = SubResource("RectangleShape2D_upxv1")
-
-[node name="Path2D" type="Path2D" parent="."]
-curve = SubResource("Curve2D_kgdyh")
-
-[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
-rotation = -0.380506
-rotates = false
-
-[node name="BossBody" type="CharacterBody2D" parent="Path2D/PathFollow2D" groups=["Enemy"]]
-z_index = 5
-rotation = 0.380506
-collision_layer = 2
-collision_mask = 0
-
-[node name="Aim" type="Node2D" parent="Path2D/PathFollow2D/BossBody"]
-
-[node name="AimSprite" type="Sprite2D" parent="Path2D/PathFollow2D/BossBody/Aim"]
-modulate = Color(1, 1, 1, 0.501961)
-material = SubResource("CanvasItemMaterial_nl34h")
-texture = ExtResource("2_f1le3")
-offset = Vector2(0, 136)
-
-[node name="WallRay" type="RayCast2D" parent="Path2D/PathFollow2D/BossBody/Aim"]
-target_position = Vector2(0, 13)
-
-[node name="Base" type="Sprite2D" parent="Path2D/PathFollow2D/BossBody"]
-texture = ExtResource("2_sn8rk")
-region_enabled = true
-region_rect = Rect2(0, 0, 32, 32)
-
-[node name="Spikes" type="Sprite2D" parent="Path2D/PathFollow2D/BossBody"]
-texture = ExtResource("2_sn8rk")
-region_enabled = true
-region_rect = Rect2(48, 0, 32, 32)
-
-[node name="Face" type="Sprite2D" parent="Path2D/PathFollow2D/BossBody"]
-texture = ExtResource("2_sn8rk")
-region_enabled = true
-region_rect = Rect2(32, 0, 16, 16)
-
-[node name="DamageColl" type="CollisionShape2D" parent="Path2D/PathFollow2D/BossBody"]
-shape = SubResource("CircleShape2D_3m5f4")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Path2D/PathFollow2D/BossBody"]
-libraries = {
-"": SubResource("AnimationLibrary_ch73j")
-}
-autoplay = "Default"
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

@@ -7,36 +7,41 @@ static var killed_suns = 0
 var sprite_sheet : Texture2D
 var boss : CharacterBody2D
 var start_pos : Vector2
-var boss_state = 0
+var boss_state = -2
 var player
 
 var activated = false
 
+var idle_dir : Vector2
+var init_move = true
+var lunge_state = 0
+
 var x_loop = true
 var y_loop = true
-
-var lunging = false
-var speed = 0.3
-var old_pos
+var mod = 0.01
+var lunge_dir
 
 var tween1
 var tween2
+var tween3
+
+var time : float = 0
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	#player = get_node("/root/World/Player")
-	#boss = $BossBody
-	boss = $Path2D/PathFollow2D/BossBody
+	boss = $StarlightGuardian
 	boss.visible = false
-	boss.get_node("Aim").modulate.a = 0
-	boss.get_node("DamageColl").disabled = true
-	#$BossBody/Aim.modulate.a = 0
-	#$BossBody/DamageColl.disabled = true
+	$StarlightGuardian/Aim.modulate.a = 0
+	$StarlightGuardian/DamageColl.disabled = true
 	param_setup()
 	
 	
-	await self.create_tween().tween_interval(5).finished
+	await self.create_tween().tween_interval(2).finished
+	boss_state = -1
+	
+	await self.create_tween().tween_interval(4).finished
 	boss_state = 1
 	
 
@@ -44,70 +49,97 @@ func _ready():
 func _process(delta):
 	if activated:
 		
-		if boss_state == 0:
-			#idle_movement()
-			follow_path(delta)
-		elif boss_state == 1:
+		if boss_state == -1: #boss start animations
+			boss_state = 0
+			
+		if mod > 0 and boss_state >= 0: #idle animation
+			#idle_loop()
+			idle_movement()
+			
+		if boss_state == 1: #lunge attack
 			lunge(delta)
 		
-func follow_path(delta):
-	$Path2D/PathFollow2D.progress_ratio += delta * 0.3
-	
 func idle_movement():
-	old_pos = boss.position
+	boss.position.y = start_pos.y - sin(time)*12.0
+	boss.position.x = start_pos.x + sin(time/2.0)*50.0
 	
-	if x_loop:
-		x_loop = false
-		tween1 = self.create_tween()
-		
-		tween1.set_ease(Tween.EASE_IN_OUT)
-		tween1.set_trans(Tween.TRANS_QUAD)
-		tween1.tween_property(boss, "position:x", start_pos.x+70, 2)
-		await tween1.tween_property(boss, "position:x", start_pos.x-70, 2).finished
-		x_loop = true
 	
-	if y_loop:
-		y_loop = false
-		tween2 = self.create_tween()
-		
-		tween2.set_trans(Tween.TRANS_QUAD)
-		tween2.set_ease(Tween.EASE_OUT)
-		tween2.tween_property(boss, "position:y", start_pos.y - 20, 0.5)
-		tween2.set_ease(Tween.EASE_IN_OUT)
-		tween2.tween_property(boss, "position:y", start_pos.y + 20, 1)
-		tween2.set_ease(Tween.EASE_IN)
-		await tween2.tween_property(boss, "position:y", start_pos.y, 0.5).finished
-		y_loop = true
+	time += 0.08 * mod #progression along the sine wave
+	if mod < 1 and boss_state == 0: #ease in movement
+		mod += 0.01
 
-func lunge(delta):
-	if !lunging:
-		#velocity = boss.position - old_pos
-		#velocity = PhysicsServer2D.body_get_state(boss.get_rid(), PhysicsServer2D.BODY_STATE_LINEAR_VELOCITY)
-		#print(velocity)
-		#print(velocity/abs(velocity))
-		lunging = true
-		#tween1.stop()
-		#tween2.stop()
-		tween1 = self.create_tween()
-		tween1.parallel().tween_property(boss.get_node("Aim"), "modulate:a", 1, 1)
-		var dir = player.position - boss.position
-		dir = dir/abs(dir)
-		#tween1.parallel().tween_property($Path2D, "position", boss.position - dir*32, 2)
-		tween1.parallel().tween_property(boss, "modulate", Color(0.8, 0.3, 0.3, 1), 2)
+#func idle_loop():
+	#
+	#if mod < 1 and boss_state == 0:
+		#mod += 0.01
+	#
+	#if x_loop:
+		#x_loop = false
+		#tween1 = self.create_tween()
+		#
+		#tween1.set_trans(Tween.TRANS_QUAD)
+		#tween1.set_ease(Tween.EASE_OUT)
+		#tween1.tween_method(idle_move_x,  boss.position.x, boss.position.x+70, 1)
+		#tween1.set_ease(Tween.EASE_IN)
+		#tween1.tween_method(idle_move_x, boss.position.x, boss.position.x-70, 1)
+		#tween1.set_ease(Tween.EASE_OUT)
+		#tween1.tween_method(idle_move_x,  boss.position.x, boss.position.x-70, 1)
+		#tween1.set_ease(Tween.EASE_IN)
+		#await tween1.tween_method(idle_move_x,  boss.position.x, boss.position.x+70, 1).finished
+		#x_loop = true
+	
+	#if y_loop:
+		#y_loop = false
+		#tween2 = self.create_tween()
+		#
+		#tween2.set_trans(Tween.TRANS_QUAD)
+		#tween2.set_ease(Tween.EASE_OUT)
+		#tween2.tween_method(idle_move_y,  start_pos.y, start_pos.y - 20, 0.5)
+		#tween2.set_ease(Tween.EASE_IN_OUT)
+		#tween2.tween_method(idle_move_y, start_pos.y - 20, start_pos.y + 20, 1)
+		#tween2.set_ease(Tween.EASE_IN)
+		#await tween2.tween_method(idle_move_y, start_pos.y + 20, start_pos.y, 0.5).finished
+		#y_loop = true
+
+#func idle_move_y(destination):
+	#boss.position.y += (destination-boss.position.y) * mod
+#func idle_move_x(destination):
+	#boss.position.x += (destination-boss.position.x) * mod
+
+func lunge(_delta):
+	if mod > 0: #ease out idle movement
+		mod -= 0.01
+	#if mod <= 0: #stop tweens
+	#	tween1.kill()
+	#	tween2.kill()
+	
+	if !lunge_state:
+		lunge_state = 1
+		lunge_dir = player.position.direction_to(boss.position)
 		
-	boss.get_node("Aim").rotation = (player.global_position - boss.global_position).angle() - PI/2
-	#boss.position += velocity# - velocity/abs(velocity)
-	#velocity -= velocity/abs(velocity)*2
-	if speed > 0:
-		$Path2D/PathFollow2D.progress_ratio += delta * speed
-		speed -= 0.003
-	else:
-		speed = 0
+		tween3 = self.create_tween()
+		tween3.parallel().tween_property(boss.get_node("Aim"), "modulate:a", 1, 1)
+		tween3.parallel().tween_property(boss, "modulate", Color(0.8, 0.3, 0.3, 1), 1.5)
+		#tween3.parallel().tween_property(boss, "position", boss.position + lunge_dir, 1.5)
+		#await get_tree().create_timer(1.5).timeout
+		#lunge_state = 2
+		#lunge_dir = player.position.direction_to(boss.position)*224
+		#tween3.stop()
+		#tween3.play()
+		#tween3.tween_property(boss, "position", boss.position - lunge_dir, 0.8)
+	
+	
+	boss.get_node("Aim").rotation = (player.position - boss.position).angle() - PI/2
+	#if lunge_state == 1:
+	#	boss.position += lunge_dir
+	#
 	
 
 func param_setup():
+	boss.position.y -= start_raise*8
 	start_pos = boss.position
-	start_pos.y -= start_raise*8
+	#start_pos.y -= start_raise*8
+	
 	
 	if color == "green":
 		sprite_sheet = load("res://Assets/Sun Boss Green.png")

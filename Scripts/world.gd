@@ -11,9 +11,7 @@ var sfx_array : Array
 var tag_array : Array
 
 const save_path := "user://gamestate.save"
-#var collected_items := PackedVector2Array()
 var room_state = []
-#var opened_doors: Array[Array[RoomData]]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -40,6 +38,8 @@ func _ready():
 	room_coords = checkpoint_room#Vector2(8, 3)#(0, 1) #starting room
 	var scene_instance = load("res://Rooms/room_" + str(room_coords.x) + str(room_coords.y) + ".tscn").instantiate() 
 	add_child(scene_instance)
+	
+	
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -75,15 +75,15 @@ func exit_room_check():
 		
 #function for changing the current room
 func change_room(new_coords):
-	#var old_coords = room_coords
-	#call_deferred("free", get_node("Room" + str(room_coords.x) + str(room_coords.y)))
 	var old_room = get_node("Room" + str(room_coords.x) + str(room_coords.y))
 	old_room.call_deferred("free")
 	
-	#get_node("Room" + str(old_coords.x) + str(old_coords.y)).queue_free() #removes current room
 	room_coords = new_coords #updates room coords
 	var new_room = load("res://Rooms/room_" + str(new_coords.x) + str(new_coords.y) + ".tscn").instantiate()
 	call_deferred("add_child", new_room) #loads new room
+	
+	#adds room to map
+	$Camera/Map.set_cell(0, room_coords, 2, room_coords, 0)
 
 #saves the respawn position when grabbing a checkpoint
 func save_checkpoint_room(pos):
@@ -154,6 +154,8 @@ func save_game():
 	file.store_var(player.has_double_jump)
 	file.store_var(player.has_freeze)
 	file.store_var(player.has_blue_blocks)
+	file.store_var($Camera/Map.get_used_cells(0))
+	
 
 
 func load_data():
@@ -167,6 +169,8 @@ func load_data():
 		player.has_double_jump = file.get_var()
 		player.has_freeze = file.get_var()
 		player.has_blue_blocks = file.get_var()
+		for room in file.get_var():
+			$Camera/Map.set_cell(0, room, 2, room, 0)
 	else:
 		cam_size = get_node("Camera").get_viewport_rect().size
 		checkpoint_room = Vector2(0, 1)

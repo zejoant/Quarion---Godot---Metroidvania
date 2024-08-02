@@ -11,20 +11,22 @@ layer_2/tile_data = PackedInt32Array(1310755, 720896, 20, 1245219, 720896, 19, 1
 layer_3/tile_data = PackedInt32Array(18, 131072, 23, 131090, 131072, 23, 262162, 131072, 23, 393234, 131072, 23, 524306, 131072, 23, 655378, 131072, 23, 786450, 131072, 23, 917522, 131072, 23, 1048594, 131072, 23, 1179666, 131072, 23, 1310738, 131072, 23, 1441810, 131072, 23)
 
 [node name="StarlightGuardian" parent="." instance=ExtResource("2_s1ik2")]
-position = Vector2(152, 88)
 start_raise = 3.0
 
+[node name="StarlightGuardian" parent="StarlightGuardian" index="0"]
+position = Vector2(152, 88)
+
 [node name="Gate" parent="StarlightGuardian" index="1"]
-position = Vector2(132, 76)
+position = Vector2(284, 164)
 audio = true
 
 [node name="Gate2" parent="StarlightGuardian" index="2"]
-position = Vector2(-132, -76)
+position = Vector2(20, 12)
 length = 4
 direction = "right"
 
 [node name="ActivateBossColl" parent="StarlightGuardian" index="3"]
-position = Vector2(0, 0)
+position = Vector2(152, 88)
 scale = Vector2(1, 18)
 
 [editable path="StarlightGuardian"]

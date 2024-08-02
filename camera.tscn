@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://c4y4hleyev5w2"]
+[gd_scene load_steps=10 format=3 uid="uid://c4y4hleyev5w2"]
 
 [ext_resource type="Script" path="res://Scripts/camera.gd" id="1_mbcrn"]
 [ext_resource type="Shader" path="res://Shaders/camera.gdshader" id="2_dofkg"]
 [ext_resource type="Texture2D" uid="uid://bbq86p0psyqyi" path="res://Assets/Map.png" id="3_obkyq"]
+[ext_resource type="PackedScene" uid="uid://cnvps0rt04sfe" path="res://world_map.tscn" id="4_jjsda"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_64wl2"]
 
@@ -74,9 +75,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Map" type="Sprite2D" parent="."]
+[node name="MapOld" type="Sprite2D" parent="."]
+visible = false
 modulate = Color(1, 1, 1, 0)
 z_index = 50
 position = Vector2(152, 96)
 scale = Vector2(0.875, 0.875)
 texture = ExtResource("3_obkyq")
+
+[node name="Map" parent="." instance=ExtResource("4_jjsda")]
