@@ -40,9 +40,11 @@ func alternate_map():
 		map_open = false
 
 func close_map():
-	$Sprite2D.modulate = Color(1, 1, 1, 0)
-	$Map.modulate.a = 0
-	map_open = false
+	map_open = true
+	alternate_map()
+	#$Sprite2D.modulate = Color(1, 1, 1, 0)
+	#$Map.modulate.a = 0
+	#map_open = false
 
 func open_map():
 	$Sprite2D.modulate = Color(0, 0, 0, 0.8)

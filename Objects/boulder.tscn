@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://c5ti3c74ggtj"]
+
+[ext_resource type="Texture2D" uid="uid://ddmw17cae58fo" path="res://Assets/Boulder Sprites.png" id="1_0fbur"]
+[ext_resource type="Script" path="res://Objects/boulder.gd" id="1_icofg"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3lnbd"]
+radius = 9.0
+
+[node name="Boulder" type="CharacterBody2D" groups=["Enemy"]]
+z_index = 2
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_icofg")
+
+[node name="BoulderSprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_0fbur")
+region_enabled = true
+region_rect = Rect2(0, 0, 24, 24)
+
+[node name="HurtColl" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_3lnbd")
+
+[node name="RayCast1" type="RayCast2D" parent="."]
+scale = Vector2(1e-05, 1)
+target_position = Vector2(12, 0)
+
+[node name="RayCast2" type="RayCast2D" parent="."]
+target_position = Vector2(0, 12)

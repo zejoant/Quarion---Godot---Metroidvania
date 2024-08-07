@@ -26,6 +26,8 @@ var walljump_dir = 1
 
 var can_double_jump = false
 
+var in_interact_area = false
+
 @export_group("Power-Ups")
 @export var has_dash = false
 @export var has_wallclimb = false
@@ -34,13 +36,12 @@ var can_double_jump = false
 @export var has_blue_blocks = false
 
 @export_group("Items")
-@export var has_green_key = false
-@export var has_red_key = false
-@export_enum("0", "1", "2", "3") var amulet_pieces = "0"
+@export_enum("uncollected", "collected", "used") var green_key_state = "uncollected"
+@export_enum("uncollected", "collected", "used") var red_key_state = "uncollected"
+@export_enum("none", "one", "two", "three", "used") var amulet_pieces = "none"
 @export var has_shop_fast_travel = false
 @export var has_item_map = false
 @export var has_bubble = false
-
 
 @onready var audio_player = $PolyphonicAudioPlayer
 
@@ -50,12 +51,15 @@ func _ready():
 func _physics_process(_delta):
 	if is_on_floor():
 		if $AnimationPlayer.is_playing() and ($AnimationPlayer.current_animation == "Fall" or $AnimationPlayer.current_animation == ""):
+			$LandParticles.restart()
 			$AnimationPlayer.play("Land")
 			audio_player.play_sound_effect("land")
-		velocity.y = 0
+			#$LandParticles.emitting = true
+		#velocity.y = 0
 		coyote = 5
 		can_dash = true
 		can_double_jump = true
+	
 	
 	#applies gravity if in air
 	elif !is_on_floor():
@@ -69,11 +73,11 @@ func _physics_process(_delta):
 	
 	
 	#enables jumping
-	if (!dashing and buffer == 0) and (is_on_floor() or (coyote >= 0 and velocity.y >= 0)):
+	if (!dashing and buffer == 0 and !in_interact_area) and (is_on_floor() or (coyote >= 0 and velocity.y >= 0)):
 		can_jump = true
 	
 	#disables jumping
-	elif coyote < 0:
+	elif coyote < 0 or in_interact_area:
 		can_jump = false
 	
 	#cooldown for dash
@@ -112,17 +116,22 @@ func _physics_process(_delta):
 		get_parent().respawn_player()
 	
 	move_and_slide()
-	
-	#if get_slide_collision(0) != null:
-	#	print(get_slide_collision(0).get_collider())
-	
+
+
 	if Input.is_action_just_pressed("Debug"):
 		has_dash = true
 		has_blue_blocks = true
 		has_double_jump = true
 		has_freeze = true
 		has_wallclimb = true
+		green_key_state = "collected"
+		red_key_state = "collected"
 
+func bounce(strength):
+	velocity.y = strength
+	move_and_slide()
+	can_jump = false
+	$AnimationPlayer.play("Jump")
 
 #Handle the jump
 func jump():
@@ -143,7 +152,6 @@ func walk():
 		velocity.x = direction * x_speed
 		if is_on_floor() and !Input.is_action_pressed("Jump") and $AnimationPlayer.current_animation != "Land":
 			$AnimationPlayer.play("Walk")
-	
 	else:
 		velocity.x = move_toward(velocity.x, 0, x_speed)
 		if is_on_floor() and !Input.is_action_pressed("Jump") and $AnimationPlayer.current_animation != "Land":
@@ -227,6 +235,8 @@ func walljump():
 func _on_area_2d_body_entered(body):
 	if body.is_in_group("Enemy"):#kills player
 		get_parent().respawn_player()
+	if body.is_in_group("InteractArea") and body.interactable(): #areas where the player interact such as a keyslot
+		in_interact_area = true
 	elif body.is_in_group("Checkpoint"):
 		body.activate()
 		get_parent().save_game()
@@ -237,6 +247,12 @@ func _on_area_2d_body_entered(body):
 		print("lol")
 	#elif body.is_in_group("Crumble"):
 	#	body.crumble()
+
+
+func _on_area_2d_body_exited(body):
+	if body.is_in_group("InteractArea"): #areas where the player interact such as a keyslot
+		in_interact_area = false
+
 
 #activates if player enters a body. Also provieds the body_rid which can give you the tile coords of the body
 func _on_area_2d_body_shape_entered(body_rid, body, _body_shape_index, _local_shape_index):
@@ -280,9 +296,16 @@ func custom_data_action(body, tile_coords):
 
 #fade out and out foreground
 func _on_area_2d_area_entered(_area):
-	get_parent().get_tilemap().fade_foreground(true)
+	var tilemap = get_parent().get_tilemap()
+	while tilemap == null:
+		await get_tree().process_frame
+	tilemap.fade_foreground(true)
 func _on_area_2d_area_exited(_area):
-	get_parent().get_tilemap().fade_foreground(false)
+	var tilemap = get_parent().get_tilemap()
+	while tilemap == null:
+		await get_tree().process_frame
+	tilemap.fade_foreground(false)
+	#get_parent().get_tilemap().fade_foreground(false)
 
 #replaces water with ice if you have the freeze power up
 func _on_water_detector_body_shape_entered(body_rid, body, _body_shape_index, _local_shape_index):
@@ -305,3 +328,5 @@ func _on_water_detector_body_shape_entered(body_rid, body, _body_shape_index, _l
 				#await body.create_tween().tween_interval(0.2).finished
 				#body.erase_cell(4, tile_coords)
 			
+
+

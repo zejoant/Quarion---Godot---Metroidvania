@@ -39,8 +39,6 @@ func _ready():
 	var scene_instance = load("res://Rooms/room_" + str(room_coords.x) + str(room_coords.y) + ".tscn").instantiate() 
 	add_child(scene_instance)
 	
-	
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
@@ -81,6 +79,7 @@ func change_room(new_coords):
 	room_coords = new_coords #updates room coords
 	var new_room = load("res://Rooms/room_" + str(new_coords.x) + str(new_coords.y) + ".tscn").instantiate()
 	call_deferred("add_child", new_room) #loads new room
+	#add_child(new_room)
 	
 	#adds room to map
 	$Camera/Map.set_cell(0, room_coords, 2, room_coords, 0)
@@ -92,8 +91,8 @@ func save_checkpoint_room(pos):
 	
 #respawns the player duh
 func respawn_player():
-	#if checkpoint_room != room_coords:
-	change_room(checkpoint_room)
+	if checkpoint_room != room_coords:
+		change_room(checkpoint_room)
 	player.position = Vector2(checkpoint_pos.x, checkpoint_pos.y)
 
 
@@ -101,7 +100,7 @@ func play_sfx(stream, tag):
 	var sfx = SoundEffect.new()
 	sfx.stream = stream
 	sfx.tag = tag
-	if not tag_array.has(sfx.tag):
+	if !tag_array.has(sfx.tag):
 		tag_array.append(sfx.tag)
 		sfx_array.append(sfx)
 	
@@ -109,7 +108,11 @@ func play_sfx(stream, tag):
 
 
 func get_tilemap() -> TileMap:
-	return get_node("Room" + str(room_coords.x) + str(room_coords.y)).get_node("Tilemap")
+	var room = get_node_or_null("Room" + str(room_coords.x) + str(room_coords.y))
+	if room != null:
+		return room.get_node("Tilemap")
+	else:
+		return null
 
 
 func room_wrap_check(new_room_coords, exit_dir) -> Vector2:
@@ -133,6 +136,9 @@ func room_wrap_check(new_room_coords, exit_dir) -> Vector2:
 		return Vector2(8, 5)
 	elif room_coords == Vector2(8, 5) and exit_dir == "right":
 		return Vector2(0, 5)
+	
+	elif room_coords == Vector2(8, 0) and exit_dir == "right":
+		return Vector2(7, 0)
 		
 	return(new_room_coords)
 
@@ -155,6 +161,8 @@ func save_game():
 	file.store_var(player.has_freeze)
 	file.store_var(player.has_blue_blocks)
 	file.store_var($Camera/Map.get_used_cells(0))
+	file.store_var(player.green_key_state)
+	file.store_var(player.red_key_state)
 	
 
 
@@ -171,6 +179,8 @@ func load_data():
 		player.has_blue_blocks = file.get_var()
 		for room in file.get_var():
 			$Camera/Map.set_cell(0, room, 2, room, 0)
+		player.green_key_state = file.get_var()
+		player.red_key_state = file.get_var()
 	else:
 		cam_size = get_node("Camera").get_viewport_rect().size
 		checkpoint_room = Vector2(0, 1)

@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://dsf7isnnwruw"]
+
+[ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_ag3j2"]
+[ext_resource type="Script" path="res://Objects/key_slot.gd" id="1_xb06v"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wso80"]
+size = Vector2(16, 16)
+
+[node name="KeySlot" type="StaticBody2D" groups=["InteractArea"]]
+collision_layer = 2
+collision_mask = 8
+script = ExtResource("1_xb06v")
+
+[node name="Base" type="Sprite2D" parent="."]
+z_index = 2
+texture = ExtResource("1_ag3j2")
+region_enabled = true
+region_rect = Rect2(64, 88, 16, 16)
+
+[node name="Key" type="Sprite2D" parent="."]
+visible = false
+z_index = 3
+texture = ExtResource("1_ag3j2")
+region_enabled = true
+region_rect = Rect2(64, 104, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_wso80")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]

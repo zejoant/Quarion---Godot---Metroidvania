@@ -16,6 +16,7 @@ func setup():
 	$Right.visible = true
 	
 	$Solid.scale.x = width
+	$PlayerDetection/CollisionShape2D.scale.x = width
 	$"Center".region_rect = Rect2(0, 0, (width-2)*8, 8)
 	$Right.position.x = 8 + 4*(width-3)
 	$Left.position.x = -8 - 4*(width-3)
@@ -61,4 +62,4 @@ func _on_player_detection_body_entered(_body):
 	$"Left".visible = false
 	$"Right".visible = false
 	$Solid.disabled = true
-	$Solid/PlayerDetection/CollisionShape2D.disabled = true
+	$PlayerDetection/CollisionShape2D.disabled = true

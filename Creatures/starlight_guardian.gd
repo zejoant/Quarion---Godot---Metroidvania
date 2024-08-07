@@ -7,139 +7,181 @@ static var killed_suns = 0
 var sprite_sheet : Texture2D
 var boss : CharacterBody2D
 var start_pos : Vector2
-var boss_state = -2
 var player
+var rng = RandomNumberGenerator.new()
+
+var health = 3
+var boss_state = -2
+var attack_state = 0
+var bullet_cooldown = false
 
 var activated = false
 
-var idle_dir : Vector2
-var init_move = true
-var lunge_state = 0
+var mod : float = 0.01
+var time : float = 0
+var aim
+var idle_origin : Vector2
 
-var x_loop = true
-var y_loop = true
-var mod = 0.01
-var lunge_dir
-
-var tween1
 var tween2
 var tween3
 
-var time : float = 0
+var chance = 1
+var bullet_count = 0
 
-
-# Called when the node enters the scene tree for the first time.
 func _ready():
-	#player = get_node("/root/World/Player")
-	boss = $StarlightGuardian
+	var room_states = get_node("/root/World").get_room_state()
+	for pos in room_states:
+		if Vector2i($ActivateBossColl.position) == Vector2i(pos): #check if boss has been defeated
+			queue_free()
+	
+	
+	boss = $Boss
 	boss.visible = false
-	$StarlightGuardian/Aim.modulate.a = 0
-	$StarlightGuardian/DamageColl.disabled = true
+	%Aim.modulate.a = 0
+	$Boss/DamageColl.disabled = true
 	param_setup()
-	
-	
-	await self.create_tween().tween_interval(2).finished
-	boss_state = -1
-	
-	await self.create_tween().tween_interval(4).finished
-	boss_state = 1
-	
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+
+func _process(_delta):
 	if activated:
-		
-		if boss_state == -1: #boss start animations
+		if boss_state == -1: #pre attack stuff
 			boss_state = 0
-			
+			attack_state = 0
+			bullet_count = 0
+			await get_tree().create_timer(rng.randi_range(3, 4)).timeout
+			choose_attack()
+			#boss_state = rng.randi_range(1, 1)
 		if mod > 0 and boss_state >= 0: #idle animation
-			#idle_loop()
 			idle_movement()
-			
 		if boss_state == 1: #lunge attack
-			lunge(delta)
-		
-func idle_movement():
-	boss.position.y = start_pos.y - sin(time)*12.0
-	boss.position.x = start_pos.x + sin(time/2.0)*50.0
+			lunge()
+		if boss_state == 2: #bullet rain
+			rain()
+		if boss_state == 3:
+			aiming_bullets() #bullets aimed at the player
+
+
+func choose_attack():
+	var num = rng.randi_range(0, 3)
 	
+	if chance == -1:
+		chance = 3
+	elif chance == 4:
+		chance = 0
+	
+	if num <= chance:
+		boss_state = 1
+		chance -= 1
+	else:
+		boss_state = rng.randi_range(2, 3)
+		chance += 1
+
+
+func rain():
+	if !bullet_cooldown:
+		bullet_cooldown = true
+		var bullet = load("res://Objects/bullet.tscn").instantiate()
+		bullet.setup(2.0, Vector2(rng.randf_range(-0.5, 0.5), 1), Vector2(rng.randi_range(3, 35)*8, 0))
+		call_deferred("add_child", bullet) 
+		await get_tree().create_timer(0.2).timeout
+		bullet_cooldown = false
+	
+	if attack_state == 0 and boss_state == 2:
+		attack_state = 1
+		await get_tree().create_timer(5).timeout
+		boss_state = -1
+
+
+func idle_movement():
+	boss.position.y = idle_origin.y - sin(time)*12.0
+	boss.position.x = idle_origin.x + sin(time/2.0)*50.0
 	
 	time += 0.08 * mod #progression along the sine wave
 	if mod < 1 and boss_state == 0: #ease in movement
 		mod += 0.01
 
-#func idle_loop():
-	#
-	#if mod < 1 and boss_state == 0:
-		#mod += 0.01
-	#
-	#if x_loop:
-		#x_loop = false
-		#tween1 = self.create_tween()
-		#
-		#tween1.set_trans(Tween.TRANS_QUAD)
-		#tween1.set_ease(Tween.EASE_OUT)
-		#tween1.tween_method(idle_move_x,  boss.position.x, boss.position.x+70, 1)
-		#tween1.set_ease(Tween.EASE_IN)
-		#tween1.tween_method(idle_move_x, boss.position.x, boss.position.x-70, 1)
-		#tween1.set_ease(Tween.EASE_OUT)
-		#tween1.tween_method(idle_move_x,  boss.position.x, boss.position.x-70, 1)
-		#tween1.set_ease(Tween.EASE_IN)
-		#await tween1.tween_method(idle_move_x,  boss.position.x, boss.position.x+70, 1).finished
-		#x_loop = true
-	
-	#if y_loop:
-		#y_loop = false
-		#tween2 = self.create_tween()
-		#
-		#tween2.set_trans(Tween.TRANS_QUAD)
-		#tween2.set_ease(Tween.EASE_OUT)
-		#tween2.tween_method(idle_move_y,  start_pos.y, start_pos.y - 20, 0.5)
-		#tween2.set_ease(Tween.EASE_IN_OUT)
-		#tween2.tween_method(idle_move_y, start_pos.y - 20, start_pos.y + 20, 1)
-		#tween2.set_ease(Tween.EASE_IN)
-		#await tween2.tween_method(idle_move_y, start_pos.y + 20, start_pos.y, 0.5).finished
-		#y_loop = true
 
-#func idle_move_y(destination):
-	#boss.position.y += (destination-boss.position.y) * mod
-#func idle_move_x(destination):
-	#boss.position.x += (destination-boss.position.x) * mod
-
-func lunge(_delta):
-	if mod > 0: #ease out idle movement
-		mod -= 0.01
-	#if mod <= 0: #stop tweens
-	#	tween1.kill()
-	#	tween2.kill()
-	
-	if !lunge_state:
-		lunge_state = 1
-		lunge_dir = player.position.direction_to(boss.position)
+func lunge():
+	if attack_state == 0: #back up and aim
+		attack_state = 1
 		
 		tween3 = self.create_tween()
-		tween3.parallel().tween_property(boss.get_node("Aim"), "modulate:a", 1, 1)
-		tween3.parallel().tween_property(boss, "modulate", Color(0.8, 0.3, 0.3, 1), 1.5)
-		#tween3.parallel().tween_property(boss, "position", boss.position + lunge_dir, 1.5)
-		#await get_tree().create_timer(1.5).timeout
-		#lunge_state = 2
-		#lunge_dir = player.position.direction_to(boss.position)*224
-		#tween3.stop()
-		#tween3.play()
-		#tween3.tween_property(boss, "position", boss.position - lunge_dir, 0.8)
+		tween3.parallel().tween_property(%Aim, "modulate:a", 1, 1)
+		tween3.parallel().tween_property(boss, "modulate", Color(0.8, 0.3, 0.3, 1), 1.8)
+		tween3.parallel().tween_property(self, "mod", 0, 0.5)
+		
+		await get_tree().create_timer(0.5).timeout
+		aim = player.position.direction_to(boss.position)
+		tween2 = self.create_tween()
+		tween2.set_trans(Tween.TRANS_SINE)
+		tween2.set_ease(Tween.EASE_IN_OUT)
+		await tween2.tween_property(boss, "position", boss.position + aim*28, 1.3).finished
+		
+		attack_state = 2
+		tween2.kill()
+		tween3.kill()
 	
+	if attack_state < 2:
+		%Aim.rotation = (player.position - boss.position).angle() - PI/2 #aim line rotation
 	
-	boss.get_node("Aim").rotation = (player.position - boss.position).angle() - PI/2
-	#if lunge_state == 1:
-	#	boss.position += lunge_dir
-	#
+	if attack_state == 2: #switch to lunge
+		attack_state = 3
+		aim = player.position.direction_to(boss.position)*5
 	
+	if attack_state == 3: #lunge towards player
+		boss.position -= aim
+		if %Aim/WallRay.is_colliding():
+			attack_state = 4
+			%Aim.modulate.a = 0
+			$Boss/AnimationPlayer.play("Sad")
+			boss.modulate = Color(1, 1, 1, 1)
+			$Boss/DamageColl.disabled = true
+			await get_tree().create_timer(3).timeout
+			if attack_state == 4 and health:
+				reset_lunge()
+
+
+func aiming_bullets():
+	if attack_state == 0:
+		attack_state = 1
+		tween3 = self.create_tween()
+		tween3.parallel().tween_property(%Aim, "modulate:a", 1, 1)
+		tween3.parallel().tween_property(self, "idle_origin:y", idle_origin.y - 24, 1.4)
+		await tween3.parallel().tween_property(boss, "modulate", Color(0.8, 0.3, 0.3, 1), 1.4).finished
+		attack_state = 2
+		boss.modulate = Color(1, 1, 1, 1)
+		tween3.kill()
+	
+	if attack_state < 3:
+		%Aim.rotation = (player.position - boss.position).angle() - PI/2 #aim line rotation
+	
+	if attack_state == 2 and !bullet_cooldown:
+		bullet_cooldown = true
+		%Aim.modulate.a = 1
+		tween3 = self.create_tween()
+		tween3.parallel().tween_property(%Aim, "modulate:a", 0, 0.4)
+		aim = boss.position.direction_to(player.position)
+		var bullet = load("res://Objects/bullet.tscn").instantiate()
+		bullet.setup(3.0, aim, boss.position)
+		call_deferred("add_child", bullet)
+		bullet_count += 1
+		await get_tree().create_timer(0.5).timeout
+		tween3.kill()
+		bullet_cooldown = false
+	
+	if bullet_count >= 6:
+		boss_state = -1
+		tween2 = self.create_tween()
+		tween2.set_trans(Tween.TRANS_QUAD)
+		tween2.set_ease(Tween.EASE_IN_OUT)
+		tween2.parallel().tween_property(self, "idle_origin", start_pos, 0.8)
+
 
 func param_setup():
 	boss.position.y -= start_raise*8
 	start_pos = boss.position
+	idle_origin = start_pos
 	#start_pos.y -= start_raise*8
-	
 	
 	if color == "green":
 		sprite_sheet = load("res://Assets/Sun Boss Green.png")
@@ -158,11 +200,51 @@ func param_setup():
 func _on_body_entered(body):
 	$ActivateBossColl.set_deferred("disabled", true)
 	boss.get_node("DamageColl").set_deferred("disabled", false)
+	get_node("/root/World/MusicPlayer").stream = load("res://Music/Hi GI Joe!.wav")
+	get_node("/root/World/MusicPlayer").play()
 	
 	player = body
-	boss.visible = true
 	activated = true
 	
 	$Gate.close()
 	$Gate2.close()
 	
+	await self.create_tween().tween_interval(2).finished
+	boss.visible = true
+	boss_state = -1
+
+
+func _on_hit_area_body_entered(body): #damage boss
+	health -= 1
+	if !health:
+		die()
+	else:
+		reset_lunge()
+	body.bounce(body.jump_vel)
+
+func die():
+	get_node("/root/World/MusicPlayer").stop()
+	get_node("/root/World").save_room_state($ActivateBossColl.position)
+	tween2 = self.create_tween()
+	tween2.set_trans(Tween.TRANS_SINE)
+	tween2.set_ease(Tween.EASE_IN_OUT)
+	await tween2.tween_property(boss, "position", Vector2(start_pos.x, start_pos.y + start_raise*8), 3).finished
+	$Gate.open()
+	$Gate2.open()
+	#boss.visible = false
+	$Boss/Base.visible = false
+	$Boss/Spikes.visible = false
+	$Boss/Face.visible = false
+	$Boss/DeathParticles.emitting = true
+
+func reset_lunge(): #reset back to idle
+	$Boss/AnimationPlayer.play("Default")
+	idle_origin = boss.position
+	time = 0
+	boss_state = -1
+	mod = 0.01
+	tween2 = self.create_tween()
+	tween2.set_trans(Tween.TRANS_QUAD)
+	tween2.set_ease(Tween.EASE_IN_OUT)
+	await tween2.tween_property(self, "idle_origin", start_pos, 0.8).finished
+	$Boss/DamageColl.disabled = false
