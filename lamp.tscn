@@ -1,8 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://cgdckard0gbn"]
+[gd_scene load_steps=12 format=3 uid="uid://cgdckard0gbn"]
 
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_4185q"]
 [ext_resource type="Script" path="res://Scripts/lamp.gd" id="1_a8aay"]
-[ext_resource type="AudioStream" uid="uid://cn2kh5pxblyib" path="res://Sfx/checkpoint2.wav" id="3_iqx6t"]
 
 [sub_resource type="Animation" id="Animation_qjckj"]
 resource_name = "Active"
@@ -142,9 +141,6 @@ region_rect = Rect2(64, 64, 24, 24)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -6)
 shape = SubResource("CapsuleShape2D_sv52y")
-
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("3_iqx6t")
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="."]
 material = SubResource("CanvasItemMaterial_fdnjs")

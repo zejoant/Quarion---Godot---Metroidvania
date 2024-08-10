@@ -28,25 +28,3 @@ func radial_blur():
 
 func set_shader_value(value: float):
 	get_node("CanvasLayer/ColorRect").material.set_shader_parameter("blur_power", value)
-	
-func alternate_map():
-	if !map_open:
-		$Sprite2D.modulate = Color(0, 0, 0, 0.8)
-		$Map.modulate.a = 1
-		map_open = true
-	elif map_open:
-		$Sprite2D.modulate = Color(1, 1, 1, 0)
-		$Map.modulate.a = 0
-		map_open = false
-
-func close_map():
-	map_open = true
-	alternate_map()
-	#$Sprite2D.modulate = Color(1, 1, 1, 0)
-	#$Map.modulate.a = 0
-	#map_open = false
-
-func open_map():
-	$Sprite2D.modulate = Color(0, 0, 0, 0.8)
-	$Map.modulate.a = 1
-	map_open = true

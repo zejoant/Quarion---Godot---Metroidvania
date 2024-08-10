@@ -20,7 +20,7 @@ position = Vector2(269, 36)
 position = Vector2(280, 180)
 
 [node name="DoorL2" parent="Door&Button" index="3"]
-position = Vector2(264, 181)
+position = Vector2(264, 180)
 
 [node name="DoorV3" parent="Door&Button" index="4"]
 position = Vector2(337, 143)

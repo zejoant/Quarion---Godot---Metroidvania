@@ -1,8 +1,7 @@
-[gd_scene load_steps=35 format=3 uid="uid://4ythqhswhcg7"]
+[gd_scene load_steps=34 format=3 uid="uid://4ythqhswhcg7"]
 
 [ext_resource type="Script" path="res://Creatures/player.gd" id="1_1p4uo"]
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_hnvw4"]
-[ext_resource type="PackedScene" uid="uid://djfyasap6w7hd" path="res://polyphonic_audio_player.tscn" id="3_flt4v"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="4_q56as"]
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="5_ja3e4"]
 [ext_resource type="AudioStream" uid="uid://ds8rsq8hl0v6b" path="res://Sfx/jump2.wav" id="6_7e0dw"]
@@ -10,6 +9,30 @@
 [ext_resource type="AudioStream" uid="uid://wm84dwuyqcmd" path="res://Sfx/dash3.wav" id="8_laqsj"]
 [ext_resource type="AudioStream" uid="uid://b7txeulgr6bb2" path="res://Sfx/collect.wav" id="9_f8tde"]
 [ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="10_ta6lj"]
+
+[sub_resource type="Resource" id="Resource_yaidf"]
+script = ExtResource("5_ja3e4")
+tag = "jump"
+stream = ExtResource("6_7e0dw")
+
+[sub_resource type="Resource" id="Resource_u3fen"]
+script = ExtResource("5_ja3e4")
+tag = "land"
+stream = ExtResource("7_8sakw")
+
+[sub_resource type="Resource" id="Resource_dxcvt"]
+script = ExtResource("5_ja3e4")
+tag = "dash"
+stream = ExtResource("8_laqsj")
+
+[sub_resource type="Resource" id="Resource_nbj6v"]
+script = ExtResource("5_ja3e4")
+tag = "collect"
+stream = ExtResource("9_f8tde")
+
+[sub_resource type="Resource" id="Resource_0m3bc"]
+script = ExtResource("4_q56as")
+sound_effects = Array[ExtResource("5_ja3e4")]([SubResource("Resource_yaidf"), SubResource("Resource_u3fen"), SubResource("Resource_dxcvt"), SubResource("Resource_nbj6v")])
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vy8ue"]
 size = Vector2(6.5, 10)
@@ -199,30 +222,6 @@ min_value = -1.0
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, -1), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="Resource" id="Resource_117fs"]
-script = ExtResource("5_ja3e4")
-tag = "jump"
-stream = ExtResource("6_7e0dw")
-
-[sub_resource type="Resource" id="Resource_eex3k"]
-script = ExtResource("5_ja3e4")
-tag = "land"
-stream = ExtResource("7_8sakw")
-
-[sub_resource type="Resource" id="Resource_vs6kr"]
-script = ExtResource("5_ja3e4")
-tag = "dash"
-stream = ExtResource("8_laqsj")
-
-[sub_resource type="Resource" id="Resource_vecfd"]
-script = ExtResource("5_ja3e4")
-tag = "collect"
-stream = ExtResource("9_f8tde")
-
-[sub_resource type="Resource" id="Resource_w5drb"]
-script = ExtResource("4_q56as")
-sound_effects = Array[ExtResource("5_ja3e4")]([SubResource("Resource_117fs"), SubResource("Resource_eex3k"), SubResource("Resource_vs6kr"), SubResource("Resource_vecfd")])
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4by5i"]
 size = Vector2(5, 11)
 
@@ -244,6 +243,7 @@ colors = PackedColorArray(0.180392, 0.431373, 0.419608, 1, 0.196078, 0.290196, 0
 collision_layer = 8
 platform_on_leave = 2
 script = ExtResource("1_1p4uo")
+sfxs = SubResource("Resource_0m3bc")
 
 [node name="TileColl" type="CollisionShape2D" parent="."]
 position = Vector2(-1, 3)
@@ -286,9 +286,6 @@ color_initial_ramp = SubResource("Gradient_qh3fj")
 hue_variation_min = -0.2
 hue_variation_max = 0.2
 hue_variation_curve = SubResource("Curve_1es8a")
-
-[node name="PolyphonicAudioPlayer" parent="." instance=ExtResource("3_flt4v")]
-audio_library = SubResource("Resource_w5drb")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 0

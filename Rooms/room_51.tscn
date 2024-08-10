@@ -16,19 +16,19 @@ layer_3/tile_data = PackedInt32Array(16, 131072, 23, 131088, 131072, 23, 262160,
 position = Vector2(232, 32)
 
 [node name="KeyDoor" parent="." instance=ExtResource("3_vg5h5")]
-position = Vector2(48, -68)
+position = Vector2(44, 60)
 length = 4
 initial_state = "closed"
 
 [node name="KeyDoor2" parent="." instance=ExtResource("3_vg5h5")]
-position = Vector2(316, 8)
+position = Vector2(252, 8)
 rotation = 1.5708
 length = 2
 direction = "right"
 initial_state = "closed"
 
 [node name="KeyDoor3" parent="." instance=ExtResource("3_vg5h5")]
-position = Vector2(228, 8)
+position = Vector2(292, 8)
 rotation = -1.5708
 length = 2
 direction = "left"

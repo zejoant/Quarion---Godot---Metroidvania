@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var frequency = 1.0
+@export var frequency = 1.0 # objects spawned per second
 @export var object : PackedScene = load("res://Objects/boulder.tscn")
 var cooldown = false
 

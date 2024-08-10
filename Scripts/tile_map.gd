@@ -15,27 +15,26 @@ static var blue_block := false
 
 func _ready() -> void:
 	#erased_cells = get_node("/root/World").collected_items
-	world = get_tree().root.get_child(0)
+	world = get_node("/root/World")
 	check_for_collected_tiles()
 	check_for_functional_tiles()
 	
 	
 #deletes any tiles that have been collected so they dont show up again (apples)
 func check_for_collected_tiles():
-	
 	for cell in world.get_room_state():
-		tile_data = get_cell_tile_data(0, cell)
-		if tile_data is TileData:
-			custom_data = tile_data.get_custom_data("Functional Tiles")
-			if custom_data == "Collectable" or custom_data == "PBlueBlocks" or custom_data == "PWallClimb" or custom_data == "PDash" or custom_data == "PDoubleJump":
-				erase_cell(layer, cell)
+		custom_data = get_custom_data_with_coords(cell)
+		#tile_data = get_cell_tile_data(0, cell)
+		#if tile_data is TileData:
+			#custom_data = tile_data.get_custom_data("Functional Tiles")
+		if custom_data == "Collectable" or custom_data == "PBlueBlocks" or custom_data == "PWallClimb" or custom_data == "PDash" or custom_data == "PDoubleJump":
+			erase_cell(layer, cell)
 
 
 #looks through the tiles in layer 0 and if functional; replaces them with an object
 func check_for_functional_tiles():
 	for tile_pos in get_used_cells(layer): #loops through all tiles in the layer and gives each tiles pos
-		tile_data = get_cell_tile_data(layer, tile_pos)
-		custom_data = tile_data.get_custom_data("Functional Tiles")
+		custom_data = get_custom_data_with_coords(tile_pos)
 		replace_tiles_with_object(tile_pos)
 
 
@@ -56,19 +55,6 @@ func replace_tiles_with_object(tile_pos):
 	elif custom_data == "Collectable": #loads apples
 		scene_instance = load("res://apple.tscn").instantiate() 
 	
-	#elif custom_data == "HPlatform": #loads horizontal platform
-	#	scene_instance = load("res://Objects/h_platform.tscn").instantiate() 
-	#	scene_instance.set_dir(get_tile_rotation(tile_pos))
-	
-	#elif custom_data == "CrumbleM" or custom_data == "CrumbleL" or custom_data == "CrumbleR": #loads crumbling platform
-	#	scene_instance = load("res://Objects/crumble_platform.tscn").instantiate() 
-	#	scene_instance.set_type(custom_data)
-	
-	#elif custom_data == "SpikeTrap":
-		#scene_instance = load("res://Objects/spike_trap.tscn").instantiate() 
-		#scene_instance.set_dir(get_tile_rotation(tile_pos))
-	
-	
 	#adds the objects
 	if scene_instance != null:
 		erase_cell(0, tile_pos)#deletes placeholder tile
@@ -80,6 +66,24 @@ func replace_tiles_with_object(tile_pos):
 	
 	elif world.get_node("Player").has_blue_blocks and custom_data == "BlueBlock": #loads solid blue blocks
 		set_cell(layer, tile_pos, 0, Vector2i(38, 2), 0)
+
+#returns custom data based on rid
+func get_custom_data_with_rid(rid: RID) -> String:
+	return get_custom_data_with_coords(get_coords_for_body_rid(rid))
+
+#returns custom data based on position
+func get_custom_data_with_coords(tile_coords: Vector2) -> String:
+	var tile_info = get_cell_tile_data(layer, tile_coords)
+	if tile_info is TileData:
+		return tile_info.get_custom_data("Functional Tiles")
+	return "my guy, there is nothing here"
+
+func is_tile_one_way(rid: RID) -> bool:
+		var pos = get_coords_for_body_rid(rid)
+		var cell_info = get_cell_tile_data(1, pos)
+		if cell_info != null and cell_info.get_collision_polygons_count(0) > 0:
+			return cell_info.is_collision_polygon_one_way(0, 0)
+		return false
 
 
 #reutrns a tiles rotation

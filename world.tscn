@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://chuu2il5usdf4"]
+[gd_scene load_steps=14 format=3 uid="uid://chuu2il5usdf4"]
 
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_8vgew"]
 [ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="2_amft2"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://djfyasap6w7hd" path="res://polyphonic_audio_player.tscn" id="4_28f0l"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="5_xw1mo"]
 [ext_resource type="AudioStream" uid="uid://by671bpomxrhh" path="res://Music/Freedom.mp3" id="7_okqrd"]
+[ext_resource type="PackedScene" uid="uid://tq5pdnyqtw32" path="res://world_map.tscn" id="8_f8ank"]
+[ext_resource type="PackedScene" uid="uid://cw6m8e10x6bsu" path="res://Menu/pause_menu.tscn" id="9_w8l0d"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_1f68k"]
 particles_animation = true
@@ -82,3 +84,23 @@ audio_library = SubResource("Resource_5tlna")
 
 [node name="MusicPlayer" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("7_okqrd")
+
+[node name="WorldMap" parent="." instance=ExtResource("8_f8ank")]
+z_index = 10
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("9_w8l0d")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2.0
+offset_top = 4.0
+offset_right = -2.0
+offset_bottom = 4.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[editable path="CanvasLayer/PauseMenu"]

@@ -1,5 +1,7 @@
 extends Node2D
 
+@export var sfxs : AudioLibrary
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var room_states = get_node("/root/World").get_room_state()
@@ -11,7 +13,7 @@ func _ready():
 func _on_click_area_body_entered(_body):
 	
 	$AnimationPlayer.play("ButtonClick")
-	$PolyphonicAudioPlayer.play_sound_effect("click")
+	AudioManager.play_audio(sfxs.get_sfx("click"))
 	
 	self.create_tween().tween_property($DoorR2, "position:x", $DoorR2.position.x+16, 1)
 	self.create_tween().tween_property($DoorL2, "position:x", $DoorL2.position.x-16, 1)
@@ -21,7 +23,7 @@ func _on_click_area_body_entered(_body):
 	$DoorR2.visible = false
 	$DoorL2.visible = false
 	$DoorV3.visible = false
-	$PolyphonicAudioPlayer.play_sound_effect("thump")
+	AudioManager.play_audio(sfxs.get_sfx("thump"))
 	
 	get_node("/root/World").save_room_state($Button.position)
 

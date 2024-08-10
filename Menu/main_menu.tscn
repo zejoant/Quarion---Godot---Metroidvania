@@ -1,0 +1,92 @@
+[gd_scene load_steps=7 format=3 uid="uid://bbcuafrlc8tnb"]
+
+[ext_resource type="Script" path="res://Menu/main_menu.gd" id="1_af00c"]
+[ext_resource type="Texture2D" uid="uid://b87d406lt38fj" path="res://Assets/Room01 Image.png" id="2_ddjob"]
+[ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="3_ip0rl"]
+[ext_resource type="Theme" uid="uid://b3ki8pmkk54e0" path="res://button_theme.tres" id="3_ye7dg"]
+[ext_resource type="Texture2D" uid="uid://bw5uqh2kcy8rv" path="res://Assets/Quarion Title.png" id="5_l4yhv"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bbd8s"]
+shader = ExtResource("3_ip0rl")
+shader_parameter/amount = 2.0
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_af00c")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.4)
+scale = Vector2(0.194529, 0.194529)
+texture = ExtResource("2_ddjob")
+centered = false
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_bbd8s")
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -228.0
+offset_top = -144.0
+offset_right = 76.0
+offset_bottom = 48.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.5, 1.5)
+pivot_offset = Vector2(152, 96)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 14.0
+offset_bottom = -17.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+texture = ExtResource("5_l4yhv")
+expand_mode = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="ContinueButton" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_ye7dg")
+text = "Continue"
+
+[node name="NewGameButton" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_ye7dg")
+text = "New Game"
+
+[node name="OptionsButton" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_ye7dg")
+text = "Options"
+
+[node name="QuitButton" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_ye7dg")
+text = "Quit"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/ContinueButton" to="." method="_on_continue_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/NewGameButton" to="." method="_on_new_game_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

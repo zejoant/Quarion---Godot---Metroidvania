@@ -1,5 +1,9 @@
 extends Node2D
 
+var new_game = true
+var paused = false
+@onready var pause_menu = $CanvasLayer/PauseMenu
+
 var room_coords : Vector2
 var player
 var cam_size
@@ -15,8 +19,8 @@ var room_state = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
-	#setup 3D array for room specific states
 	room_state.resize(9) #X-dimension
 	for x in 9: 
 		room_state[x] = []
@@ -28,9 +32,11 @@ func _ready():
 	cam_size = get_node("Camera").get_viewport_rect().size
 	player = get_node("Player")
 	
-	#load_data()
-	checkpoint_room = Vector2(1, 4)
-	checkpoint_pos = Vector2(cam_size.x/2, cam_size.y/2)
+	if new_game:
+		checkpoint_room = Vector2(0, 1)
+		checkpoint_pos = Vector2(cam_size.x/2, cam_size.y/2)
+	else:
+		load_data()
 	
 	player.position = checkpoint_pos
 	
@@ -39,10 +45,30 @@ func _ready():
 	var scene_instance = load("res://Rooms/room_" + str(room_coords.x) + str(room_coords.y) + ".tscn").instantiate() 
 	add_child(scene_instance)
 	
+	$WorldMap.add_room(room_coords)
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	exit_room_check()
+	
+	if Input.is_action_just_pressed("Pause"):
+		pauseMenu()
+
+
+func pauseMenu():
+	if paused:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		pause_menu.hide()
+		get_tree().paused = false
+	else:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		get_tree().paused = true
+		pause_menu.show()
+	
+	paused = !paused
+	if $WorldMap.open:
+		$WorldMap.open_or_close()
 	
 #checks if the player has exited the room. If so it chnages the room and player pos.
 func exit_room_check():
@@ -82,7 +108,7 @@ func change_room(new_coords):
 	#add_child(new_room)
 	
 	#adds room to map
-	$Camera/Map.set_cell(0, room_coords, 2, room_coords, 0)
+	$WorldMap.add_room(room_coords)
 
 #saves the respawn position when grabbing a checkpoint
 func save_checkpoint_room(pos):
@@ -160,7 +186,7 @@ func save_game():
 	file.store_var(player.has_double_jump)
 	file.store_var(player.has_freeze)
 	file.store_var(player.has_blue_blocks)
-	file.store_var($Camera/Map.get_used_cells(0))
+	file.store_var($WorldMap/MapComps/RoomMap.get_used_cells(0))
 	file.store_var(player.green_key_state)
 	file.store_var(player.red_key_state)
 	
@@ -178,7 +204,7 @@ func load_data():
 		player.has_freeze = file.get_var()
 		player.has_blue_blocks = file.get_var()
 		for room in file.get_var():
-			$Camera/Map.set_cell(0, room, 2, room, 0)
+			$WorldMap.add_room(room)
 		player.green_key_state = file.get_var()
 		player.red_key_state = file.get_var()
 	else:

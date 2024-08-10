@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
-@export_group("Movement Properties")
+@export_group("Properties")
+@export var sfxs : AudioLibrary
 @export var jump_vel = -235.0
 @export var gravity = 13.0 #ProjectSettings.get_setting("physics/2d/default_gravity")
 @export var fall_limiter = 230
@@ -43,7 +44,8 @@ var in_interact_area = false
 @export var has_item_map = false
 @export var has_bubble = false
 
-@onready var audio_player = $PolyphonicAudioPlayer
+#@onready var audio_player = $PolyphonicAudioPlayer
+
 
 func _ready():
 	velocity.y = 200
@@ -53,7 +55,8 @@ func _physics_process(_delta):
 		if $AnimationPlayer.is_playing() and ($AnimationPlayer.current_animation == "Fall" or $AnimationPlayer.current_animation == ""):
 			$LandParticles.restart()
 			$AnimationPlayer.play("Land")
-			audio_player.play_sound_effect("land")
+			#audio_player.play_sound_effect("land")
+			AudioManager.play_audio(sfxs.get_sfx("land"))
 			#$LandParticles.emitting = true
 		#velocity.y = 0
 		coyote = 5
@@ -63,13 +66,16 @@ func _physics_process(_delta):
 	
 	#applies gravity if in air
 	elif !is_on_floor():
-		get_parent().get_node("Camera").close_map()
+		if get_parent().get_node("WorldMap").open:
+			get_parent().get_node("WorldMap").open_or_close()
 		velocity.y += gravity
 		coyote -= 1
 		if velocity.y > fall_limiter:
 			velocity.y = fall_limiter
 		if velocity.y >= 0 and dash_timer == dash_lim and !can_walljump:
 			$AnimationPlayer.play("Fall")
+		elif velocity.y < 0 and dash_timer == dash_lim and !can_walljump:
+			$AnimationPlayer.play("Jump")
 	
 	
 	#enables jumping
@@ -111,7 +117,8 @@ func _physics_process(_delta):
 	elif !walljumping:
 		walk()
 	if Input.is_action_just_pressed("Map") and is_on_floor():
-		get_parent().get_node("Camera").alternate_map()
+		#get_parent().get_node("Camera").alternate_map()
+		get_parent().get_node("WorldMap").open_or_close()
 	if Input.is_action_just_pressed("Quick Respawn"):
 		get_parent().respawn_player()
 	
@@ -139,7 +146,8 @@ func jump():
 	buffer = 1
 	can_jump = false
 	$AnimationPlayer.play("Jump")
-	audio_player.play_sound_effect("jump")
+	#audio_player.play_sound_effect("jump")
+	AudioManager.play_audio(sfxs.get_sfx("jump"))
 
 
 # Gets the input direction and handles the movement.
@@ -177,7 +185,8 @@ func dash():
 	get_parent().get_node("Camera").flash(0.3, 0, 0, 0.4)
 	get_parent().get_node("Camera").radial_blur()
 	$AnimationPlayer.play("Dash")
-	audio_player.play_sound_effect("dash")
+	#audio_player.play_sound_effect("dash")
+	AudioManager.play_audio(sfxs.get_sfx("dash"))
 	
 	if is_on_floor() or coyote >= 0:
 		position.y -= 4
@@ -197,16 +206,21 @@ func process_dash():
 
 func wallslide_check():
 	if $WallRay.is_colliding() and has_wallclimb and (direction != 0 or can_walljump) and !is_on_floor():
-		if !can_walljump:
-			walljump_dir = direction
-			walljump_coyote = 5
-		can_walljump = true
-		can_dash = true
-		can_double_jump = true
-		$AnimationPlayer.play("WallSlide")
-		if velocity.y >= 50:
-			velocity.y = 40
+		var one_way = false
+		if $WallRay.get_collider() is TileMap:
+			one_way = $WallRay.get_collider().is_tile_one_way($WallRay.get_collider_rid())
 			
+		if !one_way:
+			if !can_walljump:
+				walljump_dir = direction
+				walljump_coyote = 5
+			can_walljump = true
+			can_dash = true
+			can_double_jump = true
+			$AnimationPlayer.play("WallSlide")
+			if velocity.y >= 50:
+				velocity.y = 40
+	
 	
 	if (!$WallRay.is_colliding() or velocity.y <= 0) and can_walljump:
 		if walljump_coyote <= 0:
@@ -242,7 +256,8 @@ func _on_area_2d_body_entered(body):
 		get_parent().save_game()
 	elif body.is_in_group("Collectable"):
 		body.collect()
-		audio_player.play_sound_effect("collect")
+		#audio_player.play_sound_effect("collect")
+		AudioManager.play_audio(sfxs.get_sfx("collect"))
 	elif body.is_in_group("MovingPlatform"):
 		print("lol")
 	#elif body.is_in_group("Crumble"):
@@ -257,41 +272,30 @@ func _on_area_2d_body_exited(body):
 #activates if player enters a body. Also provieds the body_rid which can give you the tile coords of the body
 func _on_area_2d_body_shape_entered(body_rid, body, _body_shape_index, _local_shape_index):
 	if body is TileMap:
-		custom_data_action(body, body.get_coords_for_body_rid(body_rid))
+		custom_data_action(body, body.get_custom_data_with_rid(body_rid), body.get_coords_for_body_rid(body_rid))
 
 
 #does action based on the custom data of a tile
-func custom_data_action(body, tile_coords):
-	var tile_data = body.get_cell_tile_data(0, tile_coords)
-	if tile_data is TileData:
-		var custom_data = tile_data.get_custom_data("Functional Tiles")
-	
+func custom_data_action(body: TileMap, custom_data: String, tile_coords: Vector2):
 		if custom_data == "Spike" or custom_data == "Water":
 			get_parent().respawn_player()
 		elif custom_data == "PBlueBlocks":
-			#body.blue_block = true
 			has_blue_blocks = true
 			get_parent().save_room_state(tile_coords)
-			#body.erased_cells.append(tile_coords)
 			body.erase_cell(0, tile_coords)
 			get_parent().change_room(get_parent().room_coords)
 		elif custom_data == "PWallClimb":
 			has_wallclimb = true
 			get_parent().save_room_state(tile_coords)
-			#body.erased_cells.append(tile_coords)
 			body.erase_cell(0, tile_coords)
 		elif custom_data == "PDash":
 			has_dash = true
 			get_parent().save_room_state(tile_coords)
-			#body.erased_cells.append(tile_coords)
 			body.erase_cell(0, tile_coords)
 		elif custom_data == "PDoubleJump":
 			has_double_jump = true
 			get_parent().save_room_state(tile_coords)
-			#body.erased_cells.append(tile_coords)
 			body.erase_cell(0, tile_coords)
-		else:
-			printerr("tile function not added yet")
 
 
 #fade out and out foreground

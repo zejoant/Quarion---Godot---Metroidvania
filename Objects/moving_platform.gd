@@ -6,17 +6,24 @@ var move_dir
 @export_enum("horizontal", "vertical") var type = "horizontal"
 @export var width : int = 3
 
+@onready var ray2 = $Rays/WallRay2
+
 func _ready():
 	setup()
 
-func _process(_delta):
+func _physics_process(_delta):
 	position += move_dir
-	if $WallRay.is_colliding():
+	if $Rays/WallRay.is_colliding():
 		turn()
+	elif ray2.is_colliding():
+		if ray2.get_collider() is TileMap:
+			if ray2.get_collider().get_custom_data_with_rid(ray2.get_collider_rid()) == "Boundary":
+				turn()
+
 
 func turn():
 	move_dir *= -1
-	$WallRay.scale *= -1
+	$Rays.scale *= -1
 
 func setup():
 	$CollisionShape2D.scale.x = width
@@ -25,28 +32,28 @@ func setup():
 	$LeftSprite.position.x = -8 - 4*(width-3)
 	
 	if direction == "up":
-		$WallRay.scale.y = -1
-		$WallRay.rotation_degrees = 0
+		$Rays.scale.y = -1
+		$Rays.rotation_degrees = 0
 		move_dir = Vector2(0, -1)
 	elif direction == "down":
-		$WallRay.scale.y = 1
-		$WallRay.rotation_degrees = 0
+		$Rays.scale.y = 1
+		$Rays.rotation_degrees = 0
 		move_dir = Vector2(0, 1)
 	elif direction == "left":
-		$WallRay.rotation_degrees = 90
-		$WallRay.scale.y = width
+		$Rays.rotation_degrees = 90
+		$Rays.scale.y = width
 		move_dir = Vector2(-1, 0)
 	elif direction == "right":
-		$WallRay.rotation_degrees = -90
-		$WallRay.scale.y = width
+		$Rays.rotation_degrees = -90
+		$Rays.scale.y = width
 		move_dir = Vector2(1, 0)
 	
 	if type == "vertical":
 		rotation_degrees = -90
-		$WallRay.rotation_degrees += 90
-		$WallRay.scale.x /= abs($WallRay.scale.x)
-		$WallRay.scale.y /= abs($WallRay.scale.y)
+		$Rays.rotation_degrees += 90
+		$Rays.scale.x /= abs($Rays.scale.x)
+		$Rays.scale.y /= abs($Rays.scale.y)
 		if direction == "up" or direction == "down":
-			$WallRay.scale.y *= width
+			$Rays.scale.y *= width
 	elif type == "horizontal":
 		rotation_degrees = 0

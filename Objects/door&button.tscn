@@ -1,13 +1,26 @@
-[gd_scene load_steps=21 format=3 uid="uid://b6gl7w33h5ta1"]
+[gd_scene load_steps=20 format=3 uid="uid://b6gl7w33h5ta1"]
 
 [ext_resource type="Script" path="res://Objects/door&button.gd" id="1_205ko"]
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_nmo5l"]
 [ext_resource type="Texture2D" uid="uid://blrke6p7xbb7e" path="res://Assets/Tileset.png" id="2_b1lbf"]
-[ext_resource type="PackedScene" uid="uid://djfyasap6w7hd" path="res://polyphonic_audio_player.tscn" id="4_gqkjf"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="5_w2chv"]
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="6_1q4in"]
 [ext_resource type="AudioStream" uid="uid://dgemturr8gub0" path="res://Sfx/button click.wav" id="7_o0wfg"]
 [ext_resource type="AudioStream" uid="uid://bfqkfadixhrny" path="res://Sfx/door thump.wav" id="8_ya1hn"]
+
+[sub_resource type="Resource" id="Resource_ff7f0"]
+script = ExtResource("6_1q4in")
+tag = "click"
+stream = ExtResource("7_o0wfg")
+
+[sub_resource type="Resource" id="Resource_2hbwy"]
+script = ExtResource("6_1q4in")
+tag = "thump"
+stream = ExtResource("8_ya1hn")
+
+[sub_resource type="Resource" id="Resource_4m5qc"]
+script = ExtResource("5_w2chv")
+sound_effects = Array[ExtResource("6_1q4in")]([SubResource("Resource_ff7f0"), SubResource("Resource_2hbwy")])
 
 [sub_resource type="Animation" id="Animation_c6pi3"]
 resource_name = "ButtonClick"
@@ -138,23 +151,10 @@ size = Vector2(16, 8)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8mruq"]
 size = Vector2(8, 24)
 
-[sub_resource type="Resource" id="Resource_orohi"]
-script = ExtResource("6_1q4in")
-tag = "click"
-stream = ExtResource("7_o0wfg")
-
-[sub_resource type="Resource" id="Resource_a687r"]
-script = ExtResource("6_1q4in")
-tag = "thump"
-stream = ExtResource("8_ya1hn")
-
-[sub_resource type="Resource" id="Resource_e8nty"]
-script = ExtResource("5_w2chv")
-sound_effects = Array[ExtResource("6_1q4in")]([SubResource("Resource_orohi"), SubResource("Resource_a687r")])
-
 [node name="Door&Button" type="Node2D"]
 z_index = 2
 script = ExtResource("1_205ko")
+sfxs = SubResource("Resource_4m5qc")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -228,8 +228,5 @@ region_rect = Rect2(368, 16, 8, 24)
 
 [node name="V3Coll" type="CollisionShape2D" parent="DoorV3"]
 shape = SubResource("RectangleShape2D_8mruq")
-
-[node name="PolyphonicAudioPlayer" parent="." instance=ExtResource("4_gqkjf")]
-audio_library = SubResource("Resource_e8nty")
 
 [connection signal="body_entered" from="Button/ClickArea" to="." method="_on_click_area_body_entered"]

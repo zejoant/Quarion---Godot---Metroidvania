@@ -25,10 +25,8 @@ position = Vector2(136, 9.25)
 shape = SubResource("RectangleShape2D_nsu7n")
 
 [node name="MovingPlatform" parent="." instance=ExtResource("2_q2mey")]
-position = Vector2(220, 156)
+rotation = 0.0
 direction = "right"
 
 [node name="MovingPlatform2" parent="." instance=ExtResource("2_q2mey")]
-position = Vector2(284, 100)
-type = "vertical"
-width = 5
+rotation = 0.0

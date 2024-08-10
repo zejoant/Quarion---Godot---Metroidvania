@@ -3,7 +3,7 @@ class_name AudioLibrary
 
 @export var sound_effects: Array[SoundEffect]
 
-func get_audio_stream(_tag: String):
+func get_sfx(_tag: String):
 	var index = -1
 	if _tag:
 		for sound in sound_effects:
