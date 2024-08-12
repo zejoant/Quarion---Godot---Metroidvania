@@ -1,15 +1,14 @@
-[gd_scene load_steps=21 format=3 uid="uid://xlhqgyxr5f5s"]
+[gd_scene load_steps=17 format=3 uid="uid://xlhqgyxr5f5s"]
 
 [ext_resource type="Script" path="res://Menu/options_menu.gd" id="1_x504m"]
-[ext_resource type="Theme" uid="uid://b3ki8pmkk54e0" path="res://button_theme.tres" id="2_6saf2"]
 [ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="2_a3tmx"]
 [ext_resource type="Texture2D" uid="uid://dxnqrky1wayki" path="res://Assets/MenuTextures/Slider Knob.png" id="3_766v6"]
-[ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/prstartk.ttf" id="3_awy3h"]
+[ext_resource type="Theme" uid="uid://b6lhu6b1qu0a3" path="res://Themes/button_theme_new.tres" id="3_ghitf"]
 [ext_resource type="Texture2D" uid="uid://clptboc0s5tdr" path="res://Assets/MenuTextures/Slider Knob Highlight.png" id="4_2nwug"]
 [ext_resource type="Texture2D" uid="uid://b2uul8xyrh3il" path="res://Assets/MenuTextures/Slider.png" id="5_fylae"]
 [ext_resource type="Texture2D" uid="uid://df51tuhwp1kfs" path="res://Assets/MenuTextures/Slider Grabber Area.png" id="6_fbqbv"]
 [ext_resource type="Texture2D" uid="uid://8yvjbmxvf7ls" path="res://Assets/MenuTextures/Slider Grabber Area Highlight.png" id="7_jf1ft"]
-[ext_resource type="Texture2D" uid="uid://dlynnokupkqog" path="res://Assets/MenuTextures/Options Arrow.png" id="8_ovh7g"]
+[ext_resource type="Theme" uid="uid://cuob8mv0ptd72" path="res://Themes/option_button_theme.tres" id="9_hlkcv"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4rjve"]
 shader = ExtResource("2_a3tmx")
@@ -32,61 +31,10 @@ axis_stretch_horizontal = 1
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_k6ap1"]
 texture = ExtResource("7_jf1ft")
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0pl7j"]
+
 [sub_resource type="LabelSettings" id="LabelSettings_sa4xp"]
 font_size = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7cudt"]
-bg_color = Color(0.419608, 0.419608, 0.419608, 0.207843)
-border_width_top = 1
-border_width_bottom = 1
-border_color = Color(0.823529, 0.827451, 0.976471, 0.556863)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-corner_detail = 1
-expand_margin_left = 5.0
-expand_margin_top = 1.0
-expand_margin_right = 5.0
-expand_margin_bottom = 1.0
-anti_aliasing = false
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vg5sl"]
-bg_color = Color(0.333333, 0.356863, 0.47451, 1)
-border_width_top = 1
-border_width_bottom = 1
-border_color = Color(0.556863, 0.65098, 0.694118, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-corner_detail = 1
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c5jrb"]
-bg_color = Color(0.227451, 0.2, 0.313726, 1)
-border_width_top = 1
-border_width_bottom = 1
-border_color = Color(0.823529, 0.827451, 0.976471, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-corner_detail = 1
-expand_margin_left = 5.0
-expand_margin_top = 1.0
-expand_margin_right = 5.0
-expand_margin_bottom = 1.0
-anti_aliasing = false
-
-[sub_resource type="Theme" id="Theme_77w2t"]
-default_font = ExtResource("3_awy3h")
-default_font_size = 8
-OptionButton/icons/arrow = ExtResource("8_ovh7g")
-OptionButton/styles/normal = SubResource("StyleBoxFlat_7cudt")
-PopupMenu/icons/radio_checked = ExtResource("4_2nwug")
-PopupMenu/icons/radio_unchecked = ExtResource("3_766v6")
-PopupMenu/styles/hover = SubResource("StyleBoxFlat_vg5sl")
-PopupMenu/styles/panel = SubResource("StyleBoxFlat_c5jrb")
 
 [node name="OptionsMenu" type="Control"]
 process_mode = 3
@@ -129,7 +77,7 @@ alignment = 1
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("2_6saf2")
+theme = ExtResource("3_ghitf")
 text = "Volume"
 label_settings = SubResource("LabelSettings_d7d3h")
 horizontal_alignment = 1
@@ -144,9 +92,14 @@ theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_k6ap
 min_value = -25.0
 max_value = 25.0
 
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 9
+theme_override_styles/separator = SubResource("StyleBoxEmpty_0pl7j")
+
 [node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("2_6saf2")
+theme = ExtResource("3_ghitf")
 text = "Window Mode"
 label_settings = SubResource("LabelSettings_sa4xp")
 horizontal_alignment = 1
@@ -154,7 +107,7 @@ horizontal_alignment = 1
 [node name="WindowMode" type="OptionButton" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-theme = SubResource("Theme_77w2t")
+theme = ExtResource("9_hlkcv")
 theme_override_font_sizes/font_size = 8
 alignment = 1
 item_count = 3
@@ -168,7 +121,7 @@ popup/item_2/id = 2
 
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("2_6saf2")
+theme = ExtResource("3_ghitf")
 text = "Back"
 
 [connection signal="value_changed" from="MarginContainer/VBoxContainer/Volume" to="." method="_on_volume_value_changed"]

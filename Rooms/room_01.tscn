@@ -28,7 +28,7 @@ z_index = 2
 position = Vector2(56, 0)
 texture = ExtResource("2_rd0ka")
 
-[node name="LandParticles" type="CPUParticles2D" parent="."]
+[node name="SmokeParticles" type="CPUParticles2D" parent="."]
 z_index = 2
 material = SubResource("CanvasItemMaterial_is2ry")
 position = Vector2(124, 16)
@@ -47,7 +47,7 @@ anim_speed_min = 0.25
 anim_speed_max = 0.5
 anim_offset_max = 0.25
 
-[node name="LandParticles2" type="CPUParticles2D" parent="."]
+[node name="SmokeParticles2" type="CPUParticles2D" parent="."]
 z_index = 2
 material = SubResource("CanvasItemMaterial_is2ry")
 position = Vector2(52, 24)

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bjj7j3vyhfjlr"]
+[gd_scene load_steps=4 format=3 uid="uid://bjj7j3vyhfjlr"]
 
 [ext_resource type="PackedScene" uid="uid://coud47gbx6bt8" path="res://tile_map.tscn" id="1_kymrq"]
 [ext_resource type="Texture2D" uid="uid://te3v6cbn15qu" path="res://Assets/BG2 Top.png" id="2_p5atc"]
+[ext_resource type="PackedScene" uid="uid://ibrctco0fpdp" path="res://Creatures/forsaken_ally.tscn" id="3_qpej1"]
 
 [node name="Room10" type="Node2D"]
 
@@ -20,3 +21,20 @@ texture = ExtResource("2_p5atc")
 [node name="Bg2Top3" type="Sprite2D" parent="."]
 position = Vector2(248, 8)
 texture = ExtResource("2_p5atc")
+
+[node name="BossEnvironment" parent="." instance=ExtResource("3_qpej1")]
+
+[node name="ForsakenAlly" parent="BossEnvironment" index="0"]
+position = Vector2(152, 152)
+
+[node name="Gate" parent="BossEnvironment" index="1"]
+position = Vector2(12, 164)
+
+[node name="Gate2" parent="BossEnvironment" index="2"]
+position = Vector2(292, 164)
+
+[node name="ActivationColl" parent="BossEnvironment" index="3"]
+position = Vector2(300, 80)
+scale = Vector2(1, 20)
+
+[editable path="BossEnvironment"]

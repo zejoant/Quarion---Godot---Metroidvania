@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://cw6m8e10x6bsu"]
 
 [ext_resource type="Script" path="res://Menu/pause_menu.gd" id="1_8idag"]
-[ext_resource type="Theme" uid="uid://b3ki8pmkk54e0" path="res://button_theme.tres" id="1_uqckn"]
 [ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="2_cuv06"]
+[ext_resource type="Theme" uid="uid://b6lhu6b1qu0a3" path="res://Themes/button_theme_new.tres" id="3_75l38"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6juxa"]
 shader = ExtResource("2_cuv06")
@@ -55,17 +55,17 @@ theme_override_constants/separation = 12
 
 [node name="ResumeButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1_uqckn")
+theme = ExtResource("3_75l38")
 text = "Resume"
 
 [node name="OptionsButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1_uqckn")
+theme = ExtResource("3_75l38")
 text = "Options"
 
 [node name="QuitButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1_uqckn")
+theme = ExtResource("3_75l38")
 text = "Quit"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]

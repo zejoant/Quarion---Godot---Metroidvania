@@ -33,7 +33,7 @@ func _ready():
 	player = get_node("Player")
 	
 	if new_game:
-		checkpoint_room = Vector2(0, 1)
+		checkpoint_room = Vector2(2, 0)
 		checkpoint_pos = Vector2(cam_size.x/2, cam_size.y/2)
 	else:
 		load_data()
@@ -46,7 +46,6 @@ func _ready():
 	add_child(scene_instance)
 	
 	$WorldMap.add_room(room_coords)
-	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):

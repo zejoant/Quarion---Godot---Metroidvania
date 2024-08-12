@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://4ythqhswhcg7"]
+[gd_scene load_steps=35 format=3 uid="uid://4ythqhswhcg7"]
 
 [ext_resource type="Script" path="res://Creatures/player.gd" id="1_1p4uo"]
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_hnvw4"]
@@ -239,6 +239,9 @@ particles_anim_loop = false
 offsets = PackedFloat32Array(0, 0.478723, 1)
 colors = PackedColorArray(0.180392, 0.431373, 0.419608, 1, 0.196078, 0.290196, 0.415686, 1, 0.0784314, 0.141176, 0.164706, 1)
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_4a3yb"]
+polygon = PackedVector2Array(3, -5, -3, -5, -3, 7, 3, 7)
+
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 8
 platform_on_leave = 2
@@ -331,6 +334,9 @@ anim_speed_min = 0.25
 anim_speed_max = 0.5
 anim_offset_min = 0.25
 anim_offset_max = 0.5
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+occluder = SubResource("OccluderPolygon2D_4a3yb")
 
 [connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
 [connection signal="area_exited" from="Area2D" to="." method="_on_area_2d_area_exited"]

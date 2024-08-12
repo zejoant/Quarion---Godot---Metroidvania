@@ -1,0 +1,173 @@
+[gd_scene load_steps=14 format=3 uid="uid://ibrctco0fpdp"]
+
+[ext_resource type="Script" path="res://Creatures/forsaken_ally.gd" id="1_2os6r"]
+[ext_resource type="PackedScene" uid="uid://bw1r3nxt3ya8x" path="res://Objects/gate.tscn" id="1_exbt4"]
+[ext_resource type="Texture2D" uid="uid://trx677cd2gom" path="res://Assets/Red Boss Sprites.png" id="3_r8rlm"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ogmpo"]
+radius = 4.0
+height = 10.0
+
+[sub_resource type="Animation" id="Animation_jk7y0"]
+resource_name = "Dive"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BossSprite:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(80, 0, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_ngsaw"]
+resource_name = "Fall"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BossSprite:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(16, 16, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_22ylf"]
+resource_name = "Idle"
+loop_mode = 1
+step = 0.125
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BossSprite:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [Rect2(48, 48, 16, 16), Rect2(32, 48, 16, 16), Rect2(16, 48, 16, 16), Rect2(0, 48, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_fxak2"]
+resource_name = "Jump"
+length = 0.001
+step = 0.125
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BossSprite:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(0, 16, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_v3xq1"]
+resource_name = "Land"
+length = 0.250005
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BossSprite:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.250005),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Rect2(32, 16, 16, 16), Rect2(48, 48, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_k3v3x"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BossSprite:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(48, 48, 16, 16)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_vfgup"]
+_data = {
+"Dive": SubResource("Animation_jk7y0"),
+"Fall": SubResource("Animation_ngsaw"),
+"Idle": SubResource("Animation_22ylf"),
+"Jump": SubResource("Animation_fxak2"),
+"Land": SubResource("Animation_v3xq1"),
+"RESET": SubResource("Animation_k3v3x")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8nrkr"]
+size = Vector2(9, 4)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g00i6"]
+size = Vector2(8, 8)
+
+[node name="BossEnvironment" type="Area2D"]
+collision_layer = 0
+collision_mask = 8
+script = ExtResource("1_2os6r")
+
+[node name="ForsakenAlly" type="CharacterBody2D" parent="." groups=["Enemy"]]
+collision_layer = 2
+collision_mask = 0
+
+[node name="BossSprite" type="Sprite2D" parent="ForsakenAlly"]
+z_index = 6
+texture = ExtResource("3_r8rlm")
+region_enabled = true
+region_rect = Rect2(48, 48, 16, 16)
+
+[node name="HurtColl" type="CollisionShape2D" parent="ForsakenAlly"]
+position = Vector2(0, 1)
+shape = SubResource("CapsuleShape2D_ogmpo")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="ForsakenAlly"]
+libraries = {
+"": SubResource("AnimationLibrary_vfgup")
+}
+autoplay = "Idle"
+
+[node name="GroundRay" type="RayCast2D" parent="ForsakenAlly"]
+target_position = Vector2(0, 7)
+
+[node name="HitArea" type="Area2D" parent="ForsakenAlly"]
+collision_layer = 0
+collision_mask = 8
+
+[node name="HitColl" type="CollisionShape2D" parent="ForsakenAlly/HitArea"]
+z_index = 6
+position = Vector2(0.5, -4)
+shape = SubResource("RectangleShape2D_8nrkr")
+
+[node name="Gate" parent="." instance=ExtResource("1_exbt4")]
+position = Vector2(-24, 0)
+
+[node name="Gate2" parent="." instance=ExtResource("1_exbt4")]
+position = Vector2(-40, 0)
+
+[node name="ActivationColl" type="CollisionShape2D" parent="."]
+position = Vector2(-56, 0)
+shape = SubResource("RectangleShape2D_g00i6")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_entered" from="ForsakenAlly/HitArea" to="." method="_on_hit_area_body_entered"]
