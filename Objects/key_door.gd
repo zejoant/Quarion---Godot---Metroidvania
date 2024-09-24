@@ -6,6 +6,7 @@ extends StaticBody2D
 @export_enum("up", "down", "left", "right") var direction = "up"
 @export_enum("open", "closed") var initial_state = "closed"
 @export_enum("green", "red") var color = "green"
+@export var sfxs : AudioLibrary
 
 var dir
 var anim_tween
@@ -29,10 +30,12 @@ func _ready():
 
 func open():
 	#get_node("/root/World").save_room_state(position)
-	$PolyphonicAudioPlayer.play_sound_effect("click")
+	#$PolyphonicAudioPlayer.play_sound_effect("click")
+	AudioManager.play_audio(sfxs.get_sfx("click"))
 	await self.create_tween().tween_property(self, "position", origin, 1).finished
 	visible = false
-	$PolyphonicAudioPlayer.play_sound_effect("thump")
+	AudioManager.play_audio(sfxs.get_sfx("thump"))
+	#$PolyphonicAudioPlayer.play_sound_effect("thump")
 
 func close():
 	self.create_tween().tween_property(self, "position", origin + length*8*dir, 1)

@@ -1,22 +1,8 @@
-[gd_scene load_steps=34 format=3 uid="uid://ibrctco0fpdp"]
+[gd_scene load_steps=16 format=3 uid="uid://ibrctco0fpdp"]
 
 [ext_resource type="Script" path="res://Creatures/forsaken_ally.gd" id="1_2os6r"]
 [ext_resource type="PackedScene" uid="uid://bw1r3nxt3ya8x" path="res://Objects/gate.tscn" id="1_exbt4"]
-[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_8wgr1"]
 [ext_resource type="Texture2D" uid="uid://trx677cd2gom" path="res://Assets/Red Boss Sprites.png" id="3_r8rlm"]
-[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_s620o"]
-[ext_resource type="Texture2D" uid="uid://drt12ywdf66vn" path="res://Assets/Warning Area Particle Animation.png" id="3_w5jr1"]
-[ext_resource type="AudioStream" uid="uid://8q6abwc5dkpi" path="res://Sfx/dash.wav" id="4_l2417"]
-[ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="5_q0nla"]
-
-[sub_resource type="Resource" id="Resource_gbhgb"]
-script = ExtResource("3_s620o")
-tag = "dash"
-stream = ExtResource("4_l2417")
-
-[sub_resource type="Resource" id="Resource_6rsu8"]
-script = ExtResource("2_8wgr1")
-sound_effects = Array[ExtResource("3_s620o")]([SubResource("Resource_gbhgb")])
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ogmpo"]
 radius = 4.0
@@ -167,57 +153,13 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8nrkr"]
 size = Vector2(8, 4)
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fe8pe"]
-blend_mode = 1
-
-[sub_resource type="Curve" id="Curve_ciiqn"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="Gradient" id="Gradient_eb8yj"]
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
-
-[sub_resource type="Gradient" id="Gradient_n6ww7"]
-colors = PackedColorArray(0.768627, 0.298039, 0.298039, 1, 0.427451, 0.105882, 0.372549, 1)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g00i6"]
 size = Vector2(8, 8)
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_pwyl7"]
-
-[sub_resource type="Gradient" id="Gradient_axh6g"]
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_uh48h"]
-gradient = SubResource("Gradient_axh6g")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qd8lf"]
-particle_flag_disable_z = true
-direction = Vector3(0, -1, 0)
-spread = 0.0
-initial_velocity_min = 25.0
-initial_velocity_max = 25.0
-gravity = Vector3(0, 0, 0)
-damping_min = 20.0
-damping_max = 20.0
-color_ramp = SubResource("GradientTexture1D_uh48h")
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_6nsxh"]
-blend_mode = 1
-
-[sub_resource type="Curve" id="Curve_556g0"]
-max_value = 12.0
-_data = [Vector2(0, 12), 0.0, 0.0, 0, 0]
-point_count = 1
-
-[sub_resource type="Gradient" id="Gradient_24h82"]
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
 [node name="BossEnvironment" type="Area2D"]
 collision_layer = 0
 collision_mask = 8
 script = ExtResource("1_2os6r")
-sfxs = SubResource("Resource_6rsu8")
 
 [node name="ForsakenAlly" type="CharacterBody2D" parent="." groups=["Enemy"]]
 collision_layer = 2
@@ -230,7 +172,6 @@ region_enabled = true
 region_rect = Rect2(48, 48, 16, 16)
 
 [node name="HurtColl" type="CollisionShape2D" parent="ForsakenAlly"]
-z_index = 7
 position = Vector2(0, 1)
 shape = SubResource("CapsuleShape2D_ogmpo")
 
@@ -242,7 +183,7 @@ autoplay = "Idle"
 
 [node name="GroundRay" type="RayCast2D" parent="ForsakenAlly"]
 z_index = 6
-target_position = Vector2(0, 9)
+target_position = Vector2(0, 8)
 
 [node name="HitArea" type="Area2D" parent="ForsakenAlly"]
 collision_layer = 0
@@ -253,27 +194,6 @@ z_index = 6
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_8nrkr")
 
-[node name="CPUParticles2D" type="CPUParticles2D" parent="ForsakenAlly"]
-z_index = 5
-material = SubResource("CanvasItemMaterial_fe8pe")
-amount = 40
-lifetime = 0.4
-emission_shape = 1
-emission_sphere_radius = 0.5
-spread = 180.0
-gravity = Vector2(0, 0)
-initial_velocity_min = 1.0
-initial_velocity_max = 2.0
-angular_velocity_min = -50.0
-angular_velocity_max = 50.0
-angle_max = 90.0
-scale_amount_min = 4.0
-scale_amount_max = 5.0
-scale_amount_curve = SubResource("Curve_ciiqn")
-color = Color(1, 1, 1, 0.592157)
-color_ramp = SubResource("Gradient_eb8yj")
-color_initial_ramp = SubResource("Gradient_n6ww7")
-
 [node name="Gate" parent="." instance=ExtResource("1_exbt4")]
 position = Vector2(-24, 0)
 
@@ -283,47 +203,6 @@ position = Vector2(-40, 0)
 [node name="ActivationColl" type="CollisionShape2D" parent="."]
 position = Vector2(-56, 0)
 shape = SubResource("RectangleShape2D_g00i6")
-
-[node name="WarningParticle2" type="GPUParticles2D" parent="."]
-z_index = 6
-material = SubResource("CanvasItemMaterial_pwyl7")
-position = Vector2(49, -17)
-emitting = false
-amount = 6
-process_material = SubResource("ParticleProcessMaterial_qd8lf")
-texture = ExtResource("3_w5jr1")
-one_shot = true
-explosiveness = 0.2
-
-[node name="WarningParticle" type="CPUParticles2D" parent="."]
-z_index = 5
-material = SubResource("CanvasItemMaterial_6nsxh")
-position = Vector2(31, -16)
-emitting = false
-amount = 3
-lifetime = 0.5
-one_shot = true
-local_coords = true
-texture = ExtResource("3_w5jr1")
-direction = Vector2(0, -1)
-spread = 0.0
-gravity = Vector2(0, 0)
-initial_velocity_min = 15.0
-initial_velocity_max = 15.0
-damping_min = 20.0
-damping_max = 20.0
-split_scale = true
-scale_curve_x = SubResource("Curve_556g0")
-scale_curve_y = null
-color_ramp = SubResource("Gradient_24h82")
-
-[node name="DiveImpact" type="Sprite2D" parent="."]
-visible = false
-modulate = Color(1, 1, 1, 0.639216)
-z_index = 6
-texture = ExtResource("5_q0nla")
-region_enabled = true
-region_rect = Rect2(16, 128, 96, 32)
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_entered" from="ForsakenAlly/HitArea" to="." method="_on_hit_area_body_entered"]

@@ -29,12 +29,14 @@ position = Vector2(152, 152)
 
 [node name="Gate" parent="BossEnvironment" index="1"]
 position = Vector2(12, 164)
+length = 20
 
 [node name="Gate2" parent="BossEnvironment" index="2"]
 position = Vector2(292, 164)
+length = 20
 
 [node name="ActivationColl" parent="BossEnvironment" index="3"]
-position = Vector2(300, 80)
+position = Vector2(276, 80)
 scale = Vector2(1, 20)
 
 [editable path="BossEnvironment"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://k3ft1bapn776"]
+[gd_scene load_steps=15 format=3 uid="uid://k3ft1bapn776"]
 
 [ext_resource type="Script" path="res://Objects/key_door.gd" id="1_fcf2i"]
 [ext_resource type="Texture2D" uid="uid://cy2ahfkpoeilq" path="res://Assets/Key Door Sprites.png" id="2_rv05j"]
@@ -7,6 +7,20 @@
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="5_10d18"]
 [ext_resource type="AudioStream" uid="uid://dgemturr8gub0" path="res://Sfx/button click.wav" id="6_qm7wo"]
 [ext_resource type="AudioStream" uid="uid://bfqkfadixhrny" path="res://Sfx/door thump.wav" id="7_0mwbk"]
+
+[sub_resource type="Resource" id="Resource_xn53s"]
+script = ExtResource("5_10d18")
+tag = "click"
+stream = ExtResource("6_qm7wo")
+
+[sub_resource type="Resource" id="Resource_kequ1"]
+script = ExtResource("5_10d18")
+tag = "thump"
+stream = ExtResource("7_0mwbk")
+
+[sub_resource type="Resource" id="Resource_g57ey"]
+script = ExtResource("4_j27so")
+sound_effects = Array[ExtResource("5_10d18")]([SubResource("Resource_xn53s"), SubResource("Resource_kequ1")])
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_34inq"]
 size = Vector2(8, 8)
@@ -29,6 +43,7 @@ sound_effects = Array[ExtResource("5_10d18")]([SubResource("Resource_ne437"), Su
 z_index = 2
 script = ExtResource("1_fcf2i")
 initial_state = "open"
+sfxs = SubResource("Resource_g57ey")
 
 [node name="TopSprite" type="Sprite2D" parent="."]
 texture_repeat = 1

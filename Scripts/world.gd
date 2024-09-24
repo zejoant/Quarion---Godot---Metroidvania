@@ -11,8 +11,8 @@ var cam_size
 var checkpoint_room : Vector2
 var checkpoint_pos : Vector2
 
-var sfx_array : Array
-var tag_array : Array
+#var sfx_array : Array
+#var tag_array : Array
 
 const save_path := "user://gamestate.save"
 var room_state = []
@@ -40,14 +40,12 @@ func _ready():
 	
 	player.position = checkpoint_pos
 	
-	sfx_array = $PolyphonicAudioPlayer.audio_library.sound_effects
 	room_coords = checkpoint_room#Vector2(8, 3)#(0, 1) #starting room
 	var scene_instance = load("res://Rooms/room_" + str(room_coords.x) + str(room_coords.y) + ".tscn").instantiate() 
 	add_child(scene_instance)
 	
 	$WorldMap.add_room(room_coords)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	exit_room_check()
 	
@@ -109,28 +107,19 @@ func change_room(new_coords):
 	#adds room to map
 	$WorldMap.add_room(room_coords)
 
+
 #saves the respawn position when grabbing a checkpoint
 func save_checkpoint_room(pos):
 	checkpoint_room = room_coords
 	checkpoint_pos = Vector2(pos.x, pos.y-8)
+	
 	
 #respawns the player duh
 func respawn_player():
 	if checkpoint_room != room_coords:
 		change_room(checkpoint_room)
 	player.position = Vector2(checkpoint_pos.x, checkpoint_pos.y)
-
-
-func play_sfx(stream, tag):
-	var sfx = SoundEffect.new()
-	sfx.stream = stream
-	sfx.tag = tag
-	if !tag_array.has(sfx.tag):
-		tag_array.append(sfx.tag)
-		sfx_array.append(sfx)
 	
-	$PolyphonicAudioPlayer.play_sound_effect(tag)
-
 
 func get_tilemap() -> TileMap:
 	var room = get_node_or_null("Room" + str(room_coords.x) + str(room_coords.y))
@@ -176,43 +165,56 @@ func get_room_state() -> Array:
 	return room_state[room_coords.x][room_coords.y]
 
 func save_game():
-	var file = FileAccess.open(save_path, FileAccess.WRITE)
-	file.store_var(checkpoint_room)
-	file.store_var(checkpoint_pos)
-	file.store_var(room_state)
-	file.store_var(player.has_dash)
-	file.store_var(player.has_wallclimb)
-	file.store_var(player.has_double_jump)
-	file.store_var(player.has_freeze)
-	file.store_var(player.has_blue_blocks)
-	file.store_var($WorldMap/MapComps/RoomMap.get_used_cells(0))
-	file.store_var(player.green_key_state)
-	file.store_var(player.red_key_state)
+	SaveManager.save_game(self)
+	#SaveData.checkpoint_room = checkpoint_room
+	#SaveData.checkpoint_pos = checkpoint_pos
+	#SaveData.room_state = room_state
+	#SaveData.has_dash = player.has_dash
+	#SaveData.has_wall_climb = player.has_wallclimb
+	#SaveData.has_double_jump = player.has_double_jump
+	#SaveData.has_freeze = player.has_freeze
+	#SaveData.has_blue_blocks = player.has_blue_blocks
+	#SaveData.map_rooms = $WorldMap/MapComps/RoomMap.get_used_cells(0)
+	#SaveData.green_key_state = player.green_key_state
+	#SaveData.red_key_state = player.red_key_state
+	
+	#var file = FileAccess.open(save_path, FileAccess.WRITE)
+	#file.store_var(checkpoint_room)
+	#file.store_var(checkpoint_pos)
+	#file.store_var(room_state)
+	#file.store_var(player.has_dash)
+	#file.store_var(player.has_wallclimb)
+	#file.store_var(player.has_double_jump)
+	#file.store_var(player.has_freeze)
+	#file.store_var(player.has_blue_blocks)
+	#file.store_var($WorldMap/MapComps/RoomMap.get_used_cells(0))
+	#file.store_var(player.green_key_state)
+	#file.store_var(player.red_key_state)
 	
 
-
 func load_data():
-	if FileAccess.file_exists(save_path):
-		var file = FileAccess.open(save_path, FileAccess.READ)
-		checkpoint_room = file.get_var()
-		checkpoint_pos = file.get_var()
-		room_state = file.get_var()
-		player.has_dash = file.get_var()
-		player.has_wallclimb = file.get_var()
-		player.has_double_jump = file.get_var()
-		player.has_freeze = file.get_var()
-		player.has_blue_blocks = file.get_var()
-		for room in file.get_var():
-			$WorldMap.add_room(room)
-		player.green_key_state = file.get_var()
-		player.red_key_state = file.get_var()
-	else:
-		cam_size = get_node("Camera").get_viewport_rect().size
-		checkpoint_room = Vector2(0, 1)
-		checkpoint_pos = Vector2(cam_size.x/2, cam_size.y/2)
-		player.has_dash = false
-		player.has_wallclimb = false
-		player.has_double_jump = false
-		player.has_freeze = false
-		player.has_blue_blocks = false
-		print("no data has been saved")
+	SaveManager.load_game(self)
+	#if FileAccess.file_exists(save_path):
+		#var file = FileAccess.open(save_path, FileAccess.READ)
+		#checkpoint_room = file.get_var()
+		#checkpoint_pos = file.get_var()
+		#room_state = file.get_var()
+		#player.has_dash = file.get_var()
+		#player.has_wallclimb = file.get_var()
+		#player.has_double_jump = file.get_var()
+		#player.has_freeze = file.get_var()
+		#player.has_blue_blocks = file.get_var()
+		#for room in file.get_var():
+			#$WorldMap.add_room(room)
+		#player.green_key_state = file.get_var()
+		#player.red_key_state = file.get_var()	
+	#else:
+		#cam_size = get_node("Camera").get_viewport_rect().size
+		#checkpoint_room = Vector2(0, 1)
+		#checkpoint_pos = Vector2(cam_size.x/2, cam_size.y/2)
+		#player.has_dash = false
+		#player.has_wallclimb = false
+		#player.has_double_jump = false
+		#player.has_freeze = false
+		#player.has_blue_blocks = false
+		#print("no data has been saved")

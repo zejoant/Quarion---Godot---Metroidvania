@@ -21,8 +21,11 @@ func _on_options_button_pressed():
 	hide()
 
 func _unhandled_input(event):
-	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE and !exiting:
+	#if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE and !exiting:
+	if event.is_action_pressed("Pause") and !exiting:
 		exiting = true
 		await get_tree().create_timer(0.01).timeout
 		get_owner().pauseMenu()
+		if get_parent().get_node_or_null("OptionsMenu") != null:
+			get_parent().get_node("OptionsMenu").queue_free()
 		exiting = false

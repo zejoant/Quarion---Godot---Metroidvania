@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://dxefxgsoi7tpr"]
+[gd_scene load_steps=5 format=3 uid="uid://dxefxgsoi7tpr"]
 
 [ext_resource type="PackedScene" uid="uid://coud47gbx6bt8" path="res://tile_map.tscn" id="1_o6uor"]
 [ext_resource type="PackedScene" uid="uid://b5wtcfg0peuey" path="res://Objects/moving_platform.tscn" id="2_884dt"]
+[ext_resource type="PackedScene" uid="uid://dwvkc14i850p4" path="res://lens_circle.tscn" id="3_ij7c2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_y50el"]
 size = Vector2(34.0819, 64)
@@ -36,3 +37,6 @@ collision_mask = 0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(194.959, 164)
 shape = SubResource("RectangleShape2D_y50el")
+
+[node name="LensCircle" parent="." instance=ExtResource("3_ij7c2")]
+size = 2.0

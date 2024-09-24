@@ -9,6 +9,8 @@ var coyote = 0
 var buffer = 0
 var can_jump = false
 
+var can_move = true
+
 @export var x_speed = 110.0
 var direction
 var last_dir = 1
@@ -63,7 +65,6 @@ func _physics_process(_delta):
 		can_dash = true
 		can_double_jump = true
 	
-	
 	#applies gravity if in air
 	elif !is_on_floor():
 		if get_parent().get_node("WorldMap").open:
@@ -77,57 +78,58 @@ func _physics_process(_delta):
 		elif velocity.y < 0 and dash_timer == dash_lim and !can_walljump:
 			$AnimationPlayer.play("Jump")
 	
-	
-	#enables jumping
-	if (!dashing and buffer == 0 and !in_interact_area) and (is_on_floor() or (coyote >= 0 and velocity.y >= 0)):
-		can_jump = true
-	
-	#disables jumping
-	elif coyote < 0 or in_interact_area:
-		can_jump = false
-	
-	#cooldown for dash
-	if dash_cooldown != 0:
-			dash_cooldown += 1
-			if dash_cooldown == 30:
-				dash_cooldown = 0
-	
-	
-	wallslide_check()
-	
-	if Input.is_action_just_released("Jump"):
-			buffer = 0 #reset jump buffer
-			if velocity.y <= jump_vel / 4.0:
-				velocity.y = jump_vel / 4.0
-	
-	if Input.is_action_just_pressed("Jump") and can_double_jump and has_double_jump and coyote < 0 and !can_walljump:
-		can_double_jump = false
-		jump()
-	
-	if Input.is_action_pressed("Jump") and can_jump:
-		jump()
-	if (Input.is_action_just_pressed("Jump") and can_walljump) or walljumping:
-		walljump()
-	if Input.is_action_just_pressed("Drop"):
-		drop()
-	if Input.is_action_just_pressed("Dash") and can_dash and !dash_cooldown and !can_walljump and has_dash:
-		dash()
-	if dashing:
-		process_dash()
-	elif !walljumping:
-		walk()
-	if Input.is_action_just_pressed("Map") and is_on_floor():
-		#get_parent().get_node("Camera").alternate_map()
-		get_parent().get_node("WorldMap").open_or_close()
-	if Input.is_action_just_pressed("Quick Respawn"):
-		get_parent().respawn_player()
+	if can_move:
+		#enables jumping
+		if (!dashing and buffer == 0 and !in_interact_area) and (is_on_floor() or (coyote >= 0 and velocity.y >= 0)):
+			can_jump = true
+		
+		#disables jumping
+		elif coyote < 0 or in_interact_area:
+			can_jump = false
+		
+		#cooldown for dash
+		if dash_cooldown != 0:
+				dash_cooldown += 1
+				if dash_cooldown == 30:
+					dash_cooldown = 0
+		
+		
+		wallslide_check()
+		
+		if Input.is_action_just_released("Jump"):
+				buffer = 0 #reset jump buffer
+				if velocity.y <= jump_vel / 4.0:
+					velocity.y = jump_vel / 4.0
+		
+		if Input.is_action_just_pressed("Jump") and can_double_jump and has_double_jump and coyote < 0 and !can_walljump:
+			can_double_jump = false
+			jump()
+		
+		if Input.is_action_pressed("Jump") and can_jump:
+			jump()
+		if (Input.is_action_just_pressed("Jump") and can_walljump) or walljumping:
+			walljump()
+		if Input.is_action_just_pressed("Drop"):
+			drop()
+		if Input.is_action_just_pressed("Dash") and can_dash and !dash_cooldown and !can_walljump and has_dash:
+			dash()
+		if dashing:
+			process_dash()
+		elif !walljumping:
+			walk()
+		if Input.is_action_just_pressed("Map") and is_on_floor():
+			#get_parent().get_node("Camera").alternate_map()
+			get_parent().get_node("WorldMap").open_or_close()
+		
 	
 	move_and_slide()
 
+	if Input.is_action_just_pressed("Quick Respawn"):
+		get_parent().respawn_player()
 
 	if Input.is_action_just_pressed("Debug"):
 		has_dash = true
-		has_blue_blocks = true
+		#has_blue_blocks = true
 		has_double_jump = true
 		has_freeze = true
 		has_wallclimb = true
@@ -332,5 +334,11 @@ func _on_water_detector_body_shape_entered(body_rid, body, _body_shape_index, _l
 				#await body.create_tween().tween_interval(0.2).finished
 				#body.erase_cell(4, tile_coords)
 			
-
-
+func disable_movement(disable: bool):
+	if disable:
+		can_move = !disable
+		velocity = Vector2(0, 0)
+		if is_on_floor() and !Input.is_action_pressed("Jump") and $AnimationPlayer.current_animation != "Land":
+			$AnimationPlayer.play("Idle")
+	else:
+		can_move = !disable

@@ -1,0 +1,232 @@
+[gd_scene load_steps=15 format=3 uid="uid://cnhgdm3be8hwj"]
+
+[ext_resource type="Script" path="res://Objects/big_floor_spike.gd" id="1_3yj0b"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_5iyyx"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_djtuw"]
+[ext_resource type="AudioStream" uid="uid://bgqxb7iudb0gm" path="res://Sfx/metal-whoosh-hit-4-201906(1).mp3" id="4_3lvrr"]
+[ext_resource type="Texture2D" uid="uid://dgex6wdeq7vmw" path="res://Assets/Big Spike Sprites.png" id="5_hqjnf"]
+[ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="6_y5w57"]
+
+[sub_resource type="Resource" id="Resource_mmbuq"]
+script = ExtResource("3_djtuw")
+tag = "woosh"
+stream = ExtResource("4_3lvrr")
+
+[sub_resource type="Resource" id="Resource_8jy7r"]
+script = ExtResource("2_5iyyx")
+sound_effects = Array[ExtResource("3_djtuw")]([SubResource("Resource_mmbuq")])
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_l0ogr"]
+radius = 5.0
+height = 96.0
+
+[sub_resource type="Animation" id="Animation_a6mh1"]
+resource_name = "Extend"
+length = 2.55
+step = 0.025
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CollisionShape2D:disabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.375, 2.25),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, false, true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("LandParticles:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(1.3),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D2:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 2.55),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/3/type = "method"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.025, 0.05, 0.075, 0.875, 0.925, 1.05, 1.3, 1.325, 1.35, 1.375, 2.2, 2.25, 2.3, 2.35, 2.4, 2.45, 2.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"values": [{
+"args": [1],
+"method": &"frame_advance"
+}, {
+"args": [2],
+"method": &"frame_advance"
+}, {
+"args": [3],
+"method": &"frame_advance"
+}, {
+"args": [4],
+"method": &"frame_advance"
+}, {
+"args": [3],
+"method": &"frame_advance"
+}, {
+"args": [2],
+"method": &"frame_advance"
+}, {
+"args": [1],
+"method": &"frame_advance"
+}, {
+"args": [5],
+"method": &"frame_advance"
+}, {
+"args": [6],
+"method": &"frame_advance"
+}, {
+"args": [7],
+"method": &"frame_advance"
+}, {
+"args": [8],
+"method": &"frame_advance"
+}, {
+"args": [7],
+"method": &"frame_advance"
+}, {
+"args": [6],
+"method": &"frame_advance"
+}, {
+"args": [5],
+"method": &"frame_advance"
+}, {
+"args": [4],
+"method": &"frame_advance"
+}, {
+"args": [3],
+"method": &"frame_advance"
+}, {
+"args": [2],
+"method": &"frame_advance"
+}, {
+"args": [1],
+"method": &"frame_advance"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_gd64s"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CollisionShape2D:disabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("LandParticles:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D2:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1ogfj"]
+_data = {
+"Extend": SubResource("Animation_a6mh1"),
+"RESET": SubResource("Animation_gd64s")
+}
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_e2xal"]
+particles_animation = true
+particles_anim_h_frames = 5
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="Gradient_2pkdd"]
+offsets = PackedFloat32Array(0, 0.478723, 1)
+colors = PackedColorArray(0.180392, 0.431373, 0.419608, 1, 0.196078, 0.290196, 0.415686, 1, 0.0784314, 0.141176, 0.164706, 1)
+
+[node name="BigFloorSpike" type="StaticBody2D" groups=["Enemy", "FloorSpike"]]
+z_index = 4
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_3yj0b")
+sfxs = SubResource("Resource_8jy7r")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+visible = false
+texture_repeat = 2
+position = Vector2(0, -56)
+texture = ExtResource("5_hqjnf")
+region_enabled = true
+region_rect = Rect2(0, 0, 16, 112)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -48)
+shape = SubResource("CapsuleShape2D_l0ogr")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_1ogfj")
+}
+autoplay = "Extend"
+
+[node name="LandParticles" type="CPUParticles2D" parent="."]
+z_index = 4
+material = SubResource("CanvasItemMaterial_e2xal")
+position = Vector2(0, -8)
+emitting = false
+amount = 5
+lifetime = 2.0
+one_shot = true
+explosiveness = 0.9
+texture = ExtResource("6_y5w57")
+direction = Vector2(0, -1)
+spread = 10.0
+gravity = Vector2(0, 400)
+initial_velocity_min = 280.0
+initial_velocity_max = 300.0
+color_ramp = SubResource("Gradient_2pkdd")
+hue_variation_min = 0.1
+hue_variation_max = 0.4
+anim_speed_min = 0.25
+anim_speed_max = 0.5
+anim_offset_min = 0.25
+anim_offset_max = 0.5
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
