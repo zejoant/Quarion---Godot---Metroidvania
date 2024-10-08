@@ -33,7 +33,7 @@ func _ready():
 	player = get_node("Player")
 	
 	if new_game:
-		checkpoint_room = Vector2(2, 0)
+		checkpoint_room = Vector2(5, 3)
 		checkpoint_pos = Vector2(cam_size.x/2, cam_size.y/2)
 	else:
 		load_data()

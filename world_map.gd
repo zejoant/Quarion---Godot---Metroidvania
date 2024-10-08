@@ -4,7 +4,6 @@ var player
 var world
 var open
 
-var item_check = true
 var item_positions: Array
 var item_atlas_coords: Array
 
@@ -23,22 +22,12 @@ func _ready():
 	
 func _process(_delta):
 	if open:
-		if item_check or player.velocity.x != 0:
-			%RoomMap/PlayerIcon.position = Vector2(world.room_coords.x*38, world.room_coords.y*24) + player.position/8
-			%RoomMap/PlayerIcon.position.y -= 3
-		
-		if item_check: #adds items to a room if its on the map
-			item_check = false
-			for pos in item_positions:
-				var room_pos = Vector2(0, 0)
-				room_pos.x = int(pos.x/38)
-				room_pos.y = int(pos.y/24)
-				if %RoomMap.get_used_cells(0).has(Vector2i(room_pos)):
-					%ItemMap.set_cell(0, pos/4, 1, item_atlas_coords[item_positions.find(pos, 0)], 0)
-				elif item_atlas_coords[item_positions.find(pos, 0)] == Vector2i(2, 0):
-					%ItemMap.set_cell(0, pos/4, 1, item_atlas_coords[item_positions.find(pos, 0)], 0)
-			
+		if player.velocity.x != 0:
+			update_player_icon()
 
+func update_player_icon():
+	%RoomMap/PlayerIcon.position = Vector2(world.room_coords.x*38, world.room_coords.y*24) + player.position/8
+	%RoomMap/PlayerIcon.position.y -= 3
 
 func open_or_close():
 	if !open:
@@ -46,15 +35,43 @@ func open_or_close():
 		%RoomMap.modulate.a = 1
 		%ItemMap.modulate.a = 1
 		open = true
+		update_player_icon()
+		item_check()
 		player.x_speed = 55.0
 	elif open:
 		$BGOverLay.modulate = Color(1, 1, 1, 0)
 		%RoomMap.modulate.a = 0
 		%ItemMap.modulate.a = 0
 		open = false
-		item_check = true
 		player.x_speed = 110.0
 	
 func add_room(room_coords: Vector2):
 	%RoomMap.set_cell(0, room_coords, 0, room_coords, 0)
-	item_check = true
+	item_check()
+
+func item_check():
+	for pos in item_positions:
+		var room_pos = Vector2(int(pos.x/38), int(pos.y/24))
+		if %RoomMap.get_used_cells(0).has(Vector2i(room_pos)):
+			%ItemMap.set_cell(0, pos/4, 1, item_atlas_coords[item_positions.find(pos, 0)], 0)
+		elif item_atlas_coords[item_positions.find(pos, 0)] == Vector2i(2, 0):
+			%ItemMap.set_cell(0, pos/4, 1, item_atlas_coords[item_positions.find(pos, 0)], 0)
+
+func remove_item():
+	var min_dist = 999999
+	var dist
+	var selected_item: Vector2i #collected item to be removed
+	
+	update_player_icon()
+	for item_pos in %ItemMap.get_used_cells(0): #find item
+		dist = Vector2(item_pos).distance_to(%ItemMap.local_to_map(%PlayerIcon.position))
+		if dist < min_dist:
+			min_dist = dist
+			selected_item = item_pos
+	
+	#remove item
+	item_positions.erase(selected_item*4)
+	item_atlas_coords.erase(%ItemMap.get_cell_atlas_coords(0, selected_item, false))
+	%ItemMap.erase_cell(0, selected_item)
+	if open:
+		item_check()

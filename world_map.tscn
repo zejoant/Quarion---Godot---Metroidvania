@@ -123,6 +123,7 @@ tile_set = SubResource("TileSet_pknh4")
 format = 2
 
 [node name="PlayerIcon" type="Sprite2D" parent="MapComps/RoomMap"]
+unique_name_in_owner = true
 z_index = 1
 texture = ExtResource("2_8q1wy")
 region_enabled = true
