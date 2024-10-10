@@ -36,7 +36,7 @@ func open_or_close():
 		%ItemMap.modulate.a = 1
 		open = true
 		update_player_icon()
-		item_check()
+		update_items()
 		player.x_speed = 55.0
 	elif open:
 		$BGOverLay.modulate = Color(1, 1, 1, 0)
@@ -47,9 +47,9 @@ func open_or_close():
 	
 func add_room(room_coords: Vector2):
 	%RoomMap.set_cell(0, room_coords, 0, room_coords, 0)
-	item_check()
+	update_items()
 
-func item_check():
+func update_items():
 	for pos in item_positions:
 		var room_pos = Vector2(int(pos.x/38), int(pos.y/24))
 		if %RoomMap.get_used_cells(0).has(Vector2i(room_pos)):
@@ -70,8 +70,9 @@ func remove_item():
 			selected_item = item_pos
 	
 	#remove item
-	item_positions.erase(selected_item*4)
-	item_atlas_coords.erase(%ItemMap.get_cell_atlas_coords(0, selected_item, false))
+	var index = item_positions.find(selected_item*4, 0)
+	item_positions.remove_at(index)
+	item_atlas_coords.remove_at(index)
 	%ItemMap.erase_cell(0, selected_item)
-	if open:
-		item_check()
+	#if open:
+	#	update_items()

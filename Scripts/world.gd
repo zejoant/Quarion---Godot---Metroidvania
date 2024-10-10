@@ -116,10 +116,17 @@ func save_checkpoint_room(pos):
 	
 #respawns the player duh
 func respawn_player():
+	#player.is_dead = true
+	#player.modulate.g = 0.4
+	#if checkpoint_room != room_coords:
+	#	change_room(checkpoint_room)
+	#player.position = Vector2(checkpoint_pos.x, checkpoint_pos.y)
+	pass
+
+func return_to_checkpoint():
 	if checkpoint_room != room_coords:
 		change_room(checkpoint_room)
 	player.position = Vector2(checkpoint_pos.x, checkpoint_pos.y)
-	
 
 func get_tilemap() -> TileMap:
 	var room = get_node_or_null("Room" + str(room_coords.x) + str(room_coords.y))

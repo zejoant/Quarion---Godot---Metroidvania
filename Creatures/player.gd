@@ -30,6 +30,7 @@ var walljump_dir = 1
 var can_double_jump = false
 
 var in_interact_area = false
+var is_dead = false
 
 @export_group("Power-Ups")
 @export var has_dash = false
@@ -46,95 +47,109 @@ var in_interact_area = false
 @export var has_item_map = false
 @export var has_bubble = false
 
-#@onready var audio_player = $PolyphonicAudioPlayer
-
 
 func _ready():
 	velocity.y = 200
 	
 func _physics_process(_delta):
-	if is_on_floor():
-		if $AnimationPlayer.is_playing() and ($AnimationPlayer.current_animation == "Fall" or $AnimationPlayer.current_animation == ""):
-			$LandParticles.restart()
-			$AnimationPlayer.play("Land")
-			#audio_player.play_sound_effect("land")
-			AudioManager.play_audio(sfxs.get_sfx("land"))
-			#$LandParticles.emitting = true
-		#velocity.y = 0
-		coyote = 5
-		can_dash = true
-		can_double_jump = true
-	
-	#applies gravity if in air
-	elif !is_on_floor():
-		if get_parent().get_node("WorldMap").open:
-			get_parent().get_node("WorldMap").open_or_close()
-		velocity.y += gravity
-		coyote -= 1
-		if velocity.y > fall_limiter:
-			velocity.y = fall_limiter
-		if velocity.y >= 0 and dash_timer == dash_lim and !can_walljump:
-			$AnimationPlayer.play("Fall")
-		elif velocity.y < 0 and dash_timer == dash_lim and !can_walljump:
-			$AnimationPlayer.play("Jump")
-	
-	if can_move:
-		#enables jumping
-		if (!dashing and buffer == 0 and !in_interact_area) and (is_on_floor() or (coyote >= 0 and velocity.y >= 0)):
-			can_jump = true
+	if !is_dead:
+		if is_on_floor():
+			if $AnimationPlayer.is_playing() and ($AnimationPlayer.current_animation == "Fall" or $AnimationPlayer.current_animation == ""):
+				$ParticleComps/LandParticles.restart()
+				$AnimationPlayer.play("Land")
+				AudioManager.play_audio(sfxs.get_sfx("land"))
+			coyote = 5
+			can_dash = true
+			can_double_jump = true
 		
-		#disables jumping
-		elif coyote < 0 or in_interact_area:
-			can_jump = false
+		#applies gravity if in air
+		elif !is_on_floor():
+			if get_parent().get_node("WorldMap").open:
+				get_parent().get_node("WorldMap").open_or_close()
+			velocity.y += gravity
+			coyote -= 1
+			if velocity.y > fall_limiter:
+				velocity.y = fall_limiter
+			if velocity.y >= 0 and dash_timer == dash_lim and !can_walljump:
+				$AnimationPlayer.play("Fall")
+			elif velocity.y < 0 and dash_timer == dash_lim and !can_walljump:
+				$AnimationPlayer.play("Jump")
 		
-		#cooldown for dash
-		if dash_cooldown != 0:
-				dash_cooldown += 1
-				if dash_cooldown == 30:
-					dash_cooldown = 0
+		if can_move:
+			#enables jumping
+			if (!dashing and buffer == 0 and !in_interact_area) and (is_on_floor() or (coyote >= 0 and velocity.y >= 0)):
+				can_jump = true
+			
+			#disables jumping
+			elif coyote < 0 or in_interact_area:
+				can_jump = false
+			
+			#cooldown for dash
+			if dash_cooldown != 0:
+					dash_cooldown += 1
+					if dash_cooldown == 30:
+						dash_cooldown = 0
+			
+			
+			wallslide_check()
+			
+			if Input.is_action_just_released("Jump"):
+					buffer = 0 #reset jump buffer
+					if velocity.y <= jump_vel / 4.0:
+						velocity.y = jump_vel / 4.0
+			
+			if Input.is_action_just_pressed("Jump") and can_double_jump and has_double_jump and coyote < 0 and !can_walljump:
+				can_double_jump = false
+				jump()
+			
+			if Input.is_action_pressed("Jump") and can_jump:
+				jump()
+			if (Input.is_action_just_pressed("Jump") and can_walljump) or walljumping:
+				walljump()
+			if Input.is_action_just_pressed("Drop"):
+				drop()
+			if Input.is_action_just_pressed("Dash") and can_dash and !dash_cooldown and !can_walljump and has_dash:
+				dash()
+			if dashing:
+				process_dash()
+			elif !walljumping:
+				walk()
+			if Input.is_action_just_pressed("Map") and is_on_floor():
+				#get_parent().get_node("Camera").alternate_map()
+				get_parent().get_node("WorldMap").open_or_close()
+			
 		
-		
-		wallslide_check()
-		
-		if Input.is_action_just_released("Jump"):
-				buffer = 0 #reset jump buffer
-				if velocity.y <= jump_vel / 4.0:
-					velocity.y = jump_vel / 4.0
-		
-		if Input.is_action_just_pressed("Jump") and can_double_jump and has_double_jump and coyote < 0 and !can_walljump:
-			can_double_jump = false
-			jump()
-		
-		if Input.is_action_pressed("Jump") and can_jump:
-			jump()
-		if (Input.is_action_just_pressed("Jump") and can_walljump) or walljumping:
-			walljump()
-		if Input.is_action_just_pressed("Drop"):
-			drop()
-		if Input.is_action_just_pressed("Dash") and can_dash and !dash_cooldown and !can_walljump and has_dash:
-			dash()
-		if dashing:
-			process_dash()
-		elif !walljumping:
-			walk()
-		if Input.is_action_just_pressed("Map") and is_on_floor():
-			#get_parent().get_node("Camera").alternate_map()
-			get_parent().get_node("WorldMap").open_or_close()
-		
-	
-	move_and_slide()
+		move_and_slide()
 
-	if Input.is_action_just_pressed("Quick Respawn"):
-		get_parent().respawn_player()
+		if Input.is_action_just_pressed("Quick Respawn"):
+			respawn()
 
-	if Input.is_action_just_pressed("Debug"):
-		has_dash = true
-		#has_blue_blocks = true
-		has_double_jump = true
-		has_freeze = true
-		has_wallclimb = true
-		green_key_state = "collected"
-		red_key_state = "collected"
+		if Input.is_action_just_pressed("Debug"):
+			has_dash = true
+			#has_blue_blocks = true
+			has_double_jump = true
+			has_freeze = true
+			has_wallclimb = true
+			has_item_map = true
+			get_parent().get_node("WorldMap/MapComps/ItemMap").visible = true
+			green_key_state = "collected"
+			red_key_state = "collected"
+
+func respawn():
+	var world = get_node("/root/World")
+	is_dead = true
+	modulate.g = 0.4
+	world.get_node("Camera").invert_color(1, 0.3)
+	
+	await get_tree().create_timer(0.5).timeout
+	$Sprite2D.visible = false
+	await get_tree().create_timer(1).timeout
+	$Sprite2D.visible = true
+	world.get_node("Camera").flash(1, 0, 0.1, 0.3)
+	is_dead = false
+	modulate.g = 1
+	
+	world.return_to_checkpoint()
 
 func bounce(strength):
 	velocity.y = strength
@@ -148,7 +163,6 @@ func jump():
 	buffer = 1
 	can_jump = false
 	$AnimationPlayer.play("Jump")
-	#audio_player.play_sound_effect("jump")
 	AudioManager.play_audio(sfxs.get_sfx("jump"))
 
 
@@ -182,8 +196,8 @@ func dash():
 	dashing = true
 	#$WaterDetector/DashColl.disabled = false
 	
-	$CPUParticles2D.restart()
-	$CPUParticles2D.emitting = true
+	$ParticleComps/DashParticles.restart()
+	$ParticleComps/DashParticles.emitting = true
 	get_parent().get_node("Camera").flash(0.3, 0, 0, 0.4)
 	get_parent().get_node("Camera").radial_blur()
 	$AnimationPlayer.play("Dash")
@@ -203,7 +217,7 @@ func process_dash():
 	if is_on_wall():
 		dash_timer = dash_lim
 	if dash_timer == dash_lim:
-		$CPUParticles2D.emitting = false
+		$ParticleComps/DashParticles.emitting = false
 		dashing = false
 
 func wallslide_check():
@@ -227,8 +241,6 @@ func wallslide_check():
 	if (!$WallRay.is_colliding() or velocity.y <= 0) and can_walljump:
 		if walljump_coyote <= 0:
 			can_walljump = false
-			#$AnimationPlayer.stop()
-			#$AnimationPlayer.play("Jump")
 		walljump_coyote -= 1
 
 
@@ -250,7 +262,7 @@ func walljump():
 #activates if the player entered a body
 func _on_area_2d_body_entered(body):
 	if body.is_in_group("Enemy"):#kills player
-		get_parent().respawn_player()
+		respawn()
 	if body.is_in_group("InteractArea") and body.interactable(): #areas where the player interact such as a keyslot
 		in_interact_area = true
 	elif body.is_in_group("Checkpoint"):
@@ -280,24 +292,28 @@ func _on_area_2d_body_shape_entered(body_rid, body, _body_shape_index, _local_sh
 #does action based on the custom data of a tile
 func custom_data_action(body: TileMap, custom_data: String, tile_coords: Vector2):
 		if custom_data == "Spike" or custom_data == "Water":
-			get_parent().respawn_player()
+			respawn()
 		elif custom_data == "PBlueBlocks":
 			has_blue_blocks = true
 			get_parent().save_room_state(tile_coords)
 			body.erase_cell(0, tile_coords)
+			get_node("/root/World/WorldMap").remove_item()
 			get_parent().change_room(get_parent().room_coords)
 		elif custom_data == "PWallClimb":
 			has_wallclimb = true
 			get_parent().save_room_state(tile_coords)
 			body.erase_cell(0, tile_coords)
+			get_node("/root/World/WorldMap").remove_item()
 		elif custom_data == "PDash":
 			has_dash = true
 			get_parent().save_room_state(tile_coords)
 			body.erase_cell(0, tile_coords)
+			get_node("/root/World/WorldMap").remove_item()
 		elif custom_data == "PDoubleJump":
 			has_double_jump = true
 			get_parent().save_room_state(tile_coords)
 			body.erase_cell(0, tile_coords)
+			get_node("/root/World/WorldMap").remove_item()
 
 
 #fade out and out foreground

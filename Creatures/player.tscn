@@ -120,7 +120,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("LandParticles:emitting")
+tracks/1/path = NodePath("ParticleComps/LandParticles:emitting")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -147,7 +147,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("LandParticles:emitting")
+tracks/1/path = NodePath("ParticleComps/LandParticles:emitting")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -203,6 +203,13 @@ _data = {
 "WallSlide": SubResource("Animation_x8b06")
 }
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4by5i"]
+size = Vector2(5, 11)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mcfsg"]
+radius = 5.0
+height = 18.0
+
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_hafes"]
 blend_mode = 1
 
@@ -221,13 +228,6 @@ colors = PackedColorArray(0.219501, 0.219501, 0.219501, 1, 1, 1, 1, 1)
 min_value = -1.0
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, -1), 0.0, 0.0, 0, 0]
 point_count = 2
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_4by5i"]
-size = Vector2(5, 11)
-
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mcfsg"]
-radius = 5.0
-height = 18.0
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_hp5sh"]
 particles_animation = true
@@ -260,7 +260,30 @@ libraries = {
 "": SubResource("AnimationLibrary_5gao2")
 }
 
-[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 6
+
+[node name="EnemyColl" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-0.5, 2.5)
+shape = SubResource("RectangleShape2D_4by5i")
+
+[node name="WallRay" type="RayCast2D" parent="."]
+z_index = 3
+target_position = Vector2(3, 0)
+
+[node name="WaterDetector" type="Area2D" parent="."]
+z_index = 4
+collision_layer = 0
+collision_mask = 2
+
+[node name="NormalColl" type="CollisionShape2D" parent="WaterDetector"]
+position = Vector2(1, 6)
+shape = SubResource("CapsuleShape2D_mcfsg")
+
+[node name="ParticleComps" type="Node2D" parent="."]
+
+[node name="DashParticles" type="CPUParticles2D" parent="ParticleComps"]
 z_index = 3
 material = SubResource("CanvasItemMaterial_hafes")
 emitting = false
@@ -287,28 +310,7 @@ hue_variation_min = -0.2
 hue_variation_max = 0.2
 hue_variation_curve = SubResource("Curve_1es8a")
 
-[node name="Area2D" type="Area2D" parent="."]
-collision_layer = 0
-collision_mask = 6
-
-[node name="EnemyColl" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(-0.5, 2.5)
-shape = SubResource("RectangleShape2D_4by5i")
-
-[node name="WallRay" type="RayCast2D" parent="."]
-z_index = 3
-target_position = Vector2(3, 0)
-
-[node name="WaterDetector" type="Area2D" parent="."]
-z_index = 4
-collision_layer = 0
-collision_mask = 2
-
-[node name="NormalColl" type="CollisionShape2D" parent="WaterDetector"]
-position = Vector2(1, 6)
-shape = SubResource("CapsuleShape2D_mcfsg")
-
-[node name="LandParticles" type="CPUParticles2D" parent="."]
+[node name="LandParticles" type="CPUParticles2D" parent="ParticleComps"]
 z_index = 4
 material = SubResource("CanvasItemMaterial_hp5sh")
 position = Vector2(0, 7)

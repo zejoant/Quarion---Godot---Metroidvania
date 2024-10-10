@@ -131,6 +131,7 @@ region_rect = Rect2(160, 16, 16, 16)
 
 [node name="ItemMap" type="TileMap" parent="MapComps"]
 unique_name_in_owner = true
+visible = false
 position = Vector2(15, 19)
 scale = Vector2(0.8, 0.8)
 tile_set = SubResource("TileSet_lou3f")
