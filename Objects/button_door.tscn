@@ -1,0 +1,46 @@
+[gd_scene load_steps=9 format=3 uid="uid://co44befovf2y7"]
+
+[ext_resource type="Script" path="res://Objects/button_door.gd" id="1_b34ib"]
+[ext_resource type="Texture2D" uid="uid://blrke6p7xbb7e" path="res://Assets/Tileset.png" id="1_sirwu"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_x0f3w"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_0l760"]
+[ext_resource type="AudioStream" uid="uid://bfqkfadixhrny" path="res://Sfx/door thump.wav" id="4_11u8e"]
+
+[sub_resource type="Resource" id="Resource_iot53"]
+script = ExtResource("3_0l760")
+tag = "thump"
+stream = ExtResource("4_11u8e")
+
+[sub_resource type="Resource" id="Resource_5q8bi"]
+script = ExtResource("2_x0f3w")
+sound_effects = Array[ExtResource("3_0l760")]([SubResource("Resource_iot53")])
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ywl1u"]
+size = Vector2(6, 8)
+
+[node name="ButtonDoor" type="StaticBody2D"]
+z_index = 2
+script = ExtResource("1_b34ib")
+sfxs = SubResource("Resource_5q8bi")
+
+[node name="TopSprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_sirwu")
+region_enabled = true
+region_rect = Rect2(400, 16, 8, 8)
+
+[node name="ColorSprite" type="Sprite2D" parent="."]
+position = Vector2(0, 8)
+texture = ExtResource("1_sirwu")
+region_enabled = true
+region_rect = Rect2(400, 24, 8, 8)
+
+[node name="BottomSprite" type="Sprite2D" parent="."]
+position = Vector2(0, 16)
+texture = ExtResource("1_sirwu")
+region_enabled = true
+region_rect = Rect2(400, 32, 8, 8)
+
+[node name="DoorColl" type="CollisionShape2D" parent="."]
+position = Vector2(0, 8)
+scale = Vector2(1, 3)
+shape = SubResource("RectangleShape2D_ywl1u")

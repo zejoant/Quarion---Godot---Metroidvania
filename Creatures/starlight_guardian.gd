@@ -1,6 +1,7 @@
 #@tool
 extends Node2D
 
+@export var sfxs : AudioLibrary
 @export_enum("green", "blue", "pink", "yellow") var color = "green"
 @export_range(0, 5) var start_raise : float = 0
 static var killed_suns = 0
@@ -78,7 +79,13 @@ func choose_attack():
 
 
 func rain():
-	if !bullet_cooldown:
+	if attack_state == 0 and boss_state == 2: #wait time, then the attack ends
+		#get_node("/root/World/Camera").radial_blur()
+		attack_state = 1
+		await get_tree().create_timer(5).timeout
+		boss_state = -1
+		
+	if !bullet_cooldown: #create a rain bullet
 		bullet_cooldown = true
 		var bullet = load("res://Objects/bullet.tscn").instantiate()
 		bullet.setup(2.0, Vector2(rng.randf_range(-0.5, 0.5), 1), Vector2(rng.randi_range(3, 35)*8, 0))
@@ -86,10 +93,6 @@ func rain():
 		await get_tree().create_timer(0.2).timeout
 		bullet_cooldown = false
 	
-	if attack_state == 0 and boss_state == 2:
-		attack_state = 1
-		await get_tree().create_timer(5).timeout
-		boss_state = -1
 
 
 func idle_movement():
@@ -131,6 +134,9 @@ func lunge():
 	if attack_state == 3: #lunge towards player
 		boss.position -= aim
 		if %Aim/WallRay.is_colliding():
+			get_node("/root/World/Camera").shake(3, 0.03, 3)
+			AudioManager.play_audio(sfxs.get_sfx("impact"))
+			#get_node("/root/World/Camera").invert_color(1, 0.3)
 			attack_state = 4
 			%Aim.modulate.a = 0
 			$Boss/AnimationPlayer.play("Sad")
@@ -161,6 +167,9 @@ func aiming_bullets():
 		tween3 = self.create_tween()
 		tween3.parallel().tween_property(%Aim, "modulate:a", 0, 0.4)
 		aim = boss.position.direction_to(player.position)
+		
+		AudioManager.play_audio(sfxs.get_sfx("shot"))
+		get_node("/root/World/Camera").flash(0.3, 0, 0, 0.2)
 		var bullet = load("res://Objects/bullet.tscn").instantiate()
 		bullet.setup(3.0, aim, boss.position)
 		call_deferred("add_child", bullet)
@@ -215,6 +224,10 @@ func _on_body_entered(body):
 
 
 func _on_hit_area_body_entered(body): #damage boss
+	get_node("/root/World/Camera").shake(4, 0.03, 3)
+	get_node("/root/World/Camera").invert_color(1, 0.3)
+	AudioManager.play_audio(sfxs.get_sfx("impact"))
+	
 	health -= 1
 	if !health:
 		die()
@@ -223,6 +236,7 @@ func _on_hit_area_body_entered(body): #damage boss
 	body.bounce(body.jump_vel)
 
 func die():
+	$Boss/AnimationPlayer.play("Default")
 	get_node("/root/World/MusicPlayer").stop()
 	get_node("/root/World").save_room_state($ActivateBossColl.position)
 	tween2 = self.create_tween()
@@ -232,9 +246,11 @@ func die():
 	$Gate.open()
 	$Gate2.open()
 	#boss.visible = false
-	$Boss/Base.visible = false
-	$Boss/Spikes.visible = false
-	$Boss/Face.visible = false
+	AudioManager.play_audio(sfxs.get_sfx("death"))
+	$Boss/Base.modulate.a = 0
+	$Boss/Spikes.modulate.a = 0
+	$Boss/Face.modulate.a = 0
+	$Boss/SilhouetteParticles.visible = false
 	$Boss/DeathParticles.emitting = true
 
 func reset_lunge(): #reset back to idle

@@ -120,7 +120,10 @@ func _physics_process(_delta):
 			
 		
 		move_and_slide()
-
+	
+		if $CollissionRays/FloorRay.is_colliding() and $CollissionRays/CeilingRay.is_colliding():
+			$AnimationPlayer.play("Land")
+			respawn()
 		if Input.is_action_just_pressed("Quick Respawn"):
 			respawn()
 
@@ -136,26 +139,34 @@ func _physics_process(_delta):
 			red_key_state = "collected"
 
 func respawn():
-	var world = get_node("/root/World")
-	is_dead = true
-	modulate.g = 0.4
-	world.get_node("Camera").invert_color(1, 0.3)
-	
-	await get_tree().create_timer(0.5).timeout
-	$Sprite2D.visible = false
-	await get_tree().create_timer(1).timeout
-	$Sprite2D.visible = true
-	world.get_node("Camera").flash(1, 0, 0.1, 0.3)
-	is_dead = false
-	modulate.g = 1
-	
-	world.return_to_checkpoint()
+	if !is_dead:
+		var world = get_node("/root/World")
+		is_dead = true
+		modulate.g = 0.4
+		$AnimationPlayer.play("Damage")
+		world.get_node("Camera").invert_color(1, 0.3)
+		world.get_node("Camera").shake(5, 0.05, 3)
+		AudioManager.play_audio(sfxs.get_sfx("death"))
+		
+		await get_tree().create_timer(0.5).timeout
+		$Sprite2D.visible = false
+		modulate.g = 1
+		$ParticleComps/DeathParticles/RingExplosionParticles.emitting = true
+		$ParticleComps/DeathParticles/PixelExplosionParticles.emitting = true
+		AudioManager.play_audio(sfxs.get_sfx("explode"))
+		await get_tree().create_timer(1.4).timeout
+		$Sprite2D.visible = true
+		world.get_node("Camera").flash(1, 0, 0.2, 0.3)
+		is_dead = false
+		
+		world.return_to_checkpoint()
 
 func bounce(strength):
-	velocity.y = strength
-	move_and_slide()
-	can_jump = false
-	$AnimationPlayer.play("Jump")
+	if !is_dead:
+		velocity.y = strength
+		move_and_slide()
+		can_jump = false
+		$AnimationPlayer.play("Jump")
 
 #Handle the jump
 func jump():
@@ -201,7 +212,6 @@ func dash():
 	get_parent().get_node("Camera").flash(0.3, 0, 0, 0.4)
 	get_parent().get_node("Camera").radial_blur()
 	$AnimationPlayer.play("Dash")
-	#audio_player.play_sound_effect("dash")
 	AudioManager.play_audio(sfxs.get_sfx("dash"))
 	
 	if is_on_floor() or coyote >= 0:
@@ -221,10 +231,10 @@ func process_dash():
 		dashing = false
 
 func wallslide_check():
-	if $WallRay.is_colliding() and has_wallclimb and (direction != 0 or can_walljump) and !is_on_floor():
+	if %WallRay.is_colliding() and has_wallclimb and (direction != 0 or can_walljump) and !is_on_floor():
 		var one_way = false
-		if $WallRay.get_collider() is TileMap:
-			one_way = $WallRay.get_collider().is_tile_one_way($WallRay.get_collider_rid())
+		if %WallRay.get_collider() is TileMap:
+			one_way = %WallRay.get_collider().is_tile_one_way(%WallRay.get_collider_rid())
 			
 		if !one_way:
 			if !can_walljump:
@@ -238,7 +248,7 @@ func wallslide_check():
 				velocity.y = 40
 	
 	
-	if (!$WallRay.is_colliding() or velocity.y <= 0) and can_walljump:
+	if (!%WallRay.is_colliding() or velocity.y <= 0) and can_walljump:
 		if walljump_coyote <= 0:
 			can_walljump = false
 		walljump_coyote -= 1

@@ -24,11 +24,11 @@ func _process(_delta):
 		moving = true
 		await self.create_tween().tween_method(move_platform, start_pos, start_pos + loop_distance*dir, speed).finished
 		platform.position.x = start_pos
-		#await self.create_tween().tween_property(platform, "position:x", start_pos + loop_distance*dir, speed).finished
 		
 		moving = false
 
 func move_platform(pos):
-	if player.get_slide_collision_count() != 0 and player.get_slide_collision(0).get_collider() == $ColorRect/StaticBody2D:
+	if !player.is_dead:
+		if player.get_slide_collision_count() != 0 and player.get_slide_collision(0).get_collider() == $ColorRect/StaticBody2D:
 			player.position.x += pos-platform.position.x
 	platform.position.x = pos

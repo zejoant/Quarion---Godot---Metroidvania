@@ -15,6 +15,7 @@ func save_game(world: Node):
 	file.store_var(world.get_node("WorldMap/MapComps/RoomMap").get_used_cells(0))
 	file.store_var(world.player.green_key_state)
 	file.store_var(world.player.red_key_state)
+	file.store_var(world.opened_doors)
 
 func load_game(world: Node):
 	if FileAccess.file_exists(save_path):
@@ -31,6 +32,7 @@ func load_game(world: Node):
 			world.get_node("WorldMap").add_room(room)
 		world.player.green_key_state = file.get_var()
 		world.player.red_key_state = file.get_var()	
+		world.opened_doors = file.get_var()
 	else:
 		world.cam_size = get_node("Camera").get_viewport_rect().size
 		world.checkpoint_room = Vector2(0, 1)

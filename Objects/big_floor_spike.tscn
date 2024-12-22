@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cnhgdm3be8hwj"]
+[gd_scene load_steps=16 format=3 uid="uid://cnhgdm3be8hwj"]
 
 [ext_resource type="Script" path="res://Objects/big_floor_spike.gd" id="1_3yj0b"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_5iyyx"]
@@ -126,6 +126,91 @@ tracks/3/keys = {
 }]
 }
 
+[sub_resource type="Animation" id="Animation_ckgew"]
+resource_name = "Instant Extend"
+length = 1.25
+step = 0.025
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.025, 0.05, 0.075, 0.9, 0.95, 1, 1.05, 1.1, 1.15, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"values": [{
+"args": [5],
+"method": &"frame_advance"
+}, {
+"args": [6],
+"method": &"frame_advance"
+}, {
+"args": [7],
+"method": &"frame_advance"
+}, {
+"args": [8],
+"method": &"frame_advance"
+}, {
+"args": [7],
+"method": &"frame_advance"
+}, {
+"args": [6],
+"method": &"frame_advance"
+}, {
+"args": [5],
+"method": &"frame_advance"
+}, {
+"args": [4],
+"method": &"frame_advance"
+}, {
+"args": [3],
+"method": &"frame_advance"
+}, {
+"args": [2],
+"method": &"frame_advance"
+}, {
+"args": [1],
+"method": &"frame_advance"
+}]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("LandParticles:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("CollisionShape2D:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.075, 0.95),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Sprite2D2:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1.25),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
 [sub_resource type="Animation" id="Animation_gd64s"]
 length = 0.001
 tracks/0/type = "value"
@@ -168,6 +253,7 @@ tracks/2/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1ogfj"]
 _data = {
 "Extend": SubResource("Animation_a6mh1"),
+"Instant Extend": SubResource("Animation_ckgew"),
 "RESET": SubResource("Animation_gd64s")
 }
 
@@ -204,7 +290,6 @@ shape = SubResource("CapsuleShape2D_l0ogr")
 libraries = {
 "": SubResource("AnimationLibrary_1ogfj")
 }
-autoplay = "Extend"
 
 [node name="LandParticles" type="CPUParticles2D" parent="."]
 z_index = 4

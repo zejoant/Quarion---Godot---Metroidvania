@@ -1,5 +1,7 @@
 extends Node2D
 
+@export var starting_position = Vector2(2, 1)
+
 var new_game = true
 var paused = false
 @onready var pause_menu = $CanvasLayer/PauseMenu
@@ -11,29 +13,20 @@ var cam_size
 var checkpoint_room : Vector2
 var checkpoint_pos : Vector2
 
-#var sfx_array : Array
-#var tag_array : Array
-
 const save_path := "user://gamestate.save"
 var room_state = []
+var opened_doors = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	
-	room_state.resize(9) #X-dimension
-	for x in 9: 
-		room_state[x] = []
-		room_state[x].resize(8) #Y-dimension
-		for y in 8:
-			room_state[x][y] = []
-	
-	
 	cam_size = get_node("Camera").get_viewport_rect().size
 	player = get_node("Player")
 	
+	setup_arrays()
+	
 	if new_game:
-		checkpoint_room = Vector2(5, 3)
+		checkpoint_room = starting_position
 		checkpoint_pos = Vector2(cam_size.x/2, cam_size.y/2)
 	else:
 		load_data()
@@ -45,6 +38,20 @@ func _ready():
 	add_child(scene_instance)
 	
 	$WorldMap.add_room(room_coords)
+
+func setup_arrays():
+	var map_width = 10
+	var map_height = 8
+	
+	room_state.resize(map_width) #X-dimension
+	for x in map_width: 
+		room_state[x] = []
+		room_state[x].resize(map_height) #Y-dimension
+		for y in map_height:
+			room_state[x][y] = []
+	
+	opened_doors.resize(100) #setup opened_doors array
+	opened_doors.fill(false)
 
 func _process(_delta):
 	exit_room_check()
@@ -137,29 +144,31 @@ func get_tilemap() -> TileMap:
 
 
 func room_wrap_check(new_room_coords, exit_dir) -> Vector2:
-	if room_coords == Vector2(4, 6) and exit_dir == "down":
-		return Vector2(4, 5)
-	elif room_coords == Vector2(4, 5) and exit_dir == "up":
-		return Vector2(4, 6)
-	elif room_coords == Vector2(1, 6) and exit_dir == "down":
-		return Vector2(1, 5)
+	if room_coords == Vector2(5, 6) and exit_dir == "down":
+		return Vector2(5, 5)
+	elif room_coords == Vector2(5, 5) and exit_dir == "up":
+		return Vector2(5, 6)
+	elif room_coords == Vector2(2, 6) and exit_dir == "down":
+		return Vector2(2, 5)
 		
-	elif room_coords == Vector2(5, 1) and exit_dir == "up":
-		return Vector2(5, 7)
-	elif room_coords == Vector2(5, 7) and exit_dir == "down":
-		return Vector2(5, 1)
+	elif room_coords == Vector2(6, 1) and exit_dir == "up":
+		return Vector2(6, 7)
+	elif room_coords == Vector2(6, 7) and exit_dir == "down":
+		return Vector2(6, 1)
 	
-	elif room_coords == Vector2(6, 6) and (exit_dir == "down" or exit_dir == "up"):
+	elif room_coords == Vector2(7, 6) and (exit_dir == "down" or exit_dir == "up"):
 		if 240.0 < player.position.x and player.position.x < 262.0:
-			return Vector2(6, 6)
+			return Vector2(7, 6)
 	
-	elif room_coords == Vector2(0, 5) and exit_dir == "left":
-		return Vector2(8, 5)
-	elif room_coords == Vector2(8, 5) and exit_dir == "right":
-		return Vector2(0, 5)
+	elif room_coords == Vector2(1, 5) and exit_dir == "left": #should be changed after moving room
+		return Vector2(9, 5)
+	elif room_coords == Vector2(9, 5) and exit_dir == "right":
+		return Vector2(1, 5)
 	
-	elif room_coords == Vector2(8, 0) and exit_dir == "right":
-		return Vector2(7, 0)
+	elif room_coords == Vector2(9, 0) and exit_dir == "right":
+		return Vector2(8, 0)
+	elif room_coords == Vector2(8, 0) and exit_dir == "left":
+		return Vector2(9, 0)
 		
 	return(new_room_coords)
 
@@ -173,55 +182,6 @@ func get_room_state() -> Array:
 
 func save_game():
 	SaveManager.save_game(self)
-	#SaveData.checkpoint_room = checkpoint_room
-	#SaveData.checkpoint_pos = checkpoint_pos
-	#SaveData.room_state = room_state
-	#SaveData.has_dash = player.has_dash
-	#SaveData.has_wall_climb = player.has_wallclimb
-	#SaveData.has_double_jump = player.has_double_jump
-	#SaveData.has_freeze = player.has_freeze
-	#SaveData.has_blue_blocks = player.has_blue_blocks
-	#SaveData.map_rooms = $WorldMap/MapComps/RoomMap.get_used_cells(0)
-	#SaveData.green_key_state = player.green_key_state
-	#SaveData.red_key_state = player.red_key_state
-	
-	#var file = FileAccess.open(save_path, FileAccess.WRITE)
-	#file.store_var(checkpoint_room)
-	#file.store_var(checkpoint_pos)
-	#file.store_var(room_state)
-	#file.store_var(player.has_dash)
-	#file.store_var(player.has_wallclimb)
-	#file.store_var(player.has_double_jump)
-	#file.store_var(player.has_freeze)
-	#file.store_var(player.has_blue_blocks)
-	#file.store_var($WorldMap/MapComps/RoomMap.get_used_cells(0))
-	#file.store_var(player.green_key_state)
-	#file.store_var(player.red_key_state)
-	
-
 func load_data():
 	SaveManager.load_game(self)
-	#if FileAccess.file_exists(save_path):
-		#var file = FileAccess.open(save_path, FileAccess.READ)
-		#checkpoint_room = file.get_var()
-		#checkpoint_pos = file.get_var()
-		#room_state = file.get_var()
-		#player.has_dash = file.get_var()
-		#player.has_wallclimb = file.get_var()
-		#player.has_double_jump = file.get_var()
-		#player.has_freeze = file.get_var()
-		#player.has_blue_blocks = file.get_var()
-		#for room in file.get_var():
-			#$WorldMap.add_room(room)
-		#player.green_key_state = file.get_var()
-		#player.red_key_state = file.get_var()	
-	#else:
-		#cam_size = get_node("Camera").get_viewport_rect().size
-		#checkpoint_room = Vector2(0, 1)
-		#checkpoint_pos = Vector2(cam_size.x/2, cam_size.y/2)
-		#player.has_dash = false
-		#player.has_wallclimb = false
-		#player.has_double_jump = false
-		#player.has_freeze = false
-		#player.has_blue_blocks = false
-		#print("no data has been saved")
+	

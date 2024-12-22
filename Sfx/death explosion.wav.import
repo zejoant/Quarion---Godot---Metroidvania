@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dp0epi0rhkcul"
+path="res://.godot/imported/death explosion.wav-da72571a48f6d869f9db0761267fbf64.sample"
+
+[deps]
+
+source_file="res://Sfx/death explosion.wav"
+dest_files=["res://.godot/imported/death explosion.wav-da72571a48f6d869f9db0761267fbf64.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

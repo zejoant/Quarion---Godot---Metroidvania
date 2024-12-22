@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cosv7y7wctdoj"
+path="res://.godot/imported/boss bullet shot.wav-40ee5da688fd80a8985c43b6bb5ecefe.sample"
+
+[deps]
+
+source_file="res://Sfx/boss bullet shot.wav"
+dest_files=["res://.godot/imported/boss bullet shot.wav-40ee5da688fd80a8985c43b6bb5ecefe.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

@@ -1,11 +1,35 @@
-[gd_scene load_steps=20 format=3 uid="uid://30g7v64cfgce"]
+[gd_scene load_steps=29 format=3 uid="uid://30g7v64cfgce"]
 
 [ext_resource type="Script" path="res://Creatures/starlight_guardian.gd" id="1_3550h"]
 [ext_resource type="Texture2D" uid="uid://b6aii0mfltagh" path="res://Assets/Aim Line.png" id="2_f1le3"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_hvxb4"]
 [ext_resource type="Texture2D" uid="uid://cs8lmkulj4ssr" path="res://Assets/Sun Boss Green.png" id="2_sn8rk"]
 [ext_resource type="PackedScene" uid="uid://bw1r3nxt3ya8x" path="res://Objects/gate.tscn" id="3_achy8"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_yucwd"]
+[ext_resource type="AudioStream" uid="uid://cosv7y7wctdoj" path="res://Sfx/boss bullet shot.wav" id="4_3rbyi"]
 [ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="4_fbacu"]
 [ext_resource type="Texture2D" uid="uid://fb8bggsjortm" path="res://Assets/Sun Boss Silhouette.png" id="4_hd26y"]
+[ext_resource type="AudioStream" uid="uid://c6awqtpd8jux1" path="res://Sfx/hit.wav" id="5_lmtb3"]
+[ext_resource type="AudioStream" uid="uid://dp0epi0rhkcul" path="res://Sfx/death explosion.wav" id="6_05cid"]
+
+[sub_resource type="Resource" id="Resource_olp47"]
+script = ExtResource("3_yucwd")
+tag = "shot"
+stream = ExtResource("4_3rbyi")
+
+[sub_resource type="Resource" id="Resource_s177l"]
+script = ExtResource("3_yucwd")
+tag = "impact"
+stream = ExtResource("5_lmtb3")
+
+[sub_resource type="Resource" id="Resource_vua2e"]
+script = ExtResource("3_yucwd")
+tag = "death"
+stream = ExtResource("6_05cid")
+
+[sub_resource type="Resource" id="Resource_ka7o4"]
+script = ExtResource("2_hvxb4")
+sound_effects = Array[ExtResource("3_yucwd")]([SubResource("Resource_olp47"), SubResource("Resource_s177l"), SubResource("Resource_vua2e")])
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_nl34h"]
 blend_mode = 1
@@ -266,6 +290,7 @@ size = Vector2(8, 8)
 collision_layer = 0
 collision_mask = 8
 script = ExtResource("1_3550h")
+sfxs = SubResource("Resource_ka7o4")
 
 [node name="Boss" type="CharacterBody2D" parent="." groups=["Enemy"]]
 collision_layer = 2

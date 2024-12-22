@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://ibrctco0fpdp"]
+[gd_scene load_steps=43 format=3 uid="uid://ibrctco0fpdp"]
 
 [ext_resource type="Script" path="res://Creatures/forsaken_ally.gd" id="1_2os6r"]
 [ext_resource type="PackedScene" uid="uid://bw1r3nxt3ya8x" path="res://Objects/gate.tscn" id="1_exbt4"]
@@ -7,20 +7,36 @@
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_s620o"]
 [ext_resource type="Texture2D" uid="uid://drt12ywdf66vn" path="res://Assets/Warning Area Particle Animation.png" id="3_w5jr1"]
 [ext_resource type="AudioStream" uid="uid://8q6abwc5dkpi" path="res://Sfx/dash.wav" id="4_l2417"]
-[ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="5_q0nla"]
+[ext_resource type="AudioStream" uid="uid://c6awqtpd8jux1" path="res://Sfx/hit.wav" id="5_e1k82"]
+[ext_resource type="AudioStream" uid="uid://ds8rsq8hl0v6b" path="res://Sfx/jump2.wav" id="6_ngjvg"]
+[ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="8_uoyv7"]
+[ext_resource type="Texture2D" uid="uid://cwdnxgl7k8n26" path="res://Assets/Sparkle2 Particles.png" id="10_mpich"]
 
 [sub_resource type="Resource" id="Resource_gbhgb"]
 script = ExtResource("3_s620o")
 tag = "dash"
 stream = ExtResource("4_l2417")
 
+[sub_resource type="Resource" id="Resource_v1emv"]
+script = ExtResource("3_s620o")
+tag = "damage"
+stream = ExtResource("5_e1k82")
+
+[sub_resource type="Resource" id="Resource_887xx"]
+script = ExtResource("3_s620o")
+tag = "jump"
+stream = ExtResource("6_ngjvg")
+
 [sub_resource type="Resource" id="Resource_6rsu8"]
 script = ExtResource("2_8wgr1")
-sound_effects = Array[ExtResource("3_s620o")]([SubResource("Resource_gbhgb")])
+sound_effects = Array[ExtResource("3_s620o")]([SubResource("Resource_gbhgb"), SubResource("Resource_v1emv"), SubResource("Resource_887xx")])
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ogmpo"]
 radius = 4.0
 height = 10.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ic4v5"]
+size = Vector2(92, 4)
 
 [sub_resource type="Animation" id="Animation_jk7y0"]
 resource_name = "Dive"
@@ -69,6 +85,18 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [Rect2(48, 48, 16, 16), Rect2(32, 48, 16, 16), Rect2(16, 48, 16, 16), Rect2(0, 48, 16, 16)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("TrailParticle:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
 }
 
 [sub_resource type="Animation" id="Animation_fxak2"]
@@ -136,6 +164,18 @@ tracks/0/keys = {
 "update": 1,
 "values": [Rect2(80, 16, 16, 16)]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("TrailParticle:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_k3v3x"]
 length = 0.001
@@ -150,6 +190,18 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [Rect2(48, 48, 16, 16)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("TrailParticle:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_vfgup"]
@@ -178,29 +230,111 @@ point_count = 2
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
 [sub_resource type="Gradient" id="Gradient_n6ww7"]
-colors = PackedColorArray(0.768627, 0.298039, 0.298039, 1, 0.427451, 0.105882, 0.372549, 1)
+colors = PackedColorArray(0.78413, 0.296232, 0.358534, 1, 0.529586, 0.0537312, 0.588683, 1)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_g00i6"]
-size = Vector2(8, 8)
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_wcn6s"]
+particles_animation = true
+particles_anim_h_frames = 5
+particles_anim_v_frames = 1
+particles_anim_loop = false
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_pwyl7"]
+[sub_resource type="Gradient" id="Gradient_le6o7"]
+colors = PackedColorArray(0.761125, 0.876223, 0.987051, 1, 0.95622, 0.303941, 0.520313, 1)
 
-[sub_resource type="Gradient" id="Gradient_axh6g"]
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_n3jaf"]
+particles_animation = true
+particles_anim_h_frames = 9
+particles_anim_v_frames = 1
+particles_anim_loop = false
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_uh48h"]
-gradient = SubResource("Gradient_axh6g")
+[sub_resource type="Gradient" id="Gradient_xafaj"]
+colors = PackedColorArray(1, 1, 1, 1, 0.352941, 0.854902, 0.94902, 1)
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qd8lf"]
-particle_flag_disable_z = true
-direction = Vector3(0, -1, 0)
-spread = 0.0
-initial_velocity_min = 25.0
-initial_velocity_max = 25.0
-gravity = Vector3(0, 0, 0)
-damping_min = 20.0
-damping_max = 20.0
-color_ramp = SubResource("GradientTexture1D_uh48h")
+[sub_resource type="Animation" id="Animation_71s7e"]
+resource_name = "Dive Impact"
+length = 0.200007
+step = 0.0666667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DiveImpactComp/DiveImpactSprite:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.133333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Rect2(160, 0, 96, 32), Rect2(160, 32, 96, 32)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("DiveImpactComp/DiveImpactSprite:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("DiveImpactComp/DiveImpactParticles:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_mgba4"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DiveImpactComp/DiveImpactSprite:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(160, 0, 96, 32)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("DiveImpactComp/DiveImpactSprite:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("DiveImpactComp/DiveImpactParticles:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wsg3y"]
+_data = {
+"Dive Impact": SubResource("Animation_71s7e"),
+"RESET": SubResource("Animation_mgba4")
+}
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_6nsxh"]
 blend_mode = 1
@@ -212,6 +346,9 @@ point_count = 1
 
 [sub_resource type="Gradient" id="Gradient_24h82"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g00i6"]
+size = Vector2(8, 8)
 
 [node name="BossEnvironment" type="Area2D"]
 collision_layer = 0
@@ -234,7 +371,12 @@ z_index = 7
 position = Vector2(0, 1)
 shape = SubResource("CapsuleShape2D_ogmpo")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="ForsakenAlly"]
+[node name="DiveHurtCull" type="CollisionShape2D" parent="ForsakenAlly"]
+position = Vector2(0, 7)
+shape = SubResource("RectangleShape2D_ic4v5")
+disabled = true
+
+[node name="BossAnimPlayer" type="AnimationPlayer" parent="ForsakenAlly"]
 libraries = {
 "": SubResource("AnimationLibrary_vfgup")
 }
@@ -253,7 +395,7 @@ z_index = 6
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_8nrkr")
 
-[node name="CPUParticles2D" type="CPUParticles2D" parent="ForsakenAlly"]
+[node name="TrailParticle" type="CPUParticles2D" parent="ForsakenAlly"]
 z_index = 5
 material = SubResource("CanvasItemMaterial_fe8pe")
 amount = 40
@@ -274,26 +416,63 @@ color = Color(1, 1, 1, 0.592157)
 color_ramp = SubResource("Gradient_eb8yj")
 color_initial_ramp = SubResource("Gradient_n6ww7")
 
-[node name="Gate" parent="." instance=ExtResource("1_exbt4")]
-position = Vector2(-24, 0)
-
-[node name="Gate2" parent="." instance=ExtResource("1_exbt4")]
-position = Vector2(-40, 0)
-
-[node name="ActivationColl" type="CollisionShape2D" parent="."]
-position = Vector2(-56, 0)
-shape = SubResource("RectangleShape2D_g00i6")
-
-[node name="WarningParticle2" type="GPUParticles2D" parent="."]
-z_index = 6
-material = SubResource("CanvasItemMaterial_pwyl7")
-position = Vector2(49, -17)
+[node name="FinalPhaseParticles" type="CPUParticles2D" parent="ForsakenAlly"]
+z_index = 5
+material = SubResource("CanvasItemMaterial_wcn6s")
+position = Vector2(0, 4)
 emitting = false
-amount = 6
-process_material = SubResource("ParticleProcessMaterial_qd8lf")
-texture = ExtResource("3_w5jr1")
+amount = 20
+lifetime = 2.0
+texture = ExtResource("8_uoyv7")
+emission_shape = 1
+emission_sphere_radius = 3.0
+direction = Vector2(0, -1)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 10.0
+initial_velocity_max = 15.0
+color_initial_ramp = SubResource("Gradient_le6o7")
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+anim_offset_max = 0.222
+
+[node name="DiveImpactComp" type="Node2D" parent="."]
+
+[node name="DiveImpactSprite" type="Sprite2D" parent="DiveImpactComp"]
+visible = false
+modulate = Color(1, 1, 1, 0.639216)
+z_index = 6
+texture = ExtResource("3_r8rlm")
+region_enabled = true
+region_rect = Rect2(160, 0, 96, 32)
+
+[node name="DiveImpactParticles" type="CPUParticles2D" parent="DiveImpactComp"]
+z_index = 6
+material = SubResource("CanvasItemMaterial_n3jaf")
+amount = 30
+lifetime = 2.0
 one_shot = true
-explosiveness = 0.2
+explosiveness = 1.0
+lifetime_randomness = 0.5
+local_coords = true
+texture = ExtResource("10_mpich")
+emission_shape = 3
+emission_rect_extents = Vector2(48, 1)
+direction = Vector2(0, -1)
+spread = 10.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 20.0
+initial_velocity_max = 70.0
+color_initial_ramp = SubResource("Gradient_xafaj")
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+anim_offset_min = 0.25
+anim_offset_max = 0.375
+
+[node name="EnvAnimPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_wsg3y")
+}
 
 [node name="WarningParticle" type="CPUParticles2D" parent="."]
 z_index = 5
@@ -317,13 +496,15 @@ scale_curve_x = SubResource("Curve_556g0")
 scale_curve_y = null
 color_ramp = SubResource("Gradient_24h82")
 
-[node name="DiveImpact" type="Sprite2D" parent="."]
-visible = false
-modulate = Color(1, 1, 1, 0.639216)
-z_index = 6
-texture = ExtResource("5_q0nla")
-region_enabled = true
-region_rect = Rect2(16, 128, 96, 32)
+[node name="Gate" parent="." instance=ExtResource("1_exbt4")]
+position = Vector2(-24, 0)
+
+[node name="Gate2" parent="." instance=ExtResource("1_exbt4")]
+position = Vector2(-40, 0)
+
+[node name="ActivationColl" type="CollisionShape2D" parent="."]
+position = Vector2(-56, 0)
+shape = SubResource("RectangleShape2D_g00i6")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_entered" from="ForsakenAlly/HitArea" to="." method="_on_hit_area_body_entered"]

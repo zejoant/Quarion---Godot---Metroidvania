@@ -1,0 +1,14 @@
+res://world.tscn
+res://Themes/button_theme_new.tres
+res://Rooms/room_22.tscn
+res://Rooms/room_31.tscn
+res://Rooms/room_32.tscn
+res://Objects/button.tscn
+res://Objects/button_door.tscn
+res://Rooms/room_24.tscn
+res://Rooms/room_14.tscn
+res://Rooms/room_93.tscn
+res://Rooms/room_36.tscn
+res://Objects/teleporter.tscn
+res://Objects/teleporter.gd
+res://camera.tscn

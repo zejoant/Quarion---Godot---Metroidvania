@@ -15,6 +15,13 @@ func flash(opacity, enter, hold, exit):
 	tween.tween_property($FlashLayer, "modulate:a", opacity, hold) #hold the opacity for a time
 	tween.tween_property($FlashLayer, "modulate:a", 0, exit) #fade out to original opacity
 
+func shake(strength: int, interval: float, count: int):
+	var rng = RandomNumberGenerator.new()
+	for i in count:
+		position = Vector2(rng.randf_range(-1, 1), rng.randf_range(-1, 1))*strength
+		await get_tree().create_timer(interval).timeout
+	position = Vector2(0, 0)
+
 func radial_blur():
 	var callable = Callable(self, "set_shader_value").bind("BlurShaderLayer/ColorRect", "blur_power")
 	tween = self.create_tween()
