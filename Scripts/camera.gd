@@ -2,9 +2,11 @@ extends Camera2D
 
 var tween
 var map_open = false
+var origin: Vector2
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	origin = position
 	get_node("BlurShaderLayer/ColorRect").material.set_shader_parameter("blur_power", 0) #radical blur disabled
 
 func flash(opacity, enter, hold, exit):
@@ -18,9 +20,9 @@ func flash(opacity, enter, hold, exit):
 func shake(strength: int, interval: float, count: int):
 	var rng = RandomNumberGenerator.new()
 	for i in count:
-		position = Vector2(rng.randf_range(-1, 1), rng.randf_range(-1, 1))*strength
+		position = Vector2(origin.x + rng.randf_range(-1, 1), origin.y + rng.randf_range(-1, 1))*strength
 		await get_tree().create_timer(interval).timeout
-	position = Vector2(0, 0)
+	position = origin
 
 func radial_blur():
 	var callable = Callable(self, "set_shader_value").bind("BlurShaderLayer/ColorRect", "blur_power")

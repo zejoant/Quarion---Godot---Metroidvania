@@ -116,7 +116,6 @@ region_rect = Rect2(128, 48, 24, 40)
 shape = SubResource("CircleShape2D_jspuy")
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="."]
-visible = false
 z_index = 2
 material = SubResource("CanvasItemMaterial_yf7c7")
 amount = 30

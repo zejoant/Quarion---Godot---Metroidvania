@@ -14,19 +14,16 @@ var fade_tween
 static var blue_block := false
 
 func _ready() -> void:
-	#erased_cells = get_node("/root/World").collected_items
-	world = get_node("/root/World")
-	check_for_collected_tiles()
-	check_for_functional_tiles()
+	world = get_node_or_null("/root/World") #or_null for purposes of testing scenes where world is not loaded
+	if world:
+		check_for_collected_tiles()
+		check_for_functional_tiles()
 	
 	
 #deletes any tiles that have been collected so they dont show up again (apples)
 func check_for_collected_tiles():
 	for cell in world.get_room_state():
 		custom_data = get_custom_data_with_coords(cell)
-		#tile_data = get_cell_tile_data(0, cell)
-		#if tile_data is TileData:
-			#custom_data = tile_data.get_custom_data("Functional Tiles")
 		if custom_data == "Collectable" or custom_data == "PBlueBlocks" or custom_data == "PWallClimb" or custom_data == "PDash" or custom_data == "PDoubleJump":
 			erase_cell(layer, cell)
 

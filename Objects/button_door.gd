@@ -15,11 +15,14 @@ var origin: Vector2
 func _ready():
 	origin = position
 	setup()
-	opened_doors = get_node("/root/World").opened_doors
 	
-	if opened_doors[id]:
-		position = origin - length*8*dir
-		visible = false
+	var world = get_node_or_null("/root/World")
+	if world:
+		opened_doors = world.opened_doors
+		
+		if opened_doors[id]:
+			position = origin - length*8*dir
+			visible = false
 
 func open():
 	await self.create_tween().tween_property(self, "position", origin - length*8*dir, 1).finished

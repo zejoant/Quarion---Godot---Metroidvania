@@ -1,8 +1,9 @@
-AnimationPlayer
 Sprite2D
-ColorRect
-CanvasLayer
 CPUParticles2D
+Node2D
+ColorRect
+AnimationPlayer
+CanvasLayer
 CollisionShape2D
 Area2D
 StaticBody2D
