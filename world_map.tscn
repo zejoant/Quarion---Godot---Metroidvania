@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://tq5pdnyqtw32"]
 
-[ext_resource type="Script" path="res://world_map.gd" id="1_a03dt"]
+[ext_resource type="Script" path="res://Scripts/world_map.gd" id="1_a03dt"]
 [ext_resource type="Texture2D" uid="uid://bbq86p0psyqyi" path="res://Assets/Map.png" id="1_javka"]
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="2_8q1wy"]
 [ext_resource type="Texture2D" uid="uid://b20trkwhnbuts" path="res://Assets/Map Icon Tileset.png" id="4_u75n4"]

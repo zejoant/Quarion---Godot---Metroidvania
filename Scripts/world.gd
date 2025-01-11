@@ -103,16 +103,18 @@ func exit_room_check():
 		
 #function for changing the current room
 func change_room(new_coords):
-	var old_room = get_node("Room" + str(room_coords.x) + str(room_coords.y))
-	old_room.call_deferred("free")
-	
+	var new_room_path = "res://Rooms/room_" + str(new_coords.x) + str(new_coords.y) + ".tscn"
+	var old_room = get_node_or_null("Room" + str(room_coords.x) + str(room_coords.y))
 	room_coords = new_coords #updates room coords
-	var new_room = load("res://Rooms/room_" + str(new_coords.x) + str(new_coords.y) + ".tscn").instantiate()
-	call_deferred("add_child", new_room) #loads new room
-	#add_child(new_room)
 	
-	#adds room to map
-	$WorldMap.add_room(room_coords)
+	if old_room: #if the room was never loaded (because it did not exist)
+		old_room.call_deferred("free")
+	
+	if ResourceLoader.exists(new_room_path): #if the entered room exists in files (safety precation for oob)
+		var new_room = load(new_room_path).instantiate()
+		call_deferred("add_child", new_room) #loads new room
+		$WorldMap.add_room(room_coords) #adds room to map
+	
 
 
 #saves the respawn position when grabbing a checkpoint
