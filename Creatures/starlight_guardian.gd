@@ -1,10 +1,11 @@
 #@tool
 extends Node2D
 
-@export var sfxs : AudioLibrary
+@export var sfxs : AudioLibrary ## Tagged audio files to play from this scene
 @export_enum("green", "blue", "pink", "yellow") var color = "green"
 @export_range(0, 5) var start_raise : float = 0
-static var killed_suns = 0
+@export_range(0, 2) var difficulty : int = 0
+
 var sprite_sheet : Texture2D
 var boss : CharacterBody2D
 var start_pos : Vector2
@@ -209,8 +210,9 @@ func param_setup():
 func _on_body_entered(body):
 	$ActivateBossColl.set_deferred("disabled", true)
 	boss.get_node("DamageColl").set_deferred("disabled", false)
-	get_node("/root/World/MusicPlayer").stream = load("res://Music/Hi GI Joe!.wav")
-	get_node("/root/World/MusicPlayer").play()
+	get_node("/root/World").switch_music("res://Music/Hi GI Joe!.wav")
+	#get_node("/root/World/MusicPlayer").stream = load("res://Music/Hi GI Joe!.wav")
+	#get_node("/root/World/MusicPlayer").play()
 	
 	player = body
 	activated = true
@@ -219,6 +221,7 @@ func _on_body_entered(body):
 	$Gate2.close()
 	
 	await self.create_tween().tween_interval(2).finished
+	get_node("/root/World/Camera").radial_blur(0.03, 0.6, 12)
 	boss.visible = true
 	boss_state = -1
 
@@ -252,6 +255,10 @@ func die():
 	$Boss/Face.modulate.a = 0
 	$Boss/SilhouetteParticles.visible = false
 	$Boss/DeathParticles.emitting = true
+	$Boss/DeathParticles2.emitting = true
+	get_node("/root/World/Camera").shake(4, 0.03, 3)
+	get_node("/root/World/Camera").invert_color(1, 0.3)
+	get_node("/root/World").resume_previous_music()
 
 func reset_lunge(): #reset back to idle
 	$Boss/AnimationPlayer.play("Default")

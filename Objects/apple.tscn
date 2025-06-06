@@ -1,0 +1,35 @@
+[gd_scene load_steps=9 format=3 uid="uid://0v1hh7ipjn5y"]
+
+[ext_resource type="Script" path="res://Objects/apple.gd" id="1_0wo8c"]
+[ext_resource type="Texture2D" uid="uid://blrke6p7xbb7e" path="res://Assets/Tileset.png" id="2_gr5vf"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_vxvgo"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_85q70"]
+[ext_resource type="AudioStream" uid="uid://b7txeulgr6bb2" path="res://Sfx/collect.wav" id="4_kumkb"]
+
+[sub_resource type="Resource" id="Resource_y8b1g"]
+script = ExtResource("3_85q70")
+tag = "collect"
+stream = ExtResource("4_kumkb")
+
+[sub_resource type="Resource" id="Resource_21mvb"]
+script = ExtResource("2_vxvgo")
+sound_effects = Array[ExtResource("3_85q70")]([SubResource("Resource_y8b1g")])
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hcb14"]
+radius = 3.0
+
+[node name="Apple" type="StaticBody2D" groups=["Collectable"]]
+z_index = 4
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_0wo8c")
+sfxs = SubResource("Resource_21mvb")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_gr5vf")
+region_enabled = true
+region_rect = Rect2(88, 72, 8, 8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 1)
+shape = SubResource("CircleShape2D_hcb14")

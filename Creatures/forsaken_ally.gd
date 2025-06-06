@@ -21,6 +21,9 @@ var last_attack: BossState = BossState.IDLE
 var aim
 var chance = 1
 
+var dodging = false
+var spike_wave_origin: Vector2
+
 var tween1
 var tween2
 var timer1: Timer
@@ -29,21 +32,33 @@ var timer2: Timer
 @onready var origin = $ForsakenAlly.position
 
 var follow_pos
+var follow_velocity
 var aim_pos
 
+var dead = false
+
 var floor_spike = preload("res://Objects/big_floor_spike.tscn")
+var flying_orb = preload("res://Objects/flying_orb.tscn")
+var big_flying_orb = preload("res://Objects/big_flying_orb.tscn")
 var warning_particle = preload("res://Particles/warning_particle.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	player = get_node("/root/World/Player")
 	follow_pos = player.position
+	follow_velocity = player.velocity
 	#player.disable_movement(true)
 	var room_states = get_node("/root/World").get_room_state()
 	var free_check = false
 	for pos in room_states:
 		if Vector2i($ActivationColl.position) == Vector2i(pos): #check if boss has been defeated
-			queue_free()
+			#queue_free()
+			dead = true
+			$ForsakenAlly/BossAnimPlayer.play("Lie Down")
+			$ForsakenAlly/HurtColl.set_deferred("disabled", true)
+			$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", true)
+			$ActivationColl.disabled = true
+			$DiveImpactComp.visible = false
 			free_check = true
 	
 	if !free_check:
@@ -51,37 +66,44 @@ func _ready():
 
 
 func _physics_process(delta):
-	update_aim(delta)
-	if $ForsakenAlly/GroundRay.is_colliding() and $ForsakenAlly/BossAnimPlayer.assigned_animation != "Lie Down":
-		boss.scale.x = sign(boss.position.x - player.position.x)
+	if !dead:
+		update_aim(delta)
+		if $ForsakenAlly/GroundRay.is_colliding() and $ForsakenAlly/BossAnimPlayer.assigned_animation != "Lie Down":
+			boss.scale.x = sign(boss.position.x - player.position.x)
+			
+			#if $ForsakenAlly/BossAnimPlayer.current_animation != "Land" and $ForsakenAlly/BossAnimPlayer.current_animation != "Jump":
+			#	$ForsakenAlly/BossAnimPlayer.play("Idle")
 		
-		#if $ForsakenAlly/BossAnimPlayer.current_animation != "Land" and $ForsakenAlly/BossAnimPlayer.current_animation != "Jump":
-		#	$ForsakenAlly/BossAnimPlayer.play("Idle")
-	
-	if player.position.x > boss.position.x-8 and player.position.x < boss.position.x+8 and player.position.y < boss.position.y-6:
-		$ForsakenAlly/HurtColl.disabled = true
-	elif hit_mode == HitMode.DODGE:
-		$ForsakenAlly/HurtColl.disabled = false
-	
-	if boss_state == BossState.RESET: #pre attack stuff
-		attack_state = 0
-		attack_sub_state = 0
-		attack_cooldown = 0
-		attack_count += 1
-		boss_state = BossState.IDLE
-		await get_tree().create_timer(0.5).timeout
-		choose_attack()
-	elif boss_state == BossState.JUMP:
-		jump_attack()
-	elif boss_state == BossState.SPIKE:
-		attack_count = 0
-		floor_spikes()
-	elif boss_state == BossState.DIVE:
-		dive_attack()
+		if player.position.x > boss.position.x-8 and player.position.x < boss.position.x+8 and player.position.y < boss.position.y-6 and hit_mode != HitMode.NONE:
+			$ForsakenAlly/HurtColl.disabled = true
+		elif hit_mode == HitMode.DODGE and !dodging:
+			$ForsakenAlly/HurtColl.disabled = false
+		
+		if boss_state == BossState.RESET: #pre attack stuff
+			attack_state = 0
+			attack_sub_state = 0
+			attack_cooldown = 0
+			attack_count += 1
+			boss_state = BossState.IDLE
+			await get_tree().create_timer(0.5).timeout
+			if boss_state == BossState.IDLE:
+				choose_attack()
+		elif boss_state == BossState.JUMP:
+			jump_attack()
+		elif boss_state == BossState.SPIKE:
+			attack_count = 0
+			floor_spikes()
+		elif boss_state == BossState.DIVE:
+			dive_attack()
+		elif boss_state == BossState.SHOT:
+			aim_shot_attack()
 	
 func floor_spikes():
 	if attack_state == 0: #attack setup
-		attack_state = 1
+		if health <= 6 and rng.randi_range(0, 1) == 0:
+			attack_state = -1
+		else:
+			attack_state = 1
 		dodge_player(0.3, false, false)
 		$ForsakenAlly/BossAnimPlayer.play("Kneel")
 		toggle_hit_coll(HitMode.DAMAGE)
@@ -117,6 +139,31 @@ func floor_spikes():
 		attack_state = 1
 		attack_cooldown = 180
 	
+	if attack_state == 4: #spike wave
+		if attack_cooldown == 0: #add spikes
+			attack_cooldown = 20
+			attack_sub_state += int(spike_wave_origin.y)
+			var spike1 = floor_spike.instantiate()
+			spike1.position = Vector2(spike_wave_origin.x + attack_sub_state*16, 20*8)
+			spike1.spike_amount = 1
+			spike1.speed = 2
+			add_child(spike1)
+			if spike1.position.x < 3*8 or spike1.position.x > 35*8:
+				attack_cooldown = -1
+			elif (sign(attack_sub_state) > 0 and player.position.x <= spike1.position.x) or (sign(attack_sub_state) < 0 and player.position.x >= spike1.position.x):
+				var spike2 = floor_spike.instantiate()
+				spike2.position = Vector2(spike_wave_origin.x + sign(attack_sub_state)*32, 20*8)
+				spike2.speed = 2
+				add_child(spike2)
+				attack_state = 1
+				attack_cooldown = 70
+				attack_sub_state = 0
+			
+		else: #await next spike
+			attack_cooldown -= 1
+		if attack_cooldown == -21: #finish after reaching end of arena
+			attack_state = 1
+			attack_cooldown = 180
 
 func jump_attack():
 	if !attack_cooldown:
@@ -144,7 +191,7 @@ func jump_attack():
 			$ForsakenAlly/BossAnimPlayer.play("Land")
 		attack_cooldown += 1
 	
-	if attack_cooldown == 50: #await next jump
+	if attack_cooldown == 40: #await next jump
 		attack_state += 1
 		attack_cooldown = 0
 	
@@ -157,7 +204,6 @@ func dive_attack():
 		attack_state = -1
 		$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", true)
 		$ForsakenAlly/HurtColl.set_deferred("disabled", true)
-		#hit_mode = HitMode.DODGE
 		$ForsakenAlly/BossAnimPlayer.play("Jump")
 		AudioManager.play_audio(sfxs.get_sfx("jump"))
 		
@@ -216,6 +262,10 @@ func dive_attack():
 				$ForsakenAlly/DiveHurtCull.disabled = true
 				
 			if attack_state == 4: #finish attack/land
+				create_orb(Vector2(boss.position.x, boss.position.y+16), Vector2(1.5, 0), Vector2(-0.05, -0.05), true, false)
+				create_orb(Vector2(boss.position.x+8, boss.position.y+16), Vector2(2.5, 0), Vector2(-0.05, -0.05), true, false)
+				create_orb(Vector2(boss.position.x, boss.position.y+16), Vector2(-1.5, 0), Vector2(0.05, -0.05), true, false)
+				create_orb(Vector2(boss.position.x-8, boss.position.y+16), Vector2(-2.5, 0), Vector2(0.05, -0.05), true, false)
 				attack_state = 5
 				$ForsakenAlly/BossAnimPlayer.play("Land")
 				$ForsakenAlly/BossSprite.visible = true
@@ -229,27 +279,61 @@ func dive_attack():
 		if attack_cooldown == 30:
 			boss_state = BossState.RESET
 
-
-func spike_wave_warning():
-	for i in range(-6, 7, 3):
-		if i != 0:
-			var w_p = warning_particle.instantiate()
-			w_p.width = 2
-			w_p.position = Vector2(boss.position.x - (i*16), 20*8)
-			w_p.emitting = true
-			add_child(w_p)
+func aim_shot_attack():
+	if attack_state == 0:
+		$ForsakenAlly/BossAnimPlayer.play("Charge Shot")
+		attack_state = 1
+		attack_cooldown = 70
+	elif attack_state == 1:
+		if attack_cooldown == 70:
+			attack_cooldown = 0
+			attack_sub_state += 1
+			$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", true)
+			#var shot_speed = Vector2(player.position.x-boss.position.x, player.position.y-boss.position.y+16).normalized()#Vector2(aim_pos.x-boss.position.x, player.position.y-boss.position.y+16).normalized()
+			#shot_speed.x *= sign((player.position.x - boss.position.x)*shot_speed.x)
+			var big_orb = big_flying_orb.instantiate()
+			big_orb.position = Vector2(boss.position.x, boss.position.y-16)
+			big_orb.target_player = true
+			big_orb.speed = Vector2(1, 0)*3#shot_speed*3
+			add_child(big_orb)
+		else:
+			attack_cooldown += 1
+		if attack_cooldown == 30:
+			$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", false)
 		
-func spike_wave():
-	for i in range(-6, 7, 3):
-		if i != 0:
-			var s = floor_spike.instantiate()
-			s.spike_amount = 1
-			s.mode = "Instant"
-			s.position = Vector2(boss.position.x - (i*16), 20*8)
-			add_child(s)
+		if attack_sub_state == 3: #end after 3 shots
+			attack_state = 2
+			attack_cooldown = 70
+	
+	if attack_state == 2: #delay at end
+		if attack_cooldown == 40:
+			$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", false)
+		if attack_cooldown == 0:
+			boss_state = BossState.RESET
+		else:
+			attack_cooldown -= 1
+
+#func spike_wave_warning():
+	#for i in range(-6, 7, 3):
+		#if i != 0:
+			#var w_p = warning_particle.instantiate()
+			#w_p.width = 2
+			#w_p.position = Vector2(boss.position.x - (i*16), 20*8)
+			#w_p.emitting = true
+			#add_child(w_p)
+		#
+#func spike_wave():
+	#for i in range(-6, 7, 3):
+		#if i != 0:
+			#var s = floor_spike.instantiate()
+			#s.spike_amount = 1
+			#s.mode = "Instant"
+			#s.position = Vector2(boss.position.x - (i*16), 20*8)
+			#add_child(s)
 
 
 func dodge_player(dodge_speed: float, center: bool, reset_attack: bool):
+	dodging = true
 	$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", true)
 	$ForsakenAlly/HurtColl.set_deferred("disabled", true)
 	if reset_attack:
@@ -280,6 +364,16 @@ func dodge_player(dodge_speed: float, center: bool, reset_attack: bool):
 	await get_tree().create_timer(dodge_speed).timeout
 	$ForsakenAlly/HurtColl.disabled = false
 	$ForsakenAlly/HitArea/HitColl.disabled = false
+	dodging = false
+	boss.scale.x = sign(boss.position.x - player.position.x)
+	
+	if boss_state == BossState.SPIKE and attack_state == -1: #start spike wave after dodge
+		await get_tree().process_frame
+		attack_state = 4
+		attack_sub_state = 0
+		attack_cooldown = 0
+		spike_wave_origin.x = boss.position.x
+		spike_wave_origin.y = sign(19*8 - boss.position.x)
 	if reset_attack:
 		boss_state = BossState.RESET
 		toggle_hit_coll(HitMode.DODGE)
@@ -306,9 +400,9 @@ func choose_attack():
 		if attack_count > 5: #after 5 attacks floor spike will happen
 			boss_state = 2 as BossState
 		elif attack_count > 3: #after 3 attacks floor spikes are available
-			boss_state = rng.randi_range(2, 4) as BossState
+			boss_state = rng.randi_range(2, 5) as BossState
 		else: #no floor spikes
-			boss_state = rng.randi_range(3, 4) as BossState
+			boss_state = rng.randi_range(3, 5) as BossState
 	last_attack = boss_state
 
 
@@ -317,10 +411,12 @@ func _on_hit_area_body_entered(body):
 	if hit_mode == HitMode.DAMAGE:
 		if (health+1)%3 == 0: #boss dodge to center
 			dodge_player(0.15, true, false)
-		elif (health+2)%3 == 0: # after 3 hits
+		elif (health+2)%3 == 0 and health != 1: # after 3 hits
 			intermission()
-		else: #normal hit
+		elif health != 1: #normal hit
 			dodge_player(0.3, false, false)
+			if health <= 6 and rng.randi_range(0, 1) == 0:
+				attack_state = -1
 		body.bounce(body.jump_vel)
 		health -= 1
 		get_node("/root/World/Camera").shake(4, 0.03, 3)
@@ -339,10 +435,18 @@ func _on_hit_area_body_entered(body):
 			$DiveImpactComp/DiveImpactParticles.amount = 30
 	
 	if health == 0:
+		for child in get_children():
+			if child.has_method("retract_spike"):
+				child.retract_spike()
 		get_node("/root/World").save_room_state($ActivationColl.position)
-		#$Gate.open()
-		#$Gate2.open()
-		queue_free()
+		get_node("/root/World").resume_previous_music()
+		$Gate.open()
+		$Gate2.open()
+		dead = true
+		$ForsakenAlly/HurtColl.set_deferred("disabled", true)
+		$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", true)
+		$ForsakenAlly/BossAnimPlayer.play("Lie Down")
+		#queue_free()
 		
 	elif hit_mode == HitMode.DODGE:
 		dodge_player(0.3, false, true)
@@ -368,13 +472,22 @@ func toggle_hit_coll(mode: HitMode):
 func update_aim(delta):
 	if player.velocity.x == 0:
 		follow_pos.x = player.position.x
-	else:
-		follow_pos = follow_pos.lerp(player.position, delta * 0.6)
+	if player.velocity.y == 0:
+		follow_pos.y = player.position.y
+	elif player.velocity.y != 0 and player.velocity.x != 0:
+		#follow_pos = follow_pos.lerp(player.position, delta * 0.6)
+		follow_pos = follow_pos.cubic_interpolate(player.position, player.velocity, player.velocity, delta * 0.6)
 	aim_pos = 2 * player.position - follow_pos #converts position from behind the player to in front
+	
 	if aim_pos.x <= 24:
 		aim_pos.x = 24
 	elif aim_pos.x >= 35*8:
 		aim_pos.x = 35*8
+	
+	if aim_pos.y <= 0:
+		aim_pos.y = 0
+	elif aim_pos.y >= 19*8:
+		aim_pos.y = 19*8
 
 
 func intro_sequence():
@@ -388,8 +501,20 @@ func intro_sequence():
 	player.get_node("AnimationPlayer").play("Idle")
 	toggle_hit_coll(HitMode.DODGE)
 	boss_state = BossState.RESET
+	#get_node("/root/World/MusicPlayer").stream = load("res://Music/Everhood_The_Final_Battle.mp3")
+	#get_node("/root/World/MusicPlayer").play()
+	get_node("/root/World").switch_music("res://Music/Everhood_The_Final_Battle.mp3")
 
 
 func set_tween(tween: Tween, t: int, e: int):
 	tween.set_trans(t)
 	tween.set_ease(e)
+
+func create_orb(orb_pos: Vector2, orb_speed: Vector2, orb_acc: Vector2, friction_x: bool, friction_y: bool):
+	var orb = flying_orb.instantiate()
+	orb.position = orb_pos
+	orb.speed = orb_speed
+	orb.acceleration = orb_acc
+	orb.friction_x = friction_x
+	orb.friction_y = friction_y
+	add_child(orb)

@@ -29,17 +29,12 @@ func _ready():
 	
 
 func open():
-	#get_node("/root/World").save_room_state(position)
-	#$PolyphonicAudioPlayer.play_sound_effect("click")
-	AudioManager.play_audio(sfxs.get_sfx("click"))
 	await self.create_tween().tween_property(self, "position", origin, 1).finished
 	visible = false
 	AudioManager.play_audio(sfxs.get_sfx("thump"))
-	#$PolyphonicAudioPlayer.play_sound_effect("thump")
 
 func close():
 	self.create_tween().tween_property(self, "position", origin + length*8*dir, 1)
-	#$AudioStreamPlayer2D.play()
 
 
 func setup():

@@ -1,4 +1,5 @@
 extends Control
+class_name OptionsMenu
 
 var back_scene = "menu"
 static var sfx_slider_value = 0
@@ -6,6 +7,8 @@ static var music_slider_value = 0
 #static var window_mode = 0
 static var fullscreen = false
 static var borderless = false
+
+var previous_window_size = Vector2i(304, 192)
 
 func _ready():
 	$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.value = sfx_slider_value
@@ -18,28 +21,15 @@ func _ready():
 
 
 func _on_back_button_pressed():
-	#save_settings()
+	save_settings()
 	if back_scene == "menu":
 		get_tree().change_scene_to_file("res://Menu/main_menu.tscn")
 	elif back_scene == "game":
 		get_parent().get_node("PauseMenu").show()
 		queue_free()
 
-
-#func _on_window_mode_item_selected(index):
-	##window_mode = index
-	#if index == 0:
-		#DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
-		#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
-	#elif index == 1:
-		#DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
-		#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-	#elif index == 2:
-		#DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
-		#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-
 func save_settings():
-	pass
+	SaveManager.save_settings()
 
 
 func _on_sfx_slider_value_changed(value):
@@ -70,9 +60,27 @@ func _on_borderless_check_toggled(toggled_on):
 
 func _on_fullscreen_check_toggled(toggled_on):
 	if toggled_on:
+		previous_window_size = DisplayServer.window_get_size()
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 		fullscreen = true
 	else:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		DisplayServer.window_set_size(previous_window_size)
+		if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
 		fullscreen = false
+
+static func set_loaded_settings():
+	if sfx_slider_value == -25:
+		AudioServer.set_bus_mute(2, true)
+	else:
+		AudioServer.set_bus_volume_db(2, sfx_slider_value)
+	if music_slider_value == -25:
+		AudioServer.set_bus_mute(1, true)
+	else:
+		AudioServer.set_bus_volume_db(1, music_slider_value)
+	
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, borderless)
+	if fullscreen:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 		

@@ -1,6 +1,7 @@
 extends StaticBody2D
 
 @export_enum("green", "red") var color = "green"
+@export var sfxs : AudioLibrary
 var player
 
 # Called when the node enters the scene tree for the first time.
@@ -19,9 +20,14 @@ func _unhandled_input(event):
 		if player.in_interact_area and player.get_node("Area2D").get_overlapping_bodies()[0] == self:
 			if color == "green" and player.green_key_state == "collected":
 				player.green_key_state = "used"
+				#get_node("/root/World/Camera/UIContainer/GreenKeySprite").visible = false
+				get_node("/root/World/Camera").set_keys("Green", true)
+				AudioManager.play_audio(sfxs.get_sfx("click"))
 				unlock()
 			elif color == "red" and player.red_key_state == "collected":
 				player.red_key_state = "used"
+				get_node("/root/World/Camera").set_keys("Red", true)
+				AudioManager.play_audio(sfxs.get_sfx("click"))
 				unlock()
 
 

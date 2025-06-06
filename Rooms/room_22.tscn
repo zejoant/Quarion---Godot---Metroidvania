@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://coud47gbx6bt8" path="res://tile_map.tscn" id="1_ru602"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n8tib"]
-size = Vector2(117, 20)
+size = Vector2(108, 20)
 
 [node name="Room22" type="Node2D"]
 
@@ -20,5 +20,5 @@ collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 z_index = 5
-position = Vector2(138.5, 168)
+position = Vector2(136, 168)
 shape = SubResource("RectangleShape2D_n8tib")

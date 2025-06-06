@@ -31,6 +31,7 @@ var can_double_jump = false
 
 var in_interact_area = false
 var is_dead = false
+var paused = false
 
 @export_group("Power-Ups")
 @export var has_dash = false
@@ -47,11 +48,14 @@ var is_dead = false
 @export var has_item_map = false
 @export var has_bubble = false
 
+#enum state {STANDING, WALKING, JUMPING, FALLING, DASHING, WALLSLIDING, WALLJUMPING}
 
 func _ready():
 	velocity.y = 200
 	
 func _physics_process(_delta):
+	if paused:
+		return
 	if !is_dead:
 		if is_on_floor():
 			if $AnimationPlayer.is_playing() and ($AnimationPlayer.current_animation == "Fall" or $AnimationPlayer.current_animation == ""):
@@ -120,10 +124,12 @@ func _physics_process(_delta):
 			
 		
 		move_and_slide()
+		#get_node("/root/World/Camera/PlayerLight/ColorRect").material.set_shader_parameter("player_pos", Vector2(self.global_position.x/304, self.global_position.y/192))
 	
 		if $CollissionRays/FloorRay.is_colliding() and $CollissionRays/CeilingRay.is_colliding():
-			$AnimationPlayer.play("Land")
-			respawn()
+			if !$CollissionRays/CeilingRay.get_collider().is_tile_one_way($CollissionRays/CeilingRay.get_collider_rid()):
+				$AnimationPlayer.play("Land")
+				respawn()
 		if Input.is_action_just_pressed("Quick Respawn"):
 			respawn()
 
@@ -135,12 +141,13 @@ func _physics_process(_delta):
 			has_wallclimb = true
 			has_item_map = true
 			get_parent().get_node("WorldMap/MapComps/ItemMap").visible = true
-			green_key_state = "collected"
-			red_key_state = "collected"
+			#green_key_state = "collected"
+			#red_key_state = "collected"
 
 func respawn():
 	if !is_dead:
 		var world = get_node("/root/World")
+		get_node("/root/World/MusicPlayer").stop()
 		is_dead = true
 		modulate.g = 0.4
 		$AnimationPlayer.play("Damage")
@@ -159,10 +166,12 @@ func respawn():
 		world.get_node("Camera").flash(1, 0, 0.2, 0.3)
 		is_dead = false
 		
+		world.resume_respawn_music()
 		world.return_to_checkpoint()
 
 func bounce(strength):
 	if !is_dead:
+		can_dash = true
 		velocity.y = strength
 		move_and_slide()
 		can_jump = false
@@ -281,7 +290,7 @@ func _on_area_2d_body_entered(body):
 	elif body.is_in_group("Collectable"):
 		body.collect()
 		#audio_player.play_sound_effect("collect")
-		AudioManager.play_audio(sfxs.get_sfx("collect"))
+		#AudioManager.play_audio(sfxs.get_sfx("collect"))
 	elif body.is_in_group("MovingPlatform"):
 		print("lol")
 	#elif body.is_in_group("Crumble"):
@@ -305,25 +314,36 @@ func custom_data_action(body: TileMap, custom_data: String, tile_coords: Vector2
 			respawn()
 		elif custom_data == "PBlueBlocks":
 			has_blue_blocks = true
-			get_parent().save_room_state(tile_coords)
-			body.erase_cell(0, tile_coords)
-			get_node("/root/World/WorldMap").remove_item()
-			get_parent().change_room(get_parent().room_coords)
 		elif custom_data == "PWallClimb":
 			has_wallclimb = true
-			get_parent().save_room_state(tile_coords)
-			body.erase_cell(0, tile_coords)
-			get_node("/root/World/WorldMap").remove_item()
 		elif custom_data == "PDash":
 			has_dash = true
-			get_parent().save_room_state(tile_coords)
-			body.erase_cell(0, tile_coords)
-			get_node("/root/World/WorldMap").remove_item()
 		elif custom_data == "PDoubleJump":
 			has_double_jump = true
+		
+		if custom_data.begins_with("P"):
+			can_move = false
+			paused = true
+			get_node("/root/World/MusicPlayer").stream_paused = true
+			self.position = Vector2(tile_coords.x*8+8, tile_coords.y*8+20)
+			$ParticleComps/PowerUpParticles.emitting = true
+			AudioManager.play_audio(sfxs.get_sfx("power_up"))
+			AudioManager.play_audio(sfxs.get_sfx("fire_burst"))
 			get_parent().save_room_state(tile_coords)
 			body.erase_cell(0, tile_coords)
-			get_node("/root/World/WorldMap").remove_item()
+			if get_parent().get_node("WorldMap").open:
+				get_parent().get_node("WorldMap").open_or_close()
+			$AnimationPlayer.stop()
+			#get_node("/root/World/WorldMap").remove_item()
+			
+			await get_tree().create_timer(2).timeout
+			AudioManager.play_audio(sfxs.get_sfx("p_up_finish"))
+			get_node("/root/World/Camera").flash(1, 0, 0.1, 0.4)
+			if custom_data == "PBlueBlocks":
+				get_parent().change_room(get_parent().room_coords)
+			can_move = true
+			paused = false
+			get_node("/root/World/MusicPlayer").stream_paused = false
 
 
 #fade out and out foreground

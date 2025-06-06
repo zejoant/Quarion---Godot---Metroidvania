@@ -43,14 +43,14 @@ func replace_tiles_with_object(tile_pos):
 		scene_instance = load("res://Creatures/snake.tscn").instantiate() 
 	
 	elif custom_data == "Lamp": #loads lamp
-		scene_instance = load("res://lamp.tscn").instantiate() 
+		scene_instance = load("res://Objects/lamp.tscn").instantiate() 
 	
 	elif custom_data == "Bat": #loads bat
 		scene_instance = load("res://Creatures/bat.tscn").instantiate() 
 		scene_instance.set_dir(get_tile_rotation(tile_pos))
 	
 	elif custom_data == "Collectable": #loads apples
-		scene_instance = load("res://apple.tscn").instantiate() 
+		scene_instance = load("res://Objects/apple.tscn").instantiate() 
 	
 	#adds the objects
 	if scene_instance != null:

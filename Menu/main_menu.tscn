@@ -1,7 +1,6 @@
-[gd_scene load_steps=12 format=3 uid="uid://bbcuafrlc8tnb"]
+[gd_scene load_steps=11 format=3 uid="uid://bbcuafrlc8tnb"]
 
 [ext_resource type="Script" path="res://Menu/main_menu.gd" id="1_af00c"]
-[ext_resource type="Texture2D" uid="uid://b87d406lt38fj" path="res://Assets/Room01 Image.png" id="2_ddjob"]
 [ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="3_ip0rl"]
 [ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/prstartk.ttf" id="4_87sp4"]
 [ext_resource type="Texture2D" uid="uid://bw5uqh2kcy8rv" path="res://Assets/Quarion Title.png" id="5_l4yhv"]
@@ -89,15 +88,8 @@ offset_left = 264.0
 offset_top = 188.0
 offset_right = 304.0
 offset_bottom = 192.0
-text = "Version 1.2.1"
+text = "Version 1.0.0"
 label_settings = SubResource("LabelSettings_gvhdu")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-visible = false
-modulate = Color(1, 1, 1, 0.4)
-scale = Vector2(0.194529, 0.194529)
-texture = ExtResource("2_ddjob")
-centered = false
 
 [node name="TextureRect" type="TextureRect" parent="."]
 z_index = -17
@@ -124,7 +116,13 @@ offset_bottom = 32.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(1.5, 1.5)
-pivot_offset = Vector2(152, 96)
+
+[node name="FadeToBlack" type="ColorRect" parent="."]
+z_index = 1
+layout_mode = 0
+offset_right = 304.0
+offset_bottom = 192.0
+color = Color(0, 0, 0, 0)
 
 [connection signal="pressed" from="Menu/MarginContainer/VBoxContainer/VBoxContainer/ContinueButton" to="." method="_on_continue_button_pressed"]
 [connection signal="pressed" from="Menu/MarginContainer/VBoxContainer/VBoxContainer/NewGameButton" to="." method="_on_new_game_button_pressed"]

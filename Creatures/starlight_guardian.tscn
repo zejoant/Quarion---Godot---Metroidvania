@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://30g7v64cfgce"]
+[gd_scene load_steps=32 format=3 uid="uid://30g7v64cfgce"]
 
 [ext_resource type="Script" path="res://Creatures/starlight_guardian.gd" id="1_3550h"]
 [ext_resource type="Texture2D" uid="uid://b6aii0mfltagh" path="res://Assets/Aim Line.png" id="2_f1le3"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://fb8bggsjortm" path="res://Assets/Sun Boss Silhouette.png" id="4_hd26y"]
 [ext_resource type="AudioStream" uid="uid://c6awqtpd8jux1" path="res://Sfx/hit.wav" id="5_lmtb3"]
 [ext_resource type="AudioStream" uid="uid://dp0epi0rhkcul" path="res://Sfx/death explosion.wav" id="6_05cid"]
+[ext_resource type="Texture2D" uid="uid://dxeer5jk1scat" path="res://Assets/Ring Particle.png" id="11_sfeb7"]
 
 [sub_resource type="Resource" id="Resource_olp47"]
 script = ExtResource("3_yucwd")
@@ -279,9 +280,17 @@ particles_anim_h_frames = 5
 particles_anim_v_frames = 1
 particles_anim_loop = false
 
-[sub_resource type="Gradient" id="Gradient_nxdch"]
-offsets = PackedFloat32Array(0, 0.319149, 0.664894, 1)
-colors = PackedColorArray(0.709804, 0.831373, 0.937255, 1, 0.384314, 0.611765, 0.815686, 1, 0.286275, 0.372549, 0.705882, 1, 0.2, 0.180392, 0.427451, 1)
+[sub_resource type="Gradient" id="Gradient_kij3r"]
+colors = PackedColorArray(0.709804, 0.831373, 0.937255, 1, 0.2, 0.180392, 0.427451, 1)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_6vmvf"]
+particles_animation = true
+particles_anim_h_frames = 8
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="Gradient_0qrwr"]
+colors = PackedColorArray(0.831373, 0.552941, 0.309804, 1, 0.584314, 0.164706, 0.384314, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_upxv1"]
 size = Vector2(8, 8)
@@ -369,8 +378,8 @@ color_ramp = SubResource("Gradient_120h5")
 z_index = 5
 material = SubResource("CanvasItemMaterial_811r2")
 emitting = false
-amount = 50
-lifetime = 1.2
+amount = 100
+lifetime = 1.7
 one_shot = true
 explosiveness = 0.95
 texture = ExtResource("4_fbacu")
@@ -380,9 +389,29 @@ initial_velocity_min = 200.0
 initial_velocity_max = 230.0
 damping_min = 100.0
 damping_max = 100.0
-color_ramp = SubResource("Gradient_nxdch")
+color_initial_ramp = SubResource("Gradient_kij3r")
 anim_speed_min = 1.0
-anim_speed_max = 2.0
+anim_speed_max = 1.0
+anim_offset_max = 0.25
+
+[node name="DeathParticles2" type="CPUParticles2D" parent="Boss"]
+z_index = 5
+material = SubResource("CanvasItemMaterial_6vmvf")
+emitting = false
+amount = 50
+lifetime = 1.7
+one_shot = true
+explosiveness = 1.0
+texture = ExtResource("11_sfeb7")
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 130.0
+damping_min = 50.0
+damping_max = 50.0
+color_initial_ramp = SubResource("Gradient_0qrwr")
+anim_speed_min = 1.0
+anim_speed_max = 1.0
 anim_offset_max = 0.25
 
 [node name="Gate" parent="." instance=ExtResource("3_achy8")]

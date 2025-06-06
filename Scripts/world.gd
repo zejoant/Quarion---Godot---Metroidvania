@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var starting_position = Vector2(2, 1)
+@export var starting_position = Vector2(2, 4)#Vector2(2, 1)
 
 var new_game = true
 var paused = false
@@ -13,23 +13,40 @@ var cam_size
 var checkpoint_room : Vector2
 var checkpoint_pos : Vector2
 
-const save_path := "user://gamestate.save"
 var room_state = []
 var opened_doors = []
+
+var previous_song_pos: float
+var previous_song: String
+
+var respawn_song_pos: float
+var respawn_song: String
+
+var appleCount: int
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	cam_size = get_node("Camera").get_viewport_rect().size
 	player = get_node("Player")
+	$Camera/UIContainer.visible = true
 	
 	setup_arrays()
 	
 	if new_game:
+		get_node("Camera").fade("000000", 1, 0, 0.2, 2)
 		checkpoint_room = starting_position
 		checkpoint_pos = Vector2(cam_size.x/2, cam_size.y/2)
 	else:
 		load_data()
+		$Camera/UIContainer/AppleCount.text = str(appleCount)
+		if player.green_key_state == "collected":
+			$Camera.set_keys("Green")
+		if player.red_key_state == "collected":
+			$Camera.set_keys("Red")
+		
+		get_node("Camera").flash(1, 0, 0.2, 0.3)
+		await get_tree().create_timer(0.05).timeout
 	
 	player.position = checkpoint_pos
 	
@@ -38,6 +55,33 @@ func _ready():
 	add_child(scene_instance)
 	
 	$WorldMap.add_room(room_coords)
+	
+	$MusicPlayer.stream = load("res://Music/746887_BITTRIP-REMIX-02-CORE.mp3")
+	$MusicPlayer.play()
+	
+func incrementAppleCount():
+	appleCount += 1
+	$Camera/UIContainer/AppleCount.text = str(appleCount)
+
+func switch_music(new_song_path):
+	previous_song = $MusicPlayer.stream.resource_path
+	previous_song_pos = $MusicPlayer.get_playback_position()
+	$MusicPlayer.stream = load(new_song_path)
+	$MusicPlayer.play()
+
+func resume_previous_music():
+	var temp_path = $MusicPlayer.stream.resource_path
+	var temp_pos = $MusicPlayer.get_playback_position()
+	
+	$MusicPlayer.stream = load(previous_song)
+	$MusicPlayer.play(previous_song_pos)
+	
+	previous_song = temp_path
+	previous_song_pos = temp_pos
+
+func resume_respawn_music():
+	$MusicPlayer.stream = load(respawn_song)
+	$MusicPlayer.play(respawn_song_pos)
 
 func setup_arrays():
 	var map_width = 10
@@ -58,6 +102,20 @@ func _process(_delta):
 	
 	if Input.is_action_just_pressed("Pause"):
 		pauseMenu()
+		
+	#var window_size = DisplayServer.window_get_size()
+	#var screen_factor : float
+	#if(window_size.x <= window_size.y):
+		#screen_factor = window_size.x/304.0
+		#window_size.y = 192.0*screen_factor
+	#elif(window_size.x > window_size.y):
+		#screen_factor = window_size.y/192.0
+		#window_size.x = 304.0*screen_factor
+	##print((window_size.x/304.0 + window_size.y/192.0)/2)
+	##print(get_viewport().get_visible_rect().size)
+	#'if(player != null):
+		#player.get_node("CanvasLayer/ColorRect").material.set_shader_parameter("pix_per_pix", (window_size.x/304.0 + window_size.y/192.0)/2)
+	#$CanvasLayer/LightShader.material.set_shader_parameter("player_screen_pos", self.global_position)
 
 
 func pauseMenu():
@@ -183,6 +241,8 @@ func get_room_state() -> Array:
 	return room_state[room_coords.x][room_coords.y]
 
 func save_game():
+	respawn_song = $MusicPlayer.stream.resource_path
+	respawn_song_pos = $MusicPlayer.get_playback_position()
 	SaveManager.save_game(self)
 func load_data():
 	SaveManager.load_game(self)

@@ -66,6 +66,7 @@ position = Vector2(64, 63)
 
 [node name="MusicPlayer" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("7_okqrd")
+bus = &"Music"
 
 [node name="WorldMap" parent="." instance=ExtResource("8_f8ank")]
 z_index = 10

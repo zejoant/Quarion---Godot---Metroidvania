@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://xlhqgyxr5f5s"]
+[gd_scene load_steps=27 format=3 uid="uid://xlhqgyxr5f5s"]
 
 [ext_resource type="Script" path="res://Menu/options_menu.gd" id="1_x504m"]
 [ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="2_a3tmx"]
@@ -14,6 +14,49 @@ shader = ExtResource("2_a3tmx")
 shader_parameter/amount = 2.0
 
 [sub_resource type="LabelSettings" id="LabelSettings_d7d3h"]
+font_size = 8
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y26gb"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6sjfk"]
+texture = ExtResource("4_dsysb")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(73, 11, 63, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4ok1x"]
+texture = ExtResource("4_dsysb")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(12, 11, 56, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_r7vkj"]
+texture = ExtResource("4_dsysb")
+texture_margin_left = 12.0
+texture_margin_top = 6.0
+texture_margin_right = 12.0
+texture_margin_bottom = 6.0
+region_rect = Rect2(12, 43, 56, 26)
+
+[sub_resource type="Theme" id="Theme_mans0"]
+default_font = ExtResource("5_e33ne")
+default_font_size = 8
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/font_sizes/font_size = 8
+Button/styles/focus = SubResource("StyleBoxEmpty_y26gb")
+Button/styles/hover = SubResource("StyleBoxTexture_6sjfk")
+Button/styles/normal = SubResource("StyleBoxTexture_4ok1x")
+Button/styles/pressed = SubResource("StyleBoxTexture_r7vkj")
+
+[sub_resource type="LabelSettings" id="LabelSettings_h284f"]
 font_size = 8
 outline_size = 4
 outline_color = Color(0, 0, 0, 1)
@@ -45,21 +88,6 @@ texture_margin_top = 6.0
 texture_margin_right = 12.0
 texture_margin_bottom = 6.0
 region_rect = Rect2(12, 43, 56, 26)
-
-[sub_resource type="Theme" id="Theme_mans0"]
-default_font = ExtResource("5_e33ne")
-default_font_size = 8
-Button/colors/font_color = Color(1, 1, 1, 1)
-Button/font_sizes/font_size = 8
-Button/styles/focus = SubResource("StyleBoxEmpty_t3563")
-Button/styles/hover = SubResource("StyleBoxTexture_m3q7b")
-Button/styles/normal = SubResource("StyleBoxTexture_iyykc")
-Button/styles/pressed = SubResource("StyleBoxTexture_y31l4")
-
-[sub_resource type="LabelSettings" id="LabelSettings_h284f"]
-font_size = 8
-outline_size = 4
-outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="Theme" id="Theme_ci3ny"]
 default_font = ExtResource("5_e33ne")

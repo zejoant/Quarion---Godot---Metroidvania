@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=3 uid="uid://4ythqhswhcg7"]
+[gd_scene load_steps=56 format=3 uid="uid://4ythqhswhcg7"]
 
 [ext_resource type="Script" path="res://Creatures/player.gd" id="1_1p4uo"]
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_hnvw4"]
@@ -10,8 +10,12 @@
 [ext_resource type="AudioStream" uid="uid://wm84dwuyqcmd" path="res://Sfx/dash3.wav" id="8_laqsj"]
 [ext_resource type="AudioStream" uid="uid://dp0epi0rhkcul" path="res://Sfx/death explosion.wav" id="9_0iuyt"]
 [ext_resource type="AudioStream" uid="uid://b7txeulgr6bb2" path="res://Sfx/collect.wav" id="9_f8tde"]
+[ext_resource type="AudioStream" uid="uid://6wvjjfbifssf" path="res://Sfx/GameSFX/Events/Retro Event Echo 12.wav" id="10_bocht"]
 [ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="10_ta6lj"]
+[ext_resource type="AudioStream" uid="uid://bblcqxp6fekpf" path="res://Sfx/GameSFX/Impact/Retro Impact LoFi 09.wav" id="11_pmswi"]
+[ext_resource type="Texture2D" uid="uid://cwdnxgl7k8n26" path="res://Assets/Sparkle2 Particles.png" id="12_8sd87"]
 [ext_resource type="Texture2D" uid="uid://dei1vxmeg8aah" path="res://Assets/Hurt Effect.png" id="12_jxe34"]
+[ext_resource type="AudioStream" uid="uid://b518ksl04jb1q" path="res://Sfx/GameSFX/Magic/Retro Magic 34.wav" id="12_og1me"]
 
 [sub_resource type="Resource" id="Resource_yaidf"]
 script = ExtResource("5_ja3e4")
@@ -43,9 +47,24 @@ script = ExtResource("5_ja3e4")
 tag = "explode"
 stream = ExtResource("9_0iuyt")
 
+[sub_resource type="Resource" id="Resource_cstl5"]
+script = ExtResource("5_ja3e4")
+tag = "power_up"
+stream = ExtResource("10_bocht")
+
+[sub_resource type="Resource" id="Resource_t85mi"]
+script = ExtResource("5_ja3e4")
+tag = "fire_burst"
+stream = ExtResource("11_pmswi")
+
+[sub_resource type="Resource" id="Resource_di48n"]
+script = ExtResource("5_ja3e4")
+tag = "p_up_finish"
+stream = ExtResource("12_og1me")
+
 [sub_resource type="Resource" id="Resource_0m3bc"]
 script = ExtResource("4_q56as")
-sound_effects = Array[ExtResource("5_ja3e4")]([SubResource("Resource_yaidf"), SubResource("Resource_u3fen"), SubResource("Resource_dxcvt"), SubResource("Resource_nbj6v"), SubResource("Resource_ngtc0"), SubResource("Resource_w52dj")])
+sound_effects = Array[ExtResource("5_ja3e4")]([SubResource("Resource_yaidf"), SubResource("Resource_u3fen"), SubResource("Resource_dxcvt"), SubResource("Resource_nbj6v"), SubResource("Resource_ngtc0"), SubResource("Resource_w52dj"), SubResource("Resource_cstl5"), SubResource("Resource_t85mi"), SubResource("Resource_di48n")])
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vy8ue"]
 size = Vector2(6.5, 10)
@@ -306,6 +325,15 @@ particles_anim_loop = false
 offsets = PackedFloat32Array(0, 0.478723, 1)
 colors = PackedColorArray(0.180392, 0.431373, 0.419608, 1, 0.196078, 0.290196, 0.415686, 1, 0.0784314, 0.141176, 0.164706, 1)
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_b75fr"]
+particles_animation = true
+particles_anim_h_frames = 9
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="Gradient_xemu4"]
+colors = PackedColorArray(1, 1, 1, 1, 0.352941, 0.854902, 0.94902, 1)
+
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_881w5"]
 particles_animation = true
 particles_anim_h_frames = 8
@@ -399,7 +427,7 @@ hue_variation_max = 0.2
 hue_variation_curve = SubResource("Curve_1es8a")
 
 [node name="LandParticles" type="CPUParticles2D" parent="ParticleComps"]
-z_index = 4
+z_index = 5
 material = SubResource("CanvasItemMaterial_hp5sh")
 position = Vector2(0, 7)
 amount = 5
@@ -421,6 +449,26 @@ anim_speed_min = 0.25
 anim_speed_max = 0.5
 anim_offset_min = 0.25
 anim_offset_max = 0.5
+
+[node name="PowerUpParticles" type="CPUParticles2D" parent="ParticleComps"]
+z_index = 6
+material = SubResource("CanvasItemMaterial_b75fr")
+emitting = false
+amount = 100
+lifetime = 4.0
+one_shot = true
+explosiveness = 0.97
+lifetime_randomness = 0.5
+local_coords = true
+texture = ExtResource("12_8sd87")
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 130.0
+color_initial_ramp = SubResource("Gradient_xemu4")
+anim_speed_min = 1.0
+anim_speed_max = 1.0
 
 [node name="DeathParticles" type="Node2D" parent="ParticleComps"]
 

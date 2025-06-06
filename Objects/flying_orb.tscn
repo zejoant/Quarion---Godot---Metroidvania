@@ -1,0 +1,56 @@
+[gd_scene load_steps=7 format=3 uid="uid://cma1ghbijmldd"]
+
+[ext_resource type="Script" path="res://Objects/flying_orb.gd" id="1_pwiui"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_o0f5j"]
+load_path = "res://.godot/imported/Sprite Sheet.png-1a601279279ac7194649834130289155.ctex"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kxyem"]
+radius = 3.0
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_5kyfs"]
+particles_animation = true
+particles_anim_h_frames = 5
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_pk3se"]
+load_path = "res://.godot/imported/Blob Particle.png-3bf2e56fa383fbfce8d25108af5976e6.ctex"
+
+[sub_resource type="Gradient" id="Gradient_aqjn8"]
+offsets = PackedFloat32Array(0, 0.345745, 0.680851, 1)
+colors = PackedColorArray(0.737255, 0.713726, 0.270588, 1, 0.823529, 0.52549, 0.266667, 1, 0.768627, 0.298039, 0.298039, 1, 0.584314, 0.164706, 0.384314, 1)
+
+[node name="FlyingOrb" type="StaticBody2D" groups=["Enemy"]]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_pwiui")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 5
+texture = SubResource("CompressedTexture2D_o0f5j")
+region_enabled = true
+region_rect = Rect2(48, 104, 8, 8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_kxyem")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+z_index = 4
+material = SubResource("CanvasItemMaterial_5kyfs")
+amount = 20
+lifetime = 0.5
+texture = SubResource("CompressedTexture2D_pk3se")
+emission_shape = 1
+emission_sphere_radius = 2.0
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 3.0
+color_ramp = SubResource("Gradient_aqjn8")
+hue_variation_min = 0.1
+hue_variation_max = 0.4
+anim_speed_min = 0.25
+anim_speed_max = 0.5
+anim_offset_max = 1.0

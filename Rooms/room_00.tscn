@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bjatyfe6xbogn"]
 
 [ext_resource type="PackedScene" uid="uid://coud47gbx6bt8" path="res://tile_map.tscn" id="1_kymrq"]
-[ext_resource type="Texture2D" uid="uid://d0t12of8ldkjk" path="res://Assets/Ship.png" id="2_37knk"]
+[ext_resource type="Texture2D" uid="uid://dnuk8to6m018a" path="res://Assets/Ship Textures.png" id="2_had36"]
 [ext_resource type="Texture2D" uid="uid://te3v6cbn15qu" path="res://Assets/BG2 Top.png" id="2_p5atc"]
 
 [node name="Room00" type="Node2D"]
@@ -13,7 +13,9 @@ layer_3/tile_data = PackedInt32Array(786438, 131072, 23, 917510, 131072, 23, 104
 [node name="Ship" type="Sprite2D" parent="."]
 z_index = 2
 position = Vector2(52, 168)
-texture = ExtResource("2_37knk")
+texture = ExtResource("2_had36")
+region_enabled = true
+region_rect = Rect2(0, 96, 168, 64)
 
 [node name="Bg2Top" type="Sprite2D" parent="."]
 position = Vector2(56, 56)

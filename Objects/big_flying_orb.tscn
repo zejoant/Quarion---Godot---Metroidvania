@@ -1,0 +1,198 @@
+[gd_scene load_steps=28 format=3 uid="uid://b0vfxmd04d7io"]
+
+[ext_resource type="Script" path="res://Objects/big_flying_orb.gd" id="1_8pk85"]
+[ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="2_4iuv5"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_5uk7b"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_l5ugc"]
+[ext_resource type="AudioStream" uid="uid://dgu7edve14yxg" path="res://Sfx/big shot 1.wav" id="4_y7uxw"]
+[ext_resource type="AudioStream" uid="uid://cjwiec145yayi" path="res://Sfx/big shot 2.wav" id="5_i0pes"]
+[ext_resource type="AudioStream" uid="uid://bmu4et2yjvbb6" path="res://Sfx/charge up.wav" id="6_bfhaa"]
+
+[sub_resource type="Resource" id="Resource_kwokw"]
+script = ExtResource("3_l5ugc")
+tag = "shot 1"
+stream = ExtResource("4_y7uxw")
+
+[sub_resource type="Resource" id="Resource_ucnfk"]
+script = ExtResource("3_l5ugc")
+tag = "shot 2"
+stream = ExtResource("5_i0pes")
+
+[sub_resource type="Resource" id="Resource_yrdlx"]
+script = ExtResource("3_l5ugc")
+tag = "charge up"
+stream = ExtResource("6_bfhaa")
+
+[sub_resource type="Resource" id="Resource_hsu8h"]
+script = ExtResource("2_5uk7b")
+sound_effects = Array[ExtResource("3_l5ugc")]([SubResource("Resource_kwokw"), SubResource("Resource_ucnfk"), SubResource("Resource_yrdlx")])
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_m7fpw"]
+radius = 7.0
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ec40m"]
+particles_animation = true
+particles_anim_h_frames = 5
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ywpth"]
+load_path = "res://.godot/imported/Blob Particle.png-3bf2e56fa383fbfce8d25108af5976e6.ctex"
+
+[sub_resource type="Gradient" id="Gradient_7fnkl"]
+offsets = PackedFloat32Array(0, 0.345745, 0.680851, 1)
+colors = PackedColorArray(0.709804, 0.831373, 0.937255, 1, 0.384314, 0.611765, 0.815686, 1, 0.286275, 0.372549, 0.705882, 1, 0.2, 0.180392, 0.427451, 1)
+
+[sub_resource type="Animation" id="Animation_a4uao"]
+resource_name = "Default"
+length = 0.40001
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [Rect2(16, 128, 16, 16), Rect2(32, 128, 16, 16), Rect2(48, 128, 16, 16), Rect2(64, 128, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_ckjkd"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(16, 128, 16, 16)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5vpn1"]
+_data = {
+"Default": SubResource("Animation_a4uao"),
+"RESET": SubResource("Animation_ckjkd")
+}
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_06iub"]
+blend_mode = 1
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_op7ru"]
+load_path = "res://.godot/imported/Line Particle.png-ca29923f7b62240508620dc4fd1bee4a.ctex"
+
+[sub_resource type="Curve" id="Curve_vvcbu"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.280899, 0.527472), -3.12967, -3.12967, 0, 0, Vector2(0.589888, 0), -0.360324, -0.360324, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_8ntm2"]
+colors = PackedColorArray(0.537255, 0.717647, 0.890196, 1, 0.2, 0.180392, 0.427451, 1)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_56a5n"]
+blend_mode = 1
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_c24tu"]
+load_path = "res://.godot/imported/Line Particle.png-ca29923f7b62240508620dc4fd1bee4a.ctex"
+
+[sub_resource type="Curve" id="Curve_74gbh"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="Curve" id="Curve_ja2oo"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.508065, 0), 0.0, 0.0, 0, 0, Vector2(0.991935, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_wbsc5"]
+colors = PackedColorArray(0.537255, 0.717647, 0.890196, 1, 0.2, 0.180392, 0.427451, 1)
+
+[node name="BigFlyingOrb" type="StaticBody2D" groups=["Enemy"]]
+z_index = 2
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_8pk85")
+sfxs = SubResource("Resource_hsu8h")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 5
+texture = ExtResource("2_4iuv5")
+region_enabled = true
+region_rect = Rect2(16, 128, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_m7fpw")
+
+[node name="TrailParticles" type="CPUParticles2D" parent="."]
+visible = false
+z_index = 4
+material = SubResource("CanvasItemMaterial_ec40m")
+amount = 20
+lifetime = 0.5
+texture = SubResource("CompressedTexture2D_ywpth")
+emission_shape = 1
+emission_sphere_radius = 5.0
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 3.0
+color_ramp = SubResource("Gradient_7fnkl")
+hue_variation_min = 0.1
+hue_variation_max = 0.4
+anim_speed_min = 0.25
+anim_speed_max = 0.5
+anim_offset_max = 1.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_5vpn1")
+}
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="."]
+z_index = 5
+material = SubResource("CanvasItemMaterial_06iub")
+amount = 50
+local_coords = true
+texture = SubResource("CompressedTexture2D_op7ru")
+particle_flag_align_y = true
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 40.0
+initial_velocity_max = 40.0
+angular_velocity_min = 72.73
+angular_velocity_max = 72.73
+radial_accel_min = -100.0
+radial_accel_max = -100.0
+split_scale = true
+scale_curve_x = null
+scale_curve_y = SubResource("Curve_vvcbu")
+color = Color(0.709804, 0.831373, 0.937255, 1)
+color_initial_ramp = SubResource("Gradient_8ntm2")
+
+[node name="CPUParticles2D4" type="CPUParticles2D" parent="."]
+z_index = 5
+material = SubResource("CanvasItemMaterial_56a5n")
+amount = 50
+lifetime = 0.5
+explosiveness = 0.99
+local_coords = true
+texture = SubResource("CompressedTexture2D_c24tu")
+particle_flag_align_y = true
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 80.0
+initial_velocity_max = 80.0
+angular_velocity_min = 72.73
+angular_velocity_max = 72.73
+radial_accel_min = -300.0
+radial_accel_max = -300.0
+split_scale = true
+scale_curve_x = SubResource("Curve_74gbh")
+scale_curve_y = SubResource("Curve_ja2oo")
+color = Color(0.709804, 0.831373, 0.937255, 1)
+color_initial_ramp = SubResource("Gradient_wbsc5")
