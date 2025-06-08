@@ -10,8 +10,9 @@ func _on_resume_button_pressed():
 
 func _on_quit_button_pressed():
 	get_tree().paused = false
-	get_owner().queue_free()
 	get_tree().change_scene_to_file("res://Menu/main_menu.tscn")
+	#get_tree().change_scene_to_file.bind("res://Menu/main_menu.tscn").call_deferred()
+	#get_owner().queue_free()
 
 
 func _on_options_button_pressed():
@@ -24,8 +25,9 @@ func _unhandled_input(event):
 	#if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE and !exiting:
 	if event.is_action_pressed("Pause") and !exiting:
 		exiting = true
-		await get_tree().create_timer(0.01).timeout
+		await get_tree().create_timer(0.01, false).timeout
 		get_owner().pauseMenu()
 		if get_parent().get_node_or_null("OptionsMenu") != null:
+			SaveManager.save_settings()
 			get_parent().get_node("OptionsMenu").queue_free()
 		exiting = false

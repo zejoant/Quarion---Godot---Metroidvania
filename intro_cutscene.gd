@@ -13,5 +13,5 @@ func _physics_process(_delta):
 				get_tree().create_tween().tween_property($Camera/SkipText, "modulate:a", 1, 0.3)
 			else:
 				$Camera.fade("000000", 1, 0.3, 0.2, 0)
-				await get_tree().create_timer(0.5).timeout
+				await get_tree().create_timer(0.5, false).timeout
 				get_tree().change_scene_to_file("res://world.tscn")

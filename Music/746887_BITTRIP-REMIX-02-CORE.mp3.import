@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/746887_BITTRIP-REMIX-02-CORE.mp3-12edeb8120f1
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

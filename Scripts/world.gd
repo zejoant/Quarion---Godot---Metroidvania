@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var starting_position = Vector2(2, 4)#Vector2(2, 1)
+@export var starting_position = Vector2(7, 3)#Vector2(2, 1)
 
 var new_game = true
 var paused = false
@@ -22,14 +22,16 @@ var previous_song: String
 var respawn_song_pos: float
 var respawn_song: String
 
-var appleCount: int
+var bought_shop_items: Array[bool]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	cam_size = get_node("Camera").get_viewport_rect().size
 	player = get_node("Player")
-	$Camera/UIContainer.visible = true
+	$Camera/UILayer/UIContainer.visible = true
+	bought_shop_items.resize(3)
+	bought_shop_items.fill(false)
 	
 	setup_arrays()
 	
@@ -39,14 +41,14 @@ func _ready():
 		checkpoint_pos = Vector2(cam_size.x/2, cam_size.y/2)
 	else:
 		load_data()
-		$Camera/UIContainer/AppleCount.text = str(appleCount)
+		$Camera/UILayer/UIContainer/AppleCount.text = str(player.apple_count)
 		if player.green_key_state == "collected":
 			$Camera.set_keys("Green")
 		if player.red_key_state == "collected":
 			$Camera.set_keys("Red")
 		
 		get_node("Camera").flash(1, 0, 0.2, 0.3)
-		await get_tree().create_timer(0.05).timeout
+		await get_tree().create_timer(0.05, false).timeout
 	
 	player.position = checkpoint_pos
 	
@@ -58,10 +60,6 @@ func _ready():
 	
 	$MusicPlayer.stream = load("res://Music/746887_BITTRIP-REMIX-02-CORE.mp3")
 	$MusicPlayer.play()
-	
-func incrementAppleCount():
-	appleCount += 1
-	$Camera/UIContainer/AppleCount.text = str(appleCount)
 
 func switch_music(new_song_path):
 	previous_song = $MusicPlayer.stream.resource_path
@@ -100,7 +98,7 @@ func setup_arrays():
 func _process(_delta):
 	exit_room_check()
 	
-	if Input.is_action_just_pressed("Pause"):
+	if Input.is_action_just_pressed("Pause") and !$Camera/UILayer/ShopUIContainer.visible:
 		pauseMenu()
 		
 	#var window_size = DisplayServer.window_get_size()

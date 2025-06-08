@@ -85,7 +85,8 @@ func _physics_process(delta):
 			attack_cooldown = 0
 			attack_count += 1
 			boss_state = BossState.IDLE
-			await get_tree().create_timer(0.5).timeout
+			#await get_tree().create_timer(0.5).timeout
+			await create_tween().tween_interval(0.5).finished
 			if boss_state == BossState.IDLE:
 				choose_attack()
 		elif boss_state == BossState.JUMP:
@@ -258,7 +259,8 @@ func dive_attack():
 				attack_state += 1
 				
 				$ForsakenAlly/DiveHurtCull.disabled = false #damage player on/off
-				await get_tree().create_timer(0.1).timeout
+				#await get_tree().create_timer(0.1).timeout
+				await create_tween().tween_interval(0.1).finished
 				$ForsakenAlly/DiveHurtCull.disabled = true
 				
 			if attack_state == 4: #finish attack/land
@@ -361,7 +363,8 @@ func dodge_player(dodge_speed: float, center: bool, reset_attack: bool):
 	else: #if in air, boss does not jump when dodging
 		self.create_tween().tween_property(boss, "position:y", origin.y, dodge_speed)
 	
-	await get_tree().create_timer(dodge_speed).timeout
+	#await get_tree().create_timer(dodge_speed).timeout
+	await create_tween().tween_interval(dodge_speed).finished
 	$ForsakenAlly/HurtColl.disabled = false
 	$ForsakenAlly/HitArea/HitColl.disabled = false
 	dodging = false
@@ -389,7 +392,8 @@ func intermission():
 	$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", true)
 	$ForsakenAlly/BossAnimPlayer.play("Lie Down")
 	
-	await get_tree().create_timer(3).timeout
+	#await get_tree().create_timer(3).timeout
+	await create_tween().tween_interval(3).finished
 	
 	dodge_player(0.3, false, true)
 	$ForsakenAlly/BossAnimPlayer.play("Idle")
@@ -431,7 +435,8 @@ func _on_hit_area_body_entered(body):
 			$DiveImpactComp/DiveImpactParticles.restart()
 			$DiveImpactComp/DiveImpactParticles.emitting = true
 			$ForsakenAlly/FinalPhaseParticles.emitting = true
-			await get_tree().create_timer(0.5).timeout
+			#await get_tree().create_timer(0.5).timeout
+			await create_tween().tween_interval(0.5).finished
 			$DiveImpactComp/DiveImpactParticles.amount = 30
 	
 	if health == 0:

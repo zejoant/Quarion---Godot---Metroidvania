@@ -27,8 +27,11 @@ var idle_origin : Vector2
 var tween2
 var tween3
 
-var chance = 1
+var chance = 0
 var bullet_count = 0
+
+var follow_pos: Vector2
+var aim_pos: Vector2
 
 func _ready():
 	var room_states = get_node("/root/World").get_room_state()
@@ -50,7 +53,7 @@ func _process(_delta):
 			boss_state = 0
 			attack_state = 0
 			bullet_count = 0
-			await get_tree().create_timer(rng.randi_range(3, 4)).timeout
+			await get_tree().create_timer(rng.randi_range(3-difficulty, 4-difficulty), false).timeout
 			choose_attack()
 			#boss_state = rng.randi_range(1, 1)
 		if mod > 0 and boss_state >= 0: #idle animation
@@ -64,26 +67,31 @@ func _process(_delta):
 
 
 func choose_attack():
-	var num = rng.randi_range(0, 3)
+	var num = rng.randi_range(1+int(float(difficulty)/2.0), 3+int(float(difficulty)/2.0))
 	
-	if chance == -1:
-		chance = 3
-	elif chance == 4:
-		chance = 0
+	#if chance == -1:
+	#	chance = 3
+	#elif chance == 4:
+	#	chance = 0
 	
 	if num <= chance:
 		boss_state = 1
-		chance -= 1
+		#chance -= 1
+		#chance = 0
 	else:
-		boss_state = rng.randi_range(2, 3)
+		if difficulty > 0:
+			boss_state = rng.randi_range(2, 3)
+		else:
+			boss_state = 2
 		chance += 1
 
 
 func rain():
 	if attack_state == 0 and boss_state == 2: #wait time, then the attack ends
 		#get_node("/root/World/Camera").radial_blur()
+		get_node("/root/World/Camera").radial_blur(0.03, 0.6, 12)
 		attack_state = 1
-		await get_tree().create_timer(5).timeout
+		await get_tree().create_timer(5, false).timeout
 		boss_state = -1
 		
 	if !bullet_cooldown: #create a rain bullet
@@ -91,7 +99,7 @@ func rain():
 		var bullet = load("res://Objects/bullet.tscn").instantiate()
 		bullet.setup(2.0, Vector2(rng.randf_range(-0.5, 0.5), 1), Vector2(rng.randi_range(3, 35)*8, 0))
 		call_deferred("add_child", bullet) 
-		await get_tree().create_timer(0.2).timeout
+		await get_tree().create_timer(0.2-float(difficulty)*0.05, false).timeout
 		bullet_cooldown = false
 	
 
@@ -112,9 +120,9 @@ func lunge():
 		tween3 = self.create_tween()
 		tween3.parallel().tween_property(%Aim, "modulate:a", 1, 1)
 		tween3.parallel().tween_property(boss, "modulate", Color(0.8, 0.3, 0.3, 1), 1.8)
-		tween3.parallel().tween_property(self, "mod", 0, 0.5)
+		tween3.parallel().tween_property(self, "mod", 0, 0.5-difficulty*0.1)
 		
-		await get_tree().create_timer(0.5).timeout
+		await get_tree().create_timer(0.5-difficulty*0.1, false).timeout
 		aim = player.position.direction_to(boss.position)
 		tween2 = self.create_tween()
 		tween2.set_trans(Tween.TRANS_SINE)
@@ -143,7 +151,7 @@ func lunge():
 			$Boss/AnimationPlayer.play("Sad")
 			boss.modulate = Color(1, 1, 1, 1)
 			$Boss/DamageColl.disabled = true
-			await get_tree().create_timer(3).timeout
+			await get_tree().create_timer(3-difficulty, false).timeout
 			if attack_state == 4 and health:
 				reset_lunge()
 
@@ -171,11 +179,18 @@ func aiming_bullets():
 		
 		AudioManager.play_audio(sfxs.get_sfx("shot"))
 		get_node("/root/World/Camera").flash(0.3, 0, 0, 0.2)
-		var bullet = load("res://Objects/bullet.tscn").instantiate()
-		bullet.setup(3.0, aim, boss.position)
-		call_deferred("add_child", bullet)
+		var b1 = load("res://Objects/bullet.tscn").instantiate()
+		b1.setup(3.0, aim, boss.position)
+		call_deferred("add_child", b1)
+		if difficulty == 2:
+			var b2 = load("res://Objects/bullet.tscn").instantiate()
+			b2.setup(3.0, aim.rotated(PI/4), boss.position)
+			call_deferred("add_child", b2)
+			var b3 = load("res://Objects/bullet.tscn").instantiate()
+			b3.setup(3.0, aim.rotated(-PI/4), boss.position)
+			call_deferred("add_child", b3)
 		bullet_count += 1
-		await get_tree().create_timer(0.5).timeout
+		await get_tree().create_timer(0.5, false).timeout
 		tween3.kill()
 		bullet_cooldown = false
 	
@@ -205,7 +220,10 @@ func param_setup():
 	boss.get_node("Base").texture = sprite_sheet
 	boss.get_node("Spikes").texture = sprite_sheet
 	boss.get_node("Face").texture = sprite_sheet
-
+	
+	var p = get_node("/root/World/Player")
+	if p.has_wallclimb != p.has_blue_blocks and difficulty == 0: #if you have killed one boss already
+		difficulty = 1
 
 func _on_body_entered(body):
 	$ActivateBossColl.set_deferred("disabled", true)
@@ -221,7 +239,7 @@ func _on_body_entered(body):
 	$Gate2.close()
 	
 	await self.create_tween().tween_interval(2).finished
-	get_node("/root/World/Camera").radial_blur(0.03, 0.6, 12)
+	#get_node("/root/World/Camera").radial_blur(0.03, 0.6, 12)
 	boss.visible = true
 	boss_state = -1
 
@@ -231,6 +249,7 @@ func _on_hit_area_body_entered(body): #damage boss
 	get_node("/root/World/Camera").invert_color(1, 0.3)
 	AudioManager.play_audio(sfxs.get_sfx("impact"))
 	
+	chance = 0
 	health -= 1
 	if !health:
 		die()

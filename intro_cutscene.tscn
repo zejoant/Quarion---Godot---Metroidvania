@@ -1795,9 +1795,6 @@ ignore_rotation = false
 [node name="FlashLayer" parent="Camera" index="0"]
 centered = true
 
-[node name="BlurShaderLayer" parent="Camera" index="1"]
-visible = false
-
 [node name="TransitionCover" type="ColorRect" parent="Camera"]
 modulate = Color(1, 1, 1, 0)
 z_index = 48

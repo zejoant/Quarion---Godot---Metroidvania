@@ -14,6 +14,6 @@ layer_3/tile_data = PackedInt32Array(-65516, 917504, 23, 65556, 917504, 23, 1966
 [node name="SpikeTrap" parent="." instance=ExtResource("2_6fpnd")]
 position = Vector2(244, 108)
 width = 5
-interval = 0.1
+interval = 0.2
 audio = true
 direction = "down"

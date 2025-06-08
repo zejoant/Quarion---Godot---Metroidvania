@@ -11,7 +11,7 @@ func _ready():
 	setup()
 	if mode == "Delay":
 		$AnimationPlayer.play("Extend")
-		await get_tree().create_timer(1.2/speed).timeout
+		await get_tree().create_timer(1.2/speed, false).timeout
 	elif mode == "Instant":
 		$AnimationPlayer.play("Instant Extend")
 	if sound:
@@ -35,5 +35,5 @@ func retract_spike():
 	$CollisionShape2D.set_deferred("disabled", true)
 	for i in $Sprite2D2.region_rect.position.y / 112:
 		$Sprite2D2.region_rect.position.y -= 112
-		await get_tree().create_timer(0.05).timeout
+		await get_tree().create_timer(0.05, false).timeout
 	queue_free()

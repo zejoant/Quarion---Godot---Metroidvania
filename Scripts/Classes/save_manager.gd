@@ -35,7 +35,8 @@ func save_game(world: Node):
 	file.store_var(world.player.green_key_state)
 	file.store_var(world.player.red_key_state)
 	file.store_var(world.opened_doors)
-	file.store_var(world.appleCount)
+	file.store_var(world.player.apple_count)
+	file.store_var(world.bought_shop_items)
 
 func load_game(world: Node):
 	if FileAccess.file_exists(save_path):
@@ -53,14 +54,5 @@ func load_game(world: Node):
 		world.player.green_key_state = file.get_var()
 		world.player.red_key_state = file.get_var()	
 		world.opened_doors = file.get_var()
-		world.appleCount = file.get_var()
-	#else:
-		#world.cam_size = Vector2(304, 192)#get_node("Camera").get_viewport_rect().size
-		#world.checkpoint_room = Vector2(0, 1)
-		#world.checkpoint_pos = world.cam_size/2.0
-		#world.player.has_dash = false
-		#world.player.has_wallclimb = false
-		#world.player.has_double_jump = false
-		#world.player.has_freeze = false
-		#world.player.has_blue_blocks = false
-		#print("no data has been saved")
+		world.player.apple_count = file.get_var()
+		world.bought_shop_items.assign(file.get_var())

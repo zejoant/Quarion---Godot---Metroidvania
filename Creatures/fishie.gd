@@ -13,7 +13,7 @@ func _ready():
 	#position = Vector2(0, 0)
 	top_pos = position.y-jump_height*8
 	start_pos = position.y
-	await get_tree().create_timer(start_delay).timeout
+	await get_tree().create_timer(start_delay, false).timeout
 	jumping = false
 	
 
@@ -42,3 +42,6 @@ func _process(_delta):
 		
 		await tween.tween_interval(3).finished
 		jumping = false
+
+func is_tile_one_way(_rid: RID) -> bool:
+	return false

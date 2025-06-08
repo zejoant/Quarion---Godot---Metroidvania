@@ -43,10 +43,11 @@ var paused = false
 @export_group("Items")
 @export_enum("uncollected", "collected", "used") var green_key_state = "uncollected"
 @export_enum("uncollected", "collected", "used") var red_key_state = "uncollected"
-@export_enum("none", "one", "two", "three", "used") var amulet_pieces = "none"
+@export_range(0, 5) var amulet_pieces: int = 0
 @export var has_shop_fast_travel = false
 @export var has_item_map = false
 @export var has_bubble = false
+@export_range(0, 9999) var apple_count : int = 0
 
 #enum state {STANDING, WALKING, JUMPING, FALLING, DASHING, WALLSLIDING, WALLJUMPING}
 
@@ -127,7 +128,10 @@ func _physics_process(_delta):
 		#get_node("/root/World/Camera/PlayerLight/ColorRect").material.set_shader_parameter("player_pos", Vector2(self.global_position.x/304, self.global_position.y/192))
 	
 		if $CollissionRays/FloorRay.is_colliding() and $CollissionRays/CeilingRay.is_colliding():
-			if !$CollissionRays/CeilingRay.get_collider().is_tile_one_way($CollissionRays/CeilingRay.get_collider_rid()):
+			if !($CollissionRays/CeilingRay.get_collider() is TileMap):
+				$AnimationPlayer.play("Land")
+				respawn()
+			elif !$CollissionRays/CeilingRay.get_collider().is_tile_one_way($CollissionRays/CeilingRay.get_collider_rid()):
 				$AnimationPlayer.play("Land")
 				respawn()
 		if Input.is_action_just_pressed("Quick Respawn"):
@@ -140,6 +144,7 @@ func _physics_process(_delta):
 			has_freeze = true
 			has_wallclimb = true
 			has_item_map = true
+			update_apple_count(9999, true)
 			get_parent().get_node("WorldMap/MapComps/ItemMap").visible = true
 			#green_key_state = "collected"
 			#red_key_state = "collected"
@@ -148,6 +153,9 @@ func respawn():
 	if !is_dead:
 		var world = get_node("/root/World")
 		get_node("/root/World/MusicPlayer").stop()
+		#self.process_mode = Node.PROCESS_MODE_ALWAYS
+		#world.get_node("Camera").process_mode = Node.PROCESS_MODE_ALWAYS
+		#get_tree().paused = true
 		is_dead = true
 		modulate.g = 0.4
 		$AnimationPlayer.play("Damage")
@@ -155,19 +163,23 @@ func respawn():
 		world.get_node("Camera").shake(5, 0.05, 3)
 		AudioManager.play_audio(sfxs.get_sfx("death"))
 		
-		await get_tree().create_timer(0.5).timeout
+		await get_tree().create_timer(0.5, false).timeout
 		$Sprite2D.visible = false
 		modulate.g = 1
 		$ParticleComps/DeathParticles/RingExplosionParticles.emitting = true
 		$ParticleComps/DeathParticles/PixelExplosionParticles.emitting = true
 		AudioManager.play_audio(sfxs.get_sfx("explode"))
-		await get_tree().create_timer(1.4).timeout
-		$Sprite2D.visible = true
-		world.get_node("Camera").flash(1, 0, 0.2, 0.3)
-		is_dead = false
 		
+		await get_tree().create_timer(1.4, false).timeout
+		world.get_node("Camera").flash(1, 0, 0.2, 0.3)
+		#world.change_room(world.room_coords)
 		world.resume_respawn_music()
 		world.return_to_checkpoint()
+		$Sprite2D.visible = true
+		is_dead = false
+		#get_tree().paused = false
+		#self.process_mode = Node.PROCESS_MODE_INHERIT
+		
 
 func bounce(strength):
 	if !is_dead:
@@ -336,7 +348,7 @@ func custom_data_action(body: TileMap, custom_data: String, tile_coords: Vector2
 			$AnimationPlayer.stop()
 			#get_node("/root/World/WorldMap").remove_item()
 			
-			await get_tree().create_timer(2).timeout
+			await create_tween().tween_interval(2).finished
 			AudioManager.play_audio(sfxs.get_sfx("p_up_finish"))
 			get_node("/root/World/Camera").flash(1, 0, 0.1, 0.4)
 			if custom_data == "PBlueBlocks":
@@ -388,3 +400,10 @@ func disable_movement(disable: bool):
 			$AnimationPlayer.play("Idle")
 	else:
 		can_move = !disable
+
+func update_apple_count(value: int, override: bool = false):
+	if override:
+		apple_count = value
+	else:
+		apple_count += value
+	get_node("/root/World/Camera").update_apple_count(apple_count)

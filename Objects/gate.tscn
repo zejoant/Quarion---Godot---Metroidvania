@@ -5,7 +5,7 @@
 [ext_resource type="AudioStream" uid="uid://mdu6xo6r5jy" path="res://Sfx/anvil-hit-2-14845.mp3" id="3_oy5mm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_elht8"]
-size = Vector2(8, 8)
+size = Vector2(6, 8)
 
 [node name="Gate" type="StaticBody2D"]
 z_index = 2

@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/Everhood_The_Final_Battle.mp3-3ba8cb3f4d15d4f
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

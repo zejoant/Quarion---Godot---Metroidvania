@@ -14,10 +14,11 @@ func _on_continue_button_pressed():
 		self.create_tween().tween_property($Menu, "offset:x", -150, 0.2)
 		$Menu/VersionNumber.visible = false
 		get_tree().create_tween().tween_property($FadeToBlack, "color", Color(0, 0, 0, 1), 0.5)
-		await get_tree().create_timer(0.8).timeout
+		await get_tree().create_timer(0.8, false).timeout
 		
 		world.new_game = false
 		get_tree().root.add_child(world)
+		get_tree().current_scene = world
 		queue_free()
 	else:
 		_on_new_game_button_pressed()

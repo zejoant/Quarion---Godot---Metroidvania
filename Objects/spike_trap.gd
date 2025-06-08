@@ -34,7 +34,7 @@ func _process(_delta):
 		anim_tween = self.create_tween()
 		#anim_tween.tween_interval(0.5)
 		anim_tween.tween_method(extend_spike, 0, length*8, 0.05)
-		anim_tween.tween_interval(1.2)
+		anim_tween.tween_interval(interval)#1.2)
 		await anim_tween.tween_method(extend_spike, length*8, 0, 0.10).finished
 		
 		animating = false

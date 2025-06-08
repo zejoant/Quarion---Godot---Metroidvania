@@ -19,7 +19,7 @@ func activate():
 		$AnimationPlayer.play("Active")
 		world.save_checkpoint_room(position)
 		cooldown = true
-		var timer = get_tree().create_timer(2)
+		var timer = get_tree().create_timer(2, false)
 		timer.timeout.connect(self.end_cooldown)
 
 func end_cooldown():
