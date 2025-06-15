@@ -12,7 +12,6 @@
 [ext_resource type="AudioStream" uid="uid://wm84dwuyqcmd" path="res://Sfx/dash3.wav" id="7_etp48"]
 [ext_resource type="Shader" path="res://Shaders/white_pulse.gdshader" id="8_hnr4t"]
 [ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="8_uoyv7"]
-[ext_resource type="Texture2D" uid="uid://cwdnxgl7k8n26" path="res://Assets/Sparkle2 Particles.png" id="10_mpich"]
 
 [sub_resource type="Resource" id="Resource_gbhgb"]
 script = ExtResource("3_s620o")
@@ -274,13 +273,16 @@ particles_anim_loop = false
 [sub_resource type="Gradient" id="Gradient_le6o7"]
 colors = PackedColorArray(0.761125, 0.876223, 0.987051, 1, 0.95622, 0.303941, 0.520313, 1)
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_n3jaf"]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_nug2c"]
 particles_animation = true
 particles_anim_h_frames = 9
 particles_anim_v_frames = 1
 particles_anim_loop = false
 
-[sub_resource type="Gradient" id="Gradient_xafaj"]
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ab87g"]
+load_path = "res://.godot/imported/Sparkle2 Particles.png-454b75e1923393dfba995efc4fbb7260.ctex"
+
+[sub_resource type="Gradient" id="Gradient_traxk"]
 colors = PackedColorArray(1, 1, 1, 1, 0.352941, 0.854902, 0.94902, 1)
 
 [sub_resource type="Animation" id="Animation_71s7e"]
@@ -484,14 +486,14 @@ region_rect = Rect2(160, 0, 96, 32)
 
 [node name="DiveImpactParticles" type="CPUParticles2D" parent="DiveImpactComp"]
 z_index = 6
-material = SubResource("CanvasItemMaterial_n3jaf")
+material = SubResource("CanvasItemMaterial_nug2c")
 amount = 30
 lifetime = 2.0
 one_shot = true
 explosiveness = 1.0
 lifetime_randomness = 0.5
 local_coords = true
-texture = ExtResource("10_mpich")
+texture = SubResource("CompressedTexture2D_ab87g")
 emission_shape = 3
 emission_rect_extents = Vector2(48, 1)
 direction = Vector2(0, -1)
@@ -499,7 +501,7 @@ spread = 10.0
 gravity = Vector2(0, 0)
 initial_velocity_min = 20.0
 initial_velocity_max = 70.0
-color_initial_ramp = SubResource("Gradient_xafaj")
+color_initial_ramp = SubResource("Gradient_traxk")
 anim_speed_min = 1.0
 anim_speed_max = 1.0
 anim_offset_min = 0.25

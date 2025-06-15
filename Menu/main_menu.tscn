@@ -61,24 +61,32 @@ theme_override_constants/separation = 10
 
 [node name="ContinueButton" type="Button" parent="Menu/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../QuitButton")
+focus_neighbor_bottom = NodePath("../NewGameButton")
 theme = ExtResource("5_v0tn8")
 theme_override_constants/h_separation = 0
 text = "Continue"
 
 [node name="NewGameButton" type="Button" parent="Menu/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../ContinueButton")
+focus_neighbor_bottom = NodePath("../OptionsButton")
 theme = ExtResource("5_v0tn8")
 theme_override_constants/h_separation = 0
 text = "New Game"
 
 [node name="OptionsButton" type="Button" parent="Menu/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../NewGameButton")
+focus_neighbor_bottom = NodePath("../QuitButton")
 theme = ExtResource("5_v0tn8")
 theme_override_constants/h_separation = 0
 text = "Options"
 
 [node name="QuitButton" type="Button" parent="Menu/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../OptionsButton")
+focus_neighbor_bottom = NodePath("../ContinueButton")
 theme = ExtResource("5_v0tn8")
 theme_override_constants/h_separation = 0
 text = "Quit"
@@ -119,6 +127,9 @@ layout_mode = 0
 offset_right = 304.0
 offset_bottom = 192.0
 color = Color(0, 0, 0, 0)
+
+[node name="OptionsLayer" type="CanvasLayer" parent="."]
+layer = 2
 
 [connection signal="pressed" from="Menu/MarginContainer/VBoxContainer/VBoxContainer/ContinueButton" to="." method="_on_continue_button_pressed"]
 [connection signal="pressed" from="Menu/MarginContainer/VBoxContainer/VBoxContainer/NewGameButton" to="." method="_on_new_game_button_pressed"]

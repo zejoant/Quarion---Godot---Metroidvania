@@ -1,10 +1,11 @@
 extends Area2D
 
 var player
+var camera
 @onready var boss = $ForsakenAlly
 @export var sfxs : AudioLibrary
 var rng = RandomNumberGenerator.new()
-var health = 9
+var health = 3
 
 enum HitMode {DAMAGE, DODGE, NONE}
 var hit_mode = HitMode.DODGE
@@ -45,11 +46,12 @@ var warning_particle = preload("res://Particles/warning_particle.tscn")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	player = get_node("/root/World/Player")
+	camera = get_node("/root/World/Camera")
 	follow_pos = player.position
 	follow_velocity = player.velocity
 	#player.disable_movement(true)
 	var room_states = get_node("/root/World").get_room_state()
-	var free_check = false
+	#var free_check = false
 	for pos in room_states:
 		if Vector2i($ActivationColl.position) == Vector2i(pos): #check if boss has been defeated
 			#queue_free()
@@ -59,10 +61,11 @@ func _ready():
 			$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", true)
 			$ActivationColl.disabled = true
 			$DiveImpactComp.visible = false
-			free_check = true
+			$Gate2.close(true)
+			#free_check = true
 	
-	if !free_check:
-		intro_sequence()
+	#if !free_check:
+	#	intro_sequence()
 
 
 func _physics_process(delta):
@@ -247,9 +250,9 @@ func dive_attack():
 			
 			if $ForsakenAlly/GroundRay.is_colliding() and boss.position.y > 12*8: #hit ground
 				AudioManager.play_audio(sfxs.get_sfx("dash"))
-				get_node("/root/World/Camera").radial_blur()
-				get_node("/root/World/Camera").shake(5, 0.03, 3)
-				get_node("/root/World/Camera").invert_color(0.5, 0.3)
+				camera.radial_blur()
+				camera.shake(5, 0.03, 3)
+				camera.invert_color(0.5, 0.3)
 				
 				$DiveImpactComp.position = Vector2(boss.position.x, 18.5*8)
 				$DiveImpactComp/DiveImpactParticles.restart()
@@ -371,7 +374,7 @@ func dodge_player(dodge_speed: float, center: bool, reset_attack: bool):
 	boss.scale.x = sign(boss.position.x - player.position.x)
 	
 	if boss_state == BossState.SPIKE and attack_state == -1: #start spike wave after dodge
-		await get_tree().process_frame
+		await Engine.get_main_loop().process_frame
 		attack_state = 4
 		attack_sub_state = 0
 		attack_cooldown = 0
@@ -423,8 +426,8 @@ func _on_hit_area_body_entered(body):
 				attack_state = -1
 		body.bounce(body.jump_vel)
 		health -= 1
-		get_node("/root/World/Camera").shake(4, 0.03, 3)
-		get_node("/root/World/Camera").invert_color(1, 0.3)
+		camera.shake(4, 0.03, 3)
+		camera.invert_color(1, 0.3)
 		AudioManager.play_audio(sfxs.get_sfx("damage"))
 		AudioManager.play_audio(sfxs.get_sfx("jump"))
 		
@@ -446,11 +449,12 @@ func _on_hit_area_body_entered(body):
 		get_node("/root/World").save_room_state($ActivationColl.position)
 		get_node("/root/World").resume_previous_music()
 		$Gate.open()
-		$Gate2.open()
+		#$Gate2.open()
 		dead = true
 		$ForsakenAlly/HurtColl.set_deferred("disabled", true)
 		$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", true)
 		$ForsakenAlly/BossAnimPlayer.play("Lie Down")
+		player.after_red_boss = true
 		#queue_free()
 		
 	elif hit_mode == HitMode.DODGE:
@@ -497,13 +501,33 @@ func update_aim(delta):
 
 func intro_sequence():
 	player.disable_movement(true)
-	player.get_node("AnimationPlayer").play("Walk")
-	tween1 = self.create_tween()
-	await tween1.tween_property(player, "position:x", player.position.x - 10*8, 1).finished
+	player.can_die = false
+	player.velocity.x = -player.x_speed
+	await get_tree().create_timer(1.16, false).timeout
+	player.velocity.x = 0 
+	$ForsakenAlly/BossAnimPlayer.play("Charge Shot")
+	var big_orb = big_flying_orb.instantiate()
+	big_orb.position = Vector2(boss.position.x, boss.position.y-16)
+	big_orb.target_player = true
+	big_orb.speed = Vector2(1, 0)*3#shot_speed*3
+	add_child(big_orb)
+	await get_tree().create_timer(0.98, false).timeout
+	camera.shake(4, 0.03, 3)
+	camera.invert_color(1, 0.3)
+	big_orb.queue_free()
+	player.update_animations = false
+	player.get_node("AnimationPlayer").play("Lie Down")
+	#boss_state = BossState.SHOT
+	#attack_sub_state = 2
+	await get_tree().create_timer(3, false).timeout
 	player.disable_movement(false)
+	#player.get_node("AnimationPlayer").play("Walk")
+	#tween1 = self.create_tween()
+	#await tween1.tween_property(player, "position:x", player.position.x - 10*8, 1).finished
+	#player.disable_movement(false)
 	$Gate.close()
 	$Gate2.close()
-	player.get_node("AnimationPlayer").play("Idle")
+	#player.get_node("AnimationPlayer").play("Idle")
 	toggle_hit_coll(HitMode.DODGE)
 	boss_state = BossState.RESET
 	#get_node("/root/World/MusicPlayer").stream = load("res://Music/Everhood_The_Final_Battle.mp3")
@@ -523,3 +547,8 @@ func create_orb(orb_pos: Vector2, orb_speed: Vector2, orb_acc: Vector2, friction
 	orb.friction_x = friction_x
 	orb.friction_y = friction_y
 	add_child(orb)
+
+
+func _on_body_entered(_body):
+	$ActivationColl.set_deferred("disabled", true)
+	intro_sequence()

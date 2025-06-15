@@ -27,7 +27,7 @@ sfxs = SubResource("Resource_raxu1")
 [node name="KeySprite" type="Sprite2D" parent="."]
 texture = ExtResource("1_6kh7e")
 region_enabled = true
-region_rect = Rect2(32, 120, 16, 8)
+region_rect = Rect2(96, 51, 16, 10)
 
 [node name="KeyColl" type="CollisionShape2D" parent="."]
 position = Vector2(-0.5, 0)

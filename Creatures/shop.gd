@@ -9,119 +9,184 @@ var open = false
 var slot_pos = 0
 var tween
 var not_tweening = true
+var value
+var color 
 
 var bought_items: Array[bool]
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	player = get_node("/root/World/Player")
-	ui = get_node("/root/World/Camera/UILayer/ShopUIContainer")
-	selector = ui.get_node("SelectorSprite")
-	description = ui.get_node("DescriptionSprite")
+	ui = $ShopUIContainer#get_node("/root/World/Camera/UILayer/ShopUIContainer")
+	selector = $ShopUIContainer/SelectorSprite#ui.get_node("SelectorSprite")
+	description = $ShopUIContainer/DescriptionSprite#ui.get_node("DescriptionSprite")
 	bought_items = get_node("/root/World").bought_shop_items
 	
-	if bought_items[0]:
-		get_node("/root/World/Camera/UILayer/ShopUIContainer/BoughtCover1").visible = true
-		go_down()
-	if bought_items[1]:
-		get_node("/root/World/Camera/UILayer/ShopUIContainer/BoughtCover2").visible = true
-	if bought_items[2]:
-		get_node("/root/World/Camera/UILayer/ShopUIContainer/BoughtCover3").visible = true
+	$ShopUIContainer.global_position = Vector2(304, 0)
 	
-#func _process(_delta):
-	#if not_tweening:
-		#not_tweening = false
-		#tween = self.create_tween()
-		#await tween.tween_property(selector, "modulate", Color(0.6314, 0.8078, 0.6039), 0.5)
-		#await tween.tween_property(selector, "modulate", Color.WHITE, 0.5).finished
-		#not_tweening = true
+	if bought_items[0]:
+		$ShopUIContainer/KeyButton.disabled = true
+		$ShopUIContainer/KeyButton.focus_mode = 0 as Control.FocusMode
+	if bought_items[1]:
+		$ShopUIContainer/AmuletButton.disabled = true
+		$ShopUIContainer/AmuletButton.focus_mode = 0 as Control.FocusMode
+	if bought_items[2]:
+		$ShopUIContainer/BubbleButton.disabled = true
+		$ShopUIContainer/BubbleButton.focus_mode = 0 as Control.FocusMode
+
+	
+func _on_joy_connection_changed(_device_id, connected):
+	release_all_focus()
+	if !connected:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	else:
+		#$ShopUIContainer/KeyButton.grab_focus()
+		find_next_focus($ShopUIContainer/BubbleButton)
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+func open_setup():
+	open = true
+	ui.visible = true
+	self.create_tween().tween_property($ShopUIContainer/UICover, "modulate:a", 0, 0.3)
+	player.disable_movement()
+	get_node("/root/World").other_ui_open = true
+	selector_flash()
+	release_all_focus()
+	if Input.get_connected_joypads().size() > 0:
+		find_next_focus($ShopUIContainer/BubbleButton)
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	else:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		
+	if !Input.joy_connection_changed.is_connected(Callable(self, "_on_joy_connection_changed")):
+				Input.joy_connection_changed.connect(self._on_joy_connection_changed)
 
 func selector_flash():
 	while open:
-		if not_tweening:
-			not_tweening = false
-			tween = self.create_tween()
-			await tween.tween_property(selector, "modulate", Color(0.6314, 0.8078, 0.6039), 0.5)
-			await tween.tween_property(selector, "modulate", Color.WHITE, 0.5).finished
-			not_tweening = true
+		value = abs(cos(Engine.get_frames_drawn()/20.0))
+		color = Color8(145+int(value*110), 215+int(value*40), 143+int(value*112))
+		selector.modulate = color
+		await Engine.get_main_loop().process_frame
+
+#func _process(_delta):
+	#if open:
+		#value = abs(cos(Engine.get_frames_drawn()/20.0))
+		#color = Color8(145+int(value*110), 215+int(value*40), 143+int(value*112))
+		#selector.modulate = color
 
 func _input(event):
-	if !open and player.in_interact_area and player.get_node("Area2D").get_overlapping_bodies()[0] == self:
-		if event.is_action_pressed("Jump"):
-			player.can_move = false
-			open = true
-			selector_flash()
-			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-			ui.visible = true
-			self.create_tween().tween_property(ui.get_node("UICover"), "modulate:a", 0, 0.3)
-			
-	elif open:
-		if event.is_action_pressed("UI Down"):
-			go_down()
-		elif event.is_action_pressed("UI Up"):
-			go_up()
-		elif event.is_action_pressed("UI Exit"):
+	if !open and player.get_node("Area2D").has_overlapping_bodies() and player.get_node("Area2D").get_overlapping_bodies().has(self):
+		if event.is_action_pressed("UI Up"):
+			open_setup()
+	else:
+		if event.is_action_released("Pause") or event.is_action_released("UI Back"):
 			exit_shop()
-			
-		elif event.is_action_pressed("UI Confirm"):
-			if slot_pos == 0 and player.apple_count >= 10:
-				AudioManager.play_audio(sfxs.get_sfx("buy"))
-				player.green_key_state = "collected"
-				bought_items[0] = true
-				get_node("/root/World/Camera").set_keys("Green")
-				get_node("/root/World/Player").update_apple_count(-10)
-				get_node("/root/World/Camera/UILayer/ShopUIContainer/BoughtCover1").visible = true
-				go_down()
-			elif slot_pos == 1 and player.apple_count >= 15:
-				AudioManager.play_audio(sfxs.get_sfx("buy"))
-				player.amulet_pieces += 1
-				bought_items[1] = true
-				get_node("/root/World/Player").update_apple_count(-15)
-				get_node("/root/World/Camera/UILayer/ShopUIContainer/BoughtCover2").visible = true
-				go_down()
-				exit_shop()
-				get_node("/root/World/Camera").collect_amulet_piece()
-			elif slot_pos == 2 and player.apple_count >= 26:
-				AudioManager.play_audio(sfxs.get_sfx("buy"))
-				player.has_bubble = true
-				bought_items[2] = true
-				get_node("/root/World/Player").update_apple_count(-26)
-				get_node("/root/World/Camera/UILayer/ShopUIContainer/BoughtCover3").visible = true
-				go_down()
-			else:
-				AudioManager.play_audio(sfxs.get_sfx("buy_deny"))
 
 func exit_shop():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	await self.create_tween().tween_property(ui.get_node("UICover"), "modulate:a", 1, 0.3).finished
+	await self.create_tween().tween_property($ShopUIContainer/UICover, "modulate:a", 1, 0.3).finished
 	ui.visible = false
-	player.can_move = true
-	open = false
 	get_node("/root/World").save_game()
-			
-func go_down():
-	if bought_items[0] and bought_items[1] and bought_items[2]:
-		get_node("/root/World/Camera/UILayer/ShopUIContainer/SelectorSprite").visible = false
-		exit_shop()
-		return
 	
-	slot_pos = fposmod(slot_pos + 1, 3)
-	selector.position.y = 75 + slot_pos * 11
-	selector.region_rect.position.y = 16 + slot_pos * 11
-	description.region_rect.position.y = 48 + slot_pos * 32
-	if (bought_items[0] and slot_pos == 0) or (bought_items[1] and slot_pos == 1) or (bought_items[2] and slot_pos == 2):
-		go_down()
-func go_up():
-	if bought_items[0] and bought_items[1] and bought_items[2]:
-		get_node("/root/World/Camera/UILayer/ShopUIContainer/SelectorSprite").visible = false
-		exit_shop()
-		return
-	
-	slot_pos = fposmod(slot_pos - 1, 3)
-	selector.position.y = 75 + slot_pos * 11
-	selector.region_rect.position.y = 16 + slot_pos * 11
-	description.region_rect.position.y = 48 + slot_pos * 32
-	if (bought_items[0] and slot_pos == 0) or (bought_items[1] and slot_pos == 1) or (bought_items[2] and slot_pos == 2):
-		go_up()
+	get_node("/root/World").other_ui_open = false
+	open = false
+	player.disable_movement(false)
 
-func interactable():
-	return true
+func _on_key_button_focus_entered():
+	set_focus(0)
+func _on_amulet_button_focus_entered():
+	set_focus(1)
+func _on_bubble_button_focus_entered():
+	set_focus(2)
+
+func _on_key_button_mouse_entered():
+	if !$ShopUIContainer/KeyButton.disabled:
+		set_focus(0)
+func _on_amulet_button_mouse_entered():
+	if !$ShopUIContainer/AmuletButton.disabled:
+		set_focus(1)
+func _on_bubble_button_mouse_entered():
+	if !$ShopUIContainer/BubbleButton.disabled:
+		set_focus(2)
+
+func _on_key_button_mouse_exited():
+	release_all_focus()
+func _on_amulet_button_focus_exited():
+	release_all_focus()
+func _on_bubble_button_mouse_exited():
+	release_all_focus()
+	
+func set_focus(pos):
+	selector.visible = true
+	description.visible = true
+	slot_pos = pos
+	selector.position.y = 75 + slot_pos * 11
+	selector.region_rect.position.y = 16 + slot_pos * 11
+	description.region_rect.position.y = 48 + slot_pos * 32
+
+func find_next_focus(button: Button):
+	if Input.get_connected_joypads().size() > 0:
+		var next = button.find_next_valid_focus()
+		if next:
+			selector.visible = true
+			description.visible = true
+			next.grab_focus()
+		else:
+			release_all_focus()
+	else:
+		release_all_focus()
+
+func release_all_focus():
+	get_viewport().gui_release_focus()
+	slot_pos = -1
+	selector.visible = false
+	description.visible = false
+
+func _on_key_button_pressed():
+	if player.apple_count < 10:
+		AudioManager.play_audio(sfxs.get_sfx("buy_deny"))
+		return
+		
+	$ShopUIContainer/KeyButton.disabled = true
+	$ShopUIContainer/KeyButton.focus_mode = 0 as Control.FocusMode
+	#$ShopUIContainer/KeyButton.find_next_valid_focus().grab_focus()
+	find_next_focus($ShopUIContainer/KeyButton)
+	
+	AudioManager.play_audio(sfxs.get_sfx("buy"))
+	player.green_key_state = "collected"
+	bought_items[0] = true
+	get_node("/root/World/Camera").set_keys("Green")
+	player.update_apple_count(-10)
+
+
+func _on_amulet_button_pressed():
+	if player.apple_count < 15:
+		AudioManager.play_audio(sfxs.get_sfx("buy_deny"))
+		return
+	
+	$ShopUIContainer/AmuletButton.disabled = true
+	$ShopUIContainer/AmuletButton.focus_mode = 0 as Control.FocusMode
+	#$ShopUIContainer/AmuletButton.find_next_valid_focus().grab_focus()
+	find_next_focus($ShopUIContainer/AmuletButton)
+	
+	AudioManager.play_audio(sfxs.get_sfx("buy"))
+	player.amulet_pieces += 1
+	bought_items[1] = true
+	get_node("/root/World/Player").update_apple_count(-15)
+	exit_shop()
+	get_node("/root/World/Camera").collect_amulet_piece()
+
+
+func _on_bubble_button_pressed():
+	if player.apple_count < 26:
+		AudioManager.play_audio(sfxs.get_sfx("buy_deny"))
+		return
+	
+	$ShopUIContainer/BubbleButton.disabled = true
+	$ShopUIContainer/BubbleButton.focus_mode = 0 as Control.FocusMode
+	#$ShopUIContainer/BubbleButton.find_next_valid_focus().grab_focus()
+	find_next_focus($ShopUIContainer/BubbleButton)
+	
+	AudioManager.play_audio(sfxs.get_sfx("buy"))
+	player.has_bubble = true
+	bought_items[2] = true
+	get_node("/root/World/Player").update_apple_count(-26)

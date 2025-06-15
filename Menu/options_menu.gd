@@ -18,14 +18,40 @@ func _ready():
 	
 	$MarginContainer/VBoxContainer/VideoVBox/FullscreenCheck.button_pressed = fullscreen
 	$MarginContainer/VBoxContainer/VideoVBox/BorderlessCheck.button_pressed = borderless
+	
+	if Input.get_connected_joypads().size() > 0:
+		get_viewport().gui_release_focus()
+		$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.grab_focus()
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
+	Input.joy_connection_changed.connect(_on_joy_connection_changed)
 
+func _on_joy_connection_changed(_device_id, connected):
+	if !connected:
+		get_viewport().gui_release_focus()
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	else:
+		get_viewport().gui_release_focus()
+		$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.grab_focus()
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+func _input(event):
+	if event.is_action_released("UI Back"):
+		_on_back_button_pressed()
 
 func _on_back_button_pressed():
+	#Input.joy_connection_changed.disconnect(_on_joy_connection_changed)
 	save_settings()
 	if back_scene == "menu":
-		get_tree().change_scene_to_file("res://Menu/main_menu.tscn")
+		get_node("/root/MainMenu/Menu").visible = true
+		if Input.get_connected_joypads().size() > 0:
+			get_node("/root/MainMenu/Menu/MarginContainer/VBoxContainer/VBoxContainer/OptionsButton").grab_focus()
+		queue_free()
+		#get_tree().change_scene_to_file("res://Menu/main_menu.tscn")
 	elif back_scene == "game":
 		get_parent().get_node("PauseMenu").show()
+		if Input.get_connected_joypads().size() > 0:
+			get_parent().get_node("PauseMenu/MarginContainer/VBoxContainer/ResumeButton").grab_focus()
 		queue_free()
 
 func save_settings():

@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://Creatures/snake.gd" id="1_e420c"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fb645"]
-size = Vector2(9, 4)
+size = Vector2(9, 5)
 
 [sub_resource type="Animation" id="Animation_i0qvv"]
 resource_name = "Move"
@@ -57,7 +57,7 @@ region_enabled = true
 region_rect = Rect2(16, 48, 16, 8)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-0.5, 2)
+position = Vector2(-0.5, 1.5)
 shape = SubResource("RectangleShape2D_fb645")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

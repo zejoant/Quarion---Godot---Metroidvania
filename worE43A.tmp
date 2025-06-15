@@ -1,0 +1,139 @@
+[gd_scene load_steps=13 format=3 uid="uid://chuu2il5usdf4"]
+
+[ext_resource type="Script" path="res://Scripts/world.gd" id="1_8vgew"]
+[ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="2_amft2"]
+[ext_resource type="PackedScene" uid="uid://4ythqhswhcg7" path="res://Creatures/player.tscn" id="2_sly73"]
+[ext_resource type="PackedScene" uid="uid://c4y4hleyev5w2" path="res://camera.tscn" id="3_qv8w2"]
+[ext_resource type="AudioStream" uid="uid://by671bpomxrhh" path="res://Music/Freedom.mp3" id="7_okqrd"]
+[ext_resource type="PackedScene" uid="uid://tq5pdnyqtw32" path="res://world_map.tscn" id="8_f8ank"]
+[ext_resource type="Shader" path="res://Shaders/pixelate.gdshader" id="9_645b4"]
+[ext_resource type="PackedScene" uid="uid://cw6m8e10x6bsu" path="res://Menu/pause_menu.tscn" id="9_w8l0d"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_1f68k"]
+particles_animation = true
+particles_anim_h_frames = 5
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="Gradient_eymtx"]
+offsets = PackedFloat32Array(0, 0.489362, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.407843, 0.533333, 0.584314, 1, 0.258824, 0.282353, 0.360784, 1)
+
+[sub_resource type="Curve" id="Curve_vgl7x"]
+min_value = -1.0
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i6v4o"]
+shader = ExtResource("9_645b4")
+shader_parameter/size_x = 4.0
+shader_parameter/size_y = 4.0
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_8vgew")
+
+[node name="EdgeCovers" type="Node2D" parent="."]
+z_index = 500
+
+[node name="LeftRect" type="ColorRect" parent="EdgeCovers"]
+offset_left = -67.0
+offset_top = -50.0
+offset_bottom = 242.0
+color = Color(0, 0, 0, 1)
+
+[node name="TopRect" type="ColorRect" parent="EdgeCovers"]
+offset_top = -50.0
+offset_right = 304.0
+color = Color(0, 0, 0, 1)
+
+[node name="BottomRect" type="ColorRect" parent="EdgeCovers"]
+offset_top = 192.0
+offset_right = 304.0
+offset_bottom = 242.0
+color = Color(0, 0, 0, 1)
+
+[node name="RightRect" type="ColorRect" parent="EdgeCovers"]
+offset_left = 304.0
+offset_top = -50.0
+offset_right = 377.0
+offset_bottom = 242.0
+color = Color(0, 0, 0, 1)
+
+[node name="Player" parent="." instance=ExtResource("2_sly73")]
+position = Vector2(64, 63)
+
+[node name="Camera" parent="." instance=ExtResource("3_qv8w2")]
+
+[node name="MusicPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("7_okqrd")
+bus = &"Music"
+
+[node name="WorldMap" parent="." instance=ExtResource("8_f8ank")]
+z_index = 10
+
+[node name="BGParticles" type="Node2D" parent="."]
+
+[node name="SmallCircleParticles" type="CPUParticles2D" parent="BGParticles"]
+z_index = 1
+material = SubResource("CanvasItemMaterial_1f68k")
+position = Vector2(151, 193)
+amount = 50
+lifetime = 20.0
+preprocess = 8.0
+texture = ExtResource("2_amft2")
+emission_shape = 3
+emission_rect_extents = Vector2(150, 1)
+direction = Vector2(0, -1)
+spread = 6.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 8.0
+initial_velocity_max = 20.0
+color = Color(0.235294, 0.301961, 0.305882, 1)
+color_initial_ramp = SubResource("Gradient_eymtx")
+anim_speed_min = 0.5
+anim_speed_max = 1.0
+
+[node name="BigSquareParticles" type="CPUParticles2D" parent="BGParticles"]
+z_index = -1
+position = Vector2(150, 212)
+amount = 50
+lifetime = 25.0
+preprocess = 16.0
+emission_shape = 3
+emission_rect_extents = Vector2(150, 1)
+direction = Vector2(0, -1)
+spread = 6.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 8.0
+initial_velocity_max = 20.0
+angular_velocity_min = -20.0
+angular_velocity_max = 20.0
+scale_amount_min = 20.0
+scale_amount_max = 60.0
+color = Color(0.0627451, 0.0588235, 0.0980392, 0.615686)
+color_initial_ramp = SubResource("Gradient_eymtx")
+hue_variation_min = -0.06
+hue_variation_max = 0.06
+hue_variation_curve = SubResource("Curve_vgl7x")
+
+[node name="ParticlePixelation" type="ColorRect" parent="BGParticles"]
+material = SubResource("ShaderMaterial_i6v4o")
+offset_right = 304.0
+offset_bottom = 192.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("9_w8l0d")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2.0
+offset_top = 4.0
+offset_right = -2.0
+offset_bottom = 4.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[editable path="CanvasLayer/PauseMenu"]

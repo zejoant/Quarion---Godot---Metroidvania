@@ -1,0 +1,220 @@
+[gd_scene load_steps=23 format=3 uid="uid://cwafd3q5y7u6m"]
+
+[ext_resource type="Texture2D" uid="uid://bn306u45m6wu1" path="res://Assets/Line Particle.png" id="1_qhqm7"]
+[ext_resource type="Texture2D" uid="uid://dnuk8to6m018a" path="res://Assets/Ship Textures.png" id="2_5k7d6"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_qt2ou"]
+load_path = "res://.godot/imported/Line Particle.png-ca29923f7b62240508620dc4fd1bee4a.ctex"
+
+[sub_resource type="Curve" id="Curve_02r13"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="Gradient" id="Gradient_qh4y7"]
+offsets = PackedFloat32Array(0, 0.966667)
+colors = PackedColorArray(0.07, 0.0758333, 0.14, 1, 0.259, 0.28675, 0.37, 1)
+
+[sub_resource type="Curve" id="Curve_m3s7k"]
+max_value = 2.0
+_data = [Vector2(0, 2), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="Gradient" id="Gradient_efuxf"]
+colors = PackedColorArray(0.095, 0.102917, 0.19, 1, 0.476, 0.6358, 0.68, 1)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_0qy87"]
+load_path = "res://.godot/imported/Line Particle.png-ca29923f7b62240508620dc4fd1bee4a.ctex"
+
+[sub_resource type="Curve" id="Curve_sy5gi"]
+max_value = 4.0
+_data = [Vector2(0, 4), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="Gradient" id="Gradient_wjvsy"]
+colors = PackedColorArray(0.095, 0.102917, 0.19, 1, 0.476, 0.6358, 0.68, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0plah"]
+atlas = ExtResource("2_5k7d6")
+region = Rect2(216, 96, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tjkf5"]
+atlas = ExtResource("2_5k7d6")
+region = Rect2(208, 96, 8, 8)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_nhrfb"]
+animations = [{
+"frames": [{
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_0plah")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_tjkf5")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_k5fuf"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_d038s"]
+colors = PackedColorArray(0.478431, 0.839216, 0.960784, 0.647059, 1, 1, 1, 0.647059)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5v57b"]
+atlas = ExtResource("2_5k7d6")
+region = Rect2(208, 104, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qyomq"]
+atlas = ExtResource("2_5k7d6")
+region = Rect2(216, 104, 8, 8)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_d3ter"]
+animations = [{
+"frames": [{
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_5v57b")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_qyomq")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_62kil"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_sf2e8"]
+colors = PackedColorArray(0.478431, 0.839216, 0.960784, 0.647059, 1, 1, 1, 0.647059)
+
+[sub_resource type="Gradient" id="Gradient_i40vs"]
+offsets = PackedFloat32Array(0, 0.35, 0.62, 1)
+colors = PackedColorArray(0.0456, 0.0461733, 0.08, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0470588, 0.0470588, 0.0784314, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5jjmd"]
+gradient = SubResource("Gradient_i40vs")
+
+[node name="OutroCutscene" type="Node2D"]
+
+[node name="BGParticles" type="Node2D" parent="."]
+
+[node name="SpaceParticlesBack" type="CPUParticles2D" parent="BGParticles"]
+z_index = -1
+position = Vector2(312, 96)
+amount = 20
+lifetime = 10.0
+preprocess = 2.0
+texture = SubResource("CompressedTexture2D_qt2ou")
+emission_shape = 3
+emission_rect_extents = Vector2(1, 100)
+particle_flag_align_y = true
+direction = Vector2(-1, 0)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 30.0
+initial_velocity_max = 60.0
+split_scale = true
+scale_curve_x = null
+scale_curve_y = SubResource("Curve_02r13")
+color_initial_ramp = SubResource("Gradient_qh4y7")
+
+[node name="SpaceParticlesMiddle" type="CPUParticles2D" parent="BGParticles"]
+position = Vector2(352, 96)
+amount = 20
+lifetime = 4.0
+preprocess = 2.0
+texture = ExtResource("1_qhqm7")
+emission_shape = 3
+emission_rect_extents = Vector2(1, 100)
+particle_flag_align_y = true
+direction = Vector2(-1, 0)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+split_scale = true
+scale_curve_x = null
+scale_curve_y = SubResource("Curve_m3s7k")
+color_initial_ramp = SubResource("Gradient_efuxf")
+
+[node name="SpaceParticlesFront" type="CPUParticles2D" parent="BGParticles"]
+z_index = 1
+position = Vector2(352, 96)
+amount = 10
+lifetime = 1.5
+preprocess = 2.0
+texture = SubResource("CompressedTexture2D_0qy87")
+emission_shape = 3
+emission_rect_extents = Vector2(1, 100)
+particle_flag_align_y = true
+direction = Vector2(-1, 0)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 300.0
+initial_velocity_max = 400.0
+split_scale = true
+scale_curve_x = null
+scale_curve_y = SubResource("Curve_sy5gi")
+color_initial_ramp = SubResource("Gradient_wjvsy")
+
+[node name="OutsideShip" type="Node2D" parent="."]
+
+[node name="Thrusters" type="Node2D" parent="OutsideShip"]
+
+[node name="LowerThruster" type="AnimatedSprite2D" parent="OutsideShip/Thrusters"]
+position = Vector2(131, 117)
+scale = Vector2(16.375, 1)
+sprite_frames = SubResource("SpriteFrames_nhrfb")
+autoplay = "default"
+frame_progress = 0.296749
+offset = Vector2(-4, 0)
+
+[node name="LowerParticles" type="CPUParticles2D" parent="OutsideShip/Thrusters"]
+material = SubResource("CanvasItemMaterial_k5fuf")
+position = Vector2(130, 117)
+amount = 20
+emission_shape = 3
+emission_rect_extents = Vector2(1, 2)
+direction = Vector2(-1, 0)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+scale_amount_max = 2.0
+color_initial_ramp = SubResource("Gradient_d038s")
+
+[node name="UpperThruster" type="AnimatedSprite2D" parent="OutsideShip/Thrusters"]
+position = Vector2(109, 93)
+scale = Vector2(13.625, 1)
+sprite_frames = SubResource("SpriteFrames_d3ter")
+autoplay = "default"
+frame_progress = 0.544531
+offset = Vector2(-4, 0)
+
+[node name="UpperParticles" type="CPUParticles2D" parent="OutsideShip/Thrusters"]
+material = SubResource("CanvasItemMaterial_62kil")
+position = Vector2(109, 94)
+amount = 30
+emission_shape = 3
+emission_rect_extents = Vector2(1, 3)
+direction = Vector2(-1, 0)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+scale_amount_max = 2.0
+color_initial_ramp = SubResource("Gradient_sf2e8")
+
+[node name="ShipTextures" type="Sprite2D" parent="OutsideShip"]
+position = Vector2(152, 105)
+texture = ExtResource("2_5k7d6")
+region_enabled = true
+region_rect = Rect2(0, 0, 96, 32)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+z_index = -17
+offset_right = 304.0
+offset_bottom = 192.0
+texture = SubResource("GradientTexture1D_5jjmd")

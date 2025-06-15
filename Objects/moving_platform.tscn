@@ -9,7 +9,6 @@ size = Vector2(8, 8)
 [node name="MovingPlatform" type="AnimatableBody2D" groups=["MovingPlatform"]]
 z_index = 4
 collision_mask = 0
-sync_to_physics = false
 script = ExtResource("1_3fk4n")
 
 [node name="LeftSprite" type="Sprite2D" parent="."]

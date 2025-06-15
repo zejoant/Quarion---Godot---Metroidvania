@@ -4,6 +4,8 @@ extends StaticBody2D
 @export var id : int
 var opened_doors
 
+#next free id is 8
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	opened_doors = get_node("/root/World").opened_doors

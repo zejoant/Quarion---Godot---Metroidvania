@@ -1,12 +1,59 @@
-[gd_scene load_steps=5 format=3 uid="uid://cw6m8e10x6bsu"]
+[gd_scene load_steps=12 format=3 uid="uid://cw6m8e10x6bsu"]
 
 [ext_resource type="Script" path="res://Menu/pause_menu.gd" id="1_8idag"]
 [ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="2_cuv06"]
 [ext_resource type="Theme" uid="uid://b6lhu6b1qu0a3" path="res://Themes/button_theme_new.tres" id="3_75l38"]
+[ext_resource type="Texture2D" uid="uid://cywpsaa73tid3" path="res://Assets/MenuTextures/Button Texture.png" id="4_ehvr7"]
+[ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/prstartk.ttf" id="5_64eyr"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6juxa"]
 shader = ExtResource("2_cuv06")
 shader_parameter/amount = 2.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_j6nx3"]
+texture = ExtResource("4_ehvr7")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(73, 11, 63, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m3q7b"]
+texture = ExtResource("4_ehvr7")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(73, 11, 63, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_iyykc"]
+texture = ExtResource("4_ehvr7")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(12, 11, 56, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_y31l4"]
+texture = ExtResource("4_ehvr7")
+texture_margin_left = 12.0
+texture_margin_top = 6.0
+texture_margin_right = 12.0
+texture_margin_bottom = 6.0
+region_rect = Rect2(12, 43, 56, 26)
+
+[sub_resource type="Theme" id="Theme_gjx3l"]
+default_font = ExtResource("5_64eyr")
+default_font_size = 8
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/font_sizes/font_size = 8
+Button/styles/focus = SubResource("StyleBoxTexture_j6nx3")
+Button/styles/hover = SubResource("StyleBoxTexture_m3q7b")
+Button/styles/normal = SubResource("StyleBoxTexture_iyykc")
+Button/styles/pressed = SubResource("StyleBoxTexture_y31l4")
 
 [node name="PauseMenu" type="Control"]
 process_mode = 2
@@ -55,6 +102,7 @@ theme_override_constants/separation = 12
 
 [node name="ResumeButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../QuitButton")
 theme = ExtResource("3_75l38")
 text = "Resume"
 
@@ -65,7 +113,8 @@ text = "Options"
 
 [node name="QuitButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("3_75l38")
+focus_neighbor_bottom = NodePath("../ResumeButton")
+theme = SubResource("Theme_gjx3l")
 text = "Quit"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]

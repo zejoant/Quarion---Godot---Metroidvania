@@ -1,4 +1,4 @@
-[gd_scene load_steps=56 format=3 uid="uid://4ythqhswhcg7"]
+[gd_scene load_steps=60 format=3 uid="uid://4ythqhswhcg7"]
 
 [ext_resource type="Script" path="res://Creatures/player.gd" id="1_1p4uo"]
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_hnvw4"]
@@ -10,12 +10,14 @@
 [ext_resource type="AudioStream" uid="uid://wm84dwuyqcmd" path="res://Sfx/dash3.wav" id="8_laqsj"]
 [ext_resource type="AudioStream" uid="uid://dp0epi0rhkcul" path="res://Sfx/death explosion.wav" id="9_0iuyt"]
 [ext_resource type="AudioStream" uid="uid://b7txeulgr6bb2" path="res://Sfx/collect.wav" id="9_f8tde"]
-[ext_resource type="AudioStream" uid="uid://6wvjjfbifssf" path="res://Sfx/GameSFX/Events/Retro Event Echo 12.wav" id="10_bocht"]
+[ext_resource type="AudioStream" uid="uid://cddpgysh8yykg" path="res://Sfx/power up 2.wav" id="10_p0hsp"]
 [ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="10_ta6lj"]
 [ext_resource type="AudioStream" uid="uid://bblcqxp6fekpf" path="res://Sfx/GameSFX/Impact/Retro Impact LoFi 09.wav" id="11_pmswi"]
 [ext_resource type="Texture2D" uid="uid://cwdnxgl7k8n26" path="res://Assets/Sparkle2 Particles.png" id="12_8sd87"]
 [ext_resource type="Texture2D" uid="uid://dei1vxmeg8aah" path="res://Assets/Hurt Effect.png" id="12_jxe34"]
 [ext_resource type="AudioStream" uid="uid://b518ksl04jb1q" path="res://Sfx/GameSFX/Magic/Retro Magic 34.wav" id="12_og1me"]
+[ext_resource type="Shader" path="res://Shaders/palette_swap.gdshader" id="13_b8g8h"]
+[ext_resource type="Texture2D" uid="uid://srrdnqsgkk6u" path="res://Assets/Player Palettes.png" id="14_q6unr"]
 
 [sub_resource type="Resource" id="Resource_yaidf"]
 script = ExtResource("5_ja3e4")
@@ -50,7 +52,7 @@ stream = ExtResource("9_0iuyt")
 [sub_resource type="Resource" id="Resource_cstl5"]
 script = ExtResource("5_ja3e4")
 tag = "power_up"
-stream = ExtResource("10_bocht")
+stream = ExtResource("10_p0hsp")
 
 [sub_resource type="Resource" id="Resource_t85mi"]
 script = ExtResource("5_ja3e4")
@@ -67,7 +69,13 @@ script = ExtResource("4_q56as")
 sound_effects = Array[ExtResource("5_ja3e4")]([SubResource("Resource_yaidf"), SubResource("Resource_u3fen"), SubResource("Resource_dxcvt"), SubResource("Resource_nbj6v"), SubResource("Resource_ngtc0"), SubResource("Resource_w52dj"), SubResource("Resource_cstl5"), SubResource("Resource_t85mi"), SubResource("Resource_di48n")])
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vy8ue"]
-size = Vector2(6.5, 10)
+size = Vector2(6, 10)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_52qgj"]
+shader = ExtResource("13_b8g8h")
+shader_parameter/use_palette_alpha = false
+shader_parameter/palette_choice = 0
+shader_parameter/palette = ExtResource("14_q6unr")
 
 [sub_resource type="Animation" id="Animation_0turj"]
 resource_name = "Damage"
@@ -100,7 +108,7 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_gyl8p"]
 resource_name = "Dash"
-length = 1.00001
+length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -116,6 +124,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_bh08o"]
 resource_name = "Fall"
+length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -149,6 +158,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_gwdlv"]
 resource_name = "Jump"
+length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -276,6 +286,22 @@ tracks/0/keys = {
 "values": [Rect2(128, 16, 16, 16)]
 }
 
+[sub_resource type="Animation" id="Animation_aggab"]
+resource_name = "Lie Down"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(168, 24, 16, 8)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5gao2"]
 _data = {
 "Damage": SubResource("Animation_0turj"),
@@ -284,13 +310,14 @@ _data = {
 "Idle": SubResource("Animation_4isl1"),
 "Jump": SubResource("Animation_gwdlv"),
 "Land": SubResource("Animation_6c6sk"),
+"Lie Down": SubResource("Animation_aggab"),
 "RESET": SubResource("Animation_ndq0k"),
 "Walk": SubResource("Animation_6vd3i"),
 "WallSlide": SubResource("Animation_x8b06")
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4by5i"]
-size = Vector2(5, 11)
+size = Vector2(4, 10)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mcfsg"]
 radius = 5.0
@@ -361,16 +388,19 @@ colors = PackedColorArray(0.94902, 0.352941, 0.352941, 1, 0.882353, 0.541176, 0.
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 8
+floor_block_on_wall = false
+floor_snap_length = 2.0
 platform_on_leave = 2
 script = ExtResource("1_1p4uo")
 sfxs = SubResource("Resource_0m3bc")
 
 [node name="TileColl" type="CollisionShape2D" parent="."]
-position = Vector2(-1, 3)
+position = Vector2(0, 3)
 shape = SubResource("RectangleShape2D_vy8ue")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-z_index = 4
+z_index = 5
+material = SubResource("ShaderMaterial_52qgj")
 texture = ExtResource("1_hnvw4")
 region_enabled = true
 region_rect = Rect2(144, 16, 16, 16)
@@ -379,13 +409,14 @@ region_rect = Rect2(144, 16, 16, 16)
 libraries = {
 "": SubResource("AnimationLibrary_5gao2")
 }
+autoplay = "Idle"
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 6
 
 [node name="EnemyColl" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(-0.5, 2.5)
+position = Vector2(0, 3)
 shape = SubResource("RectangleShape2D_4by5i")
 
 [node name="WaterDetector" type="Area2D" parent="."]
@@ -400,7 +431,7 @@ shape = SubResource("CapsuleShape2D_mcfsg")
 [node name="ParticleComps" type="Node2D" parent="."]
 
 [node name="DashParticles" type="CPUParticles2D" parent="ParticleComps"]
-z_index = 3
+z_index = 4
 material = SubResource("CanvasItemMaterial_hafes")
 emitting = false
 amount = 50
@@ -526,6 +557,7 @@ target_position = Vector2(0, 8)
 [node name="WallRay" type="RayCast2D" parent="CollissionRays"]
 unique_name_in_owner = true
 z_index = 3
+scale = Vector2(1.1, 1)
 target_position = Vector2(3, 0)
 
 [node name="HurtEffect" type="Sprite2D" parent="."]
@@ -535,9 +567,7 @@ texture = ExtResource("12_jxe34")
 region_enabled = true
 region_rect = Rect2(0, 0, 304, 96)
 
-[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
-[connection signal="area_exited" from="Area2D" to="." method="_on_area_2d_area_exited"]
-[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
-[connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]
+[connection signal="area_entered" from="Area2D" to="." method="on_foreground_enter"]
+[connection signal="area_exited" from="Area2D" to="." method="on_foreground_exit"]
 [connection signal="body_shape_entered" from="Area2D" to="." method="_on_area_2d_body_shape_entered"]
 [connection signal="body_shape_entered" from="WaterDetector" to="." method="_on_water_detector_body_shape_entered"]

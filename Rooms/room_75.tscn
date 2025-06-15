@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://mkf6y4a0qcmv"]
+[gd_scene load_steps=7 format=3 uid="uid://mkf6y4a0qcmv"]
 
 [ext_resource type="PackedScene" uid="uid://coud47gbx6bt8" path="res://tile_map.tscn" id="1_cmhx8"]
 [ext_resource type="PackedScene" uid="uid://csfbwylnbjwb2" path="res://Objects/collapsing_platform.tscn" id="2_nntsd"]
-[ext_resource type="PackedScene" uid="uid://b6gl7w33h5ta1" path="res://Objects/door&button.tscn" id="3_s5njk"]
+[ext_resource type="PackedScene" uid="uid://d1cl5nkswlvo0" path="res://Objects/button.tscn" id="4_52t3w"]
+[ext_resource type="PackedScene" uid="uid://co44befovf2y7" path="res://Objects/button_door.tscn" id="5_i87km"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_64jyh"]
 size = Vector2(211, 41.75)
@@ -36,18 +37,10 @@ shape = SubResource("RectangleShape2D_gdtw8")
 position = Vector2(252, 52)
 edge_type = "none"
 
-[node name="Door&Button" parent="." instance=ExtResource("3_s5njk")]
-
-[node name="Button" parent="Door&Button" index="1"]
+[node name="Button" parent="." instance=ExtResource("4_52t3w")]
 position = Vector2(72, 44)
+id = 6
 
-[node name="DoorR2" parent="Door&Button" index="2"]
-position = Vector2(40, -44)
-
-[node name="DoorL2" parent="Door&Button" index="3"]
-position = Vector2(40, -36)
-
-[node name="DoorV3" parent="Door&Button" index="4"]
-position = Vector2(52, 36)
-
-[editable path="Door&Button"]
+[node name="ButtonDoor" parent="." instance=ExtResource("5_i87km")]
+position = Vector2(52, 28)
+id = 6

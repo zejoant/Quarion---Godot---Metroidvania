@@ -47,10 +47,10 @@ func replace_tiles_with_object(tile_pos):
 	
 	elif custom_data == "Bat": #loads bat
 		scene_instance = load("res://Creatures/bat.tscn").instantiate() 
-		scene_instance.set_dir(get_tile_rotation(tile_pos))
+		scene_instance.set_dir(get_tile_rotation(tile_pos)) 
 	
 	elif custom_data == "Collectable": #loads apples
-		scene_instance = load("res://Objects/apple.tscn").instantiate() 
+		scene_instance = load("res://Objects/apple.tscn").instantiate()
 	
 	#adds the objects
 	if scene_instance != null:
@@ -77,7 +77,7 @@ func get_custom_data_with_coords(tile_coords: Vector2) -> String:
 
 func is_tile_one_way(rid: RID) -> bool:
 		var pos = get_coords_for_body_rid(rid)
-		var cell_info = get_cell_tile_data(1, pos)
+		var cell_info = get_cell_tile_data(get_layer_for_body_rid(rid), pos)
 		if cell_info != null and cell_info.get_collision_polygons_count(0) > 0:
 			return cell_info.is_collision_polygon_one_way(0, 0)
 		return false
@@ -100,9 +100,11 @@ func fade_foreground(fade_out):
 	fade_tween = self.create_tween()
 	
 	if fade_out:
+		world.get_node("Camera/LensCircle").change_lens(world.room_coords, false, 1)
 		fade_tween.tween_method(func(a): set_layer_modulate(4, a), Color(1, 1, 1, 1), Color(1,1,1,0),0.1)
 		await fade_tween.finished
 		set_layer_enabled(4, false)
 	else:
+		world.get_node("Camera/LensCircle").change_lens(world.room_coords, false, 2)
 		set_layer_enabled(4, true)
 		fade_tween.tween_method(func(a): set_layer_modulate(4, a), Color(1, 1, 1, 0), Color(1,1,1,1),0.1)

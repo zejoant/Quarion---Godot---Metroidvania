@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dbsk6pqm4j4kj"
+path="res://.godot/imported/bullet hit.wav-7bccd47d84af4960ec9e2b652c1c922d.sample"
+
+[deps]
+
+source_file="res://Sfx/bullet hit.wav"
+dest_files=["res://.godot/imported/bullet hit.wav-7bccd47d84af4960ec9e2b652c1c922d.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

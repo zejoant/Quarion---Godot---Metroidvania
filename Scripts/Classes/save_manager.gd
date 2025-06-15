@@ -37,6 +37,9 @@ func save_game(world: Node):
 	file.store_var(world.opened_doors)
 	file.store_var(world.player.apple_count)
 	file.store_var(world.bought_shop_items)
+	
+	file.store_var(world.player.has_item_map)
+	file.store_var(world.get_node("WorldMap/MapComps/ItemMap").get_used_cells(0))
 
 func load_game(world: Node):
 	if FileAccess.file_exists(save_path):
@@ -56,3 +59,7 @@ func load_game(world: Node):
 		world.opened_doors = file.get_var()
 		world.player.apple_count = file.get_var()
 		world.bought_shop_items.assign(file.get_var())
+		
+		world.player.has_item_map = file.get_var()
+		for apple_pos in file.get_var():
+			world.get_node("WorldMap").add_apple_from_pos(apple_pos)

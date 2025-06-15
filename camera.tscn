@@ -1,15 +1,40 @@
-[gd_scene load_steps=21 format=3 uid="uid://c4y4hleyev5w2"]
+[gd_scene load_steps=37 format=3 uid="uid://c4y4hleyev5w2"]
 
 [ext_resource type="Script" path="res://Scripts/camera.gd" id="1_mbcrn"]
 [ext_resource type="Shader" path="res://Shaders/radial_blur.gdshader" id="2_cpfqb"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_rm6an"]
 [ext_resource type="Shader" path="res://Shaders/invert_color.gdshader" id="3_3d1cg"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_ix65p"]
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="4_8iw7y"]
+[ext_resource type="AudioStream" uid="uid://cnylv5tcn34kr" path="res://Sfx/clang.wav" id="4_qml6t"]
 [ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="4_wb6s5"]
+[ext_resource type="AudioStream" uid="uid://cddpgysh8yykg" path="res://Sfx/power up 2.wav" id="5_g37or"]
 [ext_resource type="Texture2D" uid="uid://cywpsaa73tid3" path="res://Assets/MenuTextures/Button Texture.png" id="5_oxghw"]
+[ext_resource type="Shader" path="res://Shaders/hue_shift.gdshader" id="6_2my3r"]
 [ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/prstartk.ttf" id="6_ykkpx"]
 [ext_resource type="Texture2D" uid="uid://ei6wc530bgtj" path="res://Assets/Shop Menu.png" id="7_2o854"]
+[ext_resource type="PackedScene" uid="uid://dwvkc14i850p4" path="res://lens_circle.tscn" id="13_wyu8j"]
+
+[sub_resource type="Resource" id="Resource_4f8ho"]
+script = ExtResource("3_ix65p")
+tag = "amulet_impact"
+stream = ExtResource("4_qml6t")
+
+[sub_resource type="Resource" id="Resource_bu2ub"]
+script = ExtResource("3_ix65p")
+tag = "amulet_out"
+stream = ExtResource("5_g37or")
+
+[sub_resource type="Resource" id="Resource_21oqa"]
+script = ExtResource("2_rm6an")
+sound_effects = Array[ExtResource("3_ix65p")]([SubResource("Resource_4f8ho"), SubResource("Resource_bu2ub")])
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_64wl2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u13rv"]
+shader = ExtResource("6_2my3r")
+shader_parameter/shift_hue = 0.0
+shader_parameter/background = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ujnku"]
 shader = ExtResource("2_cpfqb")
@@ -74,9 +99,60 @@ load_path = "res://.godot/imported/Shop Menu.png-004344ee34953f4e69c31af34f4a8cf
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hurpu"]
 load_path = "res://.godot/imported/Shop Menu.png-004344ee34953f4e69c31af34f4a8cfd.ctex"
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_tr4w4"]
+particles_animation = true
+particles_anim_h_frames = 8
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_f8lpd"]
+load_path = "res://.godot/imported/Ring Particle.png-2dc1e131947a2b1b8c24f1d1190ee419.ctex"
+
+[sub_resource type="Gradient" id="Gradient_un30u"]
+colors = PackedColorArray(1, 1, 1, 1, 0.352941, 0.854902, 0.94902, 1)
+
+[sub_resource type="Animation" id="Animation_trod8"]
+resource_name = "Hue Shift"
+length = 10.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("HueShiftLayer/ColorRect:material:shader_parameter/Shift_Hue")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, -0.125]
+}
+
+[sub_resource type="Animation" id="Animation_3mpwl"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("HueShiftLayer/ColorRect:material:shader_parameter/Shift_Hue")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-0.125]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0758d"]
+_data = {
+"Hue Shift": SubResource("Animation_trod8"),
+"RESET": SubResource("Animation_3mpwl")
+}
+
 [node name="Camera" type="Camera2D"]
 anchor_mode = 0
 script = ExtResource("1_mbcrn")
+sfxs = SubResource("Resource_21oqa")
 
 [node name="FlashLayer" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0)
@@ -84,6 +160,14 @@ z_index = 50
 scale = Vector2(304.5, 192.5)
 texture = SubResource("CanvasTexture_64wl2")
 centered = false
+
+[node name="HueShiftLayer" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="HueShiftLayer"]
+material = SubResource("ShaderMaterial_u13rv")
+offset_right = 304.0
+offset_bottom = 192.0
+mouse_filter = 2
 
 [node name="RadialBlurLayer" type="CanvasLayer" parent="."]
 
@@ -94,6 +178,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="InvertColorLayer" type="CanvasLayer" parent="."]
 
@@ -101,11 +186,11 @@ grow_vertical = 2
 material = SubResource("ShaderMaterial_x50pl")
 offset_right = 304.0
 offset_bottom = 192.0
+mouse_filter = 2
 
 [node name="BlurLayer" type="CanvasLayer" parent="."]
 
 [node name="ColorRect" type="ColorRect" parent="BlurLayer"]
-z_index = 49
 material = SubResource("ShaderMaterial_p7lmw")
 anchors_preset = 8
 anchor_left = 0.5
@@ -119,6 +204,7 @@ offset_bottom = 32.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(1.5, 1.5)
+mouse_filter = 2
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
@@ -147,14 +233,14 @@ visible = false
 position = Vector2(295, 7)
 texture = ExtResource("4_8iw7y")
 region_enabled = true
-region_rect = Rect2(32, 120, 16, 8)
+region_rect = Rect2(96, 51, 16, 10)
 
 [node name="RedKeySprite" type="Sprite2D" parent="UILayer/UIContainer"]
 visible = false
 position = Vector2(279, 7)
 texture = ExtResource("4_8iw7y")
 region_enabled = true
-region_rect = Rect2(16, 120, 16, 8)
+region_rect = Rect2(80, 51, 16, 10)
 
 [node name="ShopUIContainer" type="Node2D" parent="UILayer"]
 visible = false
@@ -207,10 +293,31 @@ offset_bottom = 192.0
 color = Color(0, 0, 0, 1)
 
 [node name="AmuletContainer" type="Node2D" parent="UILayer"]
-visible = false
+modulate = Color(1, 1, 1, 0)
 z_index = 49
 position = Vector2(152, 96)
 scale = Vector2(2, 2)
+
+[node name="RingExplosionParticles" type="CPUParticles2D" parent="UILayer/AmuletContainer"]
+material = SubResource("CanvasItemMaterial_tr4w4")
+emitting = false
+amount = 50
+lifetime = 2.0
+one_shot = true
+explosiveness = 1.0
+lifetime_randomness = 0.5
+local_coords = true
+texture = SubResource("CompressedTexture2D_f8lpd")
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 50.0
+initial_velocity_max = 70.0
+color_initial_ramp = SubResource("Gradient_un30u")
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+anim_offset_min = 0.25
+anim_offset_max = 0.375
 
 [node name="DottedLine" type="Sprite2D" parent="UILayer/AmuletContainer"]
 texture = ExtResource("4_8iw7y")
@@ -218,31 +325,44 @@ region_enabled = true
 region_rect = Rect2(80, 128, 16, 16)
 
 [node name="Piece1" type="Sprite2D" parent="UILayer/AmuletContainer"]
+modulate = Color(1, 1, 1, 0)
 texture = ExtResource("4_8iw7y")
 offset = Vector2(-4.5, -4.5)
 region_enabled = true
 region_rect = Rect2(64, 119, 9, 9)
 
 [node name="Piece2" type="Sprite2D" parent="UILayer/AmuletContainer"]
+modulate = Color(1, 1, 1, 0)
 texture = ExtResource("4_8iw7y")
 offset = Vector2(4.5, -4.5)
 region_enabled = true
 region_rect = Rect2(73, 119, 9, 9)
 
 [node name="Piece3" type="Sprite2D" parent="UILayer/AmuletContainer"]
+modulate = Color(1, 1, 1, 0)
 texture = ExtResource("4_8iw7y")
 offset = Vector2(5.5, 2)
 region_enabled = true
 region_rect = Rect2(91, 118, 9, 10)
 
 [node name="Piece4" type="Sprite2D" parent="UILayer/AmuletContainer"]
+modulate = Color(1, 1, 1, 0)
 texture = ExtResource("4_8iw7y")
 offset = Vector2(0, 4.5)
 region_enabled = true
 region_rect = Rect2(100, 119, 12, 9)
 
 [node name="Piece5" type="Sprite2D" parent="UILayer/AmuletContainer"]
+modulate = Color(1, 1, 1, 0)
 texture = ExtResource("4_8iw7y")
 offset = Vector2(-5.5, 2)
 region_enabled = true
 region_rect = Rect2(82, 118, 9, 10)
+
+[node name="LensCircle" parent="." instance=ExtResource("13_wyu8j")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_0758d")
+}
+autoplay = "Hue Shift"

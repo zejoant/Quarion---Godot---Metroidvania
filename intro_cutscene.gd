@@ -10,7 +10,10 @@ func _physics_process(_delta):
 		if Input.is_action_just_pressed("Jump") || Input.is_action_just_pressed("Left Click") || Input.is_action_just_pressed("Right Click"):
 			if count == 1:
 				count += 1
-				get_tree().create_tween().tween_property($Camera/SkipText, "modulate:a", 1, 0.3)
+				var tween = self.create_tween()
+				tween.tween_property($Camera/SkipText, "modulate:a", 1, 0.3)
+				tween.tween_interval(4)
+				tween.tween_property($Camera/SkipText, "modulate:a", 0, 0.3)
 			else:
 				$Camera.fade("000000", 1, 0.3, 0.2, 0)
 				await get_tree().create_timer(0.5, false).timeout

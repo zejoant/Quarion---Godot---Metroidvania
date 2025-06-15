@@ -16,11 +16,10 @@ func _ready():
 
 
 func _unhandled_input(event):
-	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE and !$Key.visible:
-		if player.in_interact_area and player.get_node("Area2D").get_overlapping_bodies()[0] == self:
+	if event.is_action_pressed("UI Up") and !$Key.visible:
+		if player.get_node("Area2D").has_overlapping_bodies() and player.get_node("Area2D").get_overlapping_bodies().has(self):
 			if color == "green" and player.green_key_state == "collected":
 				player.green_key_state = "used"
-				#get_node("/root/World/Camera/UIContainer/GreenKeySprite").visible = false
 				get_node("/root/World/Camera").set_keys("Green", true)
 				AudioManager.play_audio(sfxs.get_sfx("click"))
 				unlock()
@@ -41,7 +40,6 @@ func unlock():
 	tween.tween_property($Key, "scale", Vector2(1, 1), 0.1)
 	tween.tween_interval(0.2)
 	await tween.tween_property($Key, "rotation_degrees", 90, 0.1).finished
-	player.in_interact_area = false
 	
 	for node in get_parent().get_children():
 		if node.name.contains("KeyDoor") and color == node.color:
@@ -58,9 +56,9 @@ func get_all_children(in_node, array := []):
 		array = get_all_children(child, array)
 	return array
 
-func interactable() -> bool:
-	if color == "green" and player.green_key_state == "collected":
-		return true
-	elif color == "red" and player.red_key_state == "collected":
-		return true
-	return false
+#func interactable() -> bool:
+	#if color == "green" and player.green_key_state == "collected":
+		#return true
+	#elif color == "red" and player.red_key_state == "collected":
+		#return true
+	#return false

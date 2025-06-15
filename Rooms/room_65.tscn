@@ -26,5 +26,5 @@ shape = SubResource("RectangleShape2D_sqlwq")
 
 [node name="Key" parent="." instance=ExtResource("2_sywg4")]
 z_index = 4
-position = Vector2(73, 44)
+position = Vector2(73, 43)
 type = "red"

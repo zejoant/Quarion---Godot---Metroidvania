@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var starting_position = Vector2(7, 3)#Vector2(2, 1)
+@export var starting_position = Vector2(2, 0)#Vector2(2, 1)
 
 var new_game = true
 var paused = false
@@ -22,7 +22,8 @@ var previous_song: String
 var respawn_song_pos: float
 var respawn_song: String
 
-var bought_shop_items: Array[bool]
+var bought_shop_items: Array[bool] 
+var other_ui_open: bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -32,6 +33,8 @@ func _ready():
 	$Camera/UILayer/UIContainer.visible = true
 	bought_shop_items.resize(3)
 	bought_shop_items.fill(false)
+	
+	#get_tree().set_auto_accept_quit(false)
 	
 	setup_arrays()
 	
@@ -46,11 +49,14 @@ func _ready():
 			$Camera.set_keys("Green")
 		if player.red_key_state == "collected":
 			$Camera.set_keys("Red")
+		if player.has_item_map:
+			$WorldMap/MapComps/ItemMap.visible = true
 		
 		get_node("Camera").flash(1, 0, 0.2, 0.3)
 		await get_tree().create_timer(0.05, false).timeout
 	
 	player.position = checkpoint_pos
+	$Camera/LensCircle.change_lens(checkpoint_room, true)
 	
 	room_coords = checkpoint_room#Vector2(8, 3)#(0, 1) #starting room
 	var scene_instance = load("res://Rooms/room_" + str(room_coords.x) + str(room_coords.y) + ".tscn").instantiate() 
@@ -83,7 +89,7 @@ func resume_respawn_music():
 
 func setup_arrays():
 	var map_width = 10
-	var map_height = 8
+	var map_height = 9
 	
 	room_state.resize(map_width) #X-dimension
 	for x in map_width: 
@@ -98,33 +104,30 @@ func setup_arrays():
 func _process(_delta):
 	exit_room_check()
 	
-	if Input.is_action_just_pressed("Pause") and !$Camera/UILayer/ShopUIContainer.visible:
+	if Input.is_action_just_pressed("Pause") and !other_ui_open:
 		pauseMenu()
+
+#func _notification(what):
+	#if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		#save_game()
+		#await get_tree().create_timer(0.1).timeout
+		#get_tree().call_deferred("quit")
 		
-	#var window_size = DisplayServer.window_get_size()
-	#var screen_factor : float
-	#if(window_size.x <= window_size.y):
-		#screen_factor = window_size.x/304.0
-		#window_size.y = 192.0*screen_factor
-	#elif(window_size.x > window_size.y):
-		#screen_factor = window_size.y/192.0
-		#window_size.x = 304.0*screen_factor
-	##print((window_size.x/304.0 + window_size.y/192.0)/2)
-	##print(get_viewport().get_visible_rect().size)
-	#'if(player != null):
-		#player.get_node("CanvasLayer/ColorRect").material.set_shader_parameter("pix_per_pix", (window_size.x/304.0 + window_size.y/192.0)/2)
-	#$CanvasLayer/LightShader.material.set_shader_parameter("player_screen_pos", self.global_position)
-
-
 func pauseMenu():
 	if paused:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		pause_menu.hide()
 		get_tree().paused = false
 	else:
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		get_tree().paused = true
 		pause_menu.show()
+		if Input.get_connected_joypads().size() > 0:
+			if !Input.joy_connection_changed.is_connected(Callable(pause_menu, "_on_joy_connection_changed")):
+				Input.joy_connection_changed.connect(pause_menu._on_joy_connection_changed)
+			pause_menu.get_node("MarginContainer/VBoxContainer/ResumeButton").grab_focus()
+		else:
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+			
 	
 	paused = !paused
 	if $WorldMap.open:
@@ -159,6 +162,7 @@ func exit_room_check():
 		
 #function for changing the current room
 func change_room(new_coords):
+	$Camera/LensCircle.change_lens(new_coords)
 	var new_room_path = "res://Rooms/room_" + str(new_coords.x) + str(new_coords.y) + ".tscn"
 	var old_room = get_node_or_null("Room" + str(room_coords.x) + str(room_coords.y))
 	room_coords = new_coords #updates room coords
@@ -189,8 +193,9 @@ func respawn_player():
 	pass
 
 func return_to_checkpoint():
-	if checkpoint_room != room_coords:
-		change_room(checkpoint_room)
+	#load_data()
+	#if checkpoint_room != room_coords:
+	change_room(checkpoint_room)
 	player.position = Vector2(checkpoint_pos.x, checkpoint_pos.y)
 
 func get_tilemap() -> TileMap:
@@ -227,6 +232,13 @@ func room_wrap_check(new_room_coords, exit_dir) -> Vector2:
 		return Vector2(8, 0)
 	elif room_coords == Vector2(8, 0) and exit_dir == "left":
 		return Vector2(9, 0)
+	
+	elif room_coords == Vector2(0, 1) and exit_dir == "up":
+		player.position.x += 12*8
+		return Vector2(0, 8)
+	elif room_coords == Vector2(0, 8) and exit_dir == "down":
+		player.position.x -= 12*8
+		return Vector2(0, 1)
 		
 	return(new_room_coords)
 
@@ -242,6 +254,15 @@ func save_game():
 	respawn_song = $MusicPlayer.stream.resource_path
 	respawn_song_pos = $MusicPlayer.get_playback_position()
 	SaveManager.save_game(self)
+	
 func load_data():
 	SaveManager.load_game(self)
+	
+	
+func end_game():
+	$Player.can_move = false
+	$Camera.fade("000000", 1, 0.5, 1, 0.5)
+	await get_tree().create_timer(0.7).timeout
+	$Player.visible = false
+	#get_tree().change_scene_to_file("res://intro_cutscene.tscn")
 	

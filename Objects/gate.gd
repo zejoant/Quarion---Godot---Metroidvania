@@ -19,10 +19,13 @@ func open():
 	anim_tween = self.create_tween()
 	anim_tween.tween_method(move_gate, length*8, 0, 0.10)
 
-func close():
-	anim_tween = self.create_tween()
-	anim_tween.tween_method(move_gate, 0, length*8, 0.05)
-	$AudioStreamPlayer2D.play()
+func close(instant: bool = false):
+	if !instant:
+		anim_tween = self.create_tween()
+		anim_tween.tween_method(move_gate, 0, length*8, 0.05)
+		$AudioStreamPlayer2D.play()
+	else:
+		position += dir*length*8
 
 func move_gate(distance):
 	position.x = origin.x + distance*dir.x

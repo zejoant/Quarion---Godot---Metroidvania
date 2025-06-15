@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://d1cl5nkswlvo0"]
+[gd_scene load_steps=14 format=3 uid="uid://d1cl5nkswlvo0"]
 
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_frgm2"]
 [ext_resource type="Script" path="res://Objects/button.gd" id="1_hgw2d"]
@@ -17,6 +17,9 @@ sound_effects = Array[ExtResource("3_fc8un")]([SubResource("Resource_jx4no")])
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_a4ma6"]
 size = Vector2(14, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8apq0"]
+size = Vector2(5, 5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gps2p"]
 size = Vector2(12, 2)
@@ -127,6 +130,18 @@ region_rect = Rect2(48, 88, 16, 16)
 [node name="ButtonBaseColl" type="CollisionShape2D" parent="."]
 position = Vector2(0, 2.5)
 shape = SubResource("RectangleShape2D_a4ma6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-7, 5)
+rotation = 0.785398
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_8apq0")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
+position = Vector2(7, 5)
+rotation = 0.785398
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_8apq0")
 
 [node name="ClickArea" type="Area2D" parent="."]
 collision_layer = 8

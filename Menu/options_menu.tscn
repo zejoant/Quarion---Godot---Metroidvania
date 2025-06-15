@@ -232,6 +232,8 @@ size_flags_horizontal = 4
 
 [node name="FullscreenCheck" type="CheckBox" parent="MarginContainer/VBoxContainer/VideoVBox"]
 layout_mode = 2
+focus_neighbor_left = NodePath("../../AudioHBox/SfxVBox/SfxSlider")
+focus_neighbor_right = NodePath("../../AudioHBox/MusicVbox/MusicSlider")
 theme = ExtResource("8_hcnu7")
 text = "Fullscreen"
 

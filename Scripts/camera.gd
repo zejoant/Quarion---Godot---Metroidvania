@@ -1,5 +1,6 @@
 extends Camera2D
 
+@export var sfxs : AudioLibrary ## Tagged audio files to play from this scene
 var tween
 var map_open = false
 
@@ -45,10 +46,36 @@ func set_keys(state: String, remove: bool = false):
 
 func collect_amulet_piece():
 	var player = get_node("/root/World/Player")
-	player.can_move = false
+	var piece = get_node("UILayer/AmuletContainer/Piece" + str(player.amulet_pieces))
+	player.disable_movement()
 	blur(1.032, 0.3)
-	$UILayer/AmuletContainer.visible = true
+	$FlashLayer.modulate = Color(0, 0, 0, 0.5)
+	$UILayer/AmuletContainer.modulate.a = 1
+	piece.scale = Vector2(3, 3)
 	
+	tween = self.create_tween()
+	tween.set_ease(Tween.EASE_IN)
+	tween.set_trans(Tween.TRANS_BACK)
+	tween.tween_interval(0.8)
+	tween.tween_property(piece, "modulate:a", 1, 0.2)
+	await tween.tween_property(piece, "scale", Vector2(1, 1), 0.3).finished
+	
+	AudioManager.play_audio(sfxs.get_sfx("amulet_impact"))
+	$UILayer/AmuletContainer/RingExplosionParticles.emitting = true
+	await get_tree().create_timer(2, false).timeout
+	
+	AudioManager.play_audio(sfxs.get_sfx("amulet_out"))
+	blur(0, 0.2)
+	tween = self.create_tween()
+	tween.set_ease(Tween.EASE_IN)
+	tween.set_trans(Tween.TRANS_BACK)
+	tween.parallel().tween_property($UILayer/AmuletContainer, "scale", Vector2(10, 10), 0.2)
+	await tween.parallel().tween_property($UILayer/AmuletContainer, "modulate:a", 0, 0.2).finished
+	
+	player.disable_movement(false)
+	$FlashLayer.modulate = Color(1, 1, 1, 0)
+	$UILayer/AmuletContainer.scale = Vector2(2, 2)
+
 
 func blur(strength: float, time):
 	#Callable allows me to call a method and send a param along in tween_method()
