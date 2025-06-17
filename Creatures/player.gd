@@ -37,6 +37,9 @@ var is_dead = false
 var can_die = true
 var paused = false
 
+var death_count: int = 0
+var jump_count: int = 0
+
 @export_group("Power-Ups")
 @export var has_dash = false
 @export var has_wallclimb = false
@@ -58,6 +61,16 @@ func _ready():
 	velocity.y = 200
 	
 	await Engine.get_main_loop().process_frame
+	
+	if get_parent().new_game:
+		$ParticleComps.visible = false
+		#floor_snap_length = 24*8
+		#apply_floor_snap()
+		#floor_snap_length = 2
+		$AnimationPlayer.play("Lie Down")
+		disable_movement(true)
+		update_animations = false
+		
 	if has_blue_blocks:
 		$Sprite2D.material.set_shader_parameter("palette_choice", 1)
 	if has_dash:
@@ -70,6 +83,14 @@ func _ready():
 		$Sprite2D.material.set_shader_parameter("palette_choice", 5)
 	else:
 		$Sprite2D.material.set_shader_parameter("palette_choice", 0)
+	
+	if !can_move:
+		await get_tree().create_timer(2, false).timeout
+		$AnimationPlayer.play("Kneel")
+		$ParticleComps.visible = true
+		await get_tree().create_timer(0.5, false).timeout
+		update_animations = true
+		disable_movement(false)
 	
 #runs every frame
 func _physics_process(_delta):
@@ -107,7 +128,7 @@ func _physics_process(_delta):
 		wallslide_check()
 		check_inputs()
 		move_and_slide()
-
+		
 #checks all player inputs
 func check_inputs():
 	if Input.is_action_just_pressed("Quick Respawn") and can_move and !after_red_boss:
@@ -123,7 +144,6 @@ func check_inputs():
 		get_parent().get_node("WorldMap/MapComps/ItemMap").visible = true
 		#green_key_state = "collected"
 		#red_key_state = "collected"
-	
 	if !can_move:
 		return
 	if Input.is_action_just_released("Jump"):
@@ -133,7 +153,7 @@ func check_inputs():
 	if Input.is_action_just_pressed("Jump") and can_double_jump and has_double_jump and coyote < 0 and !can_walljump:
 		can_double_jump = false
 		jump()
-	if Input.is_action_pressed("Jump") and can_jump:
+	if Input.is_action_pressed("Jump") and can_jump: #not just_pressed cause buffer needs to work
 		jump()
 	if (Input.is_action_just_pressed("Jump") and can_walljump) or walljumping:
 		walljump()
@@ -178,6 +198,7 @@ func animate_player():
 #death and respawning
 func respawn():
 	if !is_dead and can_die:
+		death_count += 1
 		var world = get_node("/root/World")
 		get_node("/root/World/MusicPlayer").stop()
 		is_dead = true
@@ -217,10 +238,10 @@ func bounce(strength):
 
 #Handle the jump
 func jump():
+	jump_count += 1
 	velocity.y = jump_vel
 	buffer = 1
 	can_jump = false
-	#$AnimationPlayer.play("Jump")
 	AudioManager.play_audio(sfxs.get_sfx("jump"))
 
 # Gets the input direction and handles the movement.
@@ -235,7 +256,6 @@ func walk():
 		velocity.x = direction * x_speed
 		if is_on_floor() and !Input.is_action_pressed("Jump") and $AnimationPlayer.current_animation != "Land":
 			$AnimationPlayer.speed_scale = abs(direction)
-			#$AnimationPlayer.play("Walk")
 		else:
 			$AnimationPlayer.speed_scale = 1
 	else:
@@ -370,6 +390,7 @@ func custom_data_action(body: TileMap, custom_data: String, tile_coords: Vector2
 			await create_tween().tween_interval(2).finished
 			$Sprite2D.material.set_shader_parameter("palette_choice", $Sprite2D.material.get_shader_parameter("palette_choice")+1)
 			AudioManager.play_audio(sfxs.get_sfx("p_up_finish"))
+			get_parent().completion_percentage += 2
 			get_node("/root/World/Camera").flash(1, 0, 0.1, 0.4)
 			if custom_data == "PBlueBlocks":
 				get_parent().change_room(get_parent().room_coords)
@@ -415,13 +436,14 @@ func _on_water_detector_body_shape_entered(body_rid, body, _body_shape_index, _l
 #turn on/off player input/movement
 func disable_movement(disable: bool = true):
 	if disable:
+		dashing = false
 		dash_timer = dash_lim
 		can_move = !disable
-		velocity = Vector2(0, 0)
-		#if is_on_floor() and !Input.is_action_pressed("Jump") and $AnimationPlayer.current_animation != "Land":
-		#	$AnimationPlayer.play("Idle")
+		velocity.x = 0 #Vector2(0, 0)
 	else:
-		can_move = !disable
+		can_move = true
+		can_jump = true
+		buffer = 0
 
 #updates apple count when collecting apples and buying from shop
 func update_apple_count(value: int, override: bool = false):

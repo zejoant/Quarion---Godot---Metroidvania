@@ -38,8 +38,15 @@ func save_game(world: Node):
 	file.store_var(world.player.apple_count)
 	file.store_var(world.bought_shop_items)
 	
+	#map stuff
 	file.store_var(world.player.has_item_map)
 	file.store_var(world.get_node("WorldMap/MapComps/ItemMap").get_used_cells(0))
+	
+	#staff roll stats
+	file.store_var(world.timer)
+	file.store_var(world.player.death_count)
+	file.store_var(world.player.jump_count)
+	file.store_var(world.completion_percentage)
 
 func load_game(world: Node):
 	if FileAccess.file_exists(save_path):
@@ -60,6 +67,15 @@ func load_game(world: Node):
 		world.player.apple_count = file.get_var()
 		world.bought_shop_items.assign(file.get_var())
 		
+		#map stuff
 		world.player.has_item_map = file.get_var()
 		for apple_pos in file.get_var():
 			world.get_node("WorldMap").add_apple_from_pos(apple_pos)
+		
+		#staff roll stats
+		world.timer = file.get_var()
+		world.player.death_count = file.get_var()
+		world.player.jump_count = file.get_var()
+		world.completion_percentage = file.get_var()
+			
+		

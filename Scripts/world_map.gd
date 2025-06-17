@@ -53,6 +53,7 @@ func add_room(room_coords: Vector2):
 	if %RoomMap.get_cell_source_id(0, Vector2i(room_coords)) == -1:
 		latest_added_room = room_coords
 		%RoomMap.set_cell(0, room_coords, 0, room_coords, 0)
+		world.completion_percentage += 0.125
 
 #func update_items():
 	#for pos in item_positions:

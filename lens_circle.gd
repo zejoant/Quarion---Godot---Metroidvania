@@ -1,7 +1,7 @@
 extends Node2D
 
 var player
-@export_range(0, 5) var size: float = 1
+@export_range(0, 20) var size: float = 1
 @export var follow_player : bool = true
 
 var tween
@@ -48,6 +48,10 @@ func change_lens(room_coords, instant: bool = false, behind_foreground: int = 0)
 		lens_size = 3
 	elif room_coords == Vector2(0, 8):
 		lens_size = 3
+	elif room_coords == Vector2(9, 5):
+		lens_size = 2
+	elif room_coords == Vector2(8, 5):
+		lens_size = 2.5
 	
 	if !instant:
 		tween = self.create_tween()

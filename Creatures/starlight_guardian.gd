@@ -5,15 +5,18 @@ extends Node2D
 @export_enum("green", "blue", "pink", "yellow") var color = "green"
 @export_range(0, 5) var start_raise : float = 0
 @export_range(0, 2) var difficulty : int = 0
+@export_range(18, 22) var floor_height : float = 20
 
 var sprite_sheet : Texture2D
 var boss : CharacterBody2D
 var start_pos : Vector2
+var last_pos
 var player
 var rng = RandomNumberGenerator.new()
 
 var health = 3
 var boss_state = -2
+var last_attack
 var attack_state = 0
 var bullet_cooldown = false
 
@@ -62,28 +65,30 @@ func _process(_delta):
 			lunge()
 		if boss_state == 2: #bullet rain
 			rain()
-		if boss_state == 3:
-			aiming_bullets() #bullets aimed at the player
+		if boss_state == 3: #sweep down
+			if abs(sin(time/2.0)) < 0.05:
+				fly_by()
+		if boss_state == 4: #bullets aimed at the player
+			aiming_bullets() 
 
 
 func choose_attack():
 	var num = rng.randi_range(1+int(float(difficulty)/2.0), 3+int(float(difficulty)/2.0))
+	var attack = last_attack
 	
-	#if chance == -1:
-	#	chance = 3
-	#elif chance == 4:
-	#	chance = 0
-	
-	if num <= chance:
-		boss_state = 1
-		#chance -= 1
-		#chance = 0
+	if num <= chance: #chance of lunge gets higher each attack
+		attack = 1
 	else:
-		if difficulty > 0:
-			boss_state = rng.randi_range(2, 3)
+		if difficulty > 0: #after first boss it can do aim shots
+			while attack == last_attack:
+				attack = rng.randi_range(2, 4)
 		else:
-			boss_state = 2
+			while attack == last_attack:
+				attack = rng.randi_range(2, 3)
 		chance += 1
+	
+	boss_state = attack
+	last_attack = boss_state
 
 
 func rain():
@@ -105,6 +110,7 @@ func rain():
 
 
 func idle_movement():
+	last_pos = boss.position
 	boss.position.y = idle_origin.y - sin(time)*12.0
 	boss.position.x = idle_origin.x + sin(time/2.0)*50.0
 	
@@ -201,6 +207,35 @@ func aiming_bullets():
 		tween2.set_ease(Tween.EASE_IN_OUT)
 		tween2.parallel().tween_property(self, "idle_origin", start_pos, 0.8)
 
+func fly_by():
+	if attack_state == 0:
+		attack_state = 1
+		mod = 0
+		tween3 = self.create_tween()
+		tween3.set_ease(Tween.EASE_OUT)
+		tween3.set_trans(Tween.TRANS_SINE)
+		
+		if last_pos.x > boss.position.x:
+			tween3.parallel().tween_property(boss, "position:x", 2*8, 1.7)
+			tween3.set_ease(Tween.EASE_IN)
+			tween3.tween_property(boss, "position:x", 40*8, 1.2)
+		else:
+			tween3.parallel().tween_property(boss, "position:x", 36*8, 1.7)
+			tween3.set_ease(Tween.EASE_IN)
+			tween3.tween_property(boss, "position:x", -2*8, 1.2)
+		
+		tween2 = self.create_tween()
+		tween2.set_ease(Tween.EASE_OUT)
+		tween2.set_trans(Tween.TRANS_SINE)
+		tween2.tween_property(boss, "position:y", boss.position.y - 8*3, 0.75)
+		tween2.set_ease(Tween.EASE_IN_OUT)
+		if rng.randi_range(0, 1): #low attack
+			tween2.tween_property(boss, "position:y", floor_height*8, 1.5)
+		else: #high attack
+			tween2.tween_property(boss, "position:y", (floor_height-4)*8, 1.4)
+		await get_tree().create_timer(3, false).timeout
+		boss.position.y = idle_origin.y + 16
+		reset_lunge()
 
 func param_setup():
 	boss.position.y -= start_raise*8
@@ -275,6 +310,7 @@ func die():
 	$Boss/SilhouetteParticles.visible = false
 	$Boss/DeathParticles.emitting = true
 	$Boss/DeathParticles2.emitting = true
+	get_node("/root/World").completion_percentage += 5
 	get_node("/root/World/Camera").shake(4, 0.03, 3)
 	get_node("/root/World/Camera").invert_color(1, 0.3)
 	get_node("/root/World").resume_previous_music()

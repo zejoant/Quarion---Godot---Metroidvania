@@ -1858,7 +1858,7 @@ region_rect = Rect2(32, 32, 16, 16)
 
 [node name="Green" type="Sprite2D" parent="Rooms/Characters"]
 z_index = 3
-position = Vector2(268, 424)
+position = Vector2(269, 424)
 texture = ExtResource("5_fxfmj")
 flip_h = true
 region_enabled = true

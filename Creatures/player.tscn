@@ -1,7 +1,6 @@
-[gd_scene load_steps=60 format=3 uid="uid://4ythqhswhcg7"]
+[gd_scene load_steps=61 format=3 uid="uid://4ythqhswhcg7"]
 
 [ext_resource type="Script" path="res://Creatures/player.gd" id="1_1p4uo"]
-[ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_hnvw4"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="4_q56as"]
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="5_ja3e4"]
 [ext_resource type="AudioStream" uid="uid://ds8rsq8hl0v6b" path="res://Sfx/jump2.wav" id="6_7e0dw"]
@@ -18,6 +17,7 @@
 [ext_resource type="AudioStream" uid="uid://b518ksl04jb1q" path="res://Sfx/GameSFX/Magic/Retro Magic 34.wav" id="12_og1me"]
 [ext_resource type="Shader" path="res://Shaders/palette_swap.gdshader" id="13_b8g8h"]
 [ext_resource type="Texture2D" uid="uid://srrdnqsgkk6u" path="res://Assets/Player Palettes.png" id="14_q6unr"]
+[ext_resource type="Texture2D" uid="uid://b4a3gpanglo75" path="res://Assets/Character Sprite Sheet.png" id="15_kmrac"]
 
 [sub_resource type="Resource" id="Resource_yaidf"]
 script = ExtResource("5_ja3e4")
@@ -119,12 +119,12 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Rect2(144, 16, 16, 16)]
+"values": [Rect2(128, 0, 16, 16)]
 }
 
 [sub_resource type="Animation" id="Animation_bh08o"]
 resource_name = "Fall"
-length = 0.001
+length = 20.0
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -135,7 +135,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Rect2(96, 16, 16, 16)]
+"values": [Rect2(80, 0, 16, 16)]
 }
 
 [sub_resource type="Animation" id="Animation_4isl1"]
@@ -153,7 +153,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.25, 0.5, 0.75),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
-"values": [Rect2(176, 16, 16, 16), Rect2(192, 16, 16, 16), Rect2(208, 16, 16, 16), Rect2(224, 16, 16, 16)]
+"values": [Rect2(160, 0, 16, 16), Rect2(176, 0, 16, 16), Rect2(192, 0, 16, 16), Rect2(208, 0, 16, 16)]
 }
 
 [sub_resource type="Animation" id="Animation_gwdlv"]
@@ -169,7 +169,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Rect2(80, 16, 16, 16)]
+"values": [Rect2(64, 0, 16, 16)]
 }
 
 [sub_resource type="Animation" id="Animation_6c6sk"]
@@ -183,10 +183,10 @@ tracks/0/path = NodePath("Sprite2D:region_rect")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.25),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Rect2(112, 16, 16, 16), Rect2(16, 16, 16, 16)]
+"values": [Rect2(96, 0, 16, 16)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -213,7 +213,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Rect2(144, 16, 16, 16)]
+"values": [Rect2(160, 0, 16, 16)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -264,10 +264,10 @@ tracks/0/path = NodePath("Sprite2D:region_rect")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.166667, 0.333333),
+"times": PackedFloat32Array(0, 0.166667, 0.333334),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
-"values": [Rect2(32, 16, 16, 16), Rect2(48, 16, 16, 16), Rect2(64, 16, 16, 16)]
+"values": [Rect2(16, 0, 16, 16), Rect2(32, 0, 16, 16), Rect2(48, 0, 16, 16)]
 }
 
 [sub_resource type="Animation" id="Animation_x8b06"]
@@ -283,7 +283,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Rect2(128, 16, 16, 16)]
+"values": [Rect2(112, 0, 16, 16)]
 }
 
 [sub_resource type="Animation" id="Animation_aggab"]
@@ -299,7 +299,23 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Rect2(168, 24, 16, 8)]
+"values": [Rect2(224, 0, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_hwsib"]
+resource_name = "Kneel"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(240, 0, 16, 16)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5gao2"]
@@ -309,6 +325,7 @@ _data = {
 "Fall": SubResource("Animation_bh08o"),
 "Idle": SubResource("Animation_4isl1"),
 "Jump": SubResource("Animation_gwdlv"),
+"Kneel": SubResource("Animation_hwsib"),
 "Land": SubResource("Animation_6c6sk"),
 "Lie Down": SubResource("Animation_aggab"),
 "RESET": SubResource("Animation_ndq0k"),
@@ -401,9 +418,9 @@ shape = SubResource("RectangleShape2D_vy8ue")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 z_index = 5
 material = SubResource("ShaderMaterial_52qgj")
-texture = ExtResource("1_hnvw4")
+texture = ExtResource("15_kmrac")
 region_enabled = true
-region_rect = Rect2(144, 16, 16, 16)
+region_rect = Rect2(160, 0, 16, 16)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

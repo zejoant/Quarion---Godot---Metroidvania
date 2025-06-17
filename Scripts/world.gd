@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var starting_position = Vector2(2, 0)#Vector2(2, 1)
+@export var starting_position = Vector2(2, 1)
 
 var new_game = true
 var paused = false
@@ -25,6 +25,15 @@ var respawn_song: String
 var bought_shop_items: Array[bool] 
 var other_ui_open: bool = false
 
+#for changing room
+var new_room_path
+var old_room
+
+var timer: float = 0.0
+var completion_percentage: float = 0
+
+@onready var red_boss_room = preload("res://Rooms/room_10.tscn")
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -39,9 +48,9 @@ func _ready():
 	setup_arrays()
 	
 	if new_game:
-		get_node("Camera").fade("000000", 1, 0, 0.2, 2)
+		get_node("Camera").fade("000000", 1, 0, 0.2, 3)
 		checkpoint_room = starting_position
-		checkpoint_pos = Vector2(cam_size.x/2, cam_size.y/2)
+		checkpoint_pos = Vector2(11.5*8, 19*8)#Vector2(cam_size.x/2, cam_size.y/2)
 	else:
 		load_data()
 		$Camera/UILayer/UIContainer/AppleCount.text = str(player.apple_count)
@@ -66,6 +75,16 @@ func _ready():
 	
 	$MusicPlayer.stream = load("res://Music/746887_BITTRIP-REMIX-02-CORE.mp3")
 	$MusicPlayer.play()
+	respawn_song = $MusicPlayer.stream.resource_path
+
+func _process(delta):
+	exit_room_check()
+	
+	if Input.is_action_just_pressed("Pause") and !other_ui_open:
+		pauseMenu()
+	
+	timer += delta #time in seconds, with 3 decimal places
+	#$Label.text = String.num(completion_percentage, 3) 
 
 func switch_music(new_song_path):
 	previous_song = $MusicPlayer.stream.resource_path
@@ -101,12 +120,6 @@ func setup_arrays():
 	opened_doors.resize(100) #setup opened_doors array
 	opened_doors.fill(false)
 
-func _process(_delta):
-	exit_room_check()
-	
-	if Input.is_action_just_pressed("Pause") and !other_ui_open:
-		pauseMenu()
-
 #func _notification(what):
 	#if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		#save_game()
@@ -138,43 +151,50 @@ func exit_room_check():
 	var new_room_coords = room_coords
 	var exit_dir = "right"
 	
+	#var t0 = Time.get_ticks_msec()
 	if player.position.x >= cam_size.x:
 		player.position.x = 1
 		exit_dir = "right"
-		new_room_coords = Vector2(room_coords.x+1, room_coords.y)
+		new_room_coords.x += 1# = Vector2(room_coords.x+1, room_coords.y)
 	elif player.position.x <= 0:
 		player.position.x = cam_size.x-1
 		exit_dir = "left"
-		new_room_coords = Vector2(room_coords.x-1, room_coords.y)
+		new_room_coords.x -= 1# = Vector2(room_coords.x-1, room_coords.y)
 	
 	elif player.position.y <= 0:
 		player.position.y = cam_size.y-1
 		exit_dir = "up"
-		new_room_coords = Vector2(room_coords.x, room_coords.y-1)
+		new_room_coords.y -= 1# = Vector2(room_coords.x, room_coords.y-1)
 	elif player.position.y >= cam_size.y:
 		player.position.y = 1
 		exit_dir = "down"
-		new_room_coords = Vector2(room_coords.x, room_coords.y+1)
+		new_room_coords.y += 1# = Vector2(room_coords.x, room_coords.y+1)
+	else:
+		return
 	
-	if new_room_coords != room_coords:
-		new_room_coords = room_wrap_check(new_room_coords, exit_dir)
-		change_room(new_room_coords)
+	#if new_room_coords != room_coords:
+	new_room_coords = room_wrap_check(new_room_coords, exit_dir)
+	change_room(new_room_coords)
+	#print(Time.get_ticks_msec()-t0)
 		
 #function for changing the current room
 func change_room(new_coords):
 	$Camera/LensCircle.change_lens(new_coords)
-	var new_room_path = "res://Rooms/room_" + str(new_coords.x) + str(new_coords.y) + ".tscn"
-	var old_room = get_node_or_null("Room" + str(room_coords.x) + str(room_coords.y))
+	#new_room_path = "res://Rooms/room_%s%s.tscn" % [new_coords.x, new_coords.y]
+	new_room_path = "res://Rooms/room_" + str(new_coords.x) + str(new_coords.y) + ".tscn"
+	old_room = get_node_or_null("Room" + str(room_coords.x) + str(room_coords.y))
 	room_coords = new_coords #updates room coords
 	
 	if old_room: #if the room was never loaded (because it did not exist)
 		old_room.call_deferred("free")
+	old_room = null
 	
 	if ResourceLoader.exists(new_room_path): #if the entered room exists in files (safety precation for oob)
-		var new_room = load(new_room_path).instantiate()
-		call_deferred("add_child", new_room) #loads new room
+		if new_room_path == "res://Rooms/room_10.tscn": #to avoid red boss room lagspike
+			call_deferred("add_child", red_boss_room.instantiate()) #loads new room
+		else:
+			call_deferred("add_child", load(new_room_path).instantiate()) #loads new room
 		$WorldMap.add_room(room_coords) #adds room to map
-	
 
 
 #saves the respawn position when grabbing a checkpoint

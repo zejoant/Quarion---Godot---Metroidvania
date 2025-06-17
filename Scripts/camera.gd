@@ -96,7 +96,7 @@ func flash(opacity, enter, hold, exit, color: Color = Color(1, 1, 1, 0)):
 	await tween.tween_property($FlashLayer, "modulate:a", 0, exit).finished #fade out to original opacity
 	$FlashLayer.modulate = old_color
 	
-func fade(color, opacity, enter, hold, exit):
+func fade(color: String, opacity: float, enter: float, hold: float, exit: float):
 	#var start_opacity = $FlashLayer.modulate.a
 	$FlashLayer.modulate = Color(color + "00")
 	tween = self.create_tween()

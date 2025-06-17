@@ -1,7 +1,13 @@
-[gd_scene load_steps=23 format=3 uid="uid://cwafd3q5y7u6m"]
+[gd_scene load_steps=46 format=3 uid="uid://cwafd3q5y7u6m"]
 
+[ext_resource type="Script" path="res://outro_cutscene.gd" id="1_67kqt"]
 [ext_resource type="Texture2D" uid="uid://bn306u45m6wu1" path="res://Assets/Line Particle.png" id="1_qhqm7"]
 [ext_resource type="Texture2D" uid="uid://dnuk8to6m018a" path="res://Assets/Ship Textures.png" id="2_5k7d6"]
+[ext_resource type="PackedScene" uid="uid://c4y4hleyev5w2" path="res://camera.tscn" id="2_ni403"]
+[ext_resource type="Shader" path="res://Shaders/pixelate.gdshader" id="4_7merp"]
+[ext_resource type="AudioStream" uid="uid://cwbt6vou8bhdv" path="res://Music/Chipfezt.mp3" id="5_benn3"]
+[ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/prstartk.ttf" id="6_j7a2d"]
+[ext_resource type="PackedScene" uid="uid://c412d8dttjo6j" path="res://Rooms/room_21.tscn" id="7_gppp7"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_qt2ou"]
 load_path = "res://.godot/imported/Line Particle.png-ca29923f7b62240508620dc4fd1bee4a.ctex"
@@ -32,6 +38,20 @@ point_count = 1
 
 [sub_resource type="Gradient" id="Gradient_wjvsy"]
 colors = PackedColorArray(0.095, 0.102917, 0.19, 1, 0.476, 0.6358, 0.68, 1)
+
+[sub_resource type="Gradient" id="Gradient_7pkpk"]
+offsets = PackedFloat32Array(0, 0.489362, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.407843, 0.533333, 0.584314, 1, 0.258824, 0.282353, 0.360784, 1)
+
+[sub_resource type="Curve" id="Curve_eq48b"]
+min_value = -1.0
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ibcwt"]
+shader = ExtResource("4_7merp")
+shader_parameter/size_x = 4.0
+shader_parameter/size_y = 4.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0plah"]
 atlas = ExtResource("2_5k7d6")
@@ -96,7 +116,402 @@ colors = PackedColorArray(0.0456, 0.0461733, 0.08, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_5jjmd"]
 gradient = SubResource("Gradient_i40vs")
 
+[sub_resource type="Animation" id="Animation_hgnsc"]
+resource_name = "Default"
+length = 45.0
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("OutsideShip:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(152, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("OutsideShip:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(230, -0.25, 0, 0.4, -59, 96, -1.2, 7, 0.25, 0),
+"times": PackedFloat32Array(0, 2.6)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("OutsideShip:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(-0.785398, -0.25, 0, 0.25, 0, -0.785, -0.25, 0, 0.5, 0, 0, -1, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.3, 3)
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("OutsideShip/Thrusters/UpperThruster:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(3, 3.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1e-05, 1), Vector2(13.625, 1)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("OutsideShip/Thrusters/LowerThruster:scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(3, 3.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1e-05, 1), Vector2(16.375, 1)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("OutsideShip/Thrusters/LowerParticles:emitting")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("OutsideShip/Thrusters/UpperParticles:emitting")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/7/type = "method"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Camera")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(40),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": ["000000", 1.0, 0.5, 0.5, 0.5],
+"method": &"fade"
+}]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Camera:position")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 40.7),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Vector2(0, 0), Vector2(0, 300)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("AudioStreamPlayer2D:volume_db")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(40, 40.7),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, -40.0]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Camera/LensCircle:visible")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0, 40.7),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("AudioStreamPlayer2D:playing")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(40.7),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("CreditsComp:position")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0, 3.4, 40),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 192), Vector2(0, 192), Vector2(0, -500)]
+}
+
+[sub_resource type="Animation" id="Animation_ku714"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("OutsideShip:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(152, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("OutsideShip:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(230, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("OutsideShip:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("OutsideShip/Thrusters/UpperThruster:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 1)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("OutsideShip/Thrusters/LowerThruster:scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 1)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("OutsideShip/Thrusters/LowerParticles:emitting")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("OutsideShip/Thrusters/UpperParticles:emitting")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Camera:position")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(0, 0)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("AudioStreamPlayer2D:volume_db")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Camera/LensCircle:visible")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("AudioStreamPlayer2D:playing")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("CreditsComp:position")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 192)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_3155i"]
+_data = {
+"Default": SubResource("Animation_hgnsc"),
+"RESET": SubResource("Animation_ku714")
+}
+
+[sub_resource type="LabelSettings" id="LabelSettings_oi2d5"]
+font = ExtResource("6_j7a2d")
+font_size = 8
+font_color = Color(0.945098, 0.929412, 0.886275, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_8jwux"]
+font = ExtResource("6_j7a2d")
+font_size = 8
+font_color = Color(0.945098, 0.929412, 0.886275, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_1lkdx"]
+font = ExtResource("6_j7a2d")
+font_size = 8
+font_color = Color(0.945098, 0.929412, 0.886275, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_rk1qr"]
+font = ExtResource("6_j7a2d")
+font_size = 8
+font_color = Color(0.945098, 0.929412, 0.886275, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_307h8"]
+font = ExtResource("6_j7a2d")
+font_size = 8
+font_color = Color(0.945098, 0.929412, 0.886275, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_8wjxw"]
+font = ExtResource("6_j7a2d")
+font_size = 8
+font_color = Color(0.945098, 0.929412, 0.886275, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_g1s1l"]
+font = ExtResource("6_j7a2d")
+font_size = 8
+font_color = Color(0.945098, 0.929412, 0.886275, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_qnfbw"]
+font = ExtResource("6_j7a2d")
+font_size = 8
+font_color = Color(0.945098, 0.929412, 0.886275, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_hpsqf"]
+font = ExtResource("6_j7a2d")
+font_size = 8
+font_color = Color(0.945098, 0.929412, 0.886275, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_4jqca"]
+font = ExtResource("6_j7a2d")
+font_size = 8
+font_color = Color(0.945098, 0.929412, 0.886275, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_en328"]
+font = ExtResource("6_j7a2d")
+font_size = 8
+font_color = Color(0.945098, 0.929412, 0.886275, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
 [node name="OutroCutscene" type="Node2D"]
+script = ExtResource("1_67kqt")
+
+[node name="Camera" parent="." instance=ExtResource("2_ni403")]
+
+[node name="UILayer" parent="Camera" index="5"]
+visible = false
+
+[node name="LensCircle" parent="Camera" index="6"]
+size = 8.0
 
 [node name="BGParticles" type="Node2D" parent="."]
 
@@ -159,13 +574,42 @@ scale_curve_x = null
 scale_curve_y = SubResource("Curve_sy5gi")
 color_initial_ramp = SubResource("Gradient_wjvsy")
 
+[node name="BigSquareParticles" type="CPUParticles2D" parent="BGParticles"]
+z_index = -1
+position = Vector2(150, 212)
+amount = 50
+lifetime = 25.0
+preprocess = 16.0
+emission_shape = 3
+emission_rect_extents = Vector2(150, 1)
+direction = Vector2(0, -1)
+spread = 6.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 8.0
+initial_velocity_max = 20.0
+angular_velocity_min = -20.0
+angular_velocity_max = 20.0
+scale_amount_min = 20.0
+scale_amount_max = 60.0
+color = Color(0.0627451, 0.0588235, 0.0980392, 0.615686)
+color_initial_ramp = SubResource("Gradient_7pkpk")
+hue_variation_min = -0.06
+hue_variation_max = 0.06
+hue_variation_curve = SubResource("Curve_eq48b")
+
+[node name="ParticlePixelation" type="ColorRect" parent="BGParticles"]
+material = SubResource("ShaderMaterial_ibcwt")
+offset_right = 304.0
+offset_bottom = 192.0
+
 [node name="OutsideShip" type="Node2D" parent="."]
+position = Vector2(152, 230)
 
 [node name="Thrusters" type="Node2D" parent="OutsideShip"]
 
 [node name="LowerThruster" type="AnimatedSprite2D" parent="OutsideShip/Thrusters"]
-position = Vector2(131, 117)
-scale = Vector2(16.375, 1)
+position = Vector2(-21, 12)
+scale = Vector2(1e-05, 1)
 sprite_frames = SubResource("SpriteFrames_nhrfb")
 autoplay = "default"
 frame_progress = 0.296749
@@ -173,7 +617,8 @@ offset = Vector2(-4, 0)
 
 [node name="LowerParticles" type="CPUParticles2D" parent="OutsideShip/Thrusters"]
 material = SubResource("CanvasItemMaterial_k5fuf")
-position = Vector2(130, 117)
+position = Vector2(-22, 12)
+emitting = false
 amount = 20
 emission_shape = 3
 emission_rect_extents = Vector2(1, 2)
@@ -186,8 +631,8 @@ scale_amount_max = 2.0
 color_initial_ramp = SubResource("Gradient_d038s")
 
 [node name="UpperThruster" type="AnimatedSprite2D" parent="OutsideShip/Thrusters"]
-position = Vector2(109, 93)
-scale = Vector2(13.625, 1)
+position = Vector2(-43, -12)
+scale = Vector2(1e-05, 1)
 sprite_frames = SubResource("SpriteFrames_d3ter")
 autoplay = "default"
 frame_progress = 0.544531
@@ -195,7 +640,8 @@ offset = Vector2(-4, 0)
 
 [node name="UpperParticles" type="CPUParticles2D" parent="OutsideShip/Thrusters"]
 material = SubResource("CanvasItemMaterial_62kil")
-position = Vector2(109, 94)
+position = Vector2(-43, -11)
+emitting = false
 amount = 30
 emission_shape = 3
 emission_rect_extents = Vector2(1, 3)
@@ -208,7 +654,6 @@ scale_amount_max = 2.0
 color_initial_ramp = SubResource("Gradient_sf2e8")
 
 [node name="ShipTextures" type="Sprite2D" parent="OutsideShip"]
-position = Vector2(152, 105)
 texture = ExtResource("2_5k7d6")
 region_enabled = true
 region_rect = Rect2(0, 0, 96, 32)
@@ -218,3 +663,124 @@ z_index = -17
 offset_right = 304.0
 offset_bottom = 192.0
 texture = SubResource("GradientTexture1D_5jjmd")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_3155i")
+}
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_benn3")
+autoplay = true
+
+[node name="Room21" parent="." instance=ExtResource("7_gppp7")]
+position = Vector2(0, 300)
+
+[node name="CreditsComp" type="Node2D" parent="."]
+position = Vector2(0, 192)
+
+[node name="Credits" type="Label" parent="CreditsComp"]
+z_index = 3
+offset_right = 304.0
+offset_bottom = 470.0
+text = "
+Quarion
+Created by Zejoant"
+label_settings = SubResource("LabelSettings_oi2d5")
+horizontal_alignment = 1
+
+[node name="SpecialThanks" type="Label" parent="CreditsComp"]
+z_index = 3
+offset_top = 88.0
+offset_right = 304.0
+offset_bottom = 140.0
+text = "Special thanks to
+Incidius
+BlaccEye
+BreadKing
+Cronibet"
+label_settings = SubResource("LabelSettings_8jwux")
+horizontal_alignment = 1
+
+[node name="Stat1" type="Label" parent="CreditsComp"]
+z_index = 3
+offset_top = 198.0
+offset_right = 304.0
+offset_bottom = 206.0
+text = "Deaths:"
+label_settings = SubResource("LabelSettings_1lkdx")
+horizontal_alignment = 1
+
+[node name="DeathCount" type="Label" parent="CreditsComp"]
+z_index = 3
+offset_top = 212.612
+offset_right = 304.0
+offset_bottom = 220.612
+text = "0"
+label_settings = SubResource("LabelSettings_rk1qr")
+horizontal_alignment = 1
+
+[node name="Stat2" type="Label" parent="CreditsComp"]
+z_index = 3
+offset_top = 264.0
+offset_right = 304.0
+offset_bottom = 272.0
+text = "Jumps:"
+label_settings = SubResource("LabelSettings_307h8")
+horizontal_alignment = 1
+
+[node name="JumpCount" type="Label" parent="CreditsComp"]
+z_index = 3
+offset_top = 278.612
+offset_right = 304.0
+offset_bottom = 286.612
+text = "0"
+label_settings = SubResource("LabelSettings_8wjxw")
+horizontal_alignment = 1
+
+[node name="Stat3" type="Label" parent="CreditsComp"]
+z_index = 3
+offset_top = 330.0
+offset_right = 304.0
+offset_bottom = 338.0
+text = "Completion time:"
+label_settings = SubResource("LabelSettings_g1s1l")
+horizontal_alignment = 1
+
+[node name="CompletionTime" type="Label" parent="CreditsComp"]
+z_index = 3
+offset_top = 344.612
+offset_right = 304.0
+offset_bottom = 352.612
+text = "0"
+label_settings = SubResource("LabelSettings_qnfbw")
+horizontal_alignment = 1
+
+[node name="Stat4" type="Label" parent="CreditsComp"]
+z_index = 3
+offset_top = 396.0
+offset_right = 304.0
+offset_bottom = 404.0
+text = "Completion percentage:"
+label_settings = SubResource("LabelSettings_hpsqf")
+horizontal_alignment = 1
+
+[node name="CompletionPercentage" type="Label" parent="CreditsComp"]
+z_index = 3
+offset_top = 410.612
+offset_right = 304.0
+offset_bottom = 418.612
+text = "0"
+label_settings = SubResource("LabelSettings_4jqca")
+horizontal_alignment = 1
+
+[node name="Stat5" type="Label" parent="CreditsComp"]
+z_index = 3
+offset_top = 462.0
+offset_right = 304.0
+offset_bottom = 470.0
+text = "Thanks for playing :)"
+label_settings = SubResource("LabelSettings_en328")
+horizontal_alignment = 1
+
+[editable path="Camera"]

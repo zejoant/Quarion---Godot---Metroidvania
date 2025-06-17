@@ -15,6 +15,7 @@ layer_3/tile_data = PackedInt32Array(13, 917504, 23, 131085, 917504, 23, 262157,
 color = "pink"
 start_raise = 3.0
 difficulty = 2
+floor_height = 19.0
 
 [node name="Boss" parent="BossEnvironment" index="0"]
 position = Vector2(152, 96)

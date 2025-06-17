@@ -16,6 +16,7 @@ func _ready():
 func _input(event):
 	if event.is_action_released("UI Up") and player.get_node("Area2D").has_overlapping_bodies() and player.get_node("Area2D").get_overlapping_bodies().has($FinishGameArea):
 		
+		change_to_outro()
 		#player.can_move = false
 		player.paused = true
 		camera.fade("000000", 1, 0.5, 1, 0.5)
@@ -54,6 +55,7 @@ func _input(event):
 		camera.fade("000000", 1, 0.5, 1, 0.5)
 		
 		await get_tree().create_timer(1.5, false).timeout #ship on planks
+		$Green.visible = false
 		$Tilemap.set_layer_enabled(0, true)
 		$Tilemap.set_layer_enabled(4, true)
 		$PlayerSprite.visible = false
@@ -74,10 +76,30 @@ func _input(event):
 		tween.set_ease(Tween.EASE_IN)
 		tween.set_trans(Tween.TRANS_QUAD)
 		tween.parallel().tween_property($ShipLegs, "position:y", -2.5*8, 1.6)
-		tween.parallel().tween_property($ShipLegs, "position:x", 45*8, 3)
-		await tween.parallel().tween_property($ShipComponents, "position", Vector2(45*8, -5.5*8), 3).finished
+		tween.parallel().tween_property($ShipLegs, "position:x", 90*8, 4.6)
+		tween.parallel().tween_property($ShipComponents, "position", Vector2(90*8, -5.5*8), 4.6)
 		
-		camera.fade("000000", 1, 0.5, 1, 0)
+		await get_tree().create_timer(3, false).timeout #ship exit screen
+		camera.fade("000000", 1, 0.5, 2, 0)
 		await get_tree().create_timer(1.5, false).timeout #transition to space
 		
-		get_tree().change_scene_to_file("res://outro_cutscene.tscn")
+		change_to_outro()
+		#var outro_cutscene = load("res://outro_cutscene.tscn").instantiate()
+		#outro_cutscene.death_count = player.death_count
+		#outro_cutscene.jump_count = player.jump_count
+		#outro_cutscene.completion_time = world.timer
+		#outro_cutscene.completion_percentage = world.completion_percentage
+		#get_tree().root.add_child(outro_cutscene)
+		#get_tree().current_scene = outro_cutscene
+		#world.queue_free()
+		#get_tree().change_scene_to_file("res://outro_cutscene.tscn")
+		
+func change_to_outro():
+	var outro_cutscene = load("res://outro_cutscene.tscn").instantiate()
+	outro_cutscene.death_count = player.death_count
+	outro_cutscene.jump_count = player.jump_count
+	outro_cutscene.completion_time = world.timer
+	outro_cutscene.completion_percentage = world.completion_percentage
+	get_tree().root.add_child(outro_cutscene)
+	get_tree().current_scene = outro_cutscene
+	world.queue_free()
