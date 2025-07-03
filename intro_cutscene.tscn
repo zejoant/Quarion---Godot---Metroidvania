@@ -1791,11 +1791,6 @@ anim_offset_max = 1.0
 
 [node name="Camera" parent="." instance=ExtResource("8_6o7pj")]
 position = Vector2(152, 96.0014)
-anchor_mode = 1
-ignore_rotation = false
-
-[node name="FlashLayer" parent="Camera" index="0"]
-centered = true
 
 [node name="LensCircle" parent="Camera" index="6"]
 visible = false

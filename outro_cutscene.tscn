@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=3 uid="uid://cwafd3q5y7u6m"]
+[gd_scene load_steps=49 format=3 uid="uid://cwafd3q5y7u6m"]
 
 [ext_resource type="Script" path="res://outro_cutscene.gd" id="1_67kqt"]
 [ext_resource type="Texture2D" uid="uid://bn306u45m6wu1" path="res://Assets/Line Particle.png" id="1_qhqm7"]
@@ -8,6 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://cwbt6vou8bhdv" path="res://Music/Chipfezt.mp3" id="5_benn3"]
 [ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/prstartk.ttf" id="6_j7a2d"]
 [ext_resource type="PackedScene" uid="uid://c412d8dttjo6j" path="res://Rooms/room_21.tscn" id="7_gppp7"]
+[ext_resource type="Texture2D" uid="uid://blrke6p7xbb7e" path="res://Assets/Tileset.png" id="8_3oukq"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_qt2ou"]
 load_path = "res://.godot/imported/Line Particle.png-ca29923f7b62240508620dc4fd1bee4a.ctex"
@@ -118,7 +119,7 @@ gradient = SubResource("Gradient_i40vs")
 
 [sub_resource type="Animation" id="Animation_hgnsc"]
 resource_name = "Default"
-length = 45.0
+length = 45.5
 tracks/0/type = "bezier"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -224,7 +225,7 @@ tracks/8/keys = {
 "times": PackedFloat32Array(0, 40.7),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [Vector2(0, 0), Vector2(0, 300)]
+"values": [Vector2(152, 96), Vector2(152, 396)]
 }
 tracks/9/type = "value"
 tracks/9/imported = false
@@ -273,6 +274,66 @@ tracks/12/keys = {
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Vector2(0, 192), Vector2(0, 192), Vector2(0, -500)]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("Camera/LensCircle:position")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(40.7),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/14/type = "value"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("Camera/LensCircle:scale")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = {
+"times": PackedFloat32Array(40.7),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(2, 2)]
+}
+tracks/15/type = "value"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("ExitText:modulate")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = {
+"times": PackedFloat32Array(0, 45, 45.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/16/type = "value"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath(".:can_exit")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = {
+"times": PackedFloat32Array(0, 45),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/17/type = "value"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("AnimationPlayer:speed_scale")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = {
+"times": PackedFloat32Array(0, 45.3, 45.34),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [1.0, 1.0, 0.0]
 }
 
 [sub_resource type="Animation" id="Animation_ku714"]
@@ -368,7 +429,7 @@ tracks/7/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Vector2(0, 0)]
+"values": [Vector2(152, 396)]
 }
 tracks/8/type = "value"
 tracks/8/imported = false
@@ -418,10 +479,63 @@ tracks/11/keys = {
 "update": 0,
 "values": [Vector2(0, 192)]
 }
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Camera/LensCircle:scale")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(2, 2)]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("ExitText:modulate")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/14/type = "value"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath(".:can_exit")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/15/type = "value"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("AnimationPlayer:speed_scale")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+
+[sub_resource type="Animation" id="Animation_kjbf5"]
+resource_name = "Hold End"
+length = 5.0
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_3155i"]
 _data = {
 "Default": SubResource("Animation_hgnsc"),
+"Hold End": SubResource("Animation_kjbf5"),
 "RESET": SubResource("Animation_ku714")
 }
 
@@ -502,16 +616,26 @@ font_color = Color(0.945098, 0.929412, 0.886275, 1)
 outline_size = 4
 outline_color = Color(0, 0, 0, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_3iqg3"]
+font = ExtResource("6_j7a2d")
+font_size = 4
+font_color = Color(0.406, 0.5336, 0.58, 1)
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+
 [node name="OutroCutscene" type="Node2D"]
 script = ExtResource("1_67kqt")
 
 [node name="Camera" parent="." instance=ExtResource("2_ni403")]
+position = Vector2(152, 396)
 
 [node name="UILayer" parent="Camera" index="5"]
 visible = false
 
 [node name="LensCircle" parent="Camera" index="6"]
-size = 8.0
+scale = Vector2(2, 2)
+size = 3.0
+follow_player = false
 
 [node name="BGParticles" type="Node2D" parent="."]
 
@@ -576,13 +700,13 @@ color_initial_ramp = SubResource("Gradient_wjvsy")
 
 [node name="BigSquareParticles" type="CPUParticles2D" parent="BGParticles"]
 z_index = -1
-position = Vector2(150, 212)
+position = Vector2(350, 96)
 amount = 50
 lifetime = 25.0
 preprocess = 16.0
 emission_shape = 3
-emission_rect_extents = Vector2(150, 1)
-direction = Vector2(0, -1)
+emission_rect_extents = Vector2(1, 100)
+direction = Vector2(-1, 0)
 spread = 6.0
 gravity = Vector2(0, 0)
 initial_velocity_min = 8.0
@@ -672,9 +796,38 @@ libraries = {
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("5_benn3")
 autoplay = true
+bus = &"Music"
 
 [node name="Room21" parent="." instance=ExtResource("7_gppp7")]
 position = Vector2(0, 300)
+
+[node name="GreenGrave" type="Sprite2D" parent="Room21"]
+z_index = 3
+position = Vector2(260, 136)
+texture = ExtResource("8_3oukq")
+region_enabled = true
+region_rect = Rect2(192, 112, 16, 16)
+
+[node name="RedGrave" type="Sprite2D" parent="Room21"]
+z_index = 3
+position = Vector2(183, 144)
+texture = ExtResource("8_3oukq")
+region_enabled = true
+region_rect = Rect2(208, 128, 16, 16)
+
+[node name="BlueGrave" type="Sprite2D" parent="Room21"]
+z_index = 3
+position = Vector2(71, 152)
+texture = ExtResource("8_3oukq")
+region_enabled = true
+region_rect = Rect2(192, 128, 16, 16)
+
+[node name="PinkGrave" type="Sprite2D" parent="Room21"]
+z_index = 3
+position = Vector2(120, 152)
+texture = ExtResource("8_3oukq")
+region_enabled = true
+region_rect = Rect2(208, 112, 16, 16)
 
 [node name="CreditsComp" type="Node2D" parent="."]
 position = Vector2(0, 192)
@@ -782,5 +935,14 @@ offset_bottom = 470.0
 text = "Thanks for playing :)"
 label_settings = SubResource("LabelSettings_en328")
 horizontal_alignment = 1
+
+[node name="ExitText" type="Label" parent="."]
+z_index = 49
+offset_left = 211.0
+offset_top = 485.0
+offset_right = 303.0
+offset_bottom = 490.0
+text = "Click to return to menu"
+label_settings = SubResource("LabelSettings_3iqg3")
 
 [editable path="Camera"]

@@ -1,10 +1,8 @@
 extends Node2D
 
-@export var starting_position = Vector2(2, 1)
+@export var starting_position = Vector2(2, 1)#Vector2(2, 1)
 
 var new_game = true
-var paused = false
-@onready var pause_menu = $CanvasLayer/PauseMenu
 
 var room_coords : Vector2
 var player
@@ -73,38 +71,21 @@ func _ready():
 	
 	$WorldMap.add_room(room_coords)
 	
-	$MusicPlayer.stream = load("res://Music/746887_BITTRIP-REMIX-02-CORE.mp3")
-	$MusicPlayer.play()
-	respawn_song = $MusicPlayer.stream.resource_path
+	AudioManager.play_song(load("res://Music/746887_BITTRIP-REMIX-02-CORE.mp3"))
+	AudioManager.save_respawn_song()
+	#$MusicPlayer.stream = load("res://Music/746887_BITTRIP-REMIX-02-CORE.mp3")
+	#$MusicPlayer.play()
+	#respawn_song = $MusicPlayer.stream.resource_path
 
 func _process(delta):
 	exit_room_check()
 	
 	if Input.is_action_just_pressed("Pause") and !other_ui_open:
-		pauseMenu()
+		$CanvasLayer/PauseMenu.pause_menu()
+		#pauseMenu()
 	
 	timer += delta #time in seconds, with 3 decimal places
 	#$Label.text = String.num(completion_percentage, 3) 
-
-func switch_music(new_song_path):
-	previous_song = $MusicPlayer.stream.resource_path
-	previous_song_pos = $MusicPlayer.get_playback_position()
-	$MusicPlayer.stream = load(new_song_path)
-	$MusicPlayer.play()
-
-func resume_previous_music():
-	var temp_path = $MusicPlayer.stream.resource_path
-	var temp_pos = $MusicPlayer.get_playback_position()
-	
-	$MusicPlayer.stream = load(previous_song)
-	$MusicPlayer.play(previous_song_pos)
-	
-	previous_song = temp_path
-	previous_song_pos = temp_pos
-
-func resume_respawn_music():
-	$MusicPlayer.stream = load(respawn_song)
-	$MusicPlayer.play(respawn_song_pos)
 
 func setup_arrays():
 	var map_width = 10
@@ -125,26 +106,6 @@ func setup_arrays():
 		#save_game()
 		#await get_tree().create_timer(0.1).timeout
 		#get_tree().call_deferred("quit")
-		
-func pauseMenu():
-	if paused:
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-		pause_menu.hide()
-		get_tree().paused = false
-	else:
-		get_tree().paused = true
-		pause_menu.show()
-		if Input.get_connected_joypads().size() > 0:
-			if !Input.joy_connection_changed.is_connected(Callable(pause_menu, "_on_joy_connection_changed")):
-				Input.joy_connection_changed.connect(pause_menu._on_joy_connection_changed)
-			pause_menu.get_node("MarginContainer/VBoxContainer/ResumeButton").grab_focus()
-		else:
-			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-			
-	
-	paused = !paused
-	if $WorldMap.open:
-		$WorldMap.open_or_close()
 	
 #checks if the player has exited the room. If so it chnages the room and player pos.
 func exit_room_check():
@@ -174,13 +135,16 @@ func exit_room_check():
 	
 	#if new_room_coords != room_coords:
 	new_room_coords = room_wrap_check(new_room_coords, exit_dir)
-	change_room(new_room_coords)
+	if room_coords != new_room_coords:
+		change_room(new_room_coords)
+	
 	#print(Time.get_ticks_msec()-t0)
 		
 #function for changing the current room
 func change_room(new_coords):
-	$Camera/LensCircle.change_lens(new_coords)
-	#new_room_path = "res://Rooms/room_%s%s.tscn" % [new_coords.x, new_coords.y]
+		
+	if room_coords != new_coords:
+		$Camera/LensCircle.change_lens(new_coords)
 	new_room_path = "res://Rooms/room_" + str(new_coords.x) + str(new_coords.y) + ".tscn"
 	old_room = get_node_or_null("Room" + str(room_coords.x) + str(room_coords.y))
 	room_coords = new_coords #updates room coords
@@ -196,21 +160,10 @@ func change_room(new_coords):
 			call_deferred("add_child", load(new_room_path).instantiate()) #loads new room
 		$WorldMap.add_room(room_coords) #adds room to map
 
-
 #saves the respawn position when grabbing a checkpoint
 func save_checkpoint_room(pos):
 	checkpoint_room = room_coords
 	checkpoint_pos = Vector2(pos.x, pos.y-8)
-	
-	
-#respawns the player duh
-func respawn_player():
-	#player.is_dead = true
-	#player.modulate.g = 0.4
-	#if checkpoint_room != room_coords:
-	#	change_room(checkpoint_room)
-	#player.position = Vector2(checkpoint_pos.x, checkpoint_pos.y)
-	pass
 
 func return_to_checkpoint():
 	#load_data()
@@ -253,12 +206,17 @@ func room_wrap_check(new_room_coords, exit_dir) -> Vector2:
 	elif room_coords == Vector2(8, 0) and exit_dir == "left":
 		return Vector2(9, 0)
 	
-	elif room_coords == Vector2(0, 1) and exit_dir == "up":
+	elif room_coords == Vector2(0, 1) and exit_dir == "up": #rick
 		player.position.x += 12*8
+		$WorldMap.in_subarea = true
 		return Vector2(0, 8)
-	elif room_coords == Vector2(0, 8) and exit_dir == "down":
+	elif room_coords == Vector2(0, 8) and exit_dir == "down": #rick
 		player.position.x -= 12*8
+		$WorldMap.in_subarea = false
 		return Vector2(0, 1)
+	
+	elif room_coords == Vector2(4, 7) and (exit_dir == "down" or exit_dir == "up"):
+			return Vector2(4, 7)
 		
 	return(new_room_coords)
 
@@ -271,8 +229,7 @@ func get_room_state() -> Array:
 	return room_state[room_coords.x][room_coords.y]
 
 func save_game():
-	respawn_song = $MusicPlayer.stream.resource_path
-	respawn_song_pos = $MusicPlayer.get_playback_position()
+	AudioManager.save_respawn_song()
 	SaveManager.save_game(self)
 	
 func load_data():
@@ -284,5 +241,3 @@ func end_game():
 	$Camera.fade("000000", 1, 0.5, 1, 0.5)
 	await get_tree().create_timer(0.7).timeout
 	$Player.visible = false
-	#get_tree().change_scene_to_file("res://intro_cutscene.tscn")
-	

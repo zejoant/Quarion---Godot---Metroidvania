@@ -12,6 +12,8 @@ size = Vector2(8, 5)
 
 [node name="CollapsingPlatform" type="StaticBody2D"]
 z_index = 3
+position = Vector2(58, 41)
+input_pickable = true
 script = ExtResource("1_qacrh")
 
 [node name="Center" type="Sprite2D" parent="."]

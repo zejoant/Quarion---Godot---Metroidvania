@@ -263,7 +263,8 @@ func param_setup():
 func _on_body_entered(body):
 	$ActivateBossColl.set_deferred("disabled", true)
 	boss.get_node("DamageColl").set_deferred("disabled", false)
-	get_node("/root/World").switch_music("res://Music/Hi GI Joe!.wav")
+	#get_node("/root/World").switch_music("res://Music/Hi GI Joe!.wav")
+	AudioManager.play_song(load("res://Music/Hi GI Joe!.wav"))
 	#get_node("/root/World/MusicPlayer").stream = load("res://Music/Hi GI Joe!.wav")
 	#get_node("/root/World/MusicPlayer").play()
 	
@@ -294,7 +295,8 @@ func _on_hit_area_body_entered(body): #damage boss
 
 func die():
 	$Boss/AnimationPlayer.play("Default")
-	get_node("/root/World/MusicPlayer").stop()
+	#get_node("/root/World/MusicPlayer").stop()
+	AudioManager.pause_song()
 	get_node("/root/World").save_room_state($ActivateBossColl.position)
 	tween2 = self.create_tween()
 	tween2.set_trans(Tween.TRANS_SINE)
@@ -313,7 +315,8 @@ func die():
 	get_node("/root/World").completion_percentage += 5
 	get_node("/root/World/Camera").shake(4, 0.03, 3)
 	get_node("/root/World/Camera").invert_color(1, 0.3)
-	get_node("/root/World").resume_previous_music()
+	#get_node("/root/World").resume_previous_music()
+	AudioManager.resume_previous_song()
 
 func reset_lunge(): #reset back to idle
 	$Boss/AnimationPlayer.play("Default")

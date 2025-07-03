@@ -26,10 +26,12 @@ func _ready():
 	if bought_items[0]:
 		$ShopUIContainer/KeyButton.disabled = true
 		$ShopUIContainer/KeyButton.focus_mode = 0 as Control.FocusMode
-	if bought_items[1]:
+		$ShopUIContainer/LockCover.visible = false
+	
+	if bought_items[1] or !bought_items[0]:
 		$ShopUIContainer/AmuletButton.disabled = true
 		$ShopUIContainer/AmuletButton.focus_mode = 0 as Control.FocusMode
-	if bought_items[2]:
+	if bought_items[2] or !bought_items[0]:
 		$ShopUIContainer/BubbleButton.disabled = true
 		$ShopUIContainer/BubbleButton.focus_mode = 0 as Control.FocusMode
 
@@ -51,11 +53,13 @@ func open_setup():
 	get_node("/root/World").other_ui_open = true
 	selector_flash()
 	release_all_focus()
-	if Input.get_connected_joypads().size() > 0:
-		find_next_focus($ShopUIContainer/BubbleButton)
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	else:
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	#if Input.get_connected_joypads().size() > 0:
+		#find_next_focus($ShopUIContainer/BubbleButton)
+		#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	#else:
+		#Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	
+	_on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
 		
 	if !Input.joy_connection_changed.is_connected(Callable(self, "_on_joy_connection_changed")):
 				Input.joy_connection_changed.connect(self._on_joy_connection_changed)
@@ -145,7 +149,13 @@ func _on_key_button_pressed():
 	if player.apple_count < 10:
 		AudioManager.play_audio(sfxs.get_sfx("buy_deny"))
 		return
-		
+	
+	$ShopUIContainer/AmuletButton.focus_mode = 2 as Control.FocusMode
+	$ShopUIContainer/BubbleButton.focus_mode = 2 as Control.FocusMode
+	$ShopUIContainer/AmuletButton.disabled = false
+	$ShopUIContainer/BubbleButton.disabled = false
+	$ShopUIContainer/LockCover.visible = false
+	
 	$ShopUIContainer/KeyButton.disabled = true
 	$ShopUIContainer/KeyButton.focus_mode = 0 as Control.FocusMode
 	#$ShopUIContainer/KeyButton.find_next_valid_focus().grab_focus()

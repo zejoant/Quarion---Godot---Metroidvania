@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=3 uid="uid://4ythqhswhcg7"]
+[gd_scene load_steps=73 format=3 uid="uid://4ythqhswhcg7"]
 
 [ext_resource type="Script" path="res://Creatures/player.gd" id="1_1p4uo"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="4_q56as"]
@@ -9,15 +9,16 @@
 [ext_resource type="AudioStream" uid="uid://wm84dwuyqcmd" path="res://Sfx/dash3.wav" id="8_laqsj"]
 [ext_resource type="AudioStream" uid="uid://dp0epi0rhkcul" path="res://Sfx/death explosion.wav" id="9_0iuyt"]
 [ext_resource type="AudioStream" uid="uid://b7txeulgr6bb2" path="res://Sfx/collect.wav" id="9_f8tde"]
-[ext_resource type="AudioStream" uid="uid://cddpgysh8yykg" path="res://Sfx/power up 2.wav" id="10_p0hsp"]
+[ext_resource type="AudioStream" uid="uid://fgtdxdslfxoi" path="res://Sfx/GameSFX/PowerUp/Retro PowerUP 09.wav" id="10_jasyf"]
 [ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="10_ta6lj"]
 [ext_resource type="AudioStream" uid="uid://bblcqxp6fekpf" path="res://Sfx/GameSFX/Impact/Retro Impact LoFi 09.wav" id="11_pmswi"]
-[ext_resource type="Texture2D" uid="uid://cwdnxgl7k8n26" path="res://Assets/Sparkle2 Particles.png" id="12_8sd87"]
 [ext_resource type="Texture2D" uid="uid://dei1vxmeg8aah" path="res://Assets/Hurt Effect.png" id="12_jxe34"]
 [ext_resource type="AudioStream" uid="uid://b518ksl04jb1q" path="res://Sfx/GameSFX/Magic/Retro Magic 34.wav" id="12_og1me"]
 [ext_resource type="Shader" path="res://Shaders/palette_swap.gdshader" id="13_b8g8h"]
+[ext_resource type="AudioStream" uid="uid://ctcvftqbmxckp" path="res://Sfx/power up charge.wav" id="13_t6m3w"]
 [ext_resource type="Texture2D" uid="uid://srrdnqsgkk6u" path="res://Assets/Player Palettes.png" id="14_q6unr"]
 [ext_resource type="Texture2D" uid="uid://b4a3gpanglo75" path="res://Assets/Character Sprite Sheet.png" id="15_kmrac"]
+[ext_resource type="Texture2D" uid="uid://cwdnxgl7k8n26" path="res://Assets/Sparkle2 Particles.png" id="18_layc7"]
 
 [sub_resource type="Resource" id="Resource_yaidf"]
 script = ExtResource("5_ja3e4")
@@ -52,7 +53,7 @@ stream = ExtResource("9_0iuyt")
 [sub_resource type="Resource" id="Resource_cstl5"]
 script = ExtResource("5_ja3e4")
 tag = "power_up"
-stream = ExtResource("10_p0hsp")
+stream = ExtResource("10_jasyf")
 
 [sub_resource type="Resource" id="Resource_t85mi"]
 script = ExtResource("5_ja3e4")
@@ -64,9 +65,14 @@ script = ExtResource("5_ja3e4")
 tag = "p_up_finish"
 stream = ExtResource("12_og1me")
 
+[sub_resource type="Resource" id="Resource_7bkb3"]
+script = ExtResource("5_ja3e4")
+tag = "charge"
+stream = ExtResource("13_t6m3w")
+
 [sub_resource type="Resource" id="Resource_0m3bc"]
 script = ExtResource("4_q56as")
-sound_effects = Array[ExtResource("5_ja3e4")]([SubResource("Resource_yaidf"), SubResource("Resource_u3fen"), SubResource("Resource_dxcvt"), SubResource("Resource_nbj6v"), SubResource("Resource_ngtc0"), SubResource("Resource_w52dj"), SubResource("Resource_cstl5"), SubResource("Resource_t85mi"), SubResource("Resource_di48n")])
+sound_effects = Array[ExtResource("5_ja3e4")]([SubResource("Resource_yaidf"), SubResource("Resource_u3fen"), SubResource("Resource_dxcvt"), SubResource("Resource_nbj6v"), SubResource("Resource_ngtc0"), SubResource("Resource_w52dj"), SubResource("Resource_cstl5"), SubResource("Resource_t85mi"), SubResource("Resource_di48n"), SubResource("Resource_7bkb3")])
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vy8ue"]
 size = Vector2(6, 10)
@@ -75,11 +81,12 @@ size = Vector2(6, 10)
 shader = ExtResource("13_b8g8h")
 shader_parameter/use_palette_alpha = false
 shader_parameter/palette_choice = 0
+shader_parameter/color_tolerance = 0.01
 shader_parameter/palette = ExtResource("14_q6unr")
 
 [sub_resource type="Animation" id="Animation_0turj"]
 resource_name = "Damage"
-length = 0.13334
+length = 0.150005
 step = 0.0666667
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -100,7 +107,7 @@ tracks/1/path = NodePath("HurtEffect:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.133333),
+"times": PackedFloat32Array(0, 0.15),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
@@ -172,6 +179,22 @@ tracks/0/keys = {
 "values": [Rect2(64, 0, 16, 16)]
 }
 
+[sub_resource type="Animation" id="Animation_hwsib"]
+resource_name = "Kneel"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(240, 0, 16, 16)]
+}
+
 [sub_resource type="Animation" id="Animation_6c6sk"]
 resource_name = "Land"
 length = 0.25
@@ -201,6 +224,22 @@ tracks/1/keys = {
 "values": [true]
 }
 
+[sub_resource type="Animation" id="Animation_aggab"]
+resource_name = "Lie Down"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(224, 0, 16, 16)]
+}
+
 [sub_resource type="Animation" id="Animation_ndq0k"]
 length = 0.001
 tracks/0/type = "value"
@@ -225,7 +264,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [true]
+"values": [false]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -286,38 +325,6 @@ tracks/0/keys = {
 "values": [Rect2(112, 0, 16, 16)]
 }
 
-[sub_resource type="Animation" id="Animation_aggab"]
-resource_name = "Lie Down"
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:region_rect")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Rect2(224, 0, 16, 16)]
-}
-
-[sub_resource type="Animation" id="Animation_hwsib"]
-resource_name = "Kneel"
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:region_rect")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Rect2(240, 0, 16, 16)]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5gao2"]
 _data = {
 "Damage": SubResource("Animation_0turj"),
@@ -336,9 +343,8 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4by5i"]
 size = Vector2(4, 10)
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mcfsg"]
-radius = 5.0
-height = 18.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yubks"]
+size = Vector2(16, 22)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_hafes"]
 blend_mode = 1
@@ -369,14 +375,18 @@ particles_anim_loop = false
 offsets = PackedFloat32Array(0, 0.478723, 1)
 colors = PackedColorArray(0.180392, 0.431373, 0.419608, 1, 0.196078, 0.290196, 0.415686, 1, 0.0784314, 0.141176, 0.164706, 1)
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_b75fr"]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_14mcx"]
 particles_animation = true
 particles_anim_h_frames = 9
 particles_anim_v_frames = 1
 particles_anim_loop = false
 
-[sub_resource type="Gradient" id="Gradient_xemu4"]
-colors = PackedColorArray(1, 1, 1, 1, 0.352941, 0.854902, 0.94902, 1)
+[sub_resource type="Curve" id="Curve_yplcn"]
+_data = [Vector2(0, 0), 0.0, 6.54066, 0, 0, Vector2(0.354839, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_7ryk4"]
+colors = PackedColorArray(1, 1, 1, 1, 0.709804, 0.831373, 0.937255, 1)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_881w5"]
 particles_animation = true
@@ -403,11 +413,52 @@ colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 [sub_resource type="Gradient" id="Gradient_4t7bi"]
 colors = PackedColorArray(0.94902, 0.352941, 0.352941, 1, 0.882353, 0.541176, 0.905882, 1)
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_xf0oo"]
+blend_mode = 1
+particles_animation = true
+particles_anim_h_frames = 5
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="Gradient_lptmp"]
+colors = PackedColorArray(0.94902, 0.352941, 0.352941, 1, 0.91, 0.73801, 0.4186, 1)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_twvhp"]
+particles_animation = true
+particles_anim_h_frames = 8
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_7xebp"]
+load_path = "res://.godot/imported/Ring Particle.png-2dc1e131947a2b1b8c24f1d1190ee419.ctex"
+
+[sub_resource type="Gradient" id="Gradient_x462t"]
+colors = PackedColorArray(1, 1, 1, 1, 0.352941, 0.854902, 0.94902, 1)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_j40ub"]
+particles_animation = true
+particles_anim_h_frames = 8
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_7bcps"]
+load_path = "res://.godot/imported/Ring Particle.png-2dc1e131947a2b1b8c24f1d1190ee419.ctex"
+
+[sub_resource type="Gradient" id="Gradient_qhfoc"]
+offsets = PackedFloat32Array(0, 0.760417, 1)
+colors = PackedColorArray(0.352941, 0.854902, 0.94902, 1, 0.352941, 0.854902, 0.94902, 1, 1, 1, 1, 1)
+
+[sub_resource type="Curve" id="Curve_0ywr0"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.508065, 0), 0.0, 0.0, 0, 0, Vector2(1, 0.868132), 5.60196, 0.0, 0, 0]
+point_count = 3
+
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 8
+floor_constant_speed = true
 floor_block_on_wall = false
 floor_snap_length = 2.0
 platform_on_leave = 2
+safe_margin = 0.1
 script = ExtResource("1_1p4uo")
 sfxs = SubResource("Resource_0m3bc")
 
@@ -438,12 +489,12 @@ shape = SubResource("RectangleShape2D_4by5i")
 
 [node name="WaterDetector" type="Area2D" parent="."]
 z_index = 4
+position = Vector2(0, 3)
 collision_layer = 0
 collision_mask = 2
 
 [node name="NormalColl" type="CollisionShape2D" parent="WaterDetector"]
-position = Vector2(1, 6)
-shape = SubResource("CapsuleShape2D_mcfsg")
+shape = SubResource("RectangleShape2D_yubks")
 
 [node name="ParticleComps" type="Node2D" parent="."]
 
@@ -478,6 +529,7 @@ hue_variation_curve = SubResource("Curve_1es8a")
 z_index = 5
 material = SubResource("CanvasItemMaterial_hp5sh")
 position = Vector2(0, 7)
+emitting = false
 amount = 5
 lifetime = 0.5
 one_shot = true
@@ -498,23 +550,25 @@ anim_speed_max = 0.5
 anim_offset_min = 0.25
 anim_offset_max = 0.5
 
-[node name="PowerUpParticles" type="CPUParticles2D" parent="ParticleComps"]
-z_index = 6
-material = SubResource("CanvasItemMaterial_b75fr")
+[node name="DoubleJumpParticles" type="CPUParticles2D" parent="ParticleComps"]
+z_index = 5
+material = SubResource("CanvasItemMaterial_14mcx")
+position = Vector2(0, 7)
 emitting = false
-amount = 100
-lifetime = 4.0
+amount = 5
+lifetime = 0.5
 one_shot = true
-explosiveness = 0.97
-lifetime_randomness = 0.5
-local_coords = true
-texture = ExtResource("12_8sd87")
-direction = Vector2(0, 0)
-spread = 180.0
+explosiveness = 1.0
+texture = ExtResource("18_layc7")
+direction = Vector2(0, 1)
+spread = 60.0
 gravity = Vector2(0, 0)
-initial_velocity_min = 100.0
-initial_velocity_max = 130.0
-color_initial_ramp = SubResource("Gradient_xemu4")
+initial_velocity_min = 50.0
+initial_velocity_max = 80.0
+damping_min = 50.0
+damping_max = 70.0
+scale_amount_curve = SubResource("Curve_yplcn")
+color_initial_ramp = SubResource("Gradient_7ryk4")
 anim_speed_min = 1.0
 anim_speed_max = 1.0
 
@@ -562,14 +616,85 @@ scale_amount_curve = SubResource("Curve_c6aop")
 color_ramp = SubResource("Gradient_h6fyh")
 color_initial_ramp = SubResource("Gradient_4t7bi")
 
+[node name="PowerUpParticles" type="Node2D" parent="ParticleComps"]
+
+[node name="RedRingParticles" type="CPUParticles2D" parent="ParticleComps/PowerUpParticles"]
+z_index = 7
+material = SubResource("CanvasItemMaterial_xf0oo")
+emitting = false
+amount = 70
+lifetime = 2.0
+one_shot = true
+explosiveness = 1.0
+lifetime_randomness = 0.5
+local_coords = true
+texture = ExtResource("10_ta6lj")
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 100.0
+orbit_velocity_min = 0.5
+orbit_velocity_max = 0.6
+damping_min = 200.0
+damping_max = 200.0
+color_initial_ramp = SubResource("Gradient_lptmp")
+anim_speed_min = 1.0
+anim_speed_max = 1.2
+anim_offset_max = 0.25
+
+[node name="ExplosionParticles" type="CPUParticles2D" parent="ParticleComps/PowerUpParticles"]
+z_index = 6
+material = SubResource("CanvasItemMaterial_twvhp")
+emitting = false
+amount = 100
+lifetime = 4.2
+one_shot = true
+explosiveness = 1.0
+lifetime_randomness = 0.5
+local_coords = true
+texture = SubResource("CompressedTexture2D_7xebp")
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 180.0
+linear_accel_min = -60.0
+linear_accel_max = -40.0
+color_initial_ramp = SubResource("Gradient_x462t")
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+
+[node name="ChargeUpParticles" type="CPUParticles2D" parent="ParticleComps/PowerUpParticles"]
+z_index = 4
+material = SubResource("CanvasItemMaterial_j40ub")
+emitting = false
+amount = 100
+lifetime = 5.0
+one_shot = true
+preprocess = 3.0
+explosiveness = 0.6
+texture = SubResource("CompressedTexture2D_7bcps")
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 100.0
+radial_accel_min = -40.0
+radial_accel_max = -40.0
+color_ramp = SubResource("Gradient_qhfoc")
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+anim_speed_curve = SubResource("Curve_0ywr0")
+
 [node name="CollissionRays" type="Node2D" parent="."]
 z_index = 4
 
 [node name="CeilingRay" type="RayCast2D" parent="CollissionRays"]
-target_position = Vector2(0, -4)
+unique_name_in_owner = true
+target_position = Vector2(0, -2)
 
 [node name="FloorRay" type="RayCast2D" parent="CollissionRays"]
-target_position = Vector2(0, 8)
+target_position = Vector2(0, 8.1)
 
 [node name="WallRay" type="RayCast2D" parent="CollissionRays"]
 unique_name_in_owner = true
@@ -587,4 +712,4 @@ region_rect = Rect2(0, 0, 304, 96)
 [connection signal="area_entered" from="Area2D" to="." method="on_foreground_enter"]
 [connection signal="area_exited" from="Area2D" to="." method="on_foreground_exit"]
 [connection signal="body_shape_entered" from="Area2D" to="." method="_on_area_2d_body_shape_entered"]
-[connection signal="body_shape_entered" from="WaterDetector" to="." method="_on_water_detector_body_shape_entered"]
+[connection signal="body_shape_entered" from="WaterDetector" to="." method="on_water_entered"]

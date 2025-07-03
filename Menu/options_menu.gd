@@ -19,11 +19,12 @@ func _ready():
 	$MarginContainer/VBoxContainer/VideoVBox/FullscreenCheck.button_pressed = fullscreen
 	$MarginContainer/VBoxContainer/VideoVBox/BorderlessCheck.button_pressed = borderless
 	
-	if Input.get_connected_joypads().size() > 0:
-		get_viewport().gui_release_focus()
-		$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.grab_focus()
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	#if Input.get_connected_joypads().size() > 0:
+		#get_viewport().gui_release_focus()
+		#$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.grab_focus()
+		#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
+	_on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
 
 func _on_joy_connection_changed(_device_id, connected):

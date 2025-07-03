@@ -3,6 +3,7 @@ shader_type canvas_item;
 uniform sampler2D palette : source_color;
 uniform bool use_palette_alpha = false;
 uniform int palette_choice = 0;
+uniform float color_tolerance = 0.01; // Adjust this value as needed
 
 void fragment() { //loops through each pixel in the image
 	vec4 original_color = texture(TEXTURE, UV); //color of the pixal at the position of UV in the original texture (0-1)
@@ -15,7 +16,8 @@ void fragment() { //loops through each pixel in the image
 		vec3 color2 = texture(palette, vec2(float(i) / float(color_count.x - 1), 0)).rgb; //texture read of palette color, stores rgb (0-1)
 		//ivec3 colori2 = ivec3(round(color2 * 255.0)); //converts color2's rgb values to 0-255
 		
-		if (original_color.rgb == color2) { //checks if it can find and of the original textures colors in the palette
+		if (distance(original_color.rgb, color2) < color_tolerance){
+		//if (original_color.rgb == color2) { //checks if it can find and of the original textures colors in the palette
 			idx = float(i);
 			break;
 		}

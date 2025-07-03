@@ -1,7 +1,31 @@
-[gd_scene load_steps=7 format=3 uid="uid://cgqum3piio7f5"]
+[gd_scene load_steps=20 format=3 uid="uid://cgqum3piio7f5"]
 
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_5qcef"]
 [ext_resource type="Script" path="res://Creatures/fishie.gd" id="1_rwg00"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_redfe"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_115oh"]
+[ext_resource type="AudioStream" uid="uid://dvhc3ik2a2psb" path="res://Sfx/water drop.wav" id="4_0rm6a"]
+[ext_resource type="AudioStream" uid="uid://chlm0dloqlqkn" path="res://Sfx/GameSFX/Blops/Retro Blop StereoUP 09.wav" id="5_gk5fx"]
+[ext_resource type="AudioStream" uid="uid://bmytm7f7ulx5t" path="res://Sfx/GameSFX/Swoosh/Retro Swooosh 07.wav" id="6_l02oi"]
+
+[sub_resource type="Resource" id="Resource_y6106"]
+script = ExtResource("3_115oh")
+tag = "water_drop"
+stream = ExtResource("4_0rm6a")
+
+[sub_resource type="Resource" id="Resource_ulo8x"]
+script = ExtResource("3_115oh")
+tag = "jump"
+stream = ExtResource("5_gk5fx")
+
+[sub_resource type="Resource" id="Resource_4wb07"]
+script = ExtResource("3_115oh")
+tag = "splash"
+stream = ExtResource("6_l02oi")
+
+[sub_resource type="Resource" id="Resource_36vem"]
+script = ExtResource("2_redfe")
+sound_effects = Array[ExtResource("3_115oh")]([SubResource("Resource_y6106"), SubResource("Resource_ulo8x"), SubResource("Resource_4wb07")])
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wgor8"]
 size = Vector2(11, 10)
@@ -45,9 +69,28 @@ _data = {
 "RESET": SubResource("Animation_uo7lj")
 }
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_qxyun"]
+particles_animation = true
+particles_anim_h_frames = 5
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ga08a"]
+load_path = "res://.godot/imported/Blob Particle.png-3bf2e56fa383fbfce8d25108af5976e6.ctex"
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_axjok"]
+particles_animation = true
+particles_anim_h_frames = 5
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_wl2i3"]
+load_path = "res://.godot/imported/Blob Particle.png-3bf2e56fa383fbfce8d25108af5976e6.ctex"
+
 [node name="Fishie" type="StaticBody2D"]
 z_index = 2
 script = ExtResource("1_rwg00")
+sfxs = SubResource("Resource_36vem")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_5qcef")
@@ -63,3 +106,45 @@ libraries = {
 "": SubResource("AnimationLibrary_ks2pq")
 }
 autoplay = "Flutter"
+
+[node name="SplashParticles" type="Node2D" parent="."]
+
+[node name="SplashParticlesRight" type="CPUParticles2D" parent="SplashParticles"]
+material = SubResource("CanvasItemMaterial_qxyun")
+emitting = false
+lifetime = 1.4
+one_shot = true
+explosiveness = 1.0
+texture = SubResource("CompressedTexture2D_ga08a")
+direction = Vector2(2, -4)
+spread = 20.0
+gravity = Vector2(0, 120)
+initial_velocity_min = 70.0
+initial_velocity_max = 90.0
+color = Color(0.709804, 0.831373, 0.937255, 1)
+hue_variation_min = 0.1
+hue_variation_max = 0.4
+anim_speed_min = 0.25
+anim_speed_max = 0.75
+anim_offset_min = 0.25
+anim_offset_max = 0.5
+
+[node name="SplashParticlesLeft" type="CPUParticles2D" parent="SplashParticles"]
+material = SubResource("CanvasItemMaterial_axjok")
+emitting = false
+lifetime = 1.4
+one_shot = true
+explosiveness = 1.0
+texture = SubResource("CompressedTexture2D_wl2i3")
+direction = Vector2(-2, -4)
+spread = 20.0
+gravity = Vector2(0, 100)
+initial_velocity_min = 70.0
+initial_velocity_max = 90.0
+color = Color(0.709804, 0.831373, 0.937255, 1)
+hue_variation_min = 0.1
+hue_variation_max = 0.4
+anim_speed_min = 0.25
+anim_speed_max = 0.75
+anim_offset_min = 0.25
+anim_offset_max = 0.5

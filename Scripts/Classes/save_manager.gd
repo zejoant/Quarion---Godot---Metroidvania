@@ -37,6 +37,7 @@ func save_game(world: Node):
 	file.store_var(world.opened_doors)
 	file.store_var(world.player.apple_count)
 	file.store_var(world.bought_shop_items)
+	file.store_var(world.player.amulet_pieces)
 	
 	#map stuff
 	file.store_var(world.player.has_item_map)
@@ -66,6 +67,7 @@ func load_game(world: Node):
 		world.opened_doors = file.get_var()
 		world.player.apple_count = file.get_var()
 		world.bought_shop_items.assign(file.get_var())
+		world.player.amulet_pieces = file.get_var()
 		
 		#map stuff
 		world.player.has_item_map = file.get_var()

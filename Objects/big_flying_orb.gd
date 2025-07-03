@@ -9,6 +9,7 @@ extends StaticBody2D
 @export var sfxs : AudioLibrary
 
 var player
+var homing_lifetime = 120
 
 func _ready():
 	player = get_node("/root/World/Player")
@@ -22,7 +23,8 @@ func _process(_delta):
 		scale.y += 1.0/float(startup_speed)
 	else:
 		if $TrailParticles.visible != true:
-			get_node("/root/World/Camera").flash(0.8, 0, 0.1, 0.2)
+			#get_node("/root/World/Camera").flash(0.8, 0, 0.1, 0.2)
+			get_node("/root/World/Camera").invert_color(0.7, 0.3)
 			AudioManager.play_audio(sfxs.get_sfx("shot 1"))
 			AudioManager.play_audio(sfxs.get_sfx("shot 2"))
 			$TrailParticles.visible = true
@@ -31,7 +33,7 @@ func _process(_delta):
 				var angle = position.angle_to_point(player.position)
 				speed = speed.rotated(angle)
 		position += speed
-		if homing:
+		if homing and homing_lifetime > 0:
 			speed += Vector2(player.position.x-position.x, player.position.y-position.y).normalized()*acceleration
 			if abs(speed.x) > max_speed:
 				speed.x = sign(speed.x)*max_speed
@@ -40,6 +42,8 @@ func _process(_delta):
 		
 		if position.y > 30*8 or position.y < -6*8 or position.x > 44*8 or position.x < -6*8:
 			queue_free()
+		
+		homing_lifetime -= 1
 
 #func setup(s, d, p):
 #	speed = s

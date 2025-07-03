@@ -3,6 +3,7 @@ extends Node2D
 var player
 @export_range(0, 20) var size: float = 1
 @export var follow_player : bool = true
+@export var non_follow_pos: Vector2 = Vector2(0, 0)
 
 var tween
 const default_size = Vector2(10, 10)
@@ -20,9 +21,14 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	if follow_player:
-		position = player.position
+		global_position = player.position
+		#position = player.position
+	else:
+		global_position = non_follow_pos
+		#position = Vector2(152, 96)
 
 func change_lens(room_coords, instant: bool = false, behind_foreground: int = 0):
+	follow_player = true
 	if tween:
 		if tween.is_running() and action == "to_light" and !behind_foreground:
 			scale = default_size
@@ -44,14 +50,22 @@ func change_lens(room_coords, instant: bool = false, behind_foreground: int = 0)
 		lens_size = 2
 	elif room_coords == Vector2(2, 6):
 		lens_size = 2
-	elif room_coords == Vector2(3, 5):
-		lens_size = 3
+	#elif room_coords == Vector2(3, 5):
+		#lens_size = 3
 	elif room_coords == Vector2(0, 8):
 		lens_size = 3
 	elif room_coords == Vector2(9, 5):
 		lens_size = 2
 	elif room_coords == Vector2(8, 5):
 		lens_size = 2.5
+		
+	#delapitated lab section
+	elif room_coords == Vector2(0, 6) or room_coords == Vector2(0, 7) or room_coords == Vector2(1, 7) or room_coords == Vector2(2, 7) or room_coords == Vector2(3, 7) or room_coords == Vector2(5, 7):
+		lens_size = 4.2
+	elif room_coords == Vector2(4, 7):
+		follow_player = false
+		lens_size = 3.5
+		#instant = true
 	
 	if !instant:
 		tween = self.create_tween()

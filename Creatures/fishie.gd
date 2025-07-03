@@ -1,6 +1,8 @@
 #@tool
 extends StaticBody2D
 
+## sfx for this scene
+@export var sfxs : AudioLibrary
 @export var jump_height : int = 5
 @export var start_delay : float = 0
 var jumping = true
@@ -22,7 +24,10 @@ func _ready():
 func _process(_delta):
 	if !jumping:
 		jumping = true
-		scale.y = 1
+		$Sprite2D.scale.y = 1
+		$SplashParticles/SplashParticlesLeft.emitting = true
+		$SplashParticles/SplashParticlesRight.emitting = true
+		AudioManager.play_audio(sfxs.get_sfx("jump"))
 		
 		tween = self.create_tween() #jump up
 		tween.set_ease(Tween.EASE_OUT)
@@ -34,14 +39,19 @@ func _process(_delta):
 		tween.tween_property(self, "position:y", top_pos+4, 0.8)
 		await tween.tween_property(self, "position:y", top_pos, 0.8).finished
 		
-		scale.y = -1
+		$Sprite2D.scale.y = -1
 		tween = self.create_tween()
 		tween.set_trans(Tween.TRANS_SINE) #fall down
 		tween.set_ease(Tween.EASE_IN)
-		tween.tween_property(self, "position:y", start_pos, 0.5)
+		await tween.tween_property(self, "position:y", start_pos, 0.5).finished
 		
-		await tween.tween_interval(3).finished
+		$SplashParticles/SplashParticlesLeft.emitting = true
+		$SplashParticles/SplashParticlesRight.emitting = true
+		AudioManager.play_audio(sfxs.get_sfx("water_drop"))
+		AudioManager.play_audio(sfxs.get_sfx("splash"))
+		await get_tree().create_timer(3, false).timeout
+		
 		jumping = false
 
-func is_tile_one_way(_rid: RID) -> bool:
-	return false
+#func is_tile_one_way(_rid: RID) -> bool:
+	#return false

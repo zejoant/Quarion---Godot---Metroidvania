@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://ctcvftqbmxckp"
+path="res://.godot/imported/power up charge.wav-d074dc53d9b2f9d79380a52de7cb926a.sample"
+
+[deps]
+
+source_file="res://Sfx/power up charge.wav"
+dest_files=["res://.godot/imported/power up charge.wav-d074dc53d9b2f9d79380a52de7cb926a.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

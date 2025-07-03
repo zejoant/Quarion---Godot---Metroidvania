@@ -314,6 +314,8 @@ modulate = Color(1, 1, 1, 0.501961)
 material = SubResource("CanvasItemMaterial_nl34h")
 texture = ExtResource("2_f1le3")
 offset = Vector2(0, 136)
+region_enabled = true
+region_rect = Rect2(0, 0, 3, 272)
 
 [node name="WallRay" type="RayCast2D" parent="Boss/Aim"]
 target_position = Vector2(0, 13)

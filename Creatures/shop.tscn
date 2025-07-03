@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_tgo2l"]
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_3cgbn"]
 [ext_resource type="AudioStream" uid="uid://cuy81ixe0v84k" path="res://Sfx/buy.wav" id="4_flmjn"]
-[ext_resource type="AudioStream" uid="uid://rsao4gl5orpg" path="res://Sfx/select denied.wav" id="5_w855u"]
+[ext_resource type="AudioStream" uid="uid://c21duyyxn6wmu" path="res://Sfx/select denied 2.wav" id="5_kc10a"]
 [ext_resource type="Texture2D" uid="uid://ei6wc530bgtj" path="res://Assets/Shop Menu.png" id="7_wyv82"]
 
 [sub_resource type="Resource" id="Resource_unrtb"]
@@ -16,7 +16,7 @@ stream = ExtResource("4_flmjn")
 [sub_resource type="Resource" id="Resource_3vcdu"]
 script = ExtResource("3_3cgbn")
 tag = "buy_deny"
-stream = ExtResource("5_w855u")
+stream = ExtResource("5_kc10a")
 
 [sub_resource type="Resource" id="Resource_7ig6x"]
 script = ExtResource("2_tgo2l")
@@ -216,6 +216,24 @@ position = Vector2(-71, 139)
 texture = ExtResource("7_wyv82")
 region_enabled = true
 region_rect = Rect2(128, 48, 92, 32)
+
+[node name="LockCover" type="Node2D" parent="ShopUIContainer"]
+z_index = 1
+position = Vector2(-71, 93)
+
+[node name="Sprite2D" type="Sprite2D" parent="ShopUIContainer/LockCover"]
+position = Vector2(0, -6)
+texture = ExtResource("7_wyv82")
+offset = Vector2(0.5, 0.5)
+region_enabled = true
+region_rect = Rect2(16, 160, 91, 11)
+
+[node name="Sprite2D2" type="Sprite2D" parent="ShopUIContainer/LockCover"]
+position = Vector2(0, 5)
+texture = ExtResource("7_wyv82")
+offset = Vector2(0.5, 0.5)
+region_enabled = true
+region_rect = Rect2(16, 160, 91, 11)
 
 [node name="UICover" type="ColorRect" parent="ShopUIContainer"]
 z_index = 1

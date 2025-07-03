@@ -76,12 +76,11 @@ func get_custom_data_with_coords(tile_coords: Vector2) -> String:
 	return "my guy, there is nothing here"
 
 func is_tile_one_way(rid: RID) -> bool:
-		var pos = get_coords_for_body_rid(rid)
-		var cell_info = get_cell_tile_data(get_layer_for_body_rid(rid), pos)
-		if cell_info != null and cell_info.get_collision_polygons_count(0) > 0:
-			return cell_info.is_collision_polygon_one_way(0, 0)
-		return false
-
+	var pos = get_coords_for_body_rid(rid)
+	var cell_info = get_cell_tile_data(get_layer_for_body_rid(rid), pos)
+	if cell_info != null and cell_info.get_collision_polygons_count(0):
+		return cell_info.is_collision_polygon_one_way(0, 0)
+	return false
 
 #reutrns a tiles rotation
 func get_tile_rotation(p) -> Vector2:
@@ -108,3 +107,12 @@ func fade_foreground(fade_out):
 		world.get_node("Camera/LensCircle").change_lens(world.room_coords, false, 2)
 		set_layer_enabled(4, true)
 		fade_tween.tween_method(func(a): set_layer_modulate(4, a), Color(1, 1, 1, 0), Color(1,1,1,1),0.1)
+		
+func change_water_tiles():
+	var source = tile_set.get_source(0) as TileSetAtlasSource
+	for atlas_coords in PackedVector2Array([Vector2(50, 15),Vector2(50, 16),Vector2(50, 17),Vector2(55, 15),Vector2(55, 16),Vector2(55, 17),Vector2(60, 13),Vector2(61, 13)]):
+		tile_data = source.get_tile_data(atlas_coords, 0)
+		if tile_data:
+			tile_data.add_collision_polygon(0)
+			tile_data.set_collision_polygon_points(0, 0, PackedVector2Array([Vector2(-4, -4), Vector2(4, -4), Vector2(4, 4), Vector2(-4, 4)]))
+			

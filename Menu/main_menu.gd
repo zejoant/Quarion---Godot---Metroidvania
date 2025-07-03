@@ -1,5 +1,6 @@
 extends Control
 
+@export var sfxs : AudioLibrary
 var world = preload("res://world.tscn").instantiate()
 static var settings_loaded = false
 
@@ -9,10 +10,12 @@ func _ready():
 		settings_loaded = true
 		
 	
-	if Input.get_connected_joypads().size() > 0:
-		get_viewport().gui_release_focus()
-		$Menu/MarginContainer/VBoxContainer/VBoxContainer/ContinueButton.grab_focus()
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	#if Input.get_connected_joypads().size() > 0:
+	#	get_viewport().gui_release_focus()
+	#	$Menu/MarginContainer/VBoxContainer/VBoxContainer/ContinueButton.grab_focus()
+	#	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
+	_on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
 		
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
 
@@ -29,6 +32,7 @@ func _on_joy_connection_changed(_device_id, connected):
 
 func _on_continue_button_pressed():
 	#Input.joy_connection_changed.disconnect(_on_joy_connection_changed)
+	AudioManager.play_audio(sfxs.get_sfx("click"))
 	if FileAccess.file_exists("user://saves/save_file.save"):
 		disable_buttons()
 		self.create_tween().tween_property($Menu, "offset:x", -150, 0.2)
@@ -44,6 +48,7 @@ func _on_continue_button_pressed():
 		_on_new_game_button_pressed()
 
 func _on_new_game_button_pressed():
+	AudioManager.play_audio(sfxs.get_sfx("click"))
 	#get_node("Menu").visible = false
 	#Input.joy_connection_changed.disconnect(_on_joy_connection_changed)
 	disable_buttons()
@@ -64,6 +69,7 @@ func set_blur_power(power: float):
 	get_node("BlurRect").material.set_shader_parameter("amount", power)
 
 func _on_options_button_pressed():
+	AudioManager.play_audio(sfxs.get_sfx("click"))
 	#Input.joy_connection_changed.disconnect(_on_joy_connection_changed)
 	$Menu.visible = false
 	var options = load("res://Menu/options_menu.tscn").instantiate()
@@ -71,4 +77,5 @@ func _on_options_button_pressed():
 	#get_tree().change_scene_to_file("res://Menu/options_menu.tscn")
 
 func _on_quit_button_pressed():
+	AudioManager.play_audio(sfxs.get_sfx("click"))
 	get_tree().quit()

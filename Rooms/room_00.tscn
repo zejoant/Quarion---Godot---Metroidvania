@@ -14,6 +14,7 @@ size = Vector2(59, 3)
 shader = ExtResource("5_lknfq")
 shader_parameter/use_palette_alpha = false
 shader_parameter/palette_choice = 0
+shader_parameter/color_tolerance = 0.01
 shader_parameter/palette = ExtResource("6_8jmpc")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8k3jq"]
@@ -115,6 +116,13 @@ position = Vector2(167, 148)
 texture = ExtResource("2_had36")
 region_enabled = true
 region_rect = Rect2(184, 120, 40, 24)
+
+[node name="ShipGlassBroken" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(196, 175)
+texture = ExtResource("2_had36")
+region_enabled = true
+region_rect = Rect2(184, 144, 40, 18)
 
 [node name="ShipLegs" type="Node2D" parent="."]
 visible = false

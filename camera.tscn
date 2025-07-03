@@ -33,7 +33,7 @@ sound_effects = Array[ExtResource("3_ix65p")]([SubResource("Resource_4f8ho"), Su
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u13rv"]
 shader = ExtResource("6_2my3r")
-shader_parameter/shift_hue = 0.0
+shader_parameter/shift_hue = -0.05
 shader_parameter/background = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ujnku"]
@@ -118,14 +118,14 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("HueShiftLayer/ColorRect:material:shader_parameter/Shift_Hue")
+tracks/0/path = NodePath("HueShiftLayer/ColorRect:material:shader_parameter/shift_hue")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [0.0, -0.125]
+"values": [-0.06, 0.04]
 }
 
 [sub_resource type="Animation" id="Animation_3mpwl"]
@@ -133,14 +133,14 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("HueShiftLayer/ColorRect:material:shader_parameter/Shift_Hue")
+tracks/0/path = NodePath("HueShiftLayer/ColorRect:material:shader_parameter/shift_hue")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [-0.125]
+"values": [-0.05]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_0758d"]
@@ -150,13 +150,15 @@ _data = {
 }
 
 [node name="Camera" type="Camera2D"]
-anchor_mode = 0
+position = Vector2(152, 96)
+ignore_rotation = false
 script = ExtResource("1_mbcrn")
 sfxs = SubResource("Resource_21oqa")
 
 [node name="FlashLayer" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0)
 z_index = 50
+position = Vector2(-152, -96)
 scale = Vector2(304.5, 192.5)
 texture = SubResource("CanvasTexture_64wl2")
 centered = false
@@ -327,37 +329,37 @@ region_rect = Rect2(80, 128, 16, 16)
 [node name="Piece1" type="Sprite2D" parent="UILayer/AmuletContainer"]
 modulate = Color(1, 1, 1, 0)
 texture = ExtResource("4_8iw7y")
-offset = Vector2(-4.5, -4.5)
+offset = Vector2(-4, -4)
 region_enabled = true
-region_rect = Rect2(64, 119, 9, 9)
+region_rect = Rect2(64, 120, 8, 8)
 
 [node name="Piece2" type="Sprite2D" parent="UILayer/AmuletContainer"]
 modulate = Color(1, 1, 1, 0)
 texture = ExtResource("4_8iw7y")
-offset = Vector2(4.5, -4.5)
+offset = Vector2(4, -4)
 region_enabled = true
-region_rect = Rect2(73, 119, 9, 9)
+region_rect = Rect2(72, 120, 8, 8)
 
 [node name="Piece3" type="Sprite2D" parent="UILayer/AmuletContainer"]
 modulate = Color(1, 1, 1, 0)
 texture = ExtResource("4_8iw7y")
-offset = Vector2(5.5, 2)
+offset = Vector2(4, 2)
 region_enabled = true
-region_rect = Rect2(91, 118, 9, 10)
+region_rect = Rect2(88, 118, 8, 10)
 
 [node name="Piece4" type="Sprite2D" parent="UILayer/AmuletContainer"]
 modulate = Color(1, 1, 1, 0)
 texture = ExtResource("4_8iw7y")
-offset = Vector2(0, 4.5)
+offset = Vector2(0, 4)
 region_enabled = true
-region_rect = Rect2(100, 119, 12, 9)
+region_rect = Rect2(96, 120, 16, 8)
 
 [node name="Piece5" type="Sprite2D" parent="UILayer/AmuletContainer"]
 modulate = Color(1, 1, 1, 0)
 texture = ExtResource("4_8iw7y")
-offset = Vector2(-5.5, 2)
+offset = Vector2(-4, 2)
 region_enabled = true
-region_rect = Rect2(82, 118, 9, 10)
+region_rect = Rect2(80, 118, 8, 10)
 
 [node name="LensCircle" parent="." instance=ExtResource("13_wyu8j")]
 

@@ -50,6 +50,8 @@ func setup():
 		$"Right".region_rect.position = Vector2(8, 48)
 
 func _on_player_detection_body_entered(_body):
+	$PlayerDetection/CollisionShape2D.set_deferred("disabled", true)
+	
 	$"Center".region_rect.position.y += 8
 	$"Left".region_rect.position.y += 8
 	$"Right".region_rect.position.y += 8
@@ -62,4 +64,3 @@ func _on_player_detection_body_entered(_body):
 	$"Left".visible = false
 	$"Right".visible = false
 	$Solid.disabled = true
-	$PlayerDetection/CollisionShape2D.disabled = true

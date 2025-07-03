@@ -2,6 +2,8 @@ extends Control
 
 var exiting = false
 
+var paused = false
+
 func _ready():
 	hide()
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
@@ -15,10 +17,31 @@ func _on_joy_connection_changed(_device_id, connected):
 		$MarginContainer/VBoxContainer/ResumeButton.grab_focus()
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
+func pause_menu():
+	if paused:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		hide()
+		get_tree().paused = false
+	else:
+		get_tree().paused = true
+		show()
+		if Input.get_connected_joypads().size() > 0:
+			if !Input.joy_connection_changed.is_connected(Callable(self, "_on_joy_connection_changed")):
+				Input.joy_connection_changed.connect(_on_joy_connection_changed)
+			$MarginContainer/VBoxContainer/ResumeButton.grab_focus()
+			#pause_menu.get_node("MarginContainer/VBoxContainer/ResumeButton").grab_focus()
+		else:
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	paused = !paused
+	if get_node("/root/World/WorldMap").open:
+		get_node("/root/World/WorldMap").open_or_close()
+
 func _on_resume_button_pressed():
-	get_owner().pauseMenu()
+	pause_menu()
+	#get_owner().pauseMenu()
 
 func _on_quit_button_pressed():
+	AudioManager.stop_song()
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://Menu/main_menu.tscn")
 
@@ -33,7 +56,8 @@ func _input(event):
 	if (event.is_action_pressed("Pause") or event.is_action_pressed("UI Back") and visible) and !exiting:
 		exiting = true
 		await get_tree().create_timer(0.01).timeout
-		get_owner().pauseMenu()
+		pause_menu()
+		#get_owner().pauseMenu()
 		if get_parent().get_node_or_null("OptionsMenu") != null:
 			SaveManager.save_settings()
 			get_parent().get_node("OptionsMenu").queue_free()

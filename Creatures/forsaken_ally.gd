@@ -27,8 +27,6 @@ var spike_wave_origin: Vector2
 
 var tween1
 var tween2
-var timer1: Timer
-var timer2: Timer
 
 @onready var origin = $ForsakenAlly.position
 
@@ -50,42 +48,39 @@ func _ready():
 	camera = get_node("/root/World/Camera")
 	follow_pos = player.position
 	follow_velocity = player.velocity
-	#player.disable_movement(true)
-	var room_states = get_node("/root/World").get_room_state()
-	#var free_check = false
-	for pos in room_states:
-		if Vector2i($ActivationColl.position) == Vector2i(pos): #check if boss has been defeated
-			#queue_free()
-			boss.position.x = 38*4
-			dead = true
-			$ForsakenAlly/BossAnimPlayer.play("Lie Down")
-			$ForsakenAlly/HurtColl.set_deferred("disabled", true)
-			$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", true)
-			$ActivationColl.disabled = true
-			$DiveImpactComp.visible = false
-			$Gate2.close(true)
-
+	if player.after_red_boss == true:
+		boss.position.x = 38*4
+		dead = true
+		$ForsakenAlly/BossAnimPlayer.play("Lie Down")
+		$ForsakenAlly/HurtColl.set_deferred("disabled", true)
+		$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", true)
+		$ActivationColl.disabled = true
+		$DiveImpactComp.visible = false
+		$Gate2.close(true)
+	else:
+		$ForsakenAlly/BossAnimPlayer.play("Idle")
+	
 
 func _physics_process(delta):
 	if !dead:
 		update_aim(delta)
-		if $ForsakenAlly/GroundRay.is_colliding() and $ForsakenAlly/BossAnimPlayer.assigned_animation != "Lie Down":
+		if $ForsakenAlly/GroundRay.is_colliding() and $ForsakenAlly/BossAnimPlayer.assigned_animation != "Lie Down" and !dead:
 			if boss.position.x != player.position.x:
-				boss.scale.x = sign(boss.position.x - player.position.x)
+				$ForsakenAlly/BossSprite.scale.x = sign(boss.position.x - player.position.x)
 		
 		if player.position.x > boss.position.x-8 and player.position.x < boss.position.x+8 and player.position.y < boss.position.y-6 and hit_mode != HitMode.NONE:
 			$ForsakenAlly/HurtColl.disabled = true
 		elif hit_mode == HitMode.DODGE and !dodging:
 			$ForsakenAlly/HurtColl.disabled = false
-		
 		if boss_state == BossState.RESET: #pre attack stuff
 			attack_state = 0
 			attack_sub_state = 0
 			attack_cooldown = 0
 			attack_count += 1
 			boss_state = BossState.IDLE
-			#await get_tree().create_timer(0.5).timeout
-			await create_tween().tween_interval(0.5).finished
+			tween1.kill()
+			tween1 = self.create_tween()
+			await tween1.tween_interval(0.5).finished
 			if boss_state == BossState.IDLE:
 				choose_attack()
 		elif boss_state == BossState.JUMP:
@@ -246,9 +241,9 @@ func dive_attack():
 			
 			if $ForsakenAlly/GroundRay.is_colliding() and boss.position.y > 12*8: #hit ground
 				AudioManager.play_audio(sfxs.get_sfx("dash"))
-				camera.radial_blur()
+				#camera.radial_blur()
 				camera.shake(5, 0.03, 3)
-				camera.invert_color(0.5, 0.3)
+				camera.invert_color(0.7, 0.3)
 				
 				$DiveImpactComp.position = Vector2(boss.position.x, 18.5*8)
 				$DiveImpactComp/DiveImpactParticles.restart()
@@ -289,25 +284,41 @@ func aim_shot_attack():
 		if attack_cooldown == 70:
 			attack_cooldown = 0
 			attack_sub_state += 1
+			self.create_tween().tween_property($ForsakenAlly/Aim/AimSprite, "modulate:a", 1, 0.2)
 			$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", true)
-			#var shot_speed = Vector2(player.position.x-boss.position.x, player.position.y-boss.position.y+16).normalized()#Vector2(aim_pos.x-boss.position.x, player.position.y-boss.position.y+16).normalized()
-			#shot_speed.x *= sign((player.position.x - boss.position.x)*shot_speed.x)
 			var big_orb = big_flying_orb.instantiate()
-			big_orb.position = Vector2(boss.position.x, boss.position.y-16)
-			big_orb.target_player = true
-			big_orb.speed = Vector2(1, 0)*3#shot_speed*3
+			big_orb.position = %Aim.global_position#Vector2(boss.position.x, boss.position.y-16)
+			if health < 4 or (health < 7 and attack_sub_state == 3):
+				big_orb.homing = true
+				big_orb.max_speed = 3
+				big_orb.acceleration = 0.1
+				big_orb.speed = Vector2(sign(player.position.x - boss.position.x) * 3, 0)
+			else:
+				big_orb.target_player = true
+				big_orb.speed = Vector2(3, 0)#4+3.0-health/3.0, 0)#Vector2(3+3.0-health/3.0, 0)
 			add_child(big_orb)
 		else:
 			attack_cooldown += 1
-		if attack_cooldown == 30:
+			
+		if attack_cooldown == 10:
+			$EnvAnimPlayer.play("Aim Line Blink")
+		elif attack_cooldown == 30:
+			$EnvAnimPlayer.play("Aim Line Flash")
 			$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", false)
+		if attack_cooldown <= 30:
+			%Aim.rotation = %Aim.global_position.angle_to_point(player.position)
 		
 		if attack_sub_state == 3: #end after 3 shots
 			attack_state = 2
 			attack_cooldown = 70
 	
 	if attack_state == 2: #delay at end
-		if attack_cooldown == 40:
+		if attack_cooldown >= 40:
+			%Aim.rotation = %Aim.global_position.angle_to_point(player.position)
+		if attack_cooldown == 60:
+			$EnvAnimPlayer.play("Aim Line Blink")
+		elif attack_cooldown == 40:
+			$EnvAnimPlayer.play("Aim Line Flash")
 			$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", false)
 		if attack_cooldown == 0:
 			boss_state = BossState.RESET
@@ -320,6 +331,7 @@ func dodge_player(dodge_speed: float, center: bool, reset_attack: bool):
 	$ForsakenAlly/HurtColl.set_deferred("disabled", true)
 	if reset_attack:
 		boss_state = BossState.IDLE
+		$ForsakenAlly/BossAnimPlayer.play("Jump")
 	if tween1 != null and tween1.is_valid():
 		tween1.kill()
 	if tween2 != null and tween2.is_valid():
@@ -334,7 +346,7 @@ func dodge_player(dodge_speed: float, center: bool, reset_attack: bool):
 	else: #during floor spike phase, if boss should dodge to center
 		tween1.tween_property(boss, "position:x", 38*4, dodge_speed)
 	
-	if $ForsakenAlly/GroundRay.is_colliding() and hit_mode != HitMode.DODGE: #if on ground, boss jumps a bit 
+	if $ForsakenAlly/GroundRay.is_colliding():# and hit_mode != HitMode.DODGE: #if on ground, boss jumps a bit 
 		tween2 = self.create_tween()
 		set_tween(tween2, Tween.TRANS_QUAD, Tween.EASE_OUT)
 		tween2.tween_property(boss, "position:y", origin.y - 8, dodge_speed/2.0)
@@ -348,7 +360,7 @@ func dodge_player(dodge_speed: float, center: bool, reset_attack: bool):
 	$ForsakenAlly/HurtColl.disabled = false
 	$ForsakenAlly/HitArea/HitColl.disabled = false
 	dodging = false
-	boss.scale.x = sign(boss.position.x - player.position.x)
+	$ForsakenAlly/BossSprite.scale.x = sign(boss.position.x - player.position.x)
 	
 	if boss_state == BossState.SPIKE and attack_state == -1: #start spike wave after dodge
 		await Engine.get_main_loop().process_frame
@@ -358,6 +370,7 @@ func dodge_player(dodge_speed: float, center: bool, reset_attack: bool):
 		spike_wave_origin.x = boss.position.x
 		spike_wave_origin.y = sign(19*8 - boss.position.x)
 	if reset_attack:
+		$ForsakenAlly/BossAnimPlayer.play("Idle")
 		boss_state = BossState.RESET
 		toggle_hit_coll(HitMode.DODGE)
 
@@ -420,20 +433,24 @@ func _on_hit_area_body_entered(body):
 			$DiveImpactComp/DiveImpactParticles.amount = 30
 	
 	if health == 0:
+		$ForsakenAlly/BossSprite.scale.x = 1
+		dead = true
+		player.after_red_boss = true
 		for child in get_children():
 			if child.has_method("retract_spike"):
 				child.retract_spike()
-		get_node("/root/World").save_room_state($ActivationColl.position)
-		get_node("/root/World").resume_previous_music()
-		$Gate.open()
-		#$Gate2.open()
-		dead = true
+		#get_node("/root/World").save_room_state($ActivationColl.position)
 		$ForsakenAlly/FinalPhaseParticles.emitting = false
 		$ForsakenAlly/HurtColl.set_deferred("disabled", true)
 		$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", true)
+		AudioManager.stop_song()
 		$ForsakenAlly/BossAnimPlayer.play("Lie Down")
-		player.after_red_boss = true
-		#queue_free()
+		await get_tree().create_timer(2, false).timeout
+		
+		$ForsakenAlly/BossAnimPlayer.play("Reach Out")
+		await get_tree().create_timer(4, false).timeout
+		
+		$Gate.open()
 		
 	elif hit_mode == HitMode.DODGE:
 		dodge_player(0.3, false, true)
@@ -456,7 +473,6 @@ func update_aim(delta):
 	if player.velocity.y == 0:
 		follow_pos.y = player.position.y
 	elif player.velocity.y != 0 and player.velocity.x != 0:
-		#follow_pos = follow_pos.lerp(player.position, delta * 0.6)
 		follow_pos = follow_pos.cubic_interpolate(player.position, player.velocity, player.velocity, delta * 0.6)
 	aim_pos = 2 * player.position - follow_pos #converts position from behind the player to in front
 	
@@ -474,7 +490,7 @@ func update_aim(delta):
 func intro_sequence():
 	if !has_seen_intro:
 		has_seen_intro = true
-		get_node("/root/World/MusicPlayer").stream_paused = true
+		AudioManager.stop_song()
 		player.disable_movement(true)
 		player.can_die = false
 		player.position.x = 35*8
@@ -488,8 +504,16 @@ func intro_sequence():
 		big_orb.target_player = true
 		big_orb.speed = Vector2(1, 0)*3#shot_speed*3
 		add_child(big_orb)
-		await get_tree().create_timer(0.98, false).timeout
 		
+		%Aim.rotation = -PI/2.0
+		tween_prop(tween1, Tween.TRANS_QUART, Tween.EASE_OUT, $ForsakenAlly/Aim/AimSprite, "modulate:a", 1, 0.8)
+		tween_prop(tween2, Tween.TRANS_QUART, Tween.EASE_OUT, %Aim, "rotation", %Aim.global_position.angle_to_point(player.position), 0.8)
+		await get_tree().create_timer(0.55, false).timeout
+		$EnvAnimPlayer.play("Aim Line Flash")
+		await get_tree().create_timer(0.42, false).timeout
+		#await get_tree().create_timer(0.38, false).timeout
+		
+		AudioManager.play_audio(player.sfxs.get_sfx("death"))
 		camera.shake(4, 0.03, 3)
 		camera.invert_color(1, 0.3)
 		big_orb.queue_free()
@@ -518,12 +542,14 @@ func intro_sequence():
 		player.disable_movement(false)
 		player.can_die = true
 		health += 1
-		get_node("/root/World/MusicPlayer").stream_paused = false
+		#get_node("/root/World/MusicPlayer").stream_paused = false
+		AudioManager.resume_song()
 	$Gate.close()
 	$Gate2.close()
 	toggle_hit_coll(HitMode.DODGE)
 	boss_state = BossState.RESET
-	get_node("/root/World").switch_music("res://Music/Everhood_The_Final_Battle.mp3")
+	#get_node("/root/World").switch_music("res://Music/Everhood_The_Final_Battle.mp3")
+	AudioManager.play_song(load("res://Music/Everhood_The_Final_Battle.mp3"))
 
 func set_tween(tween: Tween, t: int, e: int):
 	tween.set_trans(t)

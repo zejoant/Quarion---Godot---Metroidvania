@@ -16,7 +16,6 @@ func _ready():
 func _input(event):
 	if event.is_action_released("UI Up") and player.get_node("Area2D").has_overlapping_bodies() and player.get_node("Area2D").get_overlapping_bodies().has($FinishGameArea):
 		
-		change_to_outro()
 		#player.can_move = false
 		player.paused = true
 		camera.fade("000000", 1, 0.5, 1, 0.5)
@@ -25,7 +24,9 @@ func _input(event):
 		player.visible = false
 		$PlayerSprite.visible = true
 		camera.get_node("UILayer").visible = false
-		world.get_node("MusicPlayer").stream_paused = true
+		AudioManager.stop_song()
+		
+		#change_to_outro()
 		
 		await get_tree().create_timer(2, false).timeout #remove glass
 		$ShipComponents/TopLeft.region_rect = Rect2(0, 32, 96, 24)
@@ -43,6 +44,7 @@ func _input(event):
 		$PlayerSprite.position = Vector2(57, 176)
 		$PlayerSprite.region_rect = Rect2(256, 32, 16, 16)
 		$ShipGlass.visible = false
+		$ShipGlassBroken.visible = true
 		
 		await get_tree().create_timer(1.5, false).timeout #put new glass
 		$ShipComponents/BottomLeft.region_rect = Rect2(0, 184, 96, 40)
@@ -56,6 +58,7 @@ func _input(event):
 		
 		await get_tree().create_timer(1.5, false).timeout #ship on planks
 		$Green.visible = false
+		$ShipGlassBroken.visible = false
 		$Tilemap.set_layer_enabled(0, true)
 		$Tilemap.set_layer_enabled(4, true)
 		$PlayerSprite.visible = false

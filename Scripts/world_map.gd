@@ -9,6 +9,8 @@ var open
 
 var latest_added_room: Vector2
 
+var in_subarea: bool = false
+
 func _ready():
 	world = get_node("/root/World")
 	player = get_node("/root/World/Player")
@@ -17,6 +19,7 @@ func _ready():
 	%ItemMap.modulate.a = 0
 	open = false
 	
+	#print(%ItemMap.get_used_cells(0).size())
 	%ItemMap.clear_layer(0)
 	#for pos in %ItemMap.get_used_cells(0): #clears ItemMap and save each items position and type
 		#item_positions.append(pos*4)
@@ -24,13 +27,14 @@ func _ready():
 		#%ItemMap.erase_cell(0, pos)
 	
 func _process(_delta):
-	if open:
+	#if open:
 		if player.velocity.x != 0:
 			update_player_icon()
 
 func update_player_icon():
-	%RoomMap/PlayerIcon.position = Vector2(world.room_coords.x*38, world.room_coords.y*24) + player.position/8
-	%RoomMap/PlayerIcon.position.y -= 3
+	if !in_subarea:
+		%RoomMap/PlayerIcon.position = Vector2(world.room_coords.x*38, world.room_coords.y*24) + player.position/8
+		%RoomMap/PlayerIcon.position.y -= 3
 
 func open_or_close():
 	if !open:

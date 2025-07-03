@@ -1,0 +1,420 @@
+[gd_scene load_steps=23 format=3 uid="uid://dkgdr4rgm4j6q"]
+
+[ext_resource type="Script" path="res://Objects/amulet_statue.gd" id="1_jb2ho"]
+[ext_resource type="Texture2D" uid="uid://bl3l2dlp1hsex" path="res://Assets/Amulet Statue.png" id="1_kwvqg"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_w0p7b"]
+[ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="3_b40ep"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_jg3wv"]
+[ext_resource type="AudioStream" uid="uid://cuy81ixe0v84k" path="res://Sfx/buy.wav" id="4_3g6qp"]
+[ext_resource type="AudioStream" uid="uid://cn20b24j413p0" path="res://Sfx/GameSFX/FootStep/Retro FootStep 03.wav" id="5_or2gi"]
+
+[sub_resource type="Resource" id="Resource_w5l6i"]
+script = ExtResource("3_jg3wv")
+tag = "Amulet Impact"
+stream = ExtResource("4_3g6qp")
+
+[sub_resource type="Resource" id="Resource_s6pi3"]
+script = ExtResource("3_jg3wv")
+tag = "Open Mouth"
+stream = ExtResource("5_or2gi")
+
+[sub_resource type="Resource" id="Resource_kjen5"]
+script = ExtResource("2_w0p7b")
+sound_effects = Array[ExtResource("3_jg3wv")]([SubResource("Resource_w5l6i"), SubResource("Resource_s6pi3")])
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_1un26"]
+particles_animation = true
+particles_anim_h_frames = 8
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_c0onw"]
+load_path = "res://.godot/imported/Ring Particle.png-2dc1e131947a2b1b8c24f1d1190ee419.ctex"
+
+[sub_resource type="Gradient" id="Gradient_41eir"]
+colors = PackedColorArray(1, 1, 1, 1, 0.352941, 0.854902, 0.94902, 1)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ifuje"]
+blend_mode = 1
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_4qihd"]
+load_path = "res://.godot/imported/Sprite Sheet.png-1a601279279ac7194649834130289155.ctex"
+
+[sub_resource type="Animation" id="Animation_pwcgh"]
+resource_name = "Insert Amulet"
+length = 0.30001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AmuletSprite:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AmuletSprite:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(2, 2), Vector2(2, 2), Vector2(1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("RingExplosionParticles:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.3),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_wbpy8"]
+resource_name = "Lamp Lit"
+length = 0.60001
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("LampSprite:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Rect2(160, 16, 16, 16), Rect2(160, 32, 16, 16)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("LampLightSprite:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("LampLightSprite:region_rect")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Rect2(64, 64, 24, 24), Rect2(96, 64, 24, 24)]
+}
+
+[sub_resource type="Animation" id="Animation_p2kf3"]
+resource_name = "Open Mouth"
+length = 1.50001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("StatueSpriteHead:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1, 1.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [Rect2(128, 0, 24, 24), Rect2(128, 24, 24, 24), Rect2(128, 48, 24, 24), Rect2(128, 72, 24, 24)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FaceCollission:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.4, 0.8, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"values": [{
+"args": [],
+"method": &"open_mouth_sfx"
+}, {
+"args": [],
+"method": &"open_mouth_sfx"
+}, {
+"args": [],
+"method": &"open_mouth_sfx"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_ns1wi"]
+resource_name = "Open Mouth Instant"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FaceCollission:disabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("StatueSpriteHead:region_rect")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(128, 72, 24, 24)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AmuletSprite:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_an0it"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("StatueSpriteHead:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(128, 0, 24, 24)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FaceCollission:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AmuletSprite:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("AmuletSprite:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("RingExplosionParticles:emitting")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("LampSprite:region_rect")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(160, 0, 16, 16)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("LampLightSprite:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("LampLightSprite:region_rect")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(64, 64, 24, 24)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4pou0"]
+_data = {
+"Insert Amulet": SubResource("Animation_pwcgh"),
+"Lamp Lit": SubResource("Animation_wbpy8"),
+"Open Mouth": SubResource("Animation_p2kf3"),
+"Open Mouth Instant": SubResource("Animation_ns1wi"),
+"RESET": SubResource("Animation_an0it")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_u263t"]
+
+[node name="AmuletStatue" type="StaticBody2D"]
+collision_mask = 0
+script = ExtResource("1_jb2ho")
+sfxs = SubResource("Resource_kjen5")
+
+[node name="StatueSpriteBack" type="Sprite2D" parent="."]
+z_index = 1
+texture = ExtResource("1_kwvqg")
+region_enabled = true
+region_rect = Rect2(0, 0, 64, 96)
+
+[node name="StatueSpriteFront" type="Sprite2D" parent="."]
+z_index = 7
+texture = ExtResource("1_kwvqg")
+region_enabled = true
+region_rect = Rect2(64, 0, 64, 96)
+
+[node name="StatueSpriteHead" type="Sprite2D" parent="."]
+z_index = 7
+position = Vector2(-20, -4)
+texture = ExtResource("1_kwvqg")
+region_enabled = true
+region_rect = Rect2(128, 0, 24, 24)
+
+[node name="AmuletSprite" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+z_index = 1
+position = Vector2(20, 16)
+texture = ExtResource("3_b40ep")
+region_enabled = true
+region_rect = Rect2(96, 104, 16, 16)
+
+[node name="RingExplosionParticles" type="CPUParticles2D" parent="."]
+z_index = 1
+material = SubResource("CanvasItemMaterial_1un26")
+position = Vector2(20, 16)
+emitting = false
+amount = 50
+lifetime = 2.0
+one_shot = true
+explosiveness = 1.0
+lifetime_randomness = 0.5
+local_coords = true
+texture = SubResource("CompressedTexture2D_c0onw")
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 50.0
+initial_velocity_max = 70.0
+color_initial_ramp = SubResource("Gradient_41eir")
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+anim_offset_min = 0.25
+anim_offset_max = 0.375
+
+[node name="LampSprite" type="Sprite2D" parent="."]
+z_index = 1
+position = Vector2(20, -3)
+texture = ExtResource("1_kwvqg")
+region_enabled = true
+region_rect = Rect2(160, 0, 16, 16)
+
+[node name="LampLightSprite" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(1, 1, 0.898039, 0.117647)
+z_index = 8
+material = SubResource("CanvasItemMaterial_ifuje")
+position = Vector2(20, -3)
+texture = SubResource("CompressedTexture2D_4qihd")
+region_enabled = true
+region_rect = Rect2(64, 64, 24, 24)
+
+[node name="BodyCollission" type="CollisionPolygon2D" parent="."]
+z_index = 7
+position = Vector2(-48, -128)
+polygon = PackedVector2Array(10, 120, 41, 151, 73, 151, 72, 154, 48, 156, 48, 167, 59, 170, 12, 176)
+
+[node name="HatCollission" type="CollisionPolygon2D" parent="."]
+z_index = 7
+position = Vector2(-48, -128)
+polygon = PackedVector2Array(24, 113, 37, 124, 41.2627, 119.215, 49, 122, 59, 120, 47, 111, 47, 93, 50, 85, 42, 84, 42, 93, 33, 101, 16, 104)
+
+[node name="FaceCollission" type="CollisionPolygon2D" parent="."]
+z_index = 7
+position = Vector2(-50, -129)
+polygon = PackedVector2Array(28, 137, 39, 125, 26, 114)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_4pou0")
+}
+
+[node name="InsertAmuletArea" type="StaticBody2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InsertAmuletArea"]
+position = Vector2(20, 16)
+shape = SubResource("CircleShape2D_u263t")

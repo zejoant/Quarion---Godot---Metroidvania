@@ -60,13 +60,12 @@ var jump_count: int = 0
 func _ready():
 	velocity.y = 200
 	
+	#await get_parent().ready
 	await Engine.get_main_loop().process_frame
+	#await get_parent().get_tilemap().ready
 	
 	if get_parent().new_game:
 		$ParticleComps.visible = false
-		#floor_snap_length = 24*8
-		#apply_floor_snap()
-		#floor_snap_length = 2
 		$AnimationPlayer.play("Lie Down")
 		disable_movement(true)
 		update_animations = false
@@ -80,6 +79,9 @@ func _ready():
 	if has_double_jump:
 		$Sprite2D.material.set_shader_parameter("palette_choice", 4)
 	if has_freeze:
+		var tilemap = load("res://tile_map.tscn").instantiate()
+		tilemap.change_water_tiles()
+		tilemap = null
 		$Sprite2D.material.set_shader_parameter("palette_choice", 5)
 	else:
 		$Sprite2D.material.set_shader_parameter("palette_choice", 0)
@@ -96,13 +98,13 @@ func _ready():
 func _physics_process(_delta):
 	if !is_dead and !paused:
 		if is_on_floor():
+			if !Input.is_action_pressed("Jump"):
+				buffer = 0
 			coyote = 5
 			can_dash = true
 			can_double_jump = true
-			if $CollissionRays/CeilingRay.is_colliding():
-				if !($CollissionRays/CeilingRay.get_collider() is TileMap):
-					respawn()
-				elif !$CollissionRays/CeilingRay.get_collider().is_tile_one_way($CollissionRays/CeilingRay.get_collider_rid()):
+			if %CeilingRay.is_colliding():
+				if !(%CeilingRay.get_collider() is TileMap) or !%CeilingRay.get_collider().is_tile_one_way(%CeilingRay.get_collider_rid()):
 					respawn()
 		elif !is_on_floor():#applies gravity if in air
 			if get_parent().get_node("WorldMap").open:
@@ -125,10 +127,10 @@ func _physics_process(_delta):
 			can_jump = false
 		
 		animate_player()
-		wallslide_check()
 		check_inputs()
 		move_and_slide()
-		
+		wallslide_check()
+
 #checks all player inputs
 func check_inputs():
 	if Input.is_action_just_pressed("Quick Respawn") and can_move and !after_red_boss:
@@ -138,33 +140,40 @@ func check_inputs():
 		has_blue_blocks = true
 		has_double_jump = true
 		has_freeze = true
+		get_parent().get_tilemap().change_water_tiles()
 		has_wallclimb = true
 		update_apple_count(9999, true)
 		has_item_map = true
 		get_parent().get_node("WorldMap/MapComps/ItemMap").visible = true
 		#green_key_state = "collected"
 		#red_key_state = "collected"
+		amulet_pieces = 4
 	if !can_move:
 		return
-	if Input.is_action_just_released("Jump"):
+		
+	if Input.is_action_just_released("Jump"): #release jump
 		buffer = 0 #reset jump buffer
 		if velocity.y <= jump_vel / 4.0:
 			velocity.y = jump_vel / 4.0
-	if Input.is_action_just_pressed("Jump") and can_double_jump and has_double_jump and coyote < 0 and !can_walljump:
-		can_double_jump = false
+	elif Input.is_action_pressed("Jump") and can_double_jump and has_double_jump and coyote < 0 and !can_walljump and !dashing and !buffer: #double jump
+		jump(true)
+	elif Input.is_action_pressed("Jump") and can_jump: #not just_pressed cause buffer needs to work
 		jump()
-	if Input.is_action_pressed("Jump") and can_jump: #not just_pressed cause buffer needs to work
-		jump()
-	if (Input.is_action_just_pressed("Jump") and can_walljump) or walljumping:
+	elif (Input.is_action_just_pressed("Jump") and can_walljump) or walljumping:
 		walljump()
+		
 	if Input.is_action_just_pressed("Drop"):
 		drop()
-	if Input.is_action_just_pressed("Dash") and can_dash and !dash_cooldown and !can_walljump and has_dash:
-		dash()
+	if Input.is_action_just_pressed("Dash") and can_dash and !dash_cooldown and has_dash: #and !can_walljump:
+		if can_walljump:
+			dash(walljump_dir*-1)
+		else:
+			dash()
+			
+	if !walljumping and !dashing:
+		walk()
 	if dashing:
 		process_dash()
-	elif !walljumping:
-		walk()
 	if Input.is_action_just_pressed("Map") and is_on_floor():
 		#get_parent().get_node("Camera").alternate_map()
 		get_parent().get_node("WorldMap").open_or_close()
@@ -175,7 +184,7 @@ func animate_player():
 		return
 	if !dashing:
 		if is_on_floor():
-			if $AnimationPlayer.current_animation == "Fall" and $AnimationPlayer.current_animation != "Land":
+			if ($AnimationPlayer.current_animation == "Fall" or $AnimationPlayer.current_animation == "WallSlide") and $AnimationPlayer.current_animation != "Land":
 				$ParticleComps/LandParticles.restart()
 				$AnimationPlayer.play("Land")
 				AudioManager.play_audio(sfxs.get_sfx("land"))
@@ -200,9 +209,10 @@ func respawn():
 	if !is_dead and can_die:
 		death_count += 1
 		var world = get_node("/root/World")
-		get_node("/root/World/MusicPlayer").stop()
+		AudioManager.pause_song()
 		is_dead = true
-		modulate.g = 0.4
+		var currentPalette =  $Sprite2D.material.get_shader_parameter("palette_choice")
+		$Sprite2D.material.set_shader_parameter("palette_choice", 6)
 		$AnimationPlayer.play("Damage")
 		world.get_node("Camera").invert_color(1, 0.3)
 		world.get_node("Camera").shake(5, 0.05, 3)
@@ -210,7 +220,7 @@ func respawn():
 		
 		await get_tree().create_timer(0.5, false).timeout
 		$Sprite2D.visible = false
-		modulate.g = 1
+		$Sprite2D.material.set_shader_parameter("palette_choice", currentPalette)
 		$ParticleComps/DeathParticles/RingExplosionParticles.emitting = true
 		$ParticleComps/DeathParticles/PixelExplosionParticles.emitting = true
 		AudioManager.play_audio(sfxs.get_sfx("explode"))
@@ -220,7 +230,8 @@ func respawn():
 		velocity = Vector2(0, 0)
 		dashing = false
 		dash_timer = dash_lim
-		world.resume_respawn_music()
+		AudioManager.resume_respawn_song()
+		#world.resume_respawn_music()
 		world.return_to_checkpoint()
 		$Sprite2D.visible = true
 		is_dead = false
@@ -237,7 +248,11 @@ func bounce(strength):
 		#$AnimationPlayer.play("Jump")
 
 #Handle the jump
-func jump():
+func jump(double_jump: bool = false):
+	if double_jump:
+		can_double_jump = false
+		$ParticleComps/DoubleJumpParticles.direction = Vector2(-velocity.x/4.0, 110).normalized()
+		$ParticleComps/DoubleJumpParticles.emitting = true
 	jump_count += 1
 	velocity.y = jump_vel
 	buffer = 1
@@ -247,9 +262,16 @@ func jump():
 # Gets the input direction and handles the movement.
 func walk():
 	direction = Input.get_axis("Left", "Right")
+	if !direction:
+		if Input.is_action_pressed("Left") and Input.is_action_just_pressed("Right"):
+			direction = 1
+		elif Input.is_action_pressed("Right") and Input.is_action_just_pressed("Left"):
+			direction = -1
+		elif Input.is_action_pressed("Right") and Input.is_action_pressed("Left"):
+			direction = last_dir
 	if direction:
 		if last_dir * direction < 0:
-			scale.x = -1
+			$Sprite2D.scale.x *= -1
 		if abs(direction) < 0.5:
 			direction = sign(direction) * 0.5
 		last_dir = direction
@@ -271,13 +293,16 @@ func drop():
 		position.y += 1
 
 #activates the dash ability
-func dash():
+func dash(dir: int = last_dir):
 	dash_timer = 0
 	dash_cooldown += 1
 	can_dash = false
 	can_jump = false
 	dashing = true
-	#$WaterDetector/DashColl.disabled = false
+	
+	if last_dir != dir:
+		last_dir = dir
+		$Sprite2D.scale.x *= -1
 	
 	$ParticleComps/DashParticles.restart()
 	$ParticleComps/DashParticles.emitting = true
@@ -287,43 +312,33 @@ func dash():
 	
 	if is_on_floor() or coyote >= 0:
 		position.y -= 4
-	
-	#velocity = Vector2(sign(last_dir)*950/(dash_timer+1), 0)
-	#var tween = self.create_tween()
-	#tween.set_ease(Tween.EASE_OUT)
-	#tween.set_trans(Tween.TRANS_EXPO)
-	#await tween.tween_property(self, "position:x", position.x + sign(last_dir)*8*6, 0.2).finished
-	#await get_tree().create_timer(9.0/60.0, false).timeout
-	#$ParticleComps/DashParticles.emitting = false
-	#dashing = false
 
 #hanlde the dashing after a dash is activated
 func process_dash():
+	if is_on_wall() and dash_timer:
+		dash_timer = dash_lim
 	if dash_timer < dash_lim: #perform dash
 		velocity.x = sign(last_dir)*990.0/(dash_timer+1.0)
 		velocity.y = 0
 		dash_timer += 1
-	if is_on_wall():
-		dash_timer = dash_lim
 	if dash_timer == dash_lim:
 		$ParticleComps/DashParticles.emitting = false
 		dashing = false
 
 #checks if you are against a wall
 func wallslide_check():
-	if %WallRay.is_colliding() and has_wallclimb and (direction != 0 or can_walljump) and !is_on_floor() and velocity.y >= 0:
-		if (%WallRay.get_collider() is TileMap and !%WallRay.get_collider().is_tile_one_way(%WallRay.get_collider_rid())) or !(%WallRay.get_collider() is TileMap):
+	if is_on_wall_only() and has_wallclimb and (direction != 0 or can_walljump) and velocity.y >= -50:
 			if !can_walljump:
 				walljump_dir = direction
 				walljump_coyote = 5
 			can_walljump = true
 			can_dash = true
 			can_double_jump = true
-			#$AnimationPlayer.play("WallSlide")
 			if velocity.y >= 50:
 				velocity.y = 40
 	
-	if (!%WallRay.is_colliding() or velocity.y <= 0) and can_walljump:
+	elif can_walljump:
+	#if (!is_on_wall_only() or velocity.y <= 0) and can_walljump:
 		if walljump_coyote <= 0:
 			can_walljump = false
 		walljump_coyote -= 1
@@ -361,42 +376,57 @@ func _on_area_2d_body_shape_entered(body_rid, body, _body_shape_index, _local_sh
 
 #does action based on the custom data of a tile
 func custom_data_action(body: TileMap, custom_data: String, tile_coords: Vector2):
-		if custom_data == "Spike" or custom_data == "Water":
-			respawn()
-		elif custom_data == "PBlueBlocks":
-			has_blue_blocks = true
-		elif custom_data == "PWallClimb":
-			has_wallclimb = true
-		elif custom_data == "PDash":
-			has_dash = true
-		elif custom_data == "PDoubleJump":
-			has_double_jump = true
+	if custom_data == "Spike" or (custom_data == "Water" and !has_freeze):
+		respawn()
+	elif custom_data == "PBlueBlocks":
+		has_blue_blocks = true
+	elif custom_data == "PWallClimb":
+		has_wallclimb = true
+	elif custom_data == "PDash":
+		has_dash = true
+	elif custom_data == "PDoubleJump":
+		has_double_jump = true
+	elif custom_data == "PFreeze":
+		has_freeze = true
+		get_parent().get_tilemap().change_water_tiles()
+	
+	if custom_data.begins_with("P"):
+		disable_movement(true)
+		paused = true
+		AudioManager.pause_song()
+		self.position = Vector2(tile_coords.x*8+8, tile_coords.y*8+20)
+		$ParticleComps/PowerUpParticles/ExplosionParticles.emitting = true
+		$ParticleComps/PowerUpParticles/RedRingParticles.emitting = true
 		
-		if custom_data.begins_with("P"):
-			can_move = false
-			paused = true
-			get_node("/root/World/MusicPlayer").stream_paused = true
-			self.position = Vector2(tile_coords.x*8+8, tile_coords.y*8+20)
-			$ParticleComps/PowerUpParticles.emitting = true
-			AudioManager.play_audio(sfxs.get_sfx("power_up"))
-			AudioManager.play_audio(sfxs.get_sfx("fire_burst"))
-			get_parent().save_room_state(tile_coords)
-			body.erase_cell(0, tile_coords)
-			if get_parent().get_node("WorldMap").open:
-				get_parent().get_node("WorldMap").open_or_close()
-			$AnimationPlayer.stop()
-			#get_node("/root/World/WorldMap").remove_item()
-			
-			await create_tween().tween_interval(2).finished
-			$Sprite2D.material.set_shader_parameter("palette_choice", $Sprite2D.material.get_shader_parameter("palette_choice")+1)
-			AudioManager.play_audio(sfxs.get_sfx("p_up_finish"))
-			get_parent().completion_percentage += 2
-			get_node("/root/World/Camera").flash(1, 0, 0.1, 0.4)
-			if custom_data == "PBlueBlocks":
-				get_parent().change_room(get_parent().room_coords)
-			can_move = true
-			paused = false
-			get_node("/root/World/MusicPlayer").stream_paused = false
+		get_parent().get_node("Camera").invert_color(0.5, 0.2)
+		get_parent().get_node("Camera").zoom_camera(2, 0, position)
+		get_parent().get_node("Camera").rotation = PI/56.0
+		AudioManager.play_audio(sfxs.get_sfx("power_up"))
+		AudioManager.play_audio(sfxs.get_sfx("fire_burst"))
+		AudioManager.play_audio(sfxs.get_sfx("explode"))
+		get_parent().save_room_state(tile_coords)
+		body.erase_cell(0, tile_coords)
+		if get_parent().get_node("WorldMap").open:
+			get_parent().get_node("WorldMap").open_or_close()
+		$AnimationPlayer.stop()
+		#get_node("/root/World/WorldMap").remove_item()
+		
+		await get_tree().create_timer(1, false).timeout
+		$ParticleComps/PowerUpParticles/ChargeUpParticles.emitting = true
+		AudioManager.play_audio(sfxs.get_sfx("charge"))
+		
+		await get_tree().create_timer(4, false).timeout
+		get_parent().get_node("Camera").zoom_camera(1, 0)
+		get_parent().get_node("Camera").rotation = 0
+		$Sprite2D.material.set_shader_parameter("palette_choice", $Sprite2D.material.get_shader_parameter("palette_choice")+1)
+		AudioManager.play_audio(sfxs.get_sfx("p_up_finish"))
+		get_parent().completion_percentage += 2
+		get_node("/root/World/Camera").flash(1, 0, 0.1, 0.4)
+		if custom_data == "PBlueBlocks":
+			get_parent().change_room(get_parent().room_coords)
+		disable_movement(false)
+		paused = false
+		AudioManager.resume_song()
 
 #fade in foreground
 func on_foreground_enter(_area):
@@ -413,15 +443,13 @@ func on_foreground_exit(_area):
 	tilemap.fade_foreground(false)
 
 #replaces water with ice if you have the freeze power up
-func _on_water_detector_body_shape_entered(body_rid, body, _body_shape_index, _local_shape_index):
+func on_water_entered(body_rid, body, _body_shape_index, _local_shape_index):
 	if body is TileMap and has_freeze:
 		var tile_coords = body.get_coords_for_body_rid(body_rid)
 		var tile_data = body.get_cell_tile_data(0, tile_coords)
 		if tile_data != null:
 			var custom_data = tile_data.get_custom_data("Functional Tiles")
 			if custom_data == "Water":
-				if dashing: #avoids getting stuck inside the ice
-					position.x = tile_coords.x*8 - 16*last_dir
 				body.erase_cell(0, tile_coords)
 				body.set_cell(1, tile_coords, 0, Vector2i(43, 4), 0)
 			
