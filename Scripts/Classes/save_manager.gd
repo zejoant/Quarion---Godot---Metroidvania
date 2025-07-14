@@ -1,7 +1,7 @@
 extends Node
 
-const settings_save_path := "user://saves/settings.save"
-const save_path := "user://saves/save_file.save"
+const settings_save_path := "user://settings.save"
+const save_path := "user://save_file.save"
 
 func save_settings():
 	var file = FileAccess.open(settings_save_path, FileAccess.WRITE)
@@ -9,6 +9,7 @@ func save_settings():
 	file.store_var(OptionsMenu.music_slider_value)
 	file.store_var(OptionsMenu.fullscreen)
 	file.store_var(OptionsMenu.borderless)
+	file.store_var(OptionsMenu.use_mouse_for_menus)
 	#file.store_var(DisplayServer.window_get_size())
 
 func load_settings():
@@ -18,6 +19,7 @@ func load_settings():
 		OptionsMenu.music_slider_value = file.get_var()
 		OptionsMenu.fullscreen = file.get_var()
 		OptionsMenu.borderless = file.get_var()
+		OptionsMenu.use_mouse_for_menus = file.get_var()
 		OptionsMenu.set_loaded_settings()
 		#DisplayServer.window_set_size(file.get_var())
 
@@ -38,10 +40,12 @@ func save_game(world: Node):
 	file.store_var(world.player.apple_count)
 	file.store_var(world.bought_shop_items)
 	file.store_var(world.player.amulet_pieces)
+	file.store_var(world.player.has_bubble)
 	
 	#map stuff
 	file.store_var(world.player.has_item_map)
 	file.store_var(world.get_node("WorldMap/MapComps/ItemMap").get_used_cells(0))
+	file.store_var(world.player.has_opened_map)
 	
 	#staff roll stats
 	file.store_var(world.timer)
@@ -67,12 +71,14 @@ func load_game(world: Node):
 		world.opened_doors = file.get_var()
 		world.player.apple_count = file.get_var()
 		world.bought_shop_items.assign(file.get_var())
-		world.player.amulet_pieces = file.get_var()
+		world.get_node("Camera").enable_amulet_pieces(file.get_var())
+		world.player.bubble_action(file.get_var())
 		
 		#map stuff
 		world.player.has_item_map = file.get_var()
 		for apple_pos in file.get_var():
 			world.get_node("WorldMap").add_apple_from_pos(apple_pos)
+		world.player.has_opened_map = file.get_var()
 		
 		#staff roll stats
 		world.timer = file.get_var()

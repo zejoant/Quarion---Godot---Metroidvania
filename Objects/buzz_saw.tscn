@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://55yea8bvmjot"]
+
+[ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_4hcsu"]
+[ext_resource type="Script" path="res://Objects/buzz_saw.gd" id="1_i7oo7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_m0km4"]
+
+[node name="BuzzSaw" type="StaticBody2D" groups=["Enemy"]]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_i7oo7")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_4hcsu")
+region_enabled = true
+region_rect = Rect2(16, 144, 24, 24)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_m0km4")

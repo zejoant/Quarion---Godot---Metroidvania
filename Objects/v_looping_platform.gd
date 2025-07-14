@@ -19,7 +19,7 @@ func _ready():
 	else:
 		dir = -1
 
-func _process(_delta):
+func _physics_process(_delta):
 	if !moving:
 		moving = true
 		await self.create_tween().tween_method(move_platform, start_pos, start_pos + loop_distance*dir, speed).finished

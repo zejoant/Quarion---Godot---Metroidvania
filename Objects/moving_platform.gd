@@ -42,6 +42,7 @@ func _ready():
 			$Rays.scale.y *= width
 	elif type == "horizontal":
 		rotation_degrees = 0
+	
 	#setup()
 
 func _physics_process(_delta):
@@ -49,6 +50,8 @@ func _physics_process(_delta):
 		first_frame = false
 		return
 	
+	if !visible:
+		visible = true
 	#move_and_collide(move_dir)
 	position += move_dir
 	if $Rays/WallRay.is_colliding():

@@ -1,4 +1,4 @@
-extends StaticBody2D
+extends Area2D
 
 @export var sfxs : AudioLibrary
 var player
@@ -11,6 +11,8 @@ var tween
 var not_tweening = true
 var value
 var color 
+
+var player_in_area: bool = false
 
 var bought_items: Array[bool]
 # Called when the node enters the scene tree for the first time.
@@ -38,12 +40,12 @@ func _ready():
 	
 func _on_joy_connection_changed(_device_id, connected):
 	release_all_focus()
-	if !connected:
+	if !connected and OptionsMenu.use_mouse_for_menus:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	else:
 		#$ShopUIContainer/KeyButton.grab_focus()
 		find_next_focus($ShopUIContainer/BubbleButton)
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 
 func open_setup():
 	open = true
@@ -78,15 +80,19 @@ func selector_flash():
 		#selector.modulate = color
 
 func _input(event):
-	if !open and player.get_node("Area2D").has_overlapping_bodies() and player.get_node("Area2D").get_overlapping_bodies().has(self):
-		if event.is_action_pressed("UI Up"):
+	if !open and player_in_area: #and player.get_node("Area2D").has_overlapping_bodies() and player.get_node("Area2D").get_overlapping_bodies().has(self):
+		if event.is_action_pressed("ui_up"):
 			open_setup()
 	else:
 		if event.is_action_released("Pause") or event.is_action_released("UI Back"):
 			exit_shop()
+	
+	#if !get_viewport().gui_get_focus_owner():
+		#if event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down") or event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right"):
+			#find_next_focus($ShopUIContainer/BubbleButton, true)
 
 func exit_shop():
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	await self.create_tween().tween_property($ShopUIContainer/UICover, "modulate:a", 1, 0.3).finished
 	ui.visible = false
 	get_node("/root/World").save_game()
@@ -127,8 +133,8 @@ func set_focus(pos):
 	selector.region_rect.position.y = 16 + slot_pos * 11
 	description.region_rect.position.y = 48 + slot_pos * 32
 
-func find_next_focus(button: Button):
-	if Input.get_connected_joypads().size() > 0:
+func find_next_focus(button: Button, ignore_controller: bool = false):
+	if Input.get_connected_joypads().size() > 0 or ignore_controller or !OptionsMenu.use_mouse_for_menus:
 		var next = button.find_next_valid_focus()
 		if next:
 			selector.visible = true
@@ -170,7 +176,7 @@ func _on_key_button_pressed():
 
 
 func _on_amulet_button_pressed():
-	if player.apple_count < 15:
+	if player.apple_count < 18:
 		AudioManager.play_audio(sfxs.get_sfx("buy_deny"))
 		return
 	
@@ -181,6 +187,7 @@ func _on_amulet_button_pressed():
 	
 	AudioManager.play_audio(sfxs.get_sfx("buy"))
 	player.amulet_pieces += 1
+	get_node("/root/World").completion_percentage += 1
 	bought_items[1] = true
 	get_node("/root/World/Player").update_apple_count(-15)
 	exit_shop()
@@ -188,7 +195,7 @@ func _on_amulet_button_pressed():
 
 
 func _on_bubble_button_pressed():
-	if player.apple_count < 26:
+	if player.apple_count < 22:
 		AudioManager.play_audio(sfxs.get_sfx("buy_deny"))
 		return
 	
@@ -199,6 +206,18 @@ func _on_bubble_button_pressed():
 	
 	AudioManager.play_audio(sfxs.get_sfx("buy"))
 	get_node("/root/World").completion_percentage += 2
-	player.has_bubble = true
+	player.bubble_action(true, false)
 	bought_items[2] = true
 	get_node("/root/World/Player").update_apple_count(-26)
+
+
+func _on_body_entered(body):
+	if body is CharacterBody2D:
+		player_in_area = true
+		$InputIndicator.visible = true
+
+
+func _on_body_exited(body):
+	if body is CharacterBody2D:
+		player_in_area = false
+		$InputIndicator.visible = false

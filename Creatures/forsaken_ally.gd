@@ -78,7 +78,8 @@ func _physics_process(delta):
 			attack_cooldown = 0
 			attack_count += 1
 			boss_state = BossState.IDLE
-			tween1.kill()
+			if tween1:
+				tween1.kill()
 			tween1 = self.create_tween()
 			await tween1.tween_interval(0.5).finished
 			if boss_state == BossState.IDLE:
@@ -491,6 +492,9 @@ func intro_sequence():
 	if !has_seen_intro:
 		has_seen_intro = true
 		AudioManager.stop_song()
+		player.bubble_popped = true
+		tween_prop(tween1, Tween.TRANS_QUART, Tween.EASE_OUT, player.get_node("BubbleSprite"), "modulate:a", 0, 1)
+		#player.get_node("BubbleSprite").modulate.a
 		player.disable_movement(true)
 		player.can_die = false
 		player.position.x = 35*8
@@ -539,6 +543,7 @@ func intro_sequence():
 		tween_prop(tween1, Tween.TRANS_SINE, Tween.EASE_OUT, player, "position:x", player.position.x-16, 0.5)
 		await get_tree().create_timer(1, false).timeout
 		
+		player.bubble_action(false, false)
 		player.disable_movement(false)
 		player.can_die = true
 		health += 1

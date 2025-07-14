@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dsf7isnnwruw"]
+[gd_scene load_steps=13 format=3 uid="uid://dsf7isnnwruw"]
 
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_ag3j2"]
 [ext_resource type="Script" path="res://Objects/key_slot.gd" id="1_xb06v"]
@@ -18,8 +18,40 @@ sound_effects = Array[ExtResource("3_dn7ah")]([SubResource("Resource_x0qqt")])
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wso80"]
 size = Vector2(16, 16)
 
-[node name="KeySlot" type="StaticBody2D" groups=["InteractArea"]]
-collision_layer = 2
+[sub_resource type="AtlasTexture" id="AtlasTexture_fo8ef"]
+atlas = ExtResource("1_ag3j2")
+region = Rect2(64, 144, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bwfj7"]
+atlas = ExtResource("1_ag3j2")
+region = Rect2(80, 144, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dsv5v"]
+atlas = ExtResource("1_ag3j2")
+region = Rect2(96, 144, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0ixvu"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fo8ef")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bwfj7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dsv5v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bwfj7")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="KeySlot" type="Area2D" groups=["InteractArea"]]
+collision_layer = 0
 collision_mask = 8
 script = ExtResource("1_xb06v")
 sfxs = SubResource("Resource_ckndq")
@@ -42,3 +74,13 @@ region_rect = Rect2(64, 104, 16, 14)
 shape = SubResource("RectangleShape2D_wso80")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="InputIndicator" type="AnimatedSprite2D" parent="."]
+visible = false
+z_index = 5
+position = Vector2(0, -18)
+sprite_frames = SubResource("SpriteFrames_0ixvu")
+autoplay = "default"
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

@@ -5,6 +5,8 @@ var camera
 var world
 var tween
 
+var player_in_area: bool = false
+
 func _ready():
 	world = get_node("/root/World")
 	player = get_node("/root/World/Player")
@@ -14,8 +16,7 @@ func _ready():
 	$Tilemap.set_layer_enabled(4, false)
 
 func _input(event):
-	if event.is_action_released("UI Up") and player.get_node("Area2D").has_overlapping_bodies() and player.get_node("Area2D").get_overlapping_bodies().has($FinishGameArea):
-		
+	if event.is_action_pressed("ui_up") and player_in_area and player.velocity.x == 0:
 		#player.can_move = false
 		player.paused = true
 		camera.fade("000000", 1, 0.5, 1, 0.5)
@@ -52,6 +53,7 @@ func _input(event):
 		$PlayerSprite.position = Vector2(116, 164)
 		$PlayerSprite.flip_h = true
 		$PlayerSprite.region_rect = Rect2(240, 0, 16, 16)
+		$SmokeParticles2.visible = false
 		
 		await get_tree().create_timer(1.5, false).timeout
 		camera.fade("000000", 1, 0.5, 1, 0.5)
@@ -64,6 +66,7 @@ func _input(event):
 		$PlayerSprite.visible = false
 		$ShipLegs.visible = true
 		$ShipComponents.position.y -= 3*8
+		$SmokeParticles1.visible = false
 		
 		await get_tree().create_timer(1.5, false).timeout #ship raised
 		tween = create_tween()
@@ -106,3 +109,14 @@ func change_to_outro():
 	get_tree().root.add_child(outro_cutscene)
 	get_tree().current_scene = outro_cutscene
 	world.queue_free()
+
+
+func _on_finish_game_area_body_entered(body):
+	if body is CharacterBody2D:
+		player_in_area = true
+		$InputIndicator.visible = true
+
+func _on_finish_game_area_body_exited(body):
+	if body is CharacterBody2D:
+		player_in_area = false
+		$InputIndicator.visible = false

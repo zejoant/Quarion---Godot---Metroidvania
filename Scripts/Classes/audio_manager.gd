@@ -8,8 +8,9 @@ var previous_song_pos
 var respawn_song
 var respawn_song_pos
 
-func play_audio(stream: AudioStream):
+func play_audio(stream: AudioStream, speed: float = 1):
 	var sfxPlayer = AudioStreamPlayer.new()
+	sfxPlayer.pitch_scale = speed
 	sfxPlayer.bus = "Sfx"
 	sfxPlayer.stream = stream
 	sfxPlayer.finished.connect(remove_audio_player.bind(sfxPlayer))

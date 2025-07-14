@@ -28,7 +28,7 @@ script = ExtResource("2_5uk7b")
 sound_effects = Array[ExtResource("3_l5ugc")]([SubResource("Resource_kwokw"), SubResource("Resource_ucnfk"), SubResource("Resource_yrdlx")])
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_m7fpw"]
-radius = 7.0
+radius = 6.0
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ec40m"]
 particles_animation = true

@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://xlhqgyxr5f5s"]
+[gd_scene load_steps=37 format=3 uid="uid://xlhqgyxr5f5s"]
 
 [ext_resource type="Script" path="res://Menu/options_menu.gd" id="1_x504m"]
 [ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="2_a3tmx"]
@@ -7,7 +7,9 @@
 [ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/prstartk.ttf" id="5_e33ne"]
 [ext_resource type="Theme" uid="uid://2035heuy0kah" path="res://Themes/slider_theme.tres" id="6_wbg1x"]
 [ext_resource type="Theme" uid="uid://dpgqirdxhg45n" path="res://Themes/check_box_theme.tres" id="8_hcnu7"]
+[ext_resource type="Texture2D" uid="uid://c2dsudt2on35a" path="res://Assets/MenuTextures/Checkbox Checked.png" id="9_goqop"]
 [ext_resource type="Theme" uid="uid://cuob8mv0ptd72" path="res://Themes/option_button_theme.tres" id="9_hlkcv"]
+[ext_resource type="Texture2D" uid="uid://d10ti04j6bxh7" path="res://Assets/MenuTextures/CheckBox Unchecked.png" id="10_myq66"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4rjve"]
 shader = ExtResource("2_a3tmx")
@@ -111,6 +113,78 @@ font_size = 8
 outline_size = 4
 outline_color = Color(0, 0, 0, 1)
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_j6nx3"]
+texture = ExtResource("4_dsysb")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(73, 11, 63, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mft0i"]
+texture = ExtResource("4_dsysb")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(73, 11, 63, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dux5c"]
+texture = ExtResource("4_dsysb")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(12, 11, 56, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_akf17"]
+texture = ExtResource("4_dsysb")
+texture_margin_left = 12.0
+texture_margin_top = 6.0
+texture_margin_right = 12.0
+texture_margin_bottom = 6.0
+region_rect = Rect2(12, 43, 56, 26)
+
+[sub_resource type="Theme" id="Theme_8dw6r"]
+default_font = ExtResource("5_e33ne")
+default_font_size = 8
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/font_sizes/font_size = 8
+Button/styles/focus = SubResource("StyleBoxTexture_j6nx3")
+Button/styles/hover = SubResource("StyleBoxTexture_mft0i")
+Button/styles/normal = SubResource("StyleBoxTexture_dux5c")
+Button/styles/pressed = SubResource("StyleBoxTexture_akf17")
+
+[sub_resource type="LabelSettings" id="LabelSettings_5q1ee"]
+font_size = 8
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vvhc8"]
+texture = ExtResource("4_dsysb")
+texture_margin_left = 5.0
+texture_margin_top = 7.0
+texture_margin_right = 6.0
+texture_margin_bottom = 7.0
+expand_margin_left = 3.0
+region_rect = Rect2(6, 86, 55, 15)
+
+[sub_resource type="Theme" id="Theme_04gwd"]
+default_font_size = 8
+CheckBox/colors/font_focus_color = Color(0.745098, 0.894118, 0.658824, 1)
+CheckBox/colors/font_hover_color = Color(0.745098, 0.894118, 0.658824, 1)
+CheckBox/colors/font_outline_color = Color(0, 0, 0, 1)
+CheckBox/constants/outline_size = 4
+CheckBox/fonts/font = ExtResource("5_e33ne")
+CheckBox/icons/checked = ExtResource("9_goqop")
+CheckBox/icons/unchecked = ExtResource("10_myq66")
+CheckBox/styles/focus = SubResource("StyleBoxTexture_vvhc8")
+CheckBox/styles/hover = SubResource("StyleBoxTexture_vvhc8")
+CheckBox/styles/hover_pressed = SubResource("StyleBoxTexture_vvhc8")
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uwmf5"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kekjq"]
@@ -155,6 +229,7 @@ theme_override_constants/separation = 10
 alignment = 1
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme = ExtResource("3_ghitf")
 text = "Audio Settings"
@@ -199,11 +274,13 @@ min_value = -25.0
 max_value = 25.0
 
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 9
 theme_override_styles/separator = SubResource("StyleBoxEmpty_0pl7j")
 
 [node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme = ExtResource("3_ghitf")
 text = "Video Settings"
@@ -234,13 +311,35 @@ size_flags_horizontal = 4
 layout_mode = 2
 focus_neighbor_left = NodePath("../../AudioHBox/SfxVBox/SfxSlider")
 focus_neighbor_right = NodePath("../../AudioHBox/MusicVbox/MusicSlider")
+focus_neighbor_bottom = NodePath("../BorderlessCheck")
 theme = ExtResource("8_hcnu7")
 text = "Fullscreen"
 
 [node name="BorderlessCheck" type="CheckBox" parent="MarginContainer/VBoxContainer/VideoVBox"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../FullscreenCheck")
+focus_neighbor_bottom = NodePath("../../MouseHBox/MouseMenusCheck")
 theme = ExtResource("8_hcnu7")
 text = "Borderless"
+
+[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme = SubResource("Theme_8dw6r")
+text = "Controlls"
+label_settings = SubResource("LabelSettings_5q1ee")
+horizontal_alignment = 1
+
+[node name="MouseHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MouseMenusCheck" type="CheckBox" parent="MarginContainer/VBoxContainer/MouseHBox"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../../VideoVBox/BorderlessCheck")
+focus_neighbor_bottom = NodePath("../../BackHBox/BackButton")
+theme = SubResource("Theme_04gwd")
+button_pressed = true
+text = "Use Mouse for Menus"
 
 [node name="BackHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -266,4 +365,5 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_kekjq")
 [connection signal="item_selected" from="MarginContainer/VBoxContainer/WindowMode" to="." method="_on_window_mode_item_selected"]
 [connection signal="toggled" from="MarginContainer/VBoxContainer/VideoVBox/FullscreenCheck" to="." method="_on_fullscreen_check_toggled"]
 [connection signal="toggled" from="MarginContainer/VBoxContainer/VideoVBox/BorderlessCheck" to="." method="_on_borderless_check_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/MouseHBox/MouseMenusCheck" to="." method="_on_mouse_menus_check_toggled"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/BackHBox/BackButton" to="." method="_on_back_button_pressed"]

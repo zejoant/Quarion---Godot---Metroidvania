@@ -172,7 +172,7 @@ region_enabled = true
 region_rect = Rect2(64, 64, 24, 24)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -6)
+position = Vector2(0, -5)
 shape = SubResource("CapsuleShape2D_sv52y")
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="."]

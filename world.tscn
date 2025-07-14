@@ -1,10 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://chuu2il5usdf4"]
+[gd_scene load_steps=12 format=3 uid="uid://chuu2il5usdf4"]
 
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_8vgew"]
 [ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="2_amft2"]
 [ext_resource type="PackedScene" uid="uid://4ythqhswhcg7" path="res://Creatures/player.tscn" id="2_sly73"]
 [ext_resource type="PackedScene" uid="uid://c4y4hleyev5w2" path="res://camera.tscn" id="3_qv8w2"]
-[ext_resource type="AudioStream" uid="uid://by671bpomxrhh" path="res://Music/Freedom.mp3" id="7_okqrd"]
 [ext_resource type="PackedScene" uid="uid://tq5pdnyqtw32" path="res://world_map.tscn" id="8_f8ank"]
 [ext_resource type="Shader" path="res://Shaders/pixelate.gdshader" id="9_645b4"]
 [ext_resource type="PackedScene" uid="uid://cw6m8e10x6bsu" path="res://Menu/pause_menu.tscn" id="9_w8l0d"]
@@ -67,10 +66,6 @@ position = Vector2(64, 63)
 [node name="LensCircle" parent="Camera" index="6"]
 non_follow_pos = Vector2(152, 96)
 
-[node name="MusicPlayer" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("7_okqrd")
-bus = &"Music"
-
 [node name="WorldMap" parent="." instance=ExtResource("8_f8ank")]
 z_index = 10
 
@@ -100,7 +95,7 @@ anim_speed_max = 1.0
 z_index = -1
 position = Vector2(150, 212)
 amount = 50
-lifetime = 25.0
+lifetime = 30.0
 preprocess = 16.0
 emission_shape = 3
 emission_rect_extents = Vector2(150, 1)

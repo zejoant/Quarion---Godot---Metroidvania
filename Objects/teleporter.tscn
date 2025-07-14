@@ -1,8 +1,20 @@
-[gd_scene load_steps=23 format=3 uid="uid://coii0bc70hkej"]
+[gd_scene load_steps=28 format=3 uid="uid://coii0bc70hkej"]
 
 [ext_resource type="Script" path="res://Objects/teleporter.gd" id="1_5tq3n"]
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="2_2gntq"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_hi10r"]
 [ext_resource type="Texture2D" uid="uid://bn306u45m6wu1" path="res://Assets/Line Particle.png" id="3_pl8m5"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_rq14c"]
+[ext_resource type="AudioStream" uid="uid://cflwolia71tmr" path="res://Sfx/teleport 2.wav" id="4_n2xb7"]
+
+[sub_resource type="Resource" id="Resource_4pqgt"]
+script = ExtResource("3_rq14c")
+tag = "teleport"
+stream = ExtResource("4_n2xb7")
+
+[sub_resource type="Resource" id="Resource_x1b5r"]
+script = ExtResource("2_hi10r")
+sound_effects = Array[ExtResource("3_rq14c")]([SubResource("Resource_4pqgt")])
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jspuy"]
 radius = 8.06226
@@ -105,6 +117,7 @@ _data = {
 collision_layer = 0
 collision_mask = 8
 script = ExtResource("1_5tq3n")
+sfxs = SubResource("Resource_x1b5r")
 
 [node name="TpSprite" type="Sprite2D" parent="."]
 z_index = 2

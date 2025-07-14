@@ -4,7 +4,7 @@ uniform vec4 shine_color : source_color = vec4(1.0); //Shine color
 uniform float alpha_limit : hint_range(0.0, 1.0, 0.1) = 0.0; //Alpha color limit to apply the shine, for example, if you won't to apply the shine to semi-transparent pixels
 uniform float cycle_speed : hint_range(0.0, 10.0, 0.1) = 1.0; //Pulse cycle speed
 uniform bool full_pulse_cycle = false; //[False = Do the effect and make a pause] [True = Do the effect continuosly]
-uniform int mode : hint_range(0, 2, 1) = 0; //[0 = Always off] [1 = Pulse mode] [2 = Always on]
+uniform int mode : hint_range(0, 3, 1) = 0; //[0 = Always off] [1 = Pulse mode] [2 = Always on]
 
 void fragment()
 {
@@ -26,6 +26,13 @@ void fragment()
 				case 2: //Always on
 				{
 					COLOR.rgb = mix(COLOR.rgb, shine_color.rgb, shine_color.a);
+					break;
+				}
+				case 3: //Fade to
+				{
+					float cycle = smoothstep(0.0, 1.1, TIME);
+					//float cycle = cos(TIME * cycle_speed);
+					COLOR.rgb = mix(COLOR.rgb, shine_color.rgb, ((cycle >= 0.0) ? abs(cycle) : 0.0) * shine_color.a);
 					break;
 				}
 			}

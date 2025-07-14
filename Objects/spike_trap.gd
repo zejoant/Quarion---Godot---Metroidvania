@@ -1,6 +1,7 @@
 #@tool
 extends StaticBody2D
 
+@export var sfxs : AudioLibrary
 @export var width : int = 1
 @export var length : int = 2
 @export var interval : float = 1
@@ -21,14 +22,14 @@ func _ready():
 	await self.create_tween().tween_interval(offset).finished
 	animating = false
 	
-func _process(_delta):
+func _physics_process(_delta):
 	if !animating:
 		animating = true
 		anim_tween = self.create_tween()
 		await anim_tween.tween_interval(interval).finished
 		
 		if audio:
-			$AudioStreamPlayer2D.play()
+			AudioManager.play_audio(sfxs.get_sfx("hit"))
 			
 		
 		anim_tween = self.create_tween()

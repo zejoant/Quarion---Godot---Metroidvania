@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bbcuafrlc8tnb"]
+[gd_scene load_steps=16 format=3 uid="uid://bbcuafrlc8tnb"]
 
 [ext_resource type="Script" path="res://Menu/main_menu.gd" id="1_af00c"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_j2owd"]
@@ -7,7 +7,6 @@
 [ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="3_ip0rl"]
 [ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/prstartk.ttf" id="4_87sp4"]
 [ext_resource type="AudioStream" uid="uid://bix5b6cfgmyo6" path="res://Sfx/menu input.wav" id="4_h4qcl"]
-[ext_resource type="Texture2D" uid="uid://bw5uqh2kcy8rv" path="res://Assets/Quarion Title.png" id="5_l4yhv"]
 [ext_resource type="Theme" uid="uid://b6lhu6b1qu0a3" path="res://Themes/button_theme_new.tres" id="5_v0tn8"]
 [ext_resource type="PackedScene" uid="uid://cagepo1tljh6w" path="res://intro_cutscene.tscn" id="6_ipu0k"]
 
@@ -63,12 +62,7 @@ size_flags_vertical = 8
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="Menu/MarginContainer/VBoxContainer"]
-layout_mode = 2
-texture = ExtResource("5_l4yhv")
-expand_mode = 5
-
-[node name="TextureRect2" type="TextureRect" parent="Menu/MarginContainer/VBoxContainer"]
+[node name="Title" type="TextureRect" parent="Menu/MarginContainer/VBoxContainer"]
 layout_mode = 2
 texture = ExtResource("3_4bi3r")
 expand_mode = 5

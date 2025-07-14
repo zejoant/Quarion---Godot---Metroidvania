@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dj3u3y38k065x"]
 
 [ext_resource type="PackedScene" uid="uid://coud47gbx6bt8" path="res://tile_map.tscn" id="1_a8ggr"]
-[ext_resource type="PackedScene" uid="uid://b6gl7w33h5ta1" path="res://Objects/door&button.tscn" id="2_bfwig"]
+[ext_resource type="PackedScene" uid="uid://b6gl7w33h5ta1" path="res://Backup/door&button.tscn" id="2_bfwig"]
 
 [node name="Room93" type="Node2D"]
 

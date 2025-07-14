@@ -28,7 +28,7 @@ sfxs = SubResource("Resource_m7dpe")
 z_index = 4
 texture = ExtResource("1_gss4u")
 region_enabled = true
-region_rect = Rect2(64, 119, 8, 6)
+region_rect = Rect2(96, 128, 16, 16)
 
 [node name="AmuletColl" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_o2scr")

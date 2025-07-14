@@ -10,7 +10,7 @@ var last_speed: Vector2
 func _ready():
 	pass
 
-func _process(_delta):
+func _physics_process(_delta):
 	$Sprite2D.rotation += PI/4
 	position += speed
 	speed += acceleration

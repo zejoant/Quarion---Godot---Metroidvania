@@ -336,6 +336,10 @@ tracks/17/keys = {
 "values": [1.0, 1.0, 0.0]
 }
 
+[sub_resource type="Animation" id="Animation_kjbf5"]
+resource_name = "Hold End"
+length = 5.0
+
 [sub_resource type="Animation" id="Animation_ku714"]
 length = 0.001
 tracks/0/type = "bezier"
@@ -528,10 +532,6 @@ tracks/15/keys = {
 "values": [1.0]
 }
 
-[sub_resource type="Animation" id="Animation_kjbf5"]
-resource_name = "Hold End"
-length = 5.0
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_3155i"]
 _data = {
 "Default": SubResource("Animation_hgnsc"),
@@ -702,7 +702,7 @@ color_initial_ramp = SubResource("Gradient_wjvsy")
 z_index = -1
 position = Vector2(350, 96)
 amount = 50
-lifetime = 25.0
+lifetime = 35.0
 preprocess = 16.0
 emission_shape = 3
 emission_rect_extents = Vector2(1, 100)
@@ -817,14 +817,14 @@ region_rect = Rect2(208, 128, 16, 16)
 
 [node name="BlueGrave" type="Sprite2D" parent="Room21"]
 z_index = 3
-position = Vector2(71, 152)
+position = Vector2(120, 152)
 texture = ExtResource("8_3oukq")
 region_enabled = true
 region_rect = Rect2(192, 128, 16, 16)
 
 [node name="PinkGrave" type="Sprite2D" parent="Room21"]
 z_index = 3
-position = Vector2(120, 152)
+position = Vector2(71, 152)
 texture = ExtResource("8_3oukq")
 region_enabled = true
 region_rect = Rect2(208, 112, 16, 16)

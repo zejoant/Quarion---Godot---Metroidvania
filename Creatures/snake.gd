@@ -7,7 +7,6 @@ func _ready():
 	pass
 	
 func _physics_process(_delta):
-	
 	#checks for floor and walls
 	if $WallRay.is_colliding() or !$FloorRay.is_colliding():
 		turn()

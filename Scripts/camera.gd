@@ -2,13 +2,17 @@ extends Camera2D
 
 @export var sfxs : AudioLibrary ## Tagged audio files to play from this scene
 var tween
+var flash_tween
+var p_up_tween
 var map_open = false
 
 var keys_collected = 0
+var p_up_window_open = false
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
-	get_node("RadialBlurLayer/ColorRect").material.set_shader_parameter("blur_power", 0) #radical blur disabled
+	close_p_up_window(true)
+	$InvertColorLayer/ColorRect.material.set_shader_parameter("strength", 0) #invert color disabled
+	$RadialBlurLayer/ColorRect.material.set_shader_parameter("blur_power", 0) #radical blur disabled
 
 func update_apple_count(value: int):
 	$UILayer/UIContainer/AppleCount.text = str(value)
@@ -44,16 +48,14 @@ func set_keys(state: String, remove: bool = false):
 	elif keys_collected > 2:
 		keys_collected = 2
 
+func enable_amulet_pieces(count: int):
+	get_parent().get_node("Player").amulet_pieces = count
+	for num in range(count, 0, -1):
+		get_node("UILayer/AmuletContainer/Piece" + str(num)).modulate.a = 1
+
 func collect_amulet_piece():
-	
-	
 	var player = get_node("/root/World/Player")
-	#if player.amulet_pieces == 5:
-		#$UILayer/AmuletContainer/Piece1.modulate.a = 1
-		#$UILayer/AmuletContainer/Piece2.modulate.a = 1
-		#$UILayer/AmuletContainer/Piece3.modulate.a = 1
-		#$UILayer/AmuletContainer/Piece4.modulate.a = 1
-		
+	
 	var piece = get_node("UILayer/AmuletContainer/Piece" + str(player.amulet_pieces))
 	player.disable_movement()
 	blur(1.032, 0.3)
@@ -101,15 +103,17 @@ func flash(opacity, enter, hold, exit, color: Color = Color(1, 1, 1, 0)):
 	old_color.a = 0
 	$FlashLayer.modulate = color#Color(1, 1, 1, 0)
 	
-	tween = self.create_tween()
-	tween.tween_property($FlashLayer, "modulate:a", opacity, enter) #fade in the new opacity
-	tween.tween_interval(hold)
+	flash_tween = self.create_tween()
+	flash_tween.tween_property($FlashLayer, "modulate:a", opacity, enter) #fade in the new opacity
+	flash_tween.tween_interval(hold)
 	#tween.tween_property($FlashLayer, "modulate:a", opacity, hold) #hold the opacity for a time
-	await tween.tween_property($FlashLayer, "modulate:a", 0, exit).finished #fade out to original opacity
+	await flash_tween.tween_property($FlashLayer, "modulate:a", 0, exit).finished #fade out to original opacity
 	$FlashLayer.modulate = old_color
 
 func fade(color: String, opacity: float, enter: float, hold: float, exit: float):
 	#var start_opacity = $FlashLayer.modulate.a
+	if flash_tween:
+		flash_tween.kill()
 	$FlashLayer.modulate = Color(color + "00")
 	tween = self.create_tween()
 	
@@ -119,7 +123,7 @@ func fade(color: String, opacity: float, enter: float, hold: float, exit: float)
 
 func shake(strength: int, interval: float, count: int):
 	var rng = RandomNumberGenerator.new()
-	var origin = position
+	var origin = Vector2(152, 96)#position
 	for i in count:
 		position = Vector2(origin.x + rng.randf_range(-1, 1)*strength, origin.y + rng.randf_range(-1, 1)*strength)
 		await get_tree().create_timer(interval, false).timeout
@@ -142,8 +146,59 @@ func radial_blur(power: float = 0.03, duration: float = 0.3, sampling_count: int
 func invert_color(power: float, duration: float):
 	var callable = Callable(self, "set_shader_value").bind("InvertColorLayer/ColorRect", "strength")
 	tween = self.create_tween()
-	tween.tween_method(callable, power, 0.0, duration); # args: (method / start value / end value / duration)
+	await tween.tween_method(callable, power, 0.0, duration).finished # args: (method / start value / end value / duration)
 	
 
 func set_shader_value(value: float, path: String, param: String):
 	get_node(path).material.set_shader_parameter(param, value)
+
+func close_p_up_window(instant: bool = false):
+	p_up_window_open = false
+	$PowerUpTexts/InputIndicator.modulate.a = 0
+	if p_up_tween:
+		p_up_tween.kill()
+	if !instant:
+		p_up_tween = self.create_tween()
+		p_up_tween.set_ease(Tween.EASE_OUT)
+		p_up_tween.set_trans(Tween.TRANS_BOUNCE)
+		p_up_tween.parallel().tween_property($PowerUpTexts/MaskLight, "scale:y", 0, 0.3)
+		p_up_tween.parallel().tween_property($PowerUpTexts/BorderTop, "offset:y", 4, 0.3)
+		await p_up_tween.parallel().tween_property($PowerUpTexts/BorderBottom, "offset:y", -4, 0.3).finished
+	else:
+		$PowerUpTexts/MaskLight.scale.y = 0
+		$PowerUpTexts/BorderTop.offset.y = 4
+		$PowerUpTexts/BorderBottom.offset.y = -4
+	$PowerUpTexts.visible = false
+	$PowerUpTexts/SkyfishAura.visible = false
+	$PowerUpTexts/SpiderGauntlets.visible = false
+	$PowerUpTexts/SwiftwindAmulet.visible = false
+	$PowerUpTexts/PegasusBoots.visible = false
+	$PowerUpTexts/FreezewakeCharm.visible = false
+
+func open_p_up_window(p_up: String):
+	$PowerUpTexts/InputIndicator.modulate.a = 0
+	p_up_window_open = true
+	$PowerUpTexts.visible = true
+	get_node(str("PowerUpTexts/", p_up)).visible = true
+	if p_up == "SwiftwindAmulet" and Input.get_connected_joypads().size() > 0:
+		$PowerUpTexts/SwiftwindAmulet/InputController.visible = true
+		$PowerUpTexts/SwiftwindAmulet/InputKeyboard.visible = false
+	
+	p_up_tween = self.create_tween()
+	p_up_tween.set_ease(Tween.EASE_OUT)
+	p_up_tween.set_trans(Tween.TRANS_BOUNCE)
+	p_up_tween.parallel().tween_property($PowerUpTexts/MaskLight, "scale:y", 2.375, 0.3)
+	p_up_tween.parallel().tween_property($PowerUpTexts/BorderTop, "offset:y", -14, 0.3)
+	await p_up_tween.parallel().tween_property($PowerUpTexts/BorderBottom, "offset:y", 14, 0.3).finished
+	
+	await get_tree().create_timer(2.2, false).timeout
+	#p_up_window_open = true
+	p_up_tween = self.create_tween()
+	p_up_tween.tween_property($PowerUpTexts/InputIndicator, "modulate:a", 1, 0.2)
+
+func _input(event):
+	if $PowerUpTexts/InputIndicator.modulate.a > 0 and p_up_window_open and event.is_action_pressed("ui_up"):
+		close_p_up_window()
+	#elif !p_up_window_open and event.is_action_pressed("ui_up"):
+		#open_p_up_window("SwiftwindAmulet")
+	

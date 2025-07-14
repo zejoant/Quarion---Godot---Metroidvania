@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dkgdr4rgm4j6q"]
+[gd_scene load_steps=27 format=3 uid="uid://dkgdr4rgm4j6q"]
 
 [ext_resource type="Script" path="res://Objects/amulet_statue.gd" id="1_jb2ho"]
 [ext_resource type="Texture2D" uid="uid://bl3l2dlp1hsex" path="res://Assets/Amulet Statue.png" id="1_kwvqg"]
@@ -319,6 +319,38 @@ _data = {
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_u263t"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_fo8ef"]
+atlas = ExtResource("3_b40ep")
+region = Rect2(64, 144, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bwfj7"]
+atlas = ExtResource("3_b40ep")
+region = Rect2(80, 144, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dsv5v"]
+atlas = ExtResource("3_b40ep")
+region = Rect2(96, 144, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2o40o"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fo8ef")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bwfj7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dsv5v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bwfj7")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
 [node name="AmuletStatue" type="StaticBody2D"]
 collision_mask = 0
 script = ExtResource("1_jb2ho")
@@ -411,10 +443,21 @@ libraries = {
 "": SubResource("AnimationLibrary_4pou0")
 }
 
-[node name="InsertAmuletArea" type="StaticBody2D" parent="."]
-collision_layer = 2
-collision_mask = 0
+[node name="InsertAmuletArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InsertAmuletArea"]
 position = Vector2(20, 16)
 shape = SubResource("CircleShape2D_u263t")
+
+[node name="InputIndicator" type="AnimatedSprite2D" parent="."]
+visible = false
+z_index = 5
+position = Vector2(20, -2)
+sprite_frames = SubResource("SpriteFrames_2o40o")
+autoplay = "default"
+frame_progress = 0.887935
+
+[connection signal="body_entered" from="InsertAmuletArea" to="." method="_on_insert_amulet_area_body_entered"]
+[connection signal="body_exited" from="InsertAmuletArea" to="." method="_on_insert_amulet_area_body_exited"]

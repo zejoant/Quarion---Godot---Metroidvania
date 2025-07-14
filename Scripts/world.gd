@@ -32,6 +32,8 @@ var completion_percentage: float = 0
 
 @onready var red_boss_room = preload("res://Rooms/room_10.tscn")
 
+var changed_room_frames: int = 0
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -78,6 +80,7 @@ func _ready():
 	#respawn_song = $MusicPlayer.stream.resource_path
 
 func _process(delta):
+	changed_room_frames -= 1
 	exit_room_check()
 	
 	if Input.is_action_just_pressed("Pause") and !other_ui_open:
@@ -85,7 +88,7 @@ func _process(delta):
 		#pauseMenu()
 	
 	timer += delta #time in seconds, with 3 decimal places
-	#$Label.text = String.num(completion_percentage, 3) 
+	#$Label.text = String.num(completion_percentage, 3)
 
 func setup_arrays():
 	var map_width = 10
@@ -116,33 +119,36 @@ func exit_room_check():
 	if player.position.x >= cam_size.x:
 		player.position.x = 1
 		exit_dir = "right"
-		new_room_coords.x += 1# = Vector2(room_coords.x+1, room_coords.y)
+		new_room_coords.x += 1
 	elif player.position.x <= 0:
 		player.position.x = cam_size.x-1
 		exit_dir = "left"
-		new_room_coords.x -= 1# = Vector2(room_coords.x-1, room_coords.y)
+		new_room_coords.x -= 1
 	
 	elif player.position.y <= 0:
 		player.position.y = cam_size.y-1
 		exit_dir = "up"
-		new_room_coords.y -= 1# = Vector2(room_coords.x, room_coords.y-1)
+		new_room_coords.y -= 1
 	elif player.position.y >= cam_size.y:
 		player.position.y = 1
 		exit_dir = "down"
-		new_room_coords.y += 1# = Vector2(room_coords.x, room_coords.y+1)
+		new_room_coords.y += 1
 	else:
 		return
 	
 	#if new_room_coords != room_coords:
 	new_room_coords = room_wrap_check(new_room_coords, exit_dir)
 	if room_coords != new_room_coords:
+		changed_room_frames = 5
 		change_room(new_room_coords)
 	
 	#print(Time.get_ticks_msec()-t0)
 		
 #function for changing the current room
 func change_room(new_coords):
-		
+	if $Camera.p_up_window_open:
+		$Camera.close_p_up_window(true)
+	
 	if room_coords != new_coords:
 		$Camera/LensCircle.change_lens(new_coords)
 	new_room_path = "res://Rooms/room_" + str(new_coords.x) + str(new_coords.y) + ".tscn"
@@ -159,6 +165,16 @@ func change_room(new_coords):
 		else:
 			call_deferred("add_child", load(new_room_path).instantiate()) #loads new room
 		$WorldMap.add_room(room_coords) #adds room to map
+	
+	if new_coords == Vector2(4, 4) and !player.has_opened_map:
+		if Input.get_connected_joypads().size() > 0:
+			$Player/OpenMapIndicator/KeyboardInput.visible = false
+			$Player/OpenMapIndicator/ControllerInput.visible = true
+		player.has_opened_map = true
+		await get_tree().create_timer(2, false).timeout
+		self.create_tween().tween_property($Player/OpenMapIndicator, "modulate:a", 1, 1)
+		await get_tree().create_timer(10, false).timeout
+		self.create_tween().tween_property($Player/OpenMapIndicator, "modulate:a", 0, 1)
 
 #saves the respawn position when grabbing a checkpoint
 func save_checkpoint_room(pos):
@@ -203,8 +219,8 @@ func room_wrap_check(new_room_coords, exit_dir) -> Vector2:
 	
 	elif room_coords == Vector2(9, 0) and exit_dir == "right":
 		return Vector2(8, 0)
-	elif room_coords == Vector2(8, 0) and exit_dir == "left":
-		return Vector2(9, 0)
+	#elif room_coords == Vector2(8, 0) and exit_dir == "left":
+	#	return Vector2(9, 0)
 	
 	elif room_coords == Vector2(0, 1) and exit_dir == "up": #rick
 		player.position.x += 12*8

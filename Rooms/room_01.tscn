@@ -95,7 +95,8 @@ anim_speed_max = 0.5
 anim_offset_max = 0.25
 
 [node name="AmuletPiece" parent="." instance=ExtResource("4_kj8su")]
-position = Vector2(32, 165)
+z_index = -2
+position = Vector2(36, 164)
 
 [node name="LensCircle" parent="." instance=ExtResource("5_jrdr1")]
 visible = false

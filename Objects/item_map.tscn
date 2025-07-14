@@ -1,0 +1,35 @@
+[gd_scene load_steps=9 format=3 uid="uid://csvftrtpptk6o"]
+
+[ext_resource type="Script" path="res://Objects/item_map.gd" id="1_wktco"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_e2weo"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_30cux"]
+[ext_resource type="AudioStream" uid="uid://b7txeulgr6bb2" path="res://Sfx/collect.wav" id="4_a16h1"]
+[ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="5_bdbth"]
+
+[sub_resource type="Resource" id="Resource_oaqar"]
+script = ExtResource("3_30cux")
+tag = "collect"
+stream = ExtResource("4_a16h1")
+
+[sub_resource type="Resource" id="Resource_ccmr7"]
+script = ExtResource("2_e2weo")
+sound_effects = Array[ExtResource("3_30cux")]([SubResource("Resource_oaqar")])
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o2scr"]
+size = Vector2(12, 11)
+
+[node name="ItemMap" type="StaticBody2D" groups=["Collectable"]]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_wktco")
+sfxs = SubResource("Resource_ccmr7")
+
+[node name="MapSprite" type="Sprite2D" parent="."]
+z_index = 4
+texture = ExtResource("5_bdbth")
+region_enabled = true
+region_rect = Rect2(48, 144, 16, 16)
+
+[node name="AmuletColl" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_o2scr")

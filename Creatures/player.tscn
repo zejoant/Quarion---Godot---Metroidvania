@@ -1,4 +1,4 @@
-[gd_scene load_steps=73 format=3 uid="uid://4ythqhswhcg7"]
+[gd_scene load_steps=95 format=3 uid="uid://4ythqhswhcg7"]
 
 [ext_resource type="Script" path="res://Creatures/player.gd" id="1_1p4uo"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="4_q56as"]
@@ -16,9 +16,11 @@
 [ext_resource type="AudioStream" uid="uid://b518ksl04jb1q" path="res://Sfx/GameSFX/Magic/Retro Magic 34.wav" id="12_og1me"]
 [ext_resource type="Shader" path="res://Shaders/palette_swap.gdshader" id="13_b8g8h"]
 [ext_resource type="AudioStream" uid="uid://ctcvftqbmxckp" path="res://Sfx/power up charge.wav" id="13_t6m3w"]
+[ext_resource type="AudioStream" uid="uid://f8xy7wiywr5q" path="res://Sfx/bubble pop 2.wav" id="14_d3jwu"]
 [ext_resource type="Texture2D" uid="uid://srrdnqsgkk6u" path="res://Assets/Player Palettes.png" id="14_q6unr"]
 [ext_resource type="Texture2D" uid="uid://b4a3gpanglo75" path="res://Assets/Character Sprite Sheet.png" id="15_kmrac"]
 [ext_resource type="Texture2D" uid="uid://cwdnxgl7k8n26" path="res://Assets/Sparkle2 Particles.png" id="18_layc7"]
+[ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="21_0fc8u"]
 
 [sub_resource type="Resource" id="Resource_yaidf"]
 script = ExtResource("5_ja3e4")
@@ -70,9 +72,14 @@ script = ExtResource("5_ja3e4")
 tag = "charge"
 stream = ExtResource("13_t6m3w")
 
+[sub_resource type="Resource" id="Resource_ewgnh"]
+script = ExtResource("5_ja3e4")
+tag = "bubble pop"
+stream = ExtResource("14_d3jwu")
+
 [sub_resource type="Resource" id="Resource_0m3bc"]
 script = ExtResource("4_q56as")
-sound_effects = Array[ExtResource("5_ja3e4")]([SubResource("Resource_yaidf"), SubResource("Resource_u3fen"), SubResource("Resource_dxcvt"), SubResource("Resource_nbj6v"), SubResource("Resource_ngtc0"), SubResource("Resource_w52dj"), SubResource("Resource_cstl5"), SubResource("Resource_t85mi"), SubResource("Resource_di48n"), SubResource("Resource_7bkb3")])
+sound_effects = Array[ExtResource("5_ja3e4")]([SubResource("Resource_yaidf"), SubResource("Resource_u3fen"), SubResource("Resource_dxcvt"), SubResource("Resource_nbj6v"), SubResource("Resource_ngtc0"), SubResource("Resource_w52dj"), SubResource("Resource_cstl5"), SubResource("Resource_t85mi"), SubResource("Resource_di48n"), SubResource("Resource_7bkb3"), SubResource("Resource_ewgnh")])
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vy8ue"]
 size = Vector2(6, 10)
@@ -452,6 +459,159 @@ colors = PackedColorArray(0.352941, 0.854902, 0.94902, 1, 0.352941, 0.854902, 0.
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.508065, 0), 0.0, 0.0, 0, 0, Vector2(1, 0.868132), 5.60196, 0.0, 0, 0]
 point_count = 3
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_pgfru"]
+blend_mode = 1
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nv1o2"]
+atlas = ExtResource("15_kmrac")
+region = Rect2(0, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cvgng"]
+atlas = ExtResource("15_kmrac")
+region = Rect2(32, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8crls"]
+atlas = ExtResource("15_kmrac")
+region = Rect2(64, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jxhyx"]
+atlas = ExtResource("15_kmrac")
+region = Rect2(96, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k5k7d"]
+atlas = ExtResource("15_kmrac")
+region = Rect2(128, 64, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_lrosa"]
+animations = [{
+"frames": [{
+"duration": 3.0,
+"texture": SubResource("AtlasTexture_nv1o2")
+}, {
+"duration": 3.0,
+"texture": SubResource("AtlasTexture_cvgng")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8crls")
+}, {
+"duration": 3.0,
+"texture": SubResource("AtlasTexture_cvgng")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_jxhyx")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_k5k7d")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": false,
+"name": &"pop",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ruonv"]
+atlas = ExtResource("21_0fc8u")
+region = Rect2(8, 33, 42, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5mk8n"]
+atlas = ExtResource("21_0fc8u")
+region = Rect2(8, 33, 42, 9)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_431h4"]
+atlas = ExtResource("21_0fc8u")
+region = Rect2(8, 33, 42, 10)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_n770w"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ruonv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5mk8n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_431h4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5mk8n")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2f7nr"]
+atlas = ExtResource("21_0fc8u")
+region = Rect2(51, 32, 9, 9)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_af4ua"]
+atlas = ExtResource("21_0fc8u")
+region = Rect2(51, 32, 9, 10)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rthp0"]
+atlas = ExtResource("21_0fc8u")
+region = Rect2(51, 32, 9, 11)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_57n17"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2f7nr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_af4ua")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rthp0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_af4ua")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f33lc"]
+atlas = ExtResource("21_0fc8u")
+region = Rect2(61, 32, 13, 9)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yx6x8"]
+atlas = ExtResource("21_0fc8u")
+region = Rect2(61, 32, 13, 10)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f2v5x"]
+atlas = ExtResource("21_0fc8u")
+region = Rect2(61, 32, 13, 11)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_orrf8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f33lc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yx6x8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f2v5x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yx6x8")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 8
 floor_constant_speed = true
@@ -693,15 +853,6 @@ z_index = 4
 unique_name_in_owner = true
 target_position = Vector2(0, -2)
 
-[node name="FloorRay" type="RayCast2D" parent="CollissionRays"]
-target_position = Vector2(0, 8.1)
-
-[node name="WallRay" type="RayCast2D" parent="CollissionRays"]
-unique_name_in_owner = true
-z_index = 3
-scale = Vector2(1.1, 1)
-target_position = Vector2(3, 0)
-
 [node name="HurtEffect" type="Sprite2D" parent="."]
 visible = false
 z_index = 6
@@ -709,7 +860,36 @@ texture = ExtResource("12_jxe34")
 region_enabled = true
 region_rect = Rect2(0, 0, 304, 96)
 
-[connection signal="area_entered" from="Area2D" to="." method="on_foreground_enter"]
-[connection signal="area_exited" from="Area2D" to="." method="on_foreground_exit"]
+[node name="BubbleSprite" type="AnimatedSprite2D" parent="."]
+visible = false
+modulate = Color(1, 1, 1, 0.486275)
+z_index = 5
+material = SubResource("CanvasItemMaterial_pgfru")
+sprite_frames = SubResource("SpriteFrames_lrosa")
+autoplay = "default"
+
+[node name="OpenMapIndicator" type="Node2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+z_index = 5
+position = Vector2(0, -17)
+
+[node name="TextSprite" type="AnimatedSprite2D" parent="OpenMapIndicator"]
+sprite_frames = SubResource("SpriteFrames_n770w")
+autoplay = "default"
+frame_progress = 0.653726
+
+[node name="KeyboardInput" type="AnimatedSprite2D" parent="OpenMapIndicator"]
+position = Vector2(0, -8)
+sprite_frames = SubResource("SpriteFrames_57n17")
+autoplay = "default"
+frame_progress = 0.730812
+
+[node name="ControllerInput" type="AnimatedSprite2D" parent="OpenMapIndicator"]
+visible = false
+position = Vector2(0, -8)
+sprite_frames = SubResource("SpriteFrames_orrf8")
+autoplay = "default"
+frame_progress = 0.689298
+
 [connection signal="body_shape_entered" from="Area2D" to="." method="_on_area_2d_body_shape_entered"]
 [connection signal="body_shape_entered" from="WaterDetector" to="." method="on_water_entered"]

@@ -1,6 +1,7 @@
 #@tool
 extends StaticBody2D
 
+@export var sfxs : AudioLibrary
 @export var length : int = 3
 @export var audio : bool = false
 @export_enum("up", "down", "left", "right") var direction = "up"
@@ -23,7 +24,7 @@ func close(instant: bool = false):
 	if !instant:
 		anim_tween = self.create_tween()
 		anim_tween.tween_method(move_gate, 0, length*8, 0.05)
-		$AudioStreamPlayer2D.play()
+		AudioManager.play_audio(sfxs.get_sfx("close"))
 	else:
 		position += dir*length*8
 

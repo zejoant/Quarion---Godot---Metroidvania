@@ -29,8 +29,12 @@ var walljump_dir = 1
 
 var can_double_jump = false
 
+var bubble_popped = true
+var affecting_force: int = 0
+
 #var in_interact_area = false
 var after_red_boss: bool = false
+var has_opened_map: bool = false
 var update_animations = true
 var can_move = true
 var is_dead = false
@@ -69,7 +73,7 @@ func _ready():
 		$AnimationPlayer.play("Lie Down")
 		disable_movement(true)
 		update_animations = false
-		
+	
 	if has_blue_blocks:
 		$Sprite2D.material.set_shader_parameter("palette_choice", 1)
 	if has_dash:
@@ -83,7 +87,7 @@ func _ready():
 		tilemap.change_water_tiles()
 		tilemap = null
 		$Sprite2D.material.set_shader_parameter("palette_choice", 5)
-	else:
+	elif !has_blue_blocks and !has_dash and !has_wallclimb and !has_double_jump:
 		$Sprite2D.material.set_shader_parameter("palette_choice", 0)
 	
 	if !can_move:
@@ -105,7 +109,7 @@ func _physics_process(_delta):
 			can_double_jump = true
 			if %CeilingRay.is_colliding():
 				if !(%CeilingRay.get_collider() is TileMap) or !%CeilingRay.get_collider().is_tile_one_way(%CeilingRay.get_collider_rid()):
-					respawn()
+					respawn(true)
 		elif !is_on_floor():#applies gravity if in air
 			if get_parent().get_node("WorldMap").open:
 				get_parent().get_node("WorldMap").open_or_close()
@@ -113,6 +117,9 @@ func _physics_process(_delta):
 			coyote -= 1
 			if velocity.y > fall_limiter:
 				velocity.y = fall_limiter
+		
+		if is_on_wall():
+			affecting_force = 0
 		
 		#cooldown for dash
 		if dash_cooldown != 0:
@@ -134,20 +141,21 @@ func _physics_process(_delta):
 #checks all player inputs
 func check_inputs():
 	if Input.is_action_just_pressed("Quick Respawn") and can_move and !after_red_boss:
-		respawn()
+		respawn(true)
 	if Input.is_action_just_pressed("Debug"):
 		has_dash = true
-		has_blue_blocks = true
+		#has_blue_blocks = true
 		has_double_jump = true
+		#bubble_action(true, false)
 		has_freeze = true
 		get_parent().get_tilemap().change_water_tiles()
 		has_wallclimb = true
 		update_apple_count(9999, true)
-		has_item_map = true
-		get_parent().get_node("WorldMap/MapComps/ItemMap").visible = true
+		#has_item_map = debug
+		#get_parent().get_node("WorldMap/MapComps/ItemMap").visible = true
 		#green_key_state = "collected"
 		#red_key_state = "collected"
-		amulet_pieces = 4
+		get_parent().get_node("Camera").enable_amulet_pieces(5)
 	if !can_move:
 		return
 		
@@ -159,19 +167,23 @@ func check_inputs():
 		jump(true)
 	elif Input.is_action_pressed("Jump") and can_jump: #not just_pressed cause buffer needs to work
 		jump()
-	elif (Input.is_action_just_pressed("Jump") and can_walljump) or walljumping:
+	elif (Input.is_action_just_pressed("Jump") and can_walljump and !dashing) or walljumping:
 		walljump()
-		
+	
+	#$Sprite2D.visible = true
+	#if Input.is_action_pressed("Drop"):
+	#	$Sprite2D.visible = false
 	if Input.is_action_just_pressed("Drop"):
 		drop()
 	if Input.is_action_just_pressed("Dash") and can_dash and !dash_cooldown and has_dash: #and !can_walljump:
-		if can_walljump:
+		if is_on_wall() and can_walljump:
 			dash(walljump_dir*-1)
 		else:
 			dash()
 			
 	if !walljumping and !dashing:
 		walk()
+		affect_with_force()
 	if dashing:
 		process_dash()
 	if Input.is_action_just_pressed("Map") and is_on_floor():
@@ -203,40 +215,87 @@ func animate_player():
 				$AnimationPlayer.play("WallSlide")
 	elif $AnimationPlayer.current_animation != "Dash":
 		$AnimationPlayer.play("Dash")
+	
+	if !bubble_popped:
+		$BubbleSprite.position.x = sin(float(Engine.get_frames_drawn())/50.0)/1.5
+		$BubbleSprite.position.y = cos(float(Engine.get_frames_drawn())/40.0)/1.5
+		$BubbleSprite.modulate.a = abs(cos(float(Engine.get_frames_drawn())/50.0)/2.0)
+		#$BubbleSprite.rotation_degrees += 0.1
 
 #death and respawning
-func respawn():
-	if !is_dead and can_die:
-		death_count += 1
-		var world = get_node("/root/World")
-		AudioManager.pause_song()
-		is_dead = true
-		var currentPalette =  $Sprite2D.material.get_shader_parameter("palette_choice")
-		$Sprite2D.material.set_shader_parameter("palette_choice", 6)
-		$AnimationPlayer.play("Damage")
-		world.get_node("Camera").invert_color(1, 0.3)
-		world.get_node("Camera").shake(5, 0.05, 3)
-		AudioManager.play_audio(sfxs.get_sfx("death"))
-		
-		await get_tree().create_timer(0.5, false).timeout
-		$Sprite2D.visible = false
-		$Sprite2D.material.set_shader_parameter("palette_choice", currentPalette)
-		$ParticleComps/DeathParticles/RingExplosionParticles.emitting = true
-		$ParticleComps/DeathParticles/PixelExplosionParticles.emitting = true
-		AudioManager.play_audio(sfxs.get_sfx("explode"))
-		
-		await get_tree().create_timer(1.4, false).timeout
-		world.get_node("Camera").flash(1, 0, 0.2, 0.3)
-		velocity = Vector2(0, 0)
-		dashing = false
-		dash_timer = dash_lim
-		AudioManager.resume_respawn_song()
-		#world.resume_respawn_music()
-		world.return_to_checkpoint()
-		$Sprite2D.visible = true
-		is_dead = false
-		can_jump = true
-		can_move = true
+func respawn(ignore_bubble: bool = false):
+	if !has_bubble or bubble_popped or ignore_bubble:
+		if !is_dead and can_die:
+			death_count += 1
+			var world = get_node("/root/World")
+			AudioManager.pause_song()
+			is_dead = true
+			if !bubble_popped:
+				$BubbleSprite.play("pop")
+			
+			var currentPalette =  $Sprite2D.material.get_shader_parameter("palette_choice")
+			$Sprite2D.material.set_shader_parameter("palette_choice", 6)
+			$AnimationPlayer.play("Damage")
+			world.get_node("Camera").invert_color(1, 0.3)
+			world.get_node("Camera").shake(5, 0.05, 3)
+			AudioManager.play_audio(sfxs.get_sfx("death"))
+			
+			await get_tree().create_timer(0.5, false).timeout
+			$Sprite2D.visible = false
+			$Sprite2D.material.set_shader_parameter("palette_choice", currentPalette)
+			$ParticleComps/DeathParticles/RingExplosionParticles.emitting = true
+			$ParticleComps/DeathParticles/PixelExplosionParticles.emitting = true
+			AudioManager.play_audio(sfxs.get_sfx("explode"))
+			
+			await get_tree().create_timer(1.4, false).timeout
+			world.get_node("Camera").flash(1, 0, 0.2, 0.3)
+			velocity = Vector2(0, 0)
+			dashing = false
+			dash_timer = dash_lim
+			affecting_force = 0
+			AudioManager.resume_respawn_song()
+			#world.resume_respawn_music()
+			world.return_to_checkpoint()
+			$Sprite2D.visible = true
+			is_dead = false
+			can_jump = true
+			can_move = true
+			bubble_action(false, false)
+	elif can_die:
+		bubble_action(false, true)
+
+func bubble_action(enable: bool = false, pop: bool = false):
+	if has_bubble:
+		if pop:
+			bubble_popped = true
+			#$BubbleSprite.visible = false
+			$BubbleSprite.modulate.a = 1
+			if velocity.y >= 0:
+				velocity.y = jump_vel
+			else:
+				velocity.y = -jump_vel/10 #sign(velocity.y) * jump_vel
+			affecting_force = -sign(velocity.x) * 300
+			dash_timer = dash_lim
+			can_die = false
+			get_parent().get_node("Camera").invert_color(1, 0.3)
+			get_parent().get_node("Camera").shake(2, 0.05, 3)
+			AudioManager.play_audio(sfxs.get_sfx("bubble pop"))
+			$BubbleSprite.play("pop")
+			paused = true
+			await get_tree().create_timer(0.1, false).timeout
+			paused = false
+			await get_tree().create_timer(0.3, false).timeout
+			can_die = true
+		else:
+			bubble_popped = false
+			#$BubbleSprite.visible = true
+			$BubbleSprite.play("default")
+			affecting_force = 0
+			
+	if enable:
+		has_bubble = true
+		$BubbleSprite.visible = true
+		bubble_popped = false
 
 #bounce on certain enemies
 func bounce(strength):
@@ -258,6 +317,17 @@ func jump(double_jump: bool = false):
 	buffer = 1
 	can_jump = false
 	AudioManager.play_audio(sfxs.get_sfx("jump"))
+	
+	if dashing:
+		if dash_timer < 3:
+			affecting_force = sign(last_dir) * 200
+		else:
+			can_dash = true
+			affecting_force = sign(last_dir) * 300
+			if dash_timer > 4:
+				affecting_force = sign(last_dir) * 320
+		dash_timer = dash_lim
+		dash_cooldown = 0
 
 # Gets the input direction and handles the movement.
 func walk():
@@ -275,17 +345,42 @@ func walk():
 		if abs(direction) < 0.5:
 			direction = sign(direction) * 0.5
 		last_dir = direction
-		velocity.x = direction * x_speed
+		
+		velocity.x = direction * x_speed# + affecting_force
+		#if affecting_force != 0:
+			#affecting_force -= sign(affecting_force) * 10
+			#if abs(velocity.x) > abs(affecting_force) and abs(affecting_force) > x_speed:
+				#velocity.x = affecting_force
+			#if abs(affecting_force) <= x_speed and abs(velocity.x) > x_speed:
+				#velocity.x = sign(velocity.x) * x_speed
+				##velocity.x = sign(velocity.x) * abs(affecting_force)
+			
 		if is_on_floor() and !Input.is_action_pressed("Jump") and $AnimationPlayer.current_animation != "Land":
 			$AnimationPlayer.speed_scale = abs(direction)
 		else:
 			$AnimationPlayer.speed_scale = 1
 	else:
 		$AnimationPlayer.speed_scale = 1
-		velocity.x = 0
+		#velocity.x = affecting_force
+		#if affecting_force != 0:
+			#affecting_force -= sign(affecting_force) * 10
 		#velocity.x = move_toward(velocity.x, 0, x_speed/4.0)
 		#if is_on_floor() and !Input.is_action_pressed("Jump") and $AnimationPlayer.current_animation != "Land":
 		#	$AnimationPlayer.play("Idle")
+
+func affect_with_force():
+	if direction:
+		velocity.x += affecting_force
+		if affecting_force != 0:
+			affecting_force -= sign(affecting_force) * 10
+			if abs(velocity.x) > abs(affecting_force) and abs(affecting_force) > x_speed:
+				velocity.x = affecting_force
+			if abs(affecting_force) <= x_speed and abs(velocity.x) > x_speed:
+				velocity.x = sign(velocity.x) * x_speed
+	else:
+		velocity.x = affecting_force
+		if affecting_force != 0:
+			affecting_force -= sign(affecting_force) * 10
 
 #drop through platforms
 func drop():
@@ -297,10 +392,10 @@ func dash(dir: int = last_dir):
 	dash_timer = 0
 	dash_cooldown += 1
 	can_dash = false
-	can_jump = false
+	#can_jump = false
 	dashing = true
 	
-	if last_dir != dir:
+	if last_dir != dir and dir:
 		last_dir = dir
 		$Sprite2D.scale.x *= -1
 	
@@ -312,6 +407,7 @@ func dash(dir: int = last_dir):
 	
 	if is_on_floor() or coyote >= 0:
 		position.y -= 4
+		can_jump = true
 
 #hanlde the dashing after a dash is activated
 func process_dash():
@@ -366,6 +462,7 @@ func _on_area_2d_body_shape_entered(body_rid, body, _body_shape_index, _local_sh
 		respawn()
 	elif body.is_in_group("Checkpoint"):
 		body.activate()
+		bubble_action(false, false)
 		get_parent().save_game()
 	elif body.is_in_group("Collectable"):
 		body.collect()
@@ -376,21 +473,32 @@ func _on_area_2d_body_shape_entered(body_rid, body, _body_shape_index, _local_sh
 
 #does action based on the custom data of a tile
 func custom_data_action(body: TileMap, custom_data: String, tile_coords: Vector2):
+	var p_up_name = "None"
 	if custom_data == "Spike" or (custom_data == "Water" and !has_freeze):
 		respawn()
 	elif custom_data == "PBlueBlocks":
 		has_blue_blocks = true
+		get_parent().completion_percentage += 14
+		p_up_name = "SkyfishAura"
 	elif custom_data == "PWallClimb":
 		has_wallclimb = true
+		get_parent().completion_percentage += 14
+		p_up_name = "SpiderGauntlets"
 	elif custom_data == "PDash":
 		has_dash = true
+		get_parent().completion_percentage += 14
+		p_up_name = "SwiftwindAmulet"
 	elif custom_data == "PDoubleJump":
 		has_double_jump = true
+		get_parent().completion_percentage += 14
+		p_up_name = "PegasusBoots"
 	elif custom_data == "PFreeze":
 		has_freeze = true
 		get_parent().get_tilemap().change_water_tiles()
+		get_parent().completion_percentage += 2
+		p_up_name = "FreezewakeCharm"
 	
-	if custom_data.begins_with("P"):
+	if p_up_name != "None":
 		disable_movement(true)
 		paused = true
 		AudioManager.pause_song()
@@ -420,27 +528,30 @@ func custom_data_action(body: TileMap, custom_data: String, tile_coords: Vector2
 		get_parent().get_node("Camera").rotation = 0
 		$Sprite2D.material.set_shader_parameter("palette_choice", $Sprite2D.material.get_shader_parameter("palette_choice")+1)
 		AudioManager.play_audio(sfxs.get_sfx("p_up_finish"))
-		get_parent().completion_percentage += 2
 		get_node("/root/World/Camera").flash(1, 0, 0.1, 0.4)
-		if custom_data == "PBlueBlocks":
+		if p_up_name == "SkyfishAura":
 			get_parent().change_room(get_parent().room_coords)
 		disable_movement(false)
 		paused = false
+		bubble_action(false, false)
 		AudioManager.resume_song()
+		await get_tree().create_timer(0.3, false).timeout
+		
+		get_parent().get_node("Camera").open_p_up_window(p_up_name)
 
-#fade in foreground
-func on_foreground_enter(_area):
-	var tilemap = get_parent().get_tilemap()
-	while tilemap == null:
-		await Engine.get_main_loop().process_frame
-	tilemap.fade_foreground(true)
-
-#fade out foreground
-func on_foreground_exit(_area):
-	var tilemap = get_parent().get_tilemap()
-	while tilemap == null:
-		await Engine.get_main_loop().process_frame
-	tilemap.fade_foreground(false)
+##fade in foreground
+#func on_foreground_enter(_area):
+	#var tilemap = get_parent().get_tilemap()
+	#while tilemap == null:
+		#await Engine.get_main_loop().process_frame
+	#tilemap.fade_foreground(true)
+#
+##fade out foreground
+#func on_foreground_exit(_area):
+	#var tilemap = get_parent().get_tilemap()
+	#while tilemap == null:
+		#await Engine.get_main_loop().process_frame
+	#tilemap.fade_foreground(false)
 
 #replaces water with ice if you have the freeze power up
 func on_water_entered(body_rid, body, _body_shape_index, _local_shape_index):
@@ -466,6 +577,7 @@ func disable_movement(disable: bool = true):
 	if disable:
 		dashing = false
 		dash_timer = dash_lim
+		affecting_force = 0
 		can_move = !disable
 		velocity.x = 0 #Vector2(0, 0)
 	else:

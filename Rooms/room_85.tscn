@@ -17,4 +17,5 @@ visible = false
 size = 2.0
 
 [node name="AmuletPiece" parent="." instance=ExtResource("3_okw33")]
-position = Vector2(115, 101)
+z_index = -2
+position = Vector2(115, 100)

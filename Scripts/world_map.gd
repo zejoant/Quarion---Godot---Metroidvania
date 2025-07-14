@@ -15,8 +15,9 @@ func _ready():
 	world = get_node("/root/World")
 	player = get_node("/root/World/Player")
 	$BGOverLay.modulate = Color(1, 1, 1, 0)
-	%RoomMap.modulate.a = 0
-	%ItemMap.modulate.a = 0
+	$MapComps.modulate.a = 0
+	#%RoomMap.modulate.a = 0
+	#%ItemMap.modulate.a = 0
 	open = false
 	
 	#print(%ItemMap.get_used_cells(0).size())
@@ -39,16 +40,20 @@ func update_player_icon():
 func open_or_close():
 	if !open:
 		$BGOverLay.modulate = Color(0, 0, 0, 0.8)
-		%RoomMap.modulate.a = 1
-		%ItemMap.modulate.a = 1
+		$MapComps.modulate.a = 1
+		#%RoomMap.modulate.a = 1
+		#%ItemMap.modulate.a = 1
 		open = true
 		update_player_icon()
+		$MapComps/CompletionText.text = str(floor(world.completion_percentage), "%")
 		#update_items()
 		player.x_speed = 55.0
+		player.get_node("OpenMapIndicator").modulate.a = 0
 	elif open:
 		$BGOverLay.modulate = Color(1, 1, 1, 0)
-		%RoomMap.modulate.a = 0
-		%ItemMap.modulate.a = 0
+		$MapComps.modulate.a = 0
+		#%RoomMap.modulate.a = 0
+		#%ItemMap.modulate.a = 0
 		open = false
 		player.x_speed = 110.0
 	
@@ -57,7 +62,7 @@ func add_room(room_coords: Vector2):
 	if %RoomMap.get_cell_source_id(0, Vector2i(room_coords)) == -1:
 		latest_added_room = room_coords
 		%RoomMap.set_cell(0, room_coords, 0, room_coords, 0)
-		world.completion_percentage += 0.125
+		world.completion_percentage += 0.15
 
 #func update_items():
 	#for pos in item_positions:

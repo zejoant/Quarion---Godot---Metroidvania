@@ -8,8 +8,8 @@ func _ready():
 	if !settings_loaded:
 		SaveManager.load_settings()
 		settings_loaded = true
-		
 	
+	#get_tree().create_tween().tween_property($FadeToBlack, "color", Color(0, 0, 0, 0), 0.5)
 	#if Input.get_connected_joypads().size() > 0:
 	#	get_viewport().gui_release_focus()
 	#	$Menu/MarginContainer/VBoxContainer/VBoxContainer/ContinueButton.grab_focus()
@@ -21,19 +21,23 @@ func _ready():
 
 
 func _on_joy_connection_changed(_device_id, connected):
-	if !connected:
+	if !connected and OptionsMenu.use_mouse_for_menus:
 		get_viewport().gui_release_focus()
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	else:
 		get_viewport().gui_release_focus()
 		$Menu/MarginContainer/VBoxContainer/VBoxContainer/ContinueButton.grab_focus()
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		
+#func _input(event):
+	#if !get_viewport().gui_get_focus_owner():
+		#if event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down") or event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right"):
+			#$Menu/MarginContainer/VBoxContainer/VBoxContainer/ContinueButton.grab_focus()
 
 func _on_continue_button_pressed():
 	#Input.joy_connection_changed.disconnect(_on_joy_connection_changed)
 	AudioManager.play_audio(sfxs.get_sfx("click"))
-	if FileAccess.file_exists("user://saves/save_file.save"):
+	if FileAccess.file_exists("user://save_file.save"):
 		disable_buttons()
 		self.create_tween().tween_property($Menu, "offset:x", -150, 0.2)
 		$Menu/VersionNumber.visible = false
@@ -57,7 +61,8 @@ func _on_new_game_button_pressed():
 	$Menu/VersionNumber.visible = false
 	self.create_tween().tween_property($Menu, "offset:x", -150, 0.2)
 	self.create_tween().tween_method(set_blur_power, 1.032, 0, 0.5); # args: (method / start value / end value / duration)
-	get_node("IntroObjects/AnimationPlayer").play("Start")
+	$IntroObjects.run_animation()
+	#get_node("IntroObjects/AnimationPlayer").play("Start")
 	
 func disable_buttons():
 	$Menu/MarginContainer/VBoxContainer/VBoxContainer/NewGameButton.disabled = true

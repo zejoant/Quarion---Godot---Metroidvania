@@ -5,6 +5,7 @@ extends StaticBody2D
 @export_range(0, 120) var offset: int = 0 ## offset in frames
 @export_enum("up", "down", "right", "left") var direction = "down" ##shoot direction
 @export var sound : bool = false
+@export var blast_effect: bool = true
 
 var bullet = preload("res://Objects/bullet.tscn")
 var dir
@@ -43,7 +44,14 @@ func _physics_process(_delta):
 		b.collide = true
 		b.position = position
 		b.sprite = "ball"
+		b.grace_period = 20
 		if sound:
 			AudioManager.play_audio(sfxs.get_sfx("shoot"))
 			b.sound = true
 		get_parent().add_child(b)
+		if blast_effect:
+			$AnimationPlayer.play("Blast")
+		position -= dir
+		await get_tree().create_timer(0.2, false).timeout
+		position += dir
+		#self.create_tween().tween_property(self, "position", position+dir, 0.2)

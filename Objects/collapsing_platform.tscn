@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://c5cnqwc683tb1" path="res://Assets/Crumble Edge.png" id="3_p7lbe"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cjhfl"]
-size = Vector2(8.00001, 0.5)
+size = Vector2(8.00001, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tpeig"]
 size = Vector2(8, 5)
@@ -40,8 +40,8 @@ collision_layer = 0
 collision_mask = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetection"]
-position = Vector2(2.38419e-07, -4.75)
-scale = Vector2(3, 1)
+position = Vector2(0, -4.25)
+scale = Vector2(3, 0.5)
 shape = SubResource("RectangleShape2D_cjhfl")
 
 [node name="Solid" type="CollisionShape2D" parent="."]

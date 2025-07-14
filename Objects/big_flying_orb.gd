@@ -17,7 +17,7 @@ func _ready():
 	scale = Vector2(0, 0)
 	AudioManager.play_audio(sfxs.get_sfx("charge up"))
 
-func _process(_delta):
+func _physics_process(_delta):
 	if scale.x < 1:
 		scale.x += 1.0/float(startup_speed)
 		scale.y += 1.0/float(startup_speed)

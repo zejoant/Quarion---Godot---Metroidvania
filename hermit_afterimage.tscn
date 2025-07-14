@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3 uid="uid://oir5jju3q8ya"]
+
+[ext_resource type="Shader" path="res://Shaders/set_color.gdshader" id="1_jggog"]
+[ext_resource type="Script" path="res://hermit_afterimage.gd" id="2_3xl1e"]
+[ext_resource type="Texture2D" uid="uid://b4a3gpanglo75" path="res://Assets/Character Sprite Sheet.png" id="2_pq08m"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mwxd0"]
+shader = ExtResource("1_jggog")
+shader_parameter/color = Color(0.462291, 0.462291, 0.462291, 0.1)
+shader_parameter/strength = 1.0
+shader_parameter/ignore_black = false
+
+[node name="Afterimage" type="Sprite2D"]
+material = SubResource("ShaderMaterial_mwxd0")
+texture = ExtResource("2_pq08m")
+region_enabled = true
+region_rect = Rect2(8, 96, 40, 40)
+script = ExtResource("2_3xl1e")

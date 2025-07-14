@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://b2w0yd38s86as"]
+[gd_scene load_steps=34 format=3 uid="uid://b2w0yd38s86as"]
 
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_j8p5t"]
 [ext_resource type="Script" path="res://Creatures/shop.gd" id="1_rdm87"]
@@ -123,9 +123,41 @@ region_rect = Rect2(16, 144, 91, 11)
 texture = ExtResource("7_wyv82")
 region_rect = Rect2(15, 64, 91, 11)
 
-[node name="Shop" type="StaticBody2D" groups=["InteractArea"]]
+[sub_resource type="AtlasTexture" id="AtlasTexture_fo8ef"]
+atlas = ExtResource("1_j8p5t")
+region = Rect2(64, 144, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bwfj7"]
+atlas = ExtResource("1_j8p5t")
+region = Rect2(80, 144, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dsv5v"]
+atlas = ExtResource("1_j8p5t")
+region = Rect2(96, 144, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_bdii8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fo8ef")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bwfj7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dsv5v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bwfj7")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Shop" type="Area2D" groups=["InteractArea"]]
 z_index = 3
-collision_layer = 2
+collision_layer = 0
 collision_mask = 8
 script = ExtResource("1_rdm87")
 sfxs = SubResource("Resource_7ig6x")
@@ -244,6 +276,16 @@ offset_bottom = 192.0
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
+[node name="InputIndicator" type="AnimatedSprite2D" parent="."]
+visible = false
+z_index = 2
+position = Vector2(0, -18)
+sprite_frames = SubResource("SpriteFrames_bdii8")
+autoplay = "default"
+frame_progress = 0.185687
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
 [connection signal="focus_entered" from="ShopUIContainer/KeyButton" to="." method="_on_key_button_focus_entered"]
 [connection signal="mouse_entered" from="ShopUIContainer/KeyButton" to="." method="_on_key_button_mouse_entered"]
 [connection signal="mouse_exited" from="ShopUIContainer/KeyButton" to="." method="_on_key_button_mouse_exited"]

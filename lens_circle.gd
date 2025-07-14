@@ -17,14 +17,12 @@ func _ready():
 			follow_player = false
 	#scale = Vector2(size, size)
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
+func _physics_process(_delta):
 	if follow_player:
 		global_position = player.position
 		#position = player.position
-	else:
-		global_position = non_follow_pos
+	#else:
+	#	position = non_follow_pos
 		#position = Vector2(152, 96)
 
 func change_lens(room_coords, instant: bool = false, behind_foreground: int = 0):
@@ -64,8 +62,13 @@ func change_lens(room_coords, instant: bool = false, behind_foreground: int = 0)
 		lens_size = 4.2
 	elif room_coords == Vector2(4, 7):
 		follow_player = false
+		position = Vector2(0, 0)
 		lens_size = 3.5
-		#instant = true
+	
+	elif room_coords == Vector2(5, 5) or room_coords == Vector2(5, 6):
+		follow_player = false
+		position = Vector2(0, 0)
+		instant = true
 	
 	if !instant:
 		tween = self.create_tween()

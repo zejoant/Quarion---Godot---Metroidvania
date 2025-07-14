@@ -18,3 +18,8 @@ func _physics_process(_delta):
 				$Camera.fade("000000", 1, 0.3, 0.2, 0)
 				await get_tree().create_timer(0.5, false).timeout
 				get_tree().change_scene_to_file("res://world.tscn")
+
+func run_animation():
+	$Camera/LensCircle2.visible = false
+	$AnimationPlayer.play("Start")
+	#$AnimationPlayer.speed_scale = 3

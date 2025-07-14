@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://cpqnygtu0qdkq"]
+
+[ext_resource type="PackedScene" uid="uid://coud47gbx6bt8" path="res://tile_map.tscn" id="1_1p78b"]
+[ext_resource type="Script" path="res://Objects/foreground_cover.gd" id="1_jswu1"]
+
+[node name="ForegroundCover" type="Area2D"]
+collision_layer = 0
+collision_mask = 8
+monitoring = false
+monitorable = false
+script = ExtResource("1_jswu1")
+
+[node name="Tilemap" parent="." instance=ExtResource("1_1p78b")]
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

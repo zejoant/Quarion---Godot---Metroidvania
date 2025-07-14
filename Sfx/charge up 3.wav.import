@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://b0uxv3ls7fxuj"
+path="res://.godot/imported/charge up 3.wav-343b6d3dddf04780e2867ca923d2b992.sample"
+
+[deps]
+
+source_file="res://Sfx/charge up 3.wav"
+dest_files=["res://.godot/imported/charge up 3.wav-343b6d3dddf04780e2867ca923d2b992.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

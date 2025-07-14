@@ -33,8 +33,8 @@ var tween3
 var chance = 0
 var bullet_count = 0
 
-var follow_pos: Vector2
-var aim_pos: Vector2
+var homing_speed: float = 0.0
+var bounce_accel: float
 
 func _ready():
 	var room_states = get_node("/root/World").get_room_state()
@@ -50,14 +50,15 @@ func _ready():
 	param_setup()
 
 
-func _process(_delta):
+func _physics_process(_delta):
 	if activated:
 		if boss_state == -1: #pre attack stuff
 			boss_state = 0
 			attack_state = 0
 			bullet_count = 0
-			await get_tree().create_timer(rng.randi_range(3-difficulty, 4-difficulty), false).timeout
+			await get_tree().create_timer(rng.randf_range(3-difficulty*0.7, 4-difficulty), false).timeout
 			choose_attack()
+			#boss_state = 1
 			#boss_state = rng.randi_range(1, 1)
 		if mod > 0 and boss_state >= 0: #idle animation
 			idle_movement()
@@ -70,6 +71,8 @@ func _process(_delta):
 				fly_by()
 		if boss_state == 4: #bullets aimed at the player
 			aiming_bullets() 
+		if boss_state == 5: #bullets aimed at the player
+			bouncing_attack() 
 
 
 func choose_attack():
@@ -93,8 +96,8 @@ func choose_attack():
 
 func rain():
 	if attack_state == 0 and boss_state == 2: #wait time, then the attack ends
-		#get_node("/root/World/Camera").radial_blur()
 		get_node("/root/World/Camera").radial_blur(0.03, 0.6, 12)
+		AudioManager.play_audio(sfxs.get_sfx("scream"))
 		attack_state = 1
 		await get_tree().create_timer(5, false).timeout
 		boss_state = -1
@@ -102,9 +105,9 @@ func rain():
 	if !bullet_cooldown: #create a rain bullet
 		bullet_cooldown = true
 		var bullet = load("res://Objects/bullet.tscn").instantiate()
-		bullet.setup(2.0, Vector2(rng.randf_range(-0.5, 0.5), 1), Vector2(rng.randi_range(3, 35)*8, 0))
+		bullet.setup(2.0, Vector2(rng.randf_range(-0.5, 0.5), 1), Vector2(rng.randi_range(3, 35)*8, 0), true, true, 40)
 		call_deferred("add_child", bullet) 
-		await get_tree().create_timer(0.2-float(difficulty)*0.05, false).timeout
+		await get_tree().create_timer(0.2-float(difficulty)*0.045, false).timeout
 		bullet_cooldown = false
 	
 
@@ -115,26 +118,35 @@ func idle_movement():
 	boss.position.x = idle_origin.x + sin(time/2.0)*50.0
 	
 	time += 0.08 * mod #progression along the sine wave
-	if mod < 1 and boss_state == 0: #ease in movement
+	if mod < 1 and (boss_state == 0 or boss_state == 4): #ease in movement
 		mod += 0.01
 
 
 func lunge():
 	if attack_state == 0: #back up and aim
 		attack_state = 1
+		AudioManager.play_audio(sfxs.get_sfx("charge"))
 		
 		tween3 = self.create_tween()
 		tween3.parallel().tween_property(%Aim, "modulate:a", 1, 1)
-		tween3.parallel().tween_property(boss, "modulate", Color(0.8, 0.3, 0.3, 1), 1.8)
-		tween3.parallel().tween_property(self, "mod", 0, 0.5-difficulty*0.1)
 		
-		await get_tree().create_timer(0.5-difficulty*0.1, false).timeout
+		tween3.parallel().tween_method(Callable(self, "set_shader_value").bind("Boss/BossSprites/Base", "strength"), 0.0, 1.0, 1.8)
+		tween3.parallel().tween_method(Callable(self, "set_shader_value").bind("Boss/BossSprites/Spikes", "strength"), 0.0, 1.0, 1.8)
+		tween3.parallel().tween_method(Callable(self, "set_shader_value").bind("Boss/BossSprites/Face", "strength"), 0.0, 1.0, 1.8)
+		#tween3.parallel().tween_property(boss, "modulate", Color(0.8, 0.3, 0.3, 1), 1.8)
+		tween3.parallel().tween_property(self, "mod", 0, 0.5)#-difficulty*0.1)
+		
+		#await get_tree().create_timer(0.5-difficulty*0.1, false).timeout
+		await get_tree().create_timer(0.5, false).timeout
 		aim = player.position.direction_to(boss.position)
 		tween2 = self.create_tween()
 		tween2.set_trans(Tween.TRANS_SINE)
 		tween2.set_ease(Tween.EASE_IN_OUT)
 		await tween2.tween_property(boss, "position", boss.position + aim*28, 1.3).finished
 		
+		$Boss/BossSprites/Base.material.set_shader_parameter("strength", 0)
+		$Boss/BossSprites/Spikes.material.set_shader_parameter("strength", 0)
+		$Boss/BossSprites/Face.material.set_shader_parameter("strength", 0)
 		attack_state = 2
 		tween2.kill()
 		tween3.kill()
@@ -147,6 +159,7 @@ func lunge():
 		aim = player.position.direction_to(boss.position)*5
 	
 	if attack_state == 3: #lunge towards player
+		last_pos = boss.position
 		boss.position -= aim
 		if %Aim/WallRay.is_colliding():
 			get_node("/root/World/Camera").shake(3, 0.03, 3)
@@ -154,17 +167,72 @@ func lunge():
 			#get_node("/root/World/Camera").invert_color(1, 0.3)
 			attack_state = 4
 			%Aim.modulate.a = 0
-			$Boss/AnimationPlayer.play("Sad")
-			boss.modulate = Color(1, 1, 1, 1)
+			#boss.modulate = Color(1, 1, 1, 1)
+			$GroundHitEffect.position = boss.position
+			if difficulty != 2:
+				$Boss/AnimationPlayer.play("Sad Ground Hit")
+				$Boss/DamageColl.disabled = true
+				await get_tree().create_timer(3-difficulty, false).timeout
+				if attack_state == 4 and health:
+					reset_lunge()
+			else:
+				$Boss/AnimationPlayer.play("Ground Hit")
+				boss_state = 5
+				bullet_count = 0
+				attack_state = 0
+
+func bouncing_attack():
+	if attack_state == 0: #hit ground / bounce
+		attack_state = 1
+		idle_origin = boss.position
+		bullet_count += 1
+		
+		homing_speed = (boss.position.x - last_pos.x)
+		if abs(homing_speed) > 3:
+			homing_speed = sign(homing_speed)*3
+		bounce_accel = ((rng.randi_range(3, 27)*10+2) - boss.position.x - 60 * homing_speed)/1770
+		
+		tween2 = self.create_tween()
+		tween2.set_trans(Tween.TRANS_QUAD)
+		tween2.set_ease(Tween.EASE_OUT)
+		tween2.parallel().tween_property(boss, "position:y", 32, 0.5)
+		tween2.set_ease(Tween.EASE_IN)
+		await tween2.tween_property(boss, "position:y", idle_origin.y, 0.5).finished
+		attack_state = 0
+		get_node("/root/World/Camera").shake(3, 0.03, 3)
+		AudioManager.play_audio(sfxs.get_sfx("impact"))
+		$GroundHitEffect.position = boss.position
+		if bullet_count == 3:
+			attack_state = 4
+			$Boss/AnimationPlayer.play("Sad Ground Hit")
 			$Boss/DamageColl.disabled = true
-			await get_tree().create_timer(3-difficulty, false).timeout
+			await get_tree().create_timer(3-float(difficulty)/1.5, false).timeout
 			if attack_state == 4 and health:
 				reset_lunge()
+		else:
+			$Boss/AnimationPlayer.play("Ground Hit")
+		
+	elif attack_state == 1: #move in x axis
+		last_pos = boss.position
+		boss.position.x += homing_speed
+		homing_speed += bounce_accel
 
+func reset_lunge(): #reset back to idle
+	$Boss/AnimationPlayer.play("Default")
+	idle_origin = boss.position
+	time = 0
+	boss_state = -1
+	mod = 0.01
+	tween2 = self.create_tween()
+	tween2.set_trans(Tween.TRANS_QUAD)
+	tween2.set_ease(Tween.EASE_IN_OUT)
+	await tween2.tween_property(self, "idle_origin", start_pos, 0.8).finished
+	$Boss/DamageColl.disabled = false
 
 func aiming_bullets():
 	if attack_state == 0:
 		attack_state = 1
+		AudioManager.play_audio(sfxs.get_sfx("charge"), 1.29)
 		tween3 = self.create_tween()
 		tween3.parallel().tween_property(%Aim, "modulate:a", 1, 1)
 		tween3.parallel().tween_property(self, "idle_origin:y", idle_origin.y - 24, 1.4)
@@ -185,16 +253,16 @@ func aiming_bullets():
 		
 		AudioManager.play_audio(sfxs.get_sfx("shot"))
 		get_node("/root/World/Camera").flash(0.3, 0, 0, 0.2)
-		var b1 = load("res://Objects/bullet.tscn").instantiate()
-		b1.setup(3.0, aim, boss.position)
-		call_deferred("add_child", b1)
+		var bullet = load("res://Objects/bullet.tscn").instantiate()
+		bullet.setup(3.0, aim, boss.position, true, true, 0)
+		call_deferred("add_child", bullet)
 		if difficulty == 2:
-			var b2 = load("res://Objects/bullet.tscn").instantiate()
-			b2.setup(3.0, aim.rotated(PI/4), boss.position)
-			call_deferred("add_child", b2)
-			var b3 = load("res://Objects/bullet.tscn").instantiate()
-			b3.setup(3.0, aim.rotated(-PI/4), boss.position)
-			call_deferred("add_child", b3)
+			bullet = load("res://Objects/bullet.tscn").instantiate()
+			bullet.setup(3.0, aim.rotated(PI/4), boss.position, true, true, 0)
+			call_deferred("add_child", bullet)
+			bullet = load("res://Objects/bullet.tscn").instantiate()
+			bullet.setup(3.0, aim.rotated(-PI/4), boss.position, true, true, 0)
+			call_deferred("add_child", bullet)
 		bullet_count += 1
 		await get_tree().create_timer(0.5, false).timeout
 		tween3.kill()
@@ -252,9 +320,9 @@ func param_setup():
 	elif color == "yellow":
 		sprite_sheet = load("res://Assets/Sun Boss Yellow.png")
 	
-	boss.get_node("Base").texture = sprite_sheet
-	boss.get_node("Spikes").texture = sprite_sheet
-	boss.get_node("Face").texture = sprite_sheet
+	boss.get_node("BossSprites/Base").texture = sprite_sheet
+	boss.get_node("BossSprites/Spikes").texture = sprite_sheet
+	boss.get_node("BossSprites/Face").texture = sprite_sheet
 	
 	var p = get_node("/root/World/Player")
 	if p.has_wallclimb != p.has_blue_blocks and difficulty == 0: #if you have killed one boss already
@@ -263,10 +331,7 @@ func param_setup():
 func _on_body_entered(body):
 	$ActivateBossColl.set_deferred("disabled", true)
 	boss.get_node("DamageColl").set_deferred("disabled", false)
-	#get_node("/root/World").switch_music("res://Music/Hi GI Joe!.wav")
 	AudioManager.play_song(load("res://Music/Hi GI Joe!.wav"))
-	#get_node("/root/World/MusicPlayer").stream = load("res://Music/Hi GI Joe!.wav")
-	#get_node("/root/World/MusicPlayer").play()
 	
 	player = body
 	activated = true
@@ -276,6 +341,8 @@ func _on_body_entered(body):
 	
 	await self.create_tween().tween_interval(2).finished
 	#get_node("/root/World/Camera").radial_blur(0.03, 0.6, 12)
+	AudioManager.play_audio(sfxs.get_sfx("scream"))
+	get_node("/root/World/Camera").radial_blur(0.03, 0.6, 12)
 	boss.visible = true
 	boss_state = -1
 
@@ -298,6 +365,8 @@ func die():
 	#get_node("/root/World/MusicPlayer").stop()
 	AudioManager.pause_song()
 	get_node("/root/World").save_room_state($ActivateBossColl.position)
+	AudioManager.play_audio(sfxs.get_sfx("death charge"), 1.44)
+	get_node("/root/World/Camera").zoom_camera(1.8, 3)
 	tween2 = self.create_tween()
 	tween2.set_trans(Tween.TRANS_SINE)
 	tween2.set_ease(Tween.EASE_IN_OUT)
@@ -305,10 +374,11 @@ func die():
 	$Gate.open()
 	$Gate2.open()
 	#boss.visible = false
+	get_node("/root/World/Camera").zoom_camera(1, 0)
 	AudioManager.play_audio(sfxs.get_sfx("death"))
-	$Boss/Base.modulate.a = 0
-	$Boss/Spikes.modulate.a = 0
-	$Boss/Face.modulate.a = 0
+	$Boss/BossSprites/Base.modulate.a = 0
+	$Boss/BossSprites/Spikes.modulate.a = 0
+	$Boss/BossSprites/Face.modulate.a = 0
 	$Boss/SilhouetteParticles.visible = false
 	$Boss/DeathParticles.emitting = true
 	$Boss/DeathParticles2.emitting = true
@@ -318,14 +388,5 @@ func die():
 	#get_node("/root/World").resume_previous_music()
 	AudioManager.resume_previous_song()
 
-func reset_lunge(): #reset back to idle
-	$Boss/AnimationPlayer.play("Default")
-	idle_origin = boss.position
-	time = 0
-	boss_state = -1
-	mod = 0.01
-	tween2 = self.create_tween()
-	tween2.set_trans(Tween.TRANS_QUAD)
-	tween2.set_ease(Tween.EASE_IN_OUT)
-	await tween2.tween_property(self, "idle_origin", start_pos, 0.8).finished
-	$Boss/DamageColl.disabled = false
+func set_shader_value(value: float, path: String, param: String):
+	get_node(path).material.set_shader_parameter(param, value)

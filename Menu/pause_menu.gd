@@ -9,23 +9,24 @@ func _ready():
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
 
 func _on_joy_connection_changed(_device_id, connected):
-	get_viewport().gui_release_focus()
-	if !connected:
+	#get_viewport().gui_release_focus()
+	if !connected and OptionsMenu.use_mouse_for_menus:
+		get_viewport().gui_release_focus()
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	else:
-		#get_viewport().gui_release_focus()
+		get_viewport().gui_release_focus()
 		$MarginContainer/VBoxContainer/ResumeButton.grab_focus()
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 
 func pause_menu():
 	if paused:
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		hide()
 		get_tree().paused = false
 	else:
 		get_tree().paused = true
 		show()
-		if Input.get_connected_joypads().size() > 0:
+		if Input.get_connected_joypads().size() > 0 or !OptionsMenu.use_mouse_for_menus:
 			if !Input.joy_connection_changed.is_connected(Callable(self, "_on_joy_connection_changed")):
 				Input.joy_connection_changed.connect(_on_joy_connection_changed)
 			$MarginContainer/VBoxContainer/ResumeButton.grab_focus()
@@ -62,3 +63,7 @@ func _input(event):
 			SaveManager.save_settings()
 			get_parent().get_node("OptionsMenu").queue_free()
 		exiting = false
+	
+	#if !get_viewport().gui_get_focus_owner():
+		#if event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down") or event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right"):
+			#$MarginContainer/VBoxContainer/ResumeButton.grab_focus()
