@@ -9,11 +9,8 @@ func _ready():
 		SaveManager.load_settings()
 		settings_loaded = true
 	
-	#get_tree().create_tween().tween_property($FadeToBlack, "color", Color(0, 0, 0, 0), 0.5)
-	#if Input.get_connected_joypads().size() > 0:
-	#	get_viewport().gui_release_focus()
-	#	$Menu/MarginContainer/VBoxContainer/VBoxContainer/ContinueButton.grab_focus()
-	#	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	#if SaveManager.save_file_exists():
+	#	$Menu/MarginContainer/VBoxContainer/VBoxContainer/ContinueButton.disabled = true
 	
 	_on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
 		

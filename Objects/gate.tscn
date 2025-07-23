@@ -4,12 +4,12 @@
 [ext_resource type="Script" path="res://Objects/gate.gd" id="1_oapr2"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_a6c0n"]
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_csskr"]
-[ext_resource type="AudioStream" uid="uid://mdu6xo6r5jy" path="res://Sfx/anvil-hit-2-14845.mp3" id="3_oy5mm"]
+[ext_resource type="AudioStream" uid="uid://cjvfrtkxvi7pa" path="res://Sfx/clang 2.wav" id="4_gj5yg"]
 
 [sub_resource type="Resource" id="Resource_o5uy4"]
 script = ExtResource("3_csskr")
 tag = "close"
-stream = ExtResource("3_oy5mm")
+stream = ExtResource("4_gj5yg")
 
 [sub_resource type="Resource" id="Resource_0q2jn"]
 script = ExtResource("2_a6c0n")

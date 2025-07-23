@@ -1,4 +1,4 @@
-[gd_scene load_steps=52 format=3 uid="uid://cagepo1tljh6w"]
+[gd_scene load_steps=54 format=3 uid="uid://cagepo1tljh6w"]
 
 [ext_resource type="Script" path="res://intro_cutscene.gd" id="1_0lk36"]
 [ext_resource type="Texture2D" uid="uid://dnuk8to6m018a" path="res://Assets/Ship Textures.png" id="1_6myr4"]
@@ -186,6 +186,13 @@ font_size = 4
 font_color = Color(0.406, 0.5336, 0.58, 1)
 outline_size = 3
 outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Gradient" id="Gradient_i40vs"]
+offsets = PackedFloat32Array(0, 0.35, 0.62, 1)
+colors = PackedColorArray(0.0456, 0.0461733, 0.08, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0470588, 0.0470588, 0.0784314, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_xdjvv"]
+gradient = SubResource("Gradient_i40vs")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rks84"]
 shader = ExtResource("13_d8uqd")
@@ -689,7 +696,7 @@ tracks/38/interp = 1
 tracks/38/loop_wrap = true
 tracks/38/keys = {
 "handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(152, -0.25, 0, 0.25, 0),
+"points": PackedFloat32Array(112, -0.25, 0, 0.25, 0),
 "times": PackedFloat32Array(0)
 }
 tracks/39/type = "bezier"
@@ -1457,9 +1464,9 @@ tracks/39/path = NodePath("Camera:position:x")
 tracks/39/interp = 1
 tracks/39/loop_wrap = true
 tracks/39/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(152, -0.25, 0, 1.56131, -0.5, 680, -2.615, 0, 0.25, 0),
-"times": PackedFloat32Array(21.7, 30.8)
+"handle_modes": PackedInt32Array(0, 0, 0, 0),
+"points": PackedFloat32Array(112, -0.25, 0, 0.25, 0, 152, -0.25, 0, 0.25, 0, 152, -0.25, 0, 1.56131, -0.5, 680, -2.615, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.45, 21.7, 30.8)
 }
 tracks/40/type = "bezier"
 tracks/40/imported = false
@@ -1597,7 +1604,7 @@ tracks/51/path = NodePath("OutsideShip/Thrusters:visible")
 tracks/51/interp = 1
 tracks/51/loop_wrap = true
 tracks/51/keys = {
-"times": PackedFloat32Array(0, 13.05),
+"times": PackedFloat32Array(0.3, 13.05),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
@@ -1621,7 +1628,7 @@ tracks/53/path = NodePath("OutsideShip/Thrusters:scale")
 tracks/53/interp = 1
 tracks/53/loop_wrap = true
 tracks/53/keys = {
-"times": PackedFloat32Array(0, 0.2),
+"times": PackedFloat32Array(0.3, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector2(1e-05, 1), Vector2(1, 1)]
@@ -1957,7 +1964,7 @@ color_initial_ramp = SubResource("Gradient_o1tas")
 anim_offset_max = 1.0
 
 [node name="Camera" parent="." instance=ExtResource("8_6o7pj")]
-position = Vector2(152, 96.0014)
+position = Vector2(112, 96.0014)
 
 [node name="LensCircle" parent="Camera" index="6"]
 visible = false
@@ -1986,6 +1993,14 @@ offset_right = 152.0
 offset_bottom = 96.0
 text = "Click to skip cutscene"
 label_settings = SubResource("LabelSettings_p3vj4")
+
+[node name="TextureRect" type="TextureRect" parent="Camera"]
+z_index = -17
+offset_left = -152.0
+offset_top = -96.0014
+offset_right = 152.0
+offset_bottom = 95.9986
+texture = SubResource("GradientTexture1D_xdjvv")
 
 [node name="Rooms" type="Node2D" parent="."]
 

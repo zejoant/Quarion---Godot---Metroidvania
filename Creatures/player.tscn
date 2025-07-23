@@ -1,4 +1,4 @@
-[gd_scene load_steps=95 format=3 uid="uid://4ythqhswhcg7"]
+[gd_scene load_steps=96 format=3 uid="uid://4ythqhswhcg7"]
 
 [ext_resource type="Script" path="res://Creatures/player.gd" id="1_1p4uo"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="4_q56as"]
@@ -9,11 +9,11 @@
 [ext_resource type="AudioStream" uid="uid://wm84dwuyqcmd" path="res://Sfx/dash3.wav" id="8_laqsj"]
 [ext_resource type="AudioStream" uid="uid://dp0epi0rhkcul" path="res://Sfx/death explosion.wav" id="9_0iuyt"]
 [ext_resource type="AudioStream" uid="uid://b7txeulgr6bb2" path="res://Sfx/collect.wav" id="9_f8tde"]
-[ext_resource type="AudioStream" uid="uid://fgtdxdslfxoi" path="res://Sfx/GameSFX/PowerUp/Retro PowerUP 09.wav" id="10_jasyf"]
+[ext_resource type="AudioStream" uid="uid://yifcbui3qty4" path="res://Sfx/power up.wav" id="10_084tj"]
 [ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="10_ta6lj"]
-[ext_resource type="AudioStream" uid="uid://bblcqxp6fekpf" path="res://Sfx/GameSFX/Impact/Retro Impact LoFi 09.wav" id="11_pmswi"]
+[ext_resource type="AudioStream" uid="uid://bmvm0i5k2425n" path="res://Sfx/fire burst.wav" id="11_hkg8h"]
+[ext_resource type="AudioStream" uid="uid://ci2fiulivul3j" path="res://Sfx/power up finish.wav" id="12_4vw6f"]
 [ext_resource type="Texture2D" uid="uid://dei1vxmeg8aah" path="res://Assets/Hurt Effect.png" id="12_jxe34"]
-[ext_resource type="AudioStream" uid="uid://b518ksl04jb1q" path="res://Sfx/GameSFX/Magic/Retro Magic 34.wav" id="12_og1me"]
 [ext_resource type="Shader" path="res://Shaders/palette_swap.gdshader" id="13_b8g8h"]
 [ext_resource type="AudioStream" uid="uid://ctcvftqbmxckp" path="res://Sfx/power up charge.wav" id="13_t6m3w"]
 [ext_resource type="AudioStream" uid="uid://f8xy7wiywr5q" path="res://Sfx/bubble pop 2.wav" id="14_d3jwu"]
@@ -55,17 +55,17 @@ stream = ExtResource("9_0iuyt")
 [sub_resource type="Resource" id="Resource_cstl5"]
 script = ExtResource("5_ja3e4")
 tag = "power_up"
-stream = ExtResource("10_jasyf")
+stream = ExtResource("10_084tj")
 
 [sub_resource type="Resource" id="Resource_t85mi"]
 script = ExtResource("5_ja3e4")
 tag = "fire_burst"
-stream = ExtResource("11_pmswi")
+stream = ExtResource("11_hkg8h")
 
 [sub_resource type="Resource" id="Resource_di48n"]
 script = ExtResource("5_ja3e4")
 tag = "p_up_finish"
-stream = ExtResource("12_og1me")
+stream = ExtResource("12_4vw6f")
 
 [sub_resource type="Resource" id="Resource_7bkb3"]
 script = ExtResource("5_ja3e4")
@@ -332,6 +332,22 @@ tracks/0/keys = {
 "values": [Rect2(112, 0, 16, 16)]
 }
 
+[sub_resource type="Animation" id="Animation_fe8de"]
+resource_name = "hold_up_item"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(64, 48, 16, 16)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5gao2"]
 _data = {
 "Damage": SubResource("Animation_0turj"),
@@ -344,7 +360,8 @@ _data = {
 "Lie Down": SubResource("Animation_aggab"),
 "RESET": SubResource("Animation_ndq0k"),
 "Walk": SubResource("Animation_6vd3i"),
-"WallSlide": SubResource("Animation_x8b06")
+"WallSlide": SubResource("Animation_x8b06"),
+"hold_up_item": SubResource("Animation_fe8de")
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4by5i"]
@@ -851,7 +868,9 @@ z_index = 4
 
 [node name="CeilingRay" type="RayCast2D" parent="CollissionRays"]
 unique_name_in_owner = true
-target_position = Vector2(0, -2)
+z_index = 1
+target_position = Vector2(0, -3)
+hit_from_inside = true
 
 [node name="HurtEffect" type="Sprite2D" parent="."]
 visible = false

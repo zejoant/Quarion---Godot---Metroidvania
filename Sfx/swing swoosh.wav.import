@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dsvjhdy5hpgv5"
+path="res://.godot/imported/swing swoosh.wav-18d39eb3b95794faf7779042838e7e15.sample"
+
+[deps]
+
+source_file="res://Sfx/swing swoosh.wav"
+dest_files=["res://.godot/imported/swing swoosh.wav-18d39eb3b95794faf7779042838e7e15.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://ibrctco0fpdp"]
+[gd_scene load_steps=52 format=3 uid="uid://ibrctco0fpdp"]
 
 [ext_resource type="Script" path="res://Creatures/forsaken_ally.gd" id="1_2os6r"]
 [ext_resource type="PackedScene" uid="uid://bw1r3nxt3ya8x" path="res://Objects/gate.tscn" id="1_exbt4"]
@@ -10,8 +10,8 @@
 [ext_resource type="AudioStream" uid="uid://c6awqtpd8jux1" path="res://Sfx/hit.wav" id="5_e1k82"]
 [ext_resource type="AudioStream" uid="uid://ds8rsq8hl0v6b" path="res://Sfx/jump2.wav" id="6_ngjvg"]
 [ext_resource type="AudioStream" uid="uid://wm84dwuyqcmd" path="res://Sfx/dash3.wav" id="7_etp48"]
-[ext_resource type="Shader" path="res://Shaders/white_pulse.gdshader" id="8_hnr4t"]
 [ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="8_uoyv7"]
+[ext_resource type="Texture2D" uid="uid://b4a3gpanglo75" path="res://Assets/Character Sprite Sheet.png" id="9_vd1y7"]
 
 [sub_resource type="Resource" id="Resource_gbhgb"]
 script = ExtResource("3_s620o")
@@ -36,14 +36,6 @@ stream = ExtResource("7_etp48")
 [sub_resource type="Resource" id="Resource_6rsu8"]
 script = ExtResource("2_8wgr1")
 sound_effects = Array[ExtResource("3_s620o")]([SubResource("Resource_gbhgb"), SubResource("Resource_v1emv"), SubResource("Resource_887xx"), SubResource("Resource_76amk")])
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_mxv3u"]
-shader = ExtResource("8_hnr4t")
-shader_parameter/shine_color = Color(1, 1, 1, 0)
-shader_parameter/alpha_limit = 0.0
-shader_parameter/cycle_speed = 0.0
-shader_parameter/full_pulse_cycle = false
-shader_parameter/mode = 2
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ogmpo"]
 radius = 4.0
@@ -127,6 +119,18 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("BossSprite/Eyes:offset")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [Vector2(0, 0), Vector2(0, 1), Vector2(0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_fxak2"]
@@ -232,6 +236,18 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("BossSprite/Eyes:offset")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_yxlfh"]
@@ -540,10 +556,16 @@ collision_mask = 0
 
 [node name="BossSprite" type="Sprite2D" parent="ForsakenAlly"]
 z_index = 4
-material = SubResource("ShaderMaterial_mxv3u")
 texture = ExtResource("3_r8rlm")
 region_enabled = true
 region_rect = Rect2(80, 16, 16, 16)
+
+[node name="Eyes" type="Sprite2D" parent="ForsakenAlly/BossSprite"]
+modulate = Color(1, 1, 1, 0)
+z_index = 4
+texture = ExtResource("9_vd1y7")
+region_enabled = true
+region_rect = Rect2(16, 48, 8, 8)
 
 [node name="HurtColl" type="CollisionShape2D" parent="ForsakenAlly"]
 z_index = 7

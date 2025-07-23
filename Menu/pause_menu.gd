@@ -22,8 +22,10 @@ func pause_menu():
 	if paused:
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		hide()
+		#get_node("/root/World").process_mode = PROCESS_MODE_INHERIT
 		get_tree().paused = false
 	else:
+		#get_node("/root/World").process_mode = PROCESS_MODE_DISABLED
 		get_tree().paused = true
 		show()
 		if Input.get_connected_joypads().size() > 0 or !OptionsMenu.use_mouse_for_menus:
@@ -44,6 +46,7 @@ func _on_resume_button_pressed():
 func _on_quit_button_pressed():
 	AudioManager.stop_song()
 	get_tree().paused = false
+	#get_node("/root/World").process_mode = PROCESS_MODE_INHERIT
 	get_tree().change_scene_to_file("res://Menu/main_menu.tscn")
 
 

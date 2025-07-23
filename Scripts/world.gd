@@ -22,6 +22,7 @@ var respawn_song: String
 
 var bought_shop_items: Array[bool] 
 var other_ui_open: bool = false
+var secret_boss_beaten: bool = false
 
 #for changing room
 var new_room_path
@@ -31,6 +32,7 @@ var timer: float = 0.0
 var completion_percentage: float = 0
 
 @onready var red_boss_room = preload("res://Rooms/room_10.tscn")
+@onready var hermit_boss_room = preload("res://Rooms/room_50.tscn")
 
 var changed_room_frames: int = 0
 
@@ -68,8 +70,12 @@ func _ready():
 	$Camera/LensCircle.change_lens(checkpoint_room, true)
 	
 	room_coords = checkpoint_room#Vector2(8, 3)#(0, 1) #starting room
-	var scene_instance = load("res://Rooms/room_" + str(room_coords.x) + str(room_coords.y) + ".tscn").instantiate() 
+	var scene_instance = load("res://Rooms/room_" + str(room_coords.x) + str(room_coords.y) + ".tscn").instantiate()
 	add_child(scene_instance)
+	if new_game:
+		get_tilemap().reset_water_tiles()
+	#	scene_instance.get_node("Tilemap").queue_free()
+	#	scene_instance.add_child(load("res://tile_map.tscn").instantiate())
 	
 	$WorldMap.add_room(room_coords)
 	
@@ -162,6 +168,8 @@ func change_room(new_coords):
 	if ResourceLoader.exists(new_room_path): #if the entered room exists in files (safety precation for oob)
 		if new_room_path == "res://Rooms/room_10.tscn": #to avoid red boss room lagspike
 			call_deferred("add_child", red_boss_room.instantiate()) #loads new room
+		elif new_room_path == "res://Rooms/room_50.tscn": #to avoid hermit boss lagspike
+			call_deferred("add_child", hermit_boss_room.instantiate()) #loads new room
 		else:
 			call_deferred("add_child", load(new_room_path).instantiate()) #loads new room
 		$WorldMap.add_room(room_coords) #adds room to map

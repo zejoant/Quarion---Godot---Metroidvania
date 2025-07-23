@@ -31,7 +31,7 @@ var tween2
 @onready var origin = $ForsakenAlly.position
 
 var follow_pos
-var follow_velocity
+#var follow_velocity
 var aim_pos
 
 var dead = false
@@ -47,7 +47,7 @@ func _ready():
 	player = get_node("/root/World/Player")
 	camera = get_node("/root/World/Camera")
 	follow_pos = player.position
-	follow_velocity = player.velocity
+	#follow_velocity = player.velocity
 	if player.after_red_boss == true:
 		boss.position.x = 38*4
 		dead = true
@@ -113,27 +113,42 @@ func floor_spikes():
 	
 	if attack_state == 2: #3x single spikes
 		if !attack_cooldown: #add spikes
-			attack_cooldown = 70
+			if health <= 3:
+				attack_cooldown = 40
+			else:
+				attack_cooldown = 70
 			attack_sub_state += 1
 			var spike1 = floor_spike.instantiate()
 			spike1.position = Vector2(aim_pos.x, 20*8)
+			if health <= 3:
+				spike1.spike_amount = 3
+				spike1.speed = 1.5
+			#spike1.spike_amount = ceil(float(10-health)/3.0)
 			add_child(spike1)
 		else: #await next spike
 			attack_cooldown -= 1
 		if attack_sub_state == 3: #finish sub_attack after 3 single spikes
 			attack_state = 1
-			attack_cooldown = 180
+			if health <= 3:
+				attack_cooldown = 140
+			else:
+				attack_cooldown = 180
 		
 	elif attack_state == 3: # full floor spikes
 		for i in range(0, 10):
 			var s = floor_spike.instantiate()
 			s.position = Vector2(24 + (256.0/9.0) * i, 20*8)
 			s.spike_amount = 1
-			if i > 1:
+			if i > 0:
 				s.sound = false
+			if health <= 3:
+				s.speed = 1.5
 			add_child(s)
 		attack_state = 1
-		attack_cooldown = 180
+		if health <= 3:
+			attack_cooldown = 140
+		else:
+			attack_cooldown = 180
 	
 	if attack_state == 4: #spike wave
 		if attack_cooldown == 0: #add spikes
@@ -227,15 +242,20 @@ func dive_attack():
 				$WarningParticle.global_position = Vector2(aim_pos.x, 20*8)
 				$WarningParticle.emitting = true
 				
-				if attack_state == 1:
+				if health <= 3:
+					$WarningParticle.position.x = 152
+					$WarningParticle.scale_curve_x.set_point_value(0, 38)
+					$ForsakenAlly/DiveHurtCull.scale.x = 5
+					$DiveImpactComp/DiveImpactParticles.emission_rect_extents.x = 304
+				elif attack_state == 1:
 					$WarningParticle.scale_curve_x.set_point_value(0, 9)
 					$ForsakenAlly/DiveHurtCull.scale.x = 3.0/4.0
 					$DiveImpactComp/DiveImpactParticles.emission_rect_extents.x = 36
-				if attack_state == 2:
+				elif attack_state == 2:
 					$WarningParticle.scale_curve_x.set_point_value(0, 12)
 					$ForsakenAlly/DiveHurtCull.scale.x = 1
 					$DiveImpactComp/DiveImpactParticles.emission_rect_extents.x = 48
-				if attack_state == 3:
+				elif attack_state == 3:
 					$WarningParticle.scale_curve_x.set_point_value(0, 18)
 					$ForsakenAlly/DiveHurtCull.scale.x = 3.0/2.0
 					$DiveImpactComp/DiveImpactParticles.emission_rect_extents.x = 96
@@ -253,16 +273,23 @@ func dive_attack():
 				$ForsakenAlly/GroundRay.enabled = false
 				attack_state += 1
 				
+				if attack_state == 4 or health <= 3:
+					create_orb(Vector2(boss.position.x, boss.position.y+16), Vector2(1.5, 0), Vector2(-0.05, -0.05), true, false)
+					create_orb(Vector2(boss.position.x+8, boss.position.y+16), Vector2(2.5, 0), Vector2(-0.05, -0.05), true, false)
+					create_orb(Vector2(boss.position.x, boss.position.y+16), Vector2(-1.5, 0), Vector2(0.05, -0.05), true, false)
+					create_orb(Vector2(boss.position.x-8, boss.position.y+16), Vector2(-2.5, 0), Vector2(0.05, -0.05), true, false)
+				
 				$ForsakenAlly/DiveHurtCull.disabled = false #damage player on/off
 				#await get_tree().create_timer(0.1).timeout
 				await create_tween().tween_interval(0.1).finished
 				$ForsakenAlly/DiveHurtCull.disabled = true
 				
+				
 			if attack_state == 4: #finish attack/land
-				create_orb(Vector2(boss.position.x, boss.position.y+16), Vector2(1.5, 0), Vector2(-0.05, -0.05), true, false)
-				create_orb(Vector2(boss.position.x+8, boss.position.y+16), Vector2(2.5, 0), Vector2(-0.05, -0.05), true, false)
-				create_orb(Vector2(boss.position.x, boss.position.y+16), Vector2(-1.5, 0), Vector2(0.05, -0.05), true, false)
-				create_orb(Vector2(boss.position.x-8, boss.position.y+16), Vector2(-2.5, 0), Vector2(0.05, -0.05), true, false)
+				#create_orb(Vector2(boss.position.x, boss.position.y+16), Vector2(1.5, 0), Vector2(-0.05, -0.05), true, false)
+				#create_orb(Vector2(boss.position.x+8, boss.position.y+16), Vector2(2.5, 0), Vector2(-0.05, -0.05), true, false)
+				#create_orb(Vector2(boss.position.x, boss.position.y+16), Vector2(-1.5, 0), Vector2(0.05, -0.05), true, false)
+				#create_orb(Vector2(boss.position.x-8, boss.position.y+16), Vector2(-2.5, 0), Vector2(0.05, -0.05), true, false)
 				attack_state = 5
 				$ForsakenAlly/BossAnimPlayer.play("Land")
 				$ForsakenAlly/BossSprite.visible = true
@@ -492,6 +519,11 @@ func intro_sequence():
 	if !has_seen_intro:
 		has_seen_intro = true
 		AudioManager.stop_song()
+		
+		if !get_node("/root/World").secret_boss_beaten:
+			pass
+		
+		
 		player.bubble_popped = true
 		tween_prop(tween1, Tween.TRANS_QUART, Tween.EASE_OUT, player.get_node("BubbleSprite"), "modulate:a", 0, 1)
 		#player.get_node("BubbleSprite").modulate.a
@@ -502,6 +534,12 @@ func intro_sequence():
 		await get_tree().create_timer(1.16, false).timeout
 		
 		player.velocity.x = 0 
+		
+		tween1 = self.create_tween()
+		tween1.tween_property($ForsakenAlly/BossSprite/Eyes, "modulate:a", 1, 0.5)
+		tween1.tween_interval(0.2)
+		await tween1.tween_property($ForsakenAlly/BossSprite/Eyes, "modulate:a", 0, 0.5).finished
+		
 		$ForsakenAlly/BossAnimPlayer.play("Charge Shot")
 		var big_orb = big_flying_orb.instantiate()
 		big_orb.position = Vector2(boss.position.x, boss.position.y-16)

@@ -274,7 +274,6 @@ min_value = -25.0
 max_value = 25.0
 
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 9
 theme_override_styles/separator = SubResource("StyleBoxEmpty_0pl7j")

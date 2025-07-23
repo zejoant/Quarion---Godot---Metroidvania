@@ -3,14 +3,14 @@
 [ext_resource type="Script" path="res://Objects/big_floor_spike.gd" id="1_3yj0b"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_5iyyx"]
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_djtuw"]
-[ext_resource type="AudioStream" uid="uid://bgqxb7iudb0gm" path="res://Sfx/metal-whoosh-hit-4-201906(1).mp3" id="4_3lvrr"]
+[ext_resource type="AudioStream" uid="uid://bgqxb7iudb0gm" path="res://Sfx/big spike extend.mp3" id="4_qgfce"]
 [ext_resource type="Texture2D" uid="uid://dgex6wdeq7vmw" path="res://Assets/Big Spike Sprites.png" id="5_hqjnf"]
 [ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="6_y5w57"]
 
 [sub_resource type="Resource" id="Resource_mmbuq"]
 script = ExtResource("3_djtuw")
 tag = "woosh"
-stream = ExtResource("4_3lvrr")
+stream = ExtResource("4_qgfce")
 
 [sub_resource type="Resource" id="Resource_8jy7r"]
 script = ExtResource("2_5iyyx")

@@ -41,6 +41,7 @@ func save_game(world: Node):
 	file.store_var(world.bought_shop_items)
 	file.store_var(world.player.amulet_pieces)
 	file.store_var(world.player.has_bubble)
+	file.store_var(world.secret_boss_beaten)
 	
 	#map stuff
 	file.store_var(world.player.has_item_map)
@@ -73,6 +74,7 @@ func load_game(world: Node):
 		world.bought_shop_items.assign(file.get_var())
 		world.get_node("Camera").enable_amulet_pieces(file.get_var())
 		world.player.bubble_action(file.get_var())
+		world.secret_boss_beaten = file.get_var()
 		
 		#map stuff
 		world.player.has_item_map = file.get_var()
@@ -86,4 +88,5 @@ func load_game(world: Node):
 		world.player.jump_count = file.get_var()
 		world.completion_percentage = file.get_var()
 			
-		
+#func save_file_exists()-> bool:
+	#return FileAccess.file_exists(save_path)

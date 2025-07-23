@@ -17,14 +17,6 @@ func play_audio(stream: AudioStream, speed: float = 1):
 	add_child(sfxPlayer)
 	sfxPlayer.play()
 
-#func play_song(stream: AudioStream):
-	#var audioPlayer = AudioStreamPlayer.new()
-	#audioPlayer.bus = "Music"
-	#audioPlayer.stream = stream
-	#audioPlayer.finished.connect(remove_audio_player.bind(audioPlayer))
-	#add_child(audioPlayer)
-	#audioPlayer.play()
-
 func play_song(stream: AudioStream, playback_pos: float = 0.0):
 	if !audioPlayer:
 		audioPlayer = AudioStreamPlayer.new()
@@ -37,7 +29,6 @@ func play_song(stream: AudioStream, playback_pos: float = 0.0):
 		audioPlayer.stop()
 		
 	audioPlayer.stream = stream
-	#audioPlayer.finished.connect(remove_audio_player.bind(audioPlayer))
 	audioPlayer.play(playback_pos)
 
 func remove_audio_player(instance: AudioStreamPlayer):
@@ -56,14 +47,6 @@ func stop_song():
 
 func resume_previous_song():
 	play_song(load(previous_song), previous_song_pos)
-	#var temp_path = audioPlayer.stream.resource_path
-	#var temp_pos = audioPlayer.get_playback_position()
-	#
-	#audioPlayer.stream = load(previous_song)
-	#audioPlayer.play(previous_song_pos)
-	#
-	#previous_song = temp_path
-	#previous_song_pos = temp_pos
 
 func resume_respawn_song():
 	audioPlayer.stream = load(respawn_song)
@@ -72,4 +55,7 @@ func resume_respawn_song():
 func save_respawn_song():
 	respawn_song = audioPlayer.stream.resource_path
 	respawn_song_pos = audioPlayer.get_playback_position()
+
+func set_speed(speed: float):
+	audioPlayer.pitch_scale = speed
 	

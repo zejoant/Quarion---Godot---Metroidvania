@@ -30,6 +30,7 @@ var walljump_dir = 1
 var can_double_jump = false
 
 var bubble_popped = true
+var bubble_invincibility_time = 0.3
 var affecting_force: int = 0
 
 #var in_interact_area = false
@@ -109,6 +110,8 @@ func _physics_process(_delta):
 			can_double_jump = true
 			if %CeilingRay.is_colliding():
 				if !(%CeilingRay.get_collider() is TileMap) or !%CeilingRay.get_collider().is_tile_one_way(%CeilingRay.get_collider_rid()):
+					#update_animations = false
+					$AnimationPlayer.play("Land")
 					respawn(true)
 		elif !is_on_floor():#applies gravity if in air
 			if get_parent().get_node("WorldMap").open:
@@ -146,7 +149,7 @@ func check_inputs():
 		has_dash = true
 		#has_blue_blocks = true
 		has_double_jump = true
-		#bubble_action(true, false)
+		bubble_action(true, false)
 		has_freeze = true
 		get_parent().get_tilemap().change_water_tiles()
 		has_wallclimb = true
@@ -155,7 +158,7 @@ func check_inputs():
 		#get_parent().get_node("WorldMap/MapComps/ItemMap").visible = true
 		#green_key_state = "collected"
 		#red_key_state = "collected"
-		get_parent().get_node("Camera").enable_amulet_pieces(5)
+		get_parent().get_node("Camera").enable_amulet_pieces(4)
 	if !can_move:
 		return
 		
@@ -235,7 +238,7 @@ func respawn(ignore_bubble: bool = false):
 			
 			var currentPalette =  $Sprite2D.material.get_shader_parameter("palette_choice")
 			$Sprite2D.material.set_shader_parameter("palette_choice", 6)
-			$AnimationPlayer.play("Damage")
+			#$AnimationPlayer.play("Damage")
 			world.get_node("Camera").invert_color(1, 0.3)
 			world.get_node("Camera").shake(5, 0.05, 3)
 			AudioManager.play_audio(sfxs.get_sfx("death"))
@@ -284,7 +287,7 @@ func bubble_action(enable: bool = false, pop: bool = false):
 			paused = true
 			await get_tree().create_timer(0.1, false).timeout
 			paused = false
-			await get_tree().create_timer(0.3, false).timeout
+			await get_tree().create_timer(bubble_invincibility_time, false).timeout
 			can_die = true
 		else:
 			bubble_popped = false
@@ -312,25 +315,36 @@ func jump(double_jump: bool = false):
 		can_double_jump = false
 		$ParticleComps/DoubleJumpParticles.direction = Vector2(-velocity.x/4.0, 110).normalized()
 		$ParticleComps/DoubleJumpParticles.emitting = true
+		
 	jump_count += 1
 	velocity.y = jump_vel
 	buffer = 1
 	can_jump = false
 	AudioManager.play_audio(sfxs.get_sfx("jump"))
 	
-	if dashing:
-		if dash_timer < 3:
-			affecting_force = sign(last_dir) * 200
-		else:
-			can_dash = true
-			affecting_force = sign(last_dir) * 300
-			if dash_timer > 4:
-				affecting_force = sign(last_dir) * 320
-		dash_timer = dash_lim
-		dash_cooldown = 0
+	#if dashing and dash_timer > 2:
+		#can_dash = true
+		#affecting_force = sign(last_dir) * 300
+		#if dash_timer > 4:
+			#affecting_force = sign(last_dir) * 320
+		#dash_timer = dash_lim
+		#dash_cooldown = 0
+	
+	#if dashing:
+		#if dash_timer < 3:
+			#affecting_force = sign(last_dir) * 200
+		#else:
+			#can_dash = true
+			#affecting_force = sign(last_dir) * 300
+			#if dash_timer > 4:
+				#affecting_force = sign(last_dir) * 320
+		#dash_timer = dash_lim
+		#dash_cooldown = 0
 
 # Gets the input direction and handles the movement.
 func walk():
+	if direction:
+		last_dir = direction
 	direction = Input.get_axis("Left", "Right")
 	if !direction:
 		if Input.is_action_pressed("Left") and Input.is_action_just_pressed("Right"):
@@ -340,11 +354,18 @@ func walk():
 		elif Input.is_action_pressed("Right") and Input.is_action_pressed("Left"):
 			direction = last_dir
 	if direction:
-		if last_dir * direction < 0:
-			$Sprite2D.scale.x *= -1
+		if velocity.x > 0:
+			$Sprite2D.scale.x = 1
+		elif velocity.x < 0:
+			$Sprite2D.scale.x = -1
+		#if last_dir * direction < 0:
+			#if direction > 0:
+				#$Sprite2D.scale.x = 1
+			#elif direction < 0:
+				#$Sprite2D.scale.x = -1
 		if abs(direction) < 0.5:
 			direction = sign(direction) * 0.5
-		last_dir = direction
+		#last_dir = direction
 		
 		velocity.x = direction * x_speed# + affecting_force
 		#if affecting_force != 0:
@@ -392,7 +413,7 @@ func dash(dir: int = last_dir):
 	dash_timer = 0
 	dash_cooldown += 1
 	can_dash = false
-	#can_jump = false
+	can_jump = false
 	dashing = true
 	
 	if last_dir != dir and dir:
@@ -417,6 +438,7 @@ func process_dash():
 		velocity.x = sign(last_dir)*990.0/(dash_timer+1.0)
 		velocity.y = 0
 		dash_timer += 1
+		
 	if dash_timer == dash_lim:
 		$ParticleComps/DashParticles.emitting = false
 		dashing = false
@@ -490,7 +512,7 @@ func custom_data_action(body: TileMap, custom_data: String, tile_coords: Vector2
 		p_up_name = "SwiftwindAmulet"
 	elif custom_data == "PDoubleJump":
 		has_double_jump = true
-		get_parent().completion_percentage += 14
+		get_parent().completion_percentage += 12
 		p_up_name = "PegasusBoots"
 	elif custom_data == "PFreeze":
 		has_freeze = true

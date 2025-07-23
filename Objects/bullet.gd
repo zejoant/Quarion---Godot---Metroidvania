@@ -35,7 +35,7 @@ func _physics_process(_delta):
 		grace_period -= 1
 		
 		if position.y > 30*8 or position.y < -6*8 or position.x > 44*8 or position.x < -6*8:
-			queue_free()
+			call_deferred("queue_free")
 
 func setup(s, d, p, sound_on: bool = false, collide_on: bool = false, grace: int = 0):
 	speed = s

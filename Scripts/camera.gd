@@ -58,6 +58,7 @@ func collect_amulet_piece():
 	
 	var piece = get_node("UILayer/AmuletContainer/Piece" + str(player.amulet_pieces))
 	player.disable_movement()
+	AudioManager.pause_song()
 	blur(1.032, 0.3)
 	$FlashLayer.modulate = Color(0, 0, 0, 0.5)
 	$UILayer/AmuletContainer.modulate.a = 1
@@ -87,6 +88,7 @@ func collect_amulet_piece():
 	await tween.parallel().tween_property($UILayer/AmuletContainer, "modulate:a", 0, 0.3).finished
 	
 	player.disable_movement(false)
+	AudioManager.resume_song()
 	$FlashLayer.modulate = Color(1, 1, 1, 0)
 	$UILayer/AmuletContainer.scale = Vector2(2, 2)
 

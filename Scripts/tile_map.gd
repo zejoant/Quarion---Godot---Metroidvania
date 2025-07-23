@@ -18,7 +18,17 @@ func _ready() -> void:
 	if world:
 		check_for_collected_tiles()
 		check_for_functional_tiles()
-	
+
+
+#func reload_from_disk():
+	##var my_tile_set_path = get_path()
+	##if my_tile_set_path.is_empty():
+	##	print("Error: TileSet is not saved to a file. Cannot reload from disk.")
+	##	return
+	#var new_tileset_instance = load("res://tile_map.tscn")
+	#emit_signal("tileset_reloaded", new_tileset_instance)
+#
+#signal tileset_reloaded(new_tileset_resource: TileSet)
 	
 #deletes any tiles that have been collected so they dont show up again (apples)
 func check_for_collected_tiles():
@@ -109,10 +119,16 @@ func fade_foreground(fade_out):
 		fade_tween.tween_method(func(a): set_layer_modulate(4, a), Color(1, 1, 1, 0), Color(1,1,1,1),0.1)
 		
 func change_water_tiles():
-	var source = tile_set.get_source(0) as TileSetAtlasSource
+	#var source = tile_set.get_source(0) as TileSetAtlasSource
 	for atlas_coords in PackedVector2Array([Vector2(50, 15),Vector2(50, 16),Vector2(50, 17),Vector2(55, 15),Vector2(55, 16),Vector2(55, 17),Vector2(60, 13),Vector2(61, 13)]):
-		tile_data = source.get_tile_data(atlas_coords, 0)
+		tile_data = tile_set.get_source(0).get_tile_data(atlas_coords, 0)
 		if tile_data:
 			tile_data.add_collision_polygon(0)
 			tile_data.set_collision_polygon_points(0, 0, PackedVector2Array([Vector2(-4, -4), Vector2(4, -4), Vector2(4, 4), Vector2(-4, 4)]))
-			
+
+func reset_water_tiles():
+	#var source = tile_set.get_source(0) as TileSetAtlasSource
+	for atlas_coords in PackedVector2Array([Vector2(50, 15),Vector2(50, 16),Vector2(50, 17),Vector2(55, 15),Vector2(55, 16),Vector2(55, 17),Vector2(60, 13),Vector2(61, 13)]):
+		tile_data = tile_set.get_source(0).get_tile_data(atlas_coords, 0)
+		if tile_data:
+			tile_data.set_collision_polygons_count(0, 0)

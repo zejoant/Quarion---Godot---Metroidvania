@@ -1,7 +1,15 @@
-[gd_resource type="Theme" load_steps=7 format=3 uid="uid://b6lhu6b1qu0a3"]
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://b6lhu6b1qu0a3"]
 
 [ext_resource type="Texture2D" uid="uid://cywpsaa73tid3" path="res://Assets/MenuTextures/Button Texture.png" id="1_1sjb0"]
 [ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/prstartk.ttf" id="2_6xmh6"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aiwof"]
+texture = ExtResource("1_1sjb0")
+texture_margin_left = 8.0
+texture_margin_top = 5.0
+texture_margin_right = 8.0
+texture_margin_bottom = 5.0
+region_rect = Rect2(16, 44, 48, 24)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_j6nx3"]
 texture = ExtResource("1_1sjb0")
@@ -43,6 +51,7 @@ default_font = ExtResource("2_6xmh6")
 default_font_size = 8
 Button/colors/font_color = Color(1, 1, 1, 1)
 Button/font_sizes/font_size = 8
+Button/styles/disabled = SubResource("StyleBoxTexture_aiwof")
 Button/styles/focus = SubResource("StyleBoxTexture_j6nx3")
 Button/styles/hover = SubResource("StyleBoxTexture_m3q7b")
 Button/styles/normal = SubResource("StyleBoxTexture_iyykc")

@@ -40,6 +40,11 @@ func _on_joy_connection_changed(_device_id, connected):
 			get_viewport().gui_release_focus()
 			$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.grab_focus()
 			Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	
+	if !connected:
+		$MarginContainer/VBoxContainer/MouseHBox.visible = true
+	else:
+		$MarginContainer/VBoxContainer/MouseHBox.visible = false
 
 func _input(event):
 	if event.is_action_released("UI Back"):

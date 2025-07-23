@@ -18,6 +18,7 @@ func _ready():
 func _input(event):
 	if event.is_action_pressed("ui_up") and player_in_area and player.velocity.x == 0:
 		#player.can_move = false
+		$InputIndicator.visible = false
 		player.paused = true
 		camera.fade("000000", 1, 0.5, 1, 0.5)
 		

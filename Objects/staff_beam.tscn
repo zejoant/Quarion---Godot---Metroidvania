@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3 uid="uid://bxvrrdusvmbwd"]
+
+[ext_resource type="Script" path="res://Objects/staff_beam.gd" id="1_thnap"]
+[ext_resource type="Texture2D" uid="uid://b4a3gpanglo75" path="res://Assets/Character Sprite Sheet.png" id="1_w15dm"]
+[ext_resource type="Texture2D" uid="uid://b1iqfuy585xhs" path="res://Assets/Sparkle Particles.png" id="3_g6tsq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ihijo"]
+size = Vector2(6, 20)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_b3tx0"]
+particles_animation = true
+particles_anim_h_frames = 5
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[node name="StaffBeam" type="StaticBody2D" groups=["Enemy"]]
+z_index = 4
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_thnap")
+dir = Vector2(1, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 1
+texture = ExtResource("1_w15dm")
+flip_h = true
+region_enabled = true
+region_rect = Rect2(208, 152, 16, 24)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1, 0)
+shape = SubResource("RectangleShape2D_ihijo")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_b3tx0")
+position = Vector2(-1, 0)
+amount = 20
+lifetime = 0.3
+texture = ExtResource("3_g6tsq")
+emission_shape = 3
+emission_rect_extents = Vector2(1, 8)
+direction = Vector2(-1, 0)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 80.0
+initial_velocity_max = 120.0
+anim_speed_min = 1.0
+anim_speed_max = 1.0

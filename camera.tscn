@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=3 uid="uid://c4y4hleyev5w2"]
+[gd_scene load_steps=51 format=3 uid="uid://c4y4hleyev5w2"]
 
 [ext_resource type="Script" path="res://Scripts/camera.gd" id="1_mbcrn"]
 [ext_resource type="Shader" path="res://Shaders/radial_blur.gdshader" id="2_cpfqb"]
@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="4_8iw7y"]
 [ext_resource type="AudioStream" uid="uid://cnylv5tcn34kr" path="res://Sfx/clang.wav" id="4_qml6t"]
 [ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="4_wb6s5"]
-[ext_resource type="AudioStream" uid="uid://cddpgysh8yykg" path="res://Sfx/power up 2.wav" id="5_g37or"]
+[ext_resource type="AudioStream" uid="uid://cddpgysh8yykg" path="res://Backup/power up 2.wav" id="5_fs2dw"]
 [ext_resource type="Texture2D" uid="uid://cywpsaa73tid3" path="res://Assets/MenuTextures/Button Texture.png" id="5_oxghw"]
 [ext_resource type="Shader" path="res://Shaders/hue_shift.gdshader" id="6_2my3r"]
 [ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/prstartk.ttf" id="6_ykkpx"]
@@ -25,7 +25,7 @@ stream = ExtResource("4_qml6t")
 [sub_resource type="Resource" id="Resource_bu2ub"]
 script = ExtResource("3_ix65p")
 tag = "amulet_out"
-stream = ExtResource("5_g37or")
+stream = ExtResource("5_fs2dw")
 
 [sub_resource type="Resource" id="Resource_21oqa"]
 script = ExtResource("2_rm6an")
@@ -176,6 +176,16 @@ outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_klavi"]
 light_mode = 2
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_w262a"]
+light_mode = 2
+
+[sub_resource type="LabelSettings" id="LabelSettings_j3rpv"]
+font = ExtResource("6_ykkpx")
+font_size = 8
+font_color = Color(0.945098, 0.929412, 0.886275, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fo8ef"]
 atlas = ExtResource("4_8iw7y")
@@ -441,7 +451,8 @@ z_index = 10
 [node name="Background" type="Sprite2D" parent="PowerUpTexts"]
 modulate = Color(1, 1, 1, 0.6)
 material = SubResource("CanvasItemMaterial_au1yf")
-scale = Vector2(8.25, 2.375)
+position = Vector2(0, -3.75509e-06)
+scale = Vector2(8.25, 2.5)
 texture = ExtResource("16_hl0dr")
 
 [node name="BorderTop" type="Sprite2D" parent="PowerUpTexts"]
@@ -606,6 +617,34 @@ position = Vector2(0, 6)
 texture = ExtResource("15_ku4u5")
 region_enabled = true
 region_rect = Rect2(0, 176, 112, 24)
+
+[node name="TreasureMap" type="Node2D" parent="PowerUpTexts"]
+visible = false
+material = SubResource("CanvasItemMaterial_w262a")
+
+[node name="Title" type="Label" parent="PowerUpTexts/TreasureMap"]
+use_parent_material = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -63.0
+offset_top = -14.0
+offset_right = 65.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Treasure Map"
+label_settings = SubResource("LabelSettings_j3rpv")
+horizontal_alignment = 1
+
+[node name="Desc" type="Sprite2D" parent="PowerUpTexts/TreasureMap"]
+use_parent_material = true
+position = Vector2(0, 6)
+texture = ExtResource("15_ku4u5")
+region_enabled = true
+region_rect = Rect2(0, 200, 112, 24)
 
 [node name="MaskLight" type="PointLight2D" parent="PowerUpTexts"]
 position = Vector2(1.90735e-06, 4.76837e-07)
