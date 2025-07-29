@@ -5,6 +5,8 @@ var death_count: int = 0
 var completion_time: float = 0
 var completion_percentage: float = 0
 
+var good_ending: bool = false
+
 @export var can_exit: bool = false
 
 func _ready():
@@ -15,7 +17,10 @@ func _ready():
 	
 	$Camera.fade("000000", 1, 0, 0.5, 0.5)
 	await get_tree().create_timer(0.5, false).timeout
-	$AnimationPlayer.play("Default")
+	if good_ending:
+		$AnimationPlayer.play("True Ending")
+	else:
+		$AnimationPlayer.play("Default")
 
 func time_convert(time):
 	@warning_ignore("integer_division")
@@ -35,6 +40,6 @@ func _input(event):
 			return_after_end()
 
 func return_after_end():
-	$Camera.fade(1, 0.5, 0.3, 0)
+	$Camera.fade("000000", 1, 0.5, 0.3, 0)
 	await get_tree().create_timer(0.7, false).timeout
 	get_tree().change_scene_to_file("res://Menu/main_menu.tscn")

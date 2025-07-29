@@ -37,10 +37,11 @@ func save_game(world: Node):
 	file.store_var(world.player.green_key_state)
 	file.store_var(world.player.red_key_state)
 	file.store_var(world.opened_doors)
-	file.store_var(world.player.apple_count)
+	file.store_var(world.player.apple_count_saved)
 	file.store_var(world.bought_shop_items)
 	file.store_var(world.player.amulet_pieces)
 	file.store_var(world.player.has_bubble)
+	file.store_var(world.red_boss_beaten)
 	file.store_var(world.secret_boss_beaten)
 	
 	#map stuff
@@ -70,10 +71,12 @@ func load_game(world: Node):
 		world.player.green_key_state = file.get_var()
 		world.player.red_key_state = file.get_var()	
 		world.opened_doors = file.get_var()
-		world.player.apple_count = file.get_var()
+		#world.player.apple_count = file.get_var()
+		world.player.update_apple_count(file.get_var(), true, true)
 		world.bought_shop_items.assign(file.get_var())
 		world.get_node("Camera").enable_amulet_pieces(file.get_var())
 		world.player.bubble_action(file.get_var())
+		world.red_boss_beaten = file.get_var()
 		world.secret_boss_beaten = file.get_var()
 		
 		#map stuff

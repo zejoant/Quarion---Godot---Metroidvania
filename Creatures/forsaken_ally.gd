@@ -34,6 +34,9 @@ var follow_pos
 #var follow_velocity
 var aim_pos
 
+var time: int = 0
+var last_pos: Vector2
+
 var dead = false
 static var has_seen_intro = false
 
@@ -48,23 +51,31 @@ func _ready():
 	camera = get_node("/root/World/Camera")
 	follow_pos = player.position
 	#follow_velocity = player.velocity
-	if player.after_red_boss == true:
-		boss.position.x = 38*4
+	if get_node("/root/World").red_boss_beaten == true:
+		if !get_node("/root/World").secret_boss_beaten:
+			boss.position.x = 152-16
+			$ForsakenAlly/BossSprite.scale.x = -1
+			$ForsakenAlly/BossAnimPlayer.play("Lie Down")
+		else:
+			boss.visible = false
+			$Gate2.close(true)
+			#$ActivationColl.disabled = true
 		dead = true
-		$ForsakenAlly/BossAnimPlayer.play("Lie Down")
+		$DiveImpactComp.visible = false
+		$ForsakenAlly/TrailParticle.emitting = false
 		$ForsakenAlly/HurtColl.set_deferred("disabled", true)
 		$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", true)
-		$ActivationColl.disabled = true
-		$DiveImpactComp.visible = false
 		$Gate2.close(true)
 	else:
 		$ForsakenAlly/BossAnimPlayer.play("Idle")
+		player.bubble_invincibility_time = 0.5
+		intro_sequence()
 	
 
 func _physics_process(delta):
 	if !dead:
 		update_aim(delta)
-		if $ForsakenAlly/GroundRay.is_colliding() and $ForsakenAlly/BossAnimPlayer.assigned_animation != "Lie Down" and !dead:
+		if $ForsakenAlly/GroundRay.is_colliding() and $ForsakenAlly/BossAnimPlayer.assigned_animation != "Lie Down":
 			if boss.position.x != player.position.x:
 				$ForsakenAlly/BossSprite.scale.x = sign(boss.position.x - player.position.x)
 		
@@ -93,6 +104,28 @@ func _physics_process(delta):
 			dive_attack()
 		elif boss_state == BossState.SHOT:
 			aim_shot_attack()
+		
+		time += 1
+		$ForsakenAlly/BossSprite.material.set_shader_parameter("strength", sin(time/40.0)/(4.0-float(health)/3.0))
+		
+		if last_pos != boss.position:
+			$ForsakenAlly/TrailParticle.emitting = true
+		else:
+			$ForsakenAlly/TrailParticle.emitting = false
+		
+		last_pos = boss.position
+		
+		if health == 1 and !dodging:
+			if player.position.y > 150:
+				$ForsakenAlly/HitArea/HitColl.disabled = true
+				$ForsakenAlly/HurtColl.disabled = false
+			else:
+				$ForsakenAlly/HitArea/HitColl.disabled = false
+				$ForsakenAlly/HurtColl.disabled = true
+	else:
+		time += 1
+		#if $HermitFleeSprite.modulate.a == 0.6:
+		$HermitFleeSprite.position = Vector2(144.0 + float(time), 144.0 - 4.0*sin(float(time)/20.0)*sqrt(float(time)/3.0) - float(time))
 	
 func floor_spikes():
 	if attack_state == 0: #attack setup
@@ -457,31 +490,117 @@ func _on_hit_area_body_entered(body):
 			$DiveImpactComp/DiveImpactParticles.emitting = true
 			$ForsakenAlly/FinalPhaseParticles.emitting = true
 			#await get_tree().create_timer(0.5).timeout
-			await create_tween().tween_interval(0.5).finished
+			#await create_tween().tween_interval(0.5).finished
+		
+		if health%3 == 0 and health != 0:
+			if get_node("/root/World").secret_boss_beaten:
+				$ForsakenAlly/HermitGhost.modulate.a = 1
+				$ForsakenAlly/HermitGhost.scale = Vector2(1, 1)
+				self.create_tween().tween_property($ForsakenAlly/HermitGhost, "modulate:a", 0, 0.9)
+				player.paused = true
+				await get_tree().create_timer(0.5, false).timeout
+				AudioManager.play_audio(sfxs.get_sfx("hermit_scream"))
+				self.create_tween().tween_property($ForsakenAlly/HermitGhost, "scale", Vector2(5, 5), 0.3)
+				#camera.zoom_camera(1, 0.2)
+				player.paused = false
 			$DiveImpactComp/DiveImpactParticles.amount = 30
 	
 	if health == 0:
-		$ForsakenAlly/BossSprite.scale.x = 1
-		dead = true
-		player.after_red_boss = true
-		for child in get_children():
-			if child.has_method("retract_spike"):
-				child.retract_spike()
-		#get_node("/root/World").save_room_state($ActivationColl.position)
-		$ForsakenAlly/FinalPhaseParticles.emitting = false
-		$ForsakenAlly/HurtColl.set_deferred("disabled", true)
-		$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", true)
-		AudioManager.stop_song()
-		$ForsakenAlly/BossAnimPlayer.play("Lie Down")
-		await get_tree().create_timer(2, false).timeout
+		die()
+	elif hit_mode == HitMode.DODGE:
+		dodge_player(0.3, false, true)
+
+func die():
+	player.bubble_action(false, true, false)
+	#player.bubble_popped = true
+	player.disable_movement(true)
+	player.visible = false
+	player.paused = true
+	player.update_animations = false
+	#player.can_die = false
+	player.velocity = Vector2(0, 0)
+	player.position = Vector2(boss.position.x+8, 19*8)
+	player.get_node("AnimationPlayer").play("Idle")
+	player.get_node("Sprite2D").scale.x = -1
+	
+	#player.position.x += 16
+	$ForsakenAlly/BossSprite.material.set_shader_parameter("strength", 0)
+	$ColorRect.modulate.a = 1
+	$ForsakenAlly/BossSprite.scale.x = 1
+	dead = true
+	#player.after_red_boss = true
+	get_node("/root/World").red_boss_beaten = true
+	for child in get_children():
+		if child.has_method("retract_spike"):
+			child.retract_spike()
+	$ForsakenAlly/FinalPhaseParticles.emitting = false
+	$ForsakenAlly/HurtColl.set_deferred("disabled", true)
+	$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", true)
+	AudioManager.stop_song()
+	
+	if !get_node("/root/World").secret_boss_beaten:
+		$ForsakenAlly/BossAnimPlayer.play("Slow-Mo Fall")
+		self.create_tween().tween_property(boss, "position:x", boss.position.x-16, 1.8)
 		
+		var t = self.create_tween()
+		set_tween(t, Tween.TRANS_QUART, Tween.EASE_OUT)
+		t.tween_property(boss, "position:y", boss.position.y-8, 0.9)
+		set_tween(t, Tween.TRANS_QUART, Tween.EASE_IN)
+		await t.tween_property(boss, "position:y", boss.position.y, 0.9).finished
+		
+		#$ForsakenAlly/BossAnimPlayer.play("Lie Down")
+		await get_tree().create_timer(2, false).timeout
+	
 		$ForsakenAlly/BossAnimPlayer.play("Reach Out")
 		await get_tree().create_timer(4, false).timeout
 		
-		$Gate.open()
+		player.visible = true
+		player.paused = false
+		await self.create_tween().tween_property($ColorRect, "modulate:a", 0, 0.3).finished
+	else:
+		$ForsakenAlly/BossAnimPlayer.play("Slow-Mo Fall + Release Hermit")
+		tween_prop(tween1, Tween.TRANS_QUART, Tween.EASE_OUT, boss, "position:y", boss.position.y-8, 1.4)
+		await self.create_tween().tween_property(boss, "position:x", boss.position.x-(22.4/3.0), 1.4).finished
+		await get_tree().create_timer(0.7, false).timeout
 		
-	elif hit_mode == HitMode.DODGE:
-		dodge_player(0.3, false, true)
+		camera.shake(4, 0.03, 3)
+		camera.invert_color(1, 0.3)
+		
+		$HermitFleeSprite.position = boss.position
+		$HermitFleeSprite.modulate.a = 0.6
+		time = 0
+		tween_prop(tween1, Tween.TRANS_QUART, Tween.EASE_IN, boss, "position:y", boss.position.y+8, 0.7)
+		await self.create_tween().tween_property(boss, "position:x", boss.position.x-(25.6/3.0), 0.9).finished
+		await get_tree().create_timer(5, false).timeout
+		
+		player.visible = true
+		player.paused = false
+		await self.create_tween().tween_property($ColorRect, "modulate:a", 0, 0.3).finished
+		await get_tree().create_timer(1, false).timeout
+		player.update_animations = true
+		player.velocity.x = -player.x_speed/4.0
+		await get_tree().create_timer(0.5, false).timeout
+		player.velocity.x = 0 
+		await get_tree().create_timer(0.5, false).timeout
+		player.position.x = boss.position.x + 10
+		player.update_animations = false
+		player.get_node("AnimationPlayer").play("Hand On Shoulder")
+		await get_tree().create_timer(2.2, false).timeout
+		player.get_node("AnimationPlayer").play("Idle")
+		await get_tree().create_timer(1.3, false).timeout
+		self.create_tween().tween_property(player, "position:x", player.position.x - 2, 0.2)
+		await self.create_tween().tween_property(boss, "position:x", boss.position.x + 2, 0.2).finished
+		player.visible = false # hug
+		await get_tree().create_timer(3, false).timeout
+		boss.visible = false
+		player.visible = true
+		$Gate2.open()
+		get_node("/root/World").add_red_as_companion()
+	
+	player.update_animations = true
+	player.disable_movement(false)
+	$Gate.open()
+
 
 func toggle_hit_coll(mode: HitMode):
 	if mode == HitMode.DODGE:
@@ -516,12 +635,21 @@ func update_aim(delta):
 
 
 func intro_sequence():
+	AudioManager.stop_song()
 	if !has_seen_intro:
 		has_seen_intro = true
-		AudioManager.stop_song()
 		
-		if !get_node("/root/World").secret_boss_beaten:
-			pass
+		#if !get_node("/root/World").secret_boss_beaten:
+			#player.paused = true
+			##p.get_node("Red").visible = true
+			#camera.fade("000000", 1, 0, 0.2, 0.5)
+			##camera.zoom_camera(1.4, 0, Vector2(position.x+8, position.y-8*3))
+			##has_seen_intro = true
+			#player.position.y = 19*8
+			#player.visible = false
+			#await get_tree().create_timer(2, false).timeout
+			#player.paused = false
+			#player.visible = true
 		
 		
 		player.bubble_popped = true
@@ -529,16 +657,16 @@ func intro_sequence():
 		#player.get_node("BubbleSprite").modulate.a
 		player.disable_movement(true)
 		player.can_die = false
-		player.position.x = 35*8
+		player.position.x = 304#35*8
 		player.velocity.x = -player.x_speed
-		await get_tree().create_timer(1.16, false).timeout
+		await get_tree().create_timer(1.25, false).timeout
 		
 		player.velocity.x = 0 
 		
-		tween1 = self.create_tween()
-		tween1.tween_property($ForsakenAlly/BossSprite/Eyes, "modulate:a", 1, 0.5)
-		tween1.tween_interval(0.2)
-		await tween1.tween_property($ForsakenAlly/BossSprite/Eyes, "modulate:a", 0, 0.5).finished
+		#tween1 = self.create_tween()
+		#tween1.tween_property($ForsakenAlly/BossSprite/Eyes, "modulate:a", 1, 0.5)
+		#tween1.tween_interval(0.2)
+		#await tween1.tween_property($ForsakenAlly/BossSprite/Eyes, "modulate:a", 0, 0.5).finished
 		
 		$ForsakenAlly/BossAnimPlayer.play("Charge Shot")
 		var big_orb = big_flying_orb.instantiate()
@@ -587,21 +715,29 @@ func intro_sequence():
 		health += 1
 		#get_node("/root/World/MusicPlayer").stream_paused = false
 		AudioManager.resume_song()
+	else:
+		player.disable_movement(true)
+		player.position.x = 304#35*8
+		player.velocity.x = -player.x_speed
+		await get_tree().create_timer(0.7, false).timeout
+		player.velocity.x = 0 
+		player.disable_movement(false)
+	
 	$Gate.close()
 	$Gate2.close()
 	toggle_hit_coll(HitMode.DODGE)
 	boss_state = BossState.RESET
-	#get_node("/root/World").switch_music("res://Music/Everhood_The_Final_Battle.mp3")
+	#boss_state = BossState.SPIKE
 	AudioManager.play_song(load("res://Music/Everhood_The_Final_Battle.mp3"))
 
 func set_tween(tween: Tween, t: int, e: int):
 	tween.set_trans(t)
 	tween.set_ease(e)
 
-func tween_prop(tween: Tween, t: int, e: int, target, prop: String, val, time: float):
+func tween_prop(tween: Tween, t: int, e: int, target, prop: String, val, delay: float):
 	tween = self.create_tween()
 	set_tween(tween, t, e)
-	tween.tween_property(target, prop, val, time)
+	tween.tween_property(target, prop, val, delay)
 
 func create_orb(orb_pos: Vector2, orb_speed: Vector2, orb_acc: Vector2, friction_x: bool, friction_y: bool):
 	var orb = flying_orb.instantiate()
@@ -612,7 +748,9 @@ func create_orb(orb_pos: Vector2, orb_speed: Vector2, orb_acc: Vector2, friction
 	orb.friction_y = friction_y
 	add_child(orb)
 
+func play_sfx(sfx_name: String):
+	AudioManager.play_audio(sfxs.get_sfx(sfx_name))
 
-func _on_body_entered(_body):
-	$ActivationColl.set_deferred("disabled", true)
-	intro_sequence()
+#func _on_body_entered(_body):
+	#$ActivationColl.set_deferred("disabled", true)
+	#intro_sequence()

@@ -1,0 +1,65 @@
+[gd_scene load_steps=10 format=3 uid="uid://dw5wln6mhk0on"]
+
+[ext_resource type="Texture2D" uid="uid://bpdssul6j0ho5" path="res://Assets/Speed Circle Effect.png" id="1_g2bqf"]
+[ext_resource type="Script" path="res://Particles/speed_circle.gd" id="2_xptay"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6k44s"]
+atlas = ExtResource("1_g2bqf")
+region = Rect2(0, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8cl0s"]
+atlas = ExtResource("1_g2bqf")
+region = Rect2(16, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jjhu6"]
+atlas = ExtResource("1_g2bqf")
+region = Rect2(32, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_apj1q"]
+atlas = ExtResource("1_g2bqf")
+region = Rect2(48, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k2by7"]
+atlas = ExtResource("1_g2bqf")
+region = Rect2(64, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nyxpl"]
+atlas = ExtResource("1_g2bqf")
+region = Rect2(80, 0, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dls4k"]
+animations = [{
+"frames": [{
+"duration": 0.1,
+"texture": SubResource("AtlasTexture_6k44s")
+}, {
+"duration": 0.1,
+"texture": SubResource("AtlasTexture_8cl0s")
+}, {
+"duration": 0.1,
+"texture": SubResource("AtlasTexture_jjhu6")
+}, {
+"duration": 0.1,
+"texture": SubResource("AtlasTexture_apj1q")
+}, {
+"duration": 0.1,
+"texture": SubResource("AtlasTexture_k2by7")
+}, {
+"duration": 0.1,
+"texture": SubResource("AtlasTexture_nyxpl")
+}, {
+"duration": 0.1,
+"texture": null
+}],
+"loop": false,
+"name": &"default",
+"speed": 1.0
+}]
+
+[node name="SpeedCircle" type="AnimatedSprite2D"]
+z_index = 5
+sprite_frames = SubResource("SpriteFrames_dls4k")
+autoplay = "default"
+frame = 6
+frame_progress = 1.0
+script = ExtResource("2_xptay")

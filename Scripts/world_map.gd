@@ -28,9 +28,9 @@ func _ready():
 		#%ItemMap.erase_cell(0, pos)
 	
 func _process(_delta):
-	#if open:
-		if player.velocity.x != 0:
-			update_player_icon()
+	if open:
+		#if player.velocity.x != 0:
+		update_player_icon()
 
 func update_player_icon():
 	if !in_subarea:
@@ -62,7 +62,7 @@ func add_room(room_coords: Vector2):
 	if %RoomMap.get_cell_source_id(0, Vector2i(room_coords)) == -1:
 		latest_added_room = room_coords
 		%RoomMap.set_cell(0, room_coords, 0, room_coords, 0)
-		world.completion_percentage += 0.15
+		world.add_to_completion_percentage("Room")
 
 #func update_items():
 	#for pos in item_positions:
@@ -93,7 +93,7 @@ func add_room(room_coords: Vector2):
 	##	update_items()
 
 func add_apple_from_room(pos: Vector2):
-	if world.room_coords == latest_added_room:
+	#if world.room_coords == latest_added_room:
 		var item_map_pos = Vector2(38.0 * world.room_coords.x + pos.x/8.0, 24.0 * world.room_coords.y + pos.y/8.0 - 4) / 4.0
 		#item_map_pos = Vector2(item_map_pos.x, item_map_pos.y.round())
 		%ItemMap.set_cell(0, Vector2i(item_map_pos.round()), 1, Vector2i(0, 0), 0)
@@ -104,3 +104,7 @@ func add_apple_from_pos(pos: Vector2i):
 func remove_apple_from_map(pos: Vector2):
 	var item_map_pos = Vector2(38.0 * world.room_coords.x + pos.x/8.0, 24.0 * world.room_coords.y + pos.y/8.0 - 4) / 4.0
 	%ItemMap.erase_cell(0, Vector2i(item_map_pos.round()))
+
+func enable_item_map():
+	$MapComps/ItemMap.visible = true
+	$MapComps/CompletionText.visible = true

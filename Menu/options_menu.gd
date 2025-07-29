@@ -40,11 +40,18 @@ func _on_joy_connection_changed(_device_id, connected):
 			get_viewport().gui_release_focus()
 			$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.grab_focus()
 			Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	else:
+		$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.grab_focus()
 	
 	if !connected:
 		$MarginContainer/VBoxContainer/MouseHBox.visible = true
+		$MarginContainer/VBoxContainer/VideoVBox/BorderlessCheck.focus_neighbor_bottom = "../../MouseHBox/MouseMenusCheck"
+		$MarginContainer/VBoxContainer/BackHBox/BackButton.focus_neighbor_top = "../../MouseHBox/MouseMenusCheck"
 	else:
+		
 		$MarginContainer/VBoxContainer/MouseHBox.visible = false
+		$MarginContainer/VBoxContainer/VideoVBox/BorderlessCheck.focus_neighbor_bottom = "../../BackHBox/BackButton"
+		$MarginContainer/VBoxContainer/BackHBox/BackButton.focus_neighbor_top = "../../VideoVBox/BorderlessCheck"
 
 func _input(event):
 	if event.is_action_released("UI Back"):
@@ -73,21 +80,29 @@ func save_settings():
 	SaveManager.save_settings()
 
 
-func _on_sfx_slider_value_changed(value):
+func _on_sfx_slider_value_changed(value, propagate_shift: bool = true):
 	sfx_slider_value = value
 	if value == -25:
 		AudioServer.set_bus_mute(2, true)
 	else:
 		AudioServer.set_bus_mute(2, false)
 		AudioServer.set_bus_volume_db(2, value)
+	
+	if Input.is_action_pressed("Dash") and propagate_shift:
+		$MarginContainer/VBoxContainer/AudioHBox/MusicVbox/MusicSlider.value = value
+		_on_music_slider_value_changed(value, false)
 
-func _on_music_slider_value_changed(value):
+func _on_music_slider_value_changed(value, propagate_shift: bool = true):
 	music_slider_value = value
 	if value == -25:
 		AudioServer.set_bus_mute(1, true)
 	else:
 		AudioServer.set_bus_mute(1, false)
 		AudioServer.set_bus_volume_db(1, value)
+	
+	if Input.is_action_pressed("Dash") and propagate_shift:
+		$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.value = value
+		_on_sfx_slider_value_changed(value, false)
 
 
 func _on_borderless_check_toggled(toggled_on):

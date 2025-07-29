@@ -1,0 +1,55 @@
+[gd_scene load_steps=7 format=3 uid="uid://bu7trvqlflqxu"]
+
+[ext_resource type="Script" path="res://Particles/dash_particles.gd" id="1_mbn0v"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_llaft"]
+blend_mode = 1
+
+[sub_resource type="Curve" id="Curve_2i3vt"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.981482, 0.483516), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_qmv7d"]
+offsets = PackedFloat32Array(0, 0.62234, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="Gradient" id="Gradient_vjx81"]
+colors = PackedColorArray(0.219501, 0.219501, 0.219501, 1, 1, 1, 1, 1)
+
+[sub_resource type="Curve" id="Curve_bq30u"]
+min_value = -1.0
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, -1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="DashParticles" type="Node2D"]
+script = ExtResource("1_mbn0v")
+
+[node name="Particles" type="CPUParticles2D" parent="."]
+z_index = 4
+material = SubResource("CanvasItemMaterial_llaft")
+position = Vector2(16, 0)
+emitting = false
+amount = 30
+lifetime = 2.0
+one_shot = true
+explosiveness = 0.96
+lifetime_randomness = 0.8
+emission_shape = 3
+emission_rect_extents = Vector2(35, 3)
+spread = 5.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 10.0
+initial_velocity_max = 40.0
+linear_accel_min = -10.0
+linear_accel_max = -1.0
+damping_min = 20.0
+damping_max = 20.0
+scale_amount_min = 1.2
+scale_amount_max = 3.0
+scale_amount_curve = SubResource("Curve_2i3vt")
+color = Color(0.999583, 0.741978, 0.386877, 0.984314)
+color_ramp = SubResource("Gradient_qmv7d")
+color_initial_ramp = SubResource("Gradient_vjx81")
+hue_variation_min = -0.2
+hue_variation_max = 0.2
+hue_variation_curve = SubResource("Curve_bq30u")

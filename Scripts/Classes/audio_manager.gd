@@ -21,6 +21,7 @@ func play_song(stream: AudioStream, playback_pos: float = 0.0):
 	if !audioPlayer:
 		audioPlayer = AudioStreamPlayer.new()
 		audioPlayer.bus = "Music"
+		audioPlayer.process_mode = Node.PROCESS_MODE_ALWAYS
 		add_child(audioPlayer)
 		
 	if audioPlayer.has_stream_playback():
@@ -35,11 +36,11 @@ func remove_audio_player(instance: AudioStreamPlayer):
 	instance.queue_free()
 
 func pause_song():
-	if audioPlayer.has_stream_playback():
+	if audioPlayer and audioPlayer.has_stream_playback():
 		audioPlayer.stream_paused = true
 
 func resume_song():
-	if audioPlayer.has_stream_playback():
+	if audioPlayer and audioPlayer.has_stream_playback():
 		audioPlayer.stream_paused = false
 
 func stop_song():

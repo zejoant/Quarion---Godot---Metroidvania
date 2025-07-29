@@ -1,8 +1,20 @@
-[gd_scene load_steps=6 format=3 uid="uid://csfbwylnbjwb2"]
+[gd_scene load_steps=11 format=3 uid="uid://csfbwylnbjwb2"]
 
 [ext_resource type="Texture2D" uid="uid://beljh5i11yqe4" path="res://Assets/Crumble Middle.png" id="1_etidn"]
 [ext_resource type="Script" path="res://Objects/collapsing_platform.gd" id="1_qacrh"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_nmhw7"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_dhxpg"]
 [ext_resource type="Texture2D" uid="uid://c5cnqwc683tb1" path="res://Assets/Crumble Edge.png" id="3_p7lbe"]
+[ext_resource type="AudioStream" uid="uid://bbtbo7w7alaog" path="res://Sfx/statue open mouth.wav" id="4_nahjn"]
+
+[sub_resource type="Resource" id="Resource_mxv1j"]
+script = ExtResource("3_dhxpg")
+tag = "crumble"
+stream = ExtResource("4_nahjn")
+
+[sub_resource type="Resource" id="Resource_04tg1"]
+script = ExtResource("2_nmhw7")
+sound_effects = Array[ExtResource("3_dhxpg")]([SubResource("Resource_mxv1j")])
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cjhfl"]
 size = Vector2(8.00001, 1)
@@ -10,11 +22,12 @@ size = Vector2(8.00001, 1)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tpeig"]
 size = Vector2(8, 5)
 
-[node name="CollapsingPlatform" type="StaticBody2D"]
+[node name="CollapsingPlatform" type="StaticBody2D" groups=["Crumble"]]
 z_index = 3
 position = Vector2(58, 41)
 input_pickable = true
 script = ExtResource("1_qacrh")
+sfxs = SubResource("Resource_04tg1")
 
 [node name="Center" type="Sprite2D" parent="."]
 texture_repeat = 2

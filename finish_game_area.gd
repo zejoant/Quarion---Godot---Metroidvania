@@ -17,12 +17,13 @@ func _ready():
 
 func _input(event):
 	if event.is_action_pressed("ui_up") and player_in_area and player.velocity.x == 0:
-		#player.can_move = false
 		$InputIndicator.visible = false
 		player.paused = true
 		camera.fade("000000", 1, 0.5, 1, 0.5)
 		
 		await get_tree().create_timer(0.7, false).timeout #fix antenna
+		if world.secret_boss_beaten and world.red_as_companion:
+			world.red_as_companion.visible = false
 		player.visible = false
 		$PlayerSprite.visible = true
 		camera.get_node("UILayer").visible = false
@@ -91,18 +92,11 @@ func _input(event):
 		await get_tree().create_timer(1.5, false).timeout #transition to space
 		
 		change_to_outro()
-		#var outro_cutscene = load("res://outro_cutscene.tscn").instantiate()
-		#outro_cutscene.death_count = player.death_count
-		#outro_cutscene.jump_count = player.jump_count
-		#outro_cutscene.completion_time = world.timer
-		#outro_cutscene.completion_percentage = world.completion_percentage
-		#get_tree().root.add_child(outro_cutscene)
-		#get_tree().current_scene = outro_cutscene
-		#world.queue_free()
-		#get_tree().change_scene_to_file("res://outro_cutscene.tscn")
-		
+
+
 func change_to_outro():
 	var outro_cutscene = load("res://outro_cutscene.tscn").instantiate()
+	outro_cutscene.good_ending = world.secret_boss_beaten
 	outro_cutscene.death_count = player.death_count
 	outro_cutscene.jump_count = player.jump_count
 	outro_cutscene.completion_time = world.timer

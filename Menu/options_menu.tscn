@@ -4,7 +4,7 @@
 [ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="2_a3tmx"]
 [ext_resource type="Theme" uid="uid://b6lhu6b1qu0a3" path="res://Themes/button_theme_new.tres" id="3_ghitf"]
 [ext_resource type="Texture2D" uid="uid://cywpsaa73tid3" path="res://Assets/MenuTextures/Button Texture.png" id="4_dsysb"]
-[ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/prstartk.ttf" id="5_e33ne"]
+[ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/Big Font.ttf" id="5_e33ne"]
 [ext_resource type="Theme" uid="uid://2035heuy0kah" path="res://Themes/slider_theme.tres" id="6_wbg1x"]
 [ext_resource type="Theme" uid="uid://dpgqirdxhg45n" path="res://Themes/check_box_theme.tres" id="8_hcnu7"]
 [ext_resource type="Texture2D" uid="uid://c2dsudt2on35a" path="res://Assets/MenuTextures/Checkbox Checked.png" id="9_goqop"]
@@ -351,6 +351,8 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_uwmf5")
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer/BackHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
+focus_neighbor_top = NodePath("../../MouseHBox/MouseMenusCheck")
+focus_neighbor_bottom = NodePath("../../AudioHBox/SfxVBox/SfxSlider")
 theme = ExtResource("3_ghitf")
 text = "Back"
 

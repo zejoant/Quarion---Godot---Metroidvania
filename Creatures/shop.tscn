@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://b2w0yd38s86as"]
+[gd_scene load_steps=35 format=3 uid="uid://b2w0yd38s86as"]
 
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_j8p5t"]
 [ext_resource type="Script" path="res://Creatures/shop.gd" id="1_rdm87"]
@@ -7,6 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://cuy81ixe0v84k" path="res://Sfx/buy.wav" id="4_flmjn"]
 [ext_resource type="AudioStream" uid="uid://c21duyyxn6wmu" path="res://Sfx/select denied 2.wav" id="5_kc10a"]
 [ext_resource type="Texture2D" uid="uid://ei6wc530bgtj" path="res://Assets/Shop Menu.png" id="7_wyv82"]
+[ext_resource type="Theme" uid="uid://cy86cwc1oigm7" path="res://Themes/small_font_theme.tres" id="8_48bfo"]
 
 [sub_resource type="Resource" id="Resource_unrtb"]
 script = ExtResource("3_3cgbn")
@@ -266,6 +267,40 @@ texture = ExtResource("7_wyv82")
 offset = Vector2(0.5, 0.5)
 region_enabled = true
 region_rect = Rect2(16, 160, 91, 11)
+
+[node name="ExitInputComponents" type="Node2D" parent="ShopUIContainer"]
+position = Vector2(-304, 1)
+
+[node name="KeyboardInput" type="Sprite2D" parent="ShopUIContainer/ExitInputComponents"]
+position = Vector2(224, 165)
+texture = ExtResource("1_j8p5t")
+offset = Vector2(0.5, 0.5)
+region_enabled = true
+region_rect = Rect2(112, 32, 17, 9)
+
+[node name="PS4Input" type="Sprite2D" parent="ShopUIContainer/ExitInputComponents"]
+visible = false
+position = Vector2(227, 165)
+texture = ExtResource("1_j8p5t")
+offset = Vector2(0.5, 0.5)
+region_enabled = true
+region_rect = Rect2(130, 32, 9, 9)
+
+[node name="XboxInput" type="Sprite2D" parent="ShopUIContainer/ExitInputComponents"]
+visible = false
+position = Vector2(227, 165)
+texture = ExtResource("1_j8p5t")
+offset = Vector2(0.5, 0.5)
+region_enabled = true
+region_rect = Rect2(140, 32, 9, 9)
+
+[node name="Label" type="Label" parent="ShopUIContainer/ExitInputComponents"]
+offset_left = 235.0
+offset_top = 163.0
+offset_right = 275.0
+offset_bottom = 186.0
+theme = ExtResource("8_48bfo")
+text = "Exit"
 
 [node name="UICover" type="ColorRect" parent="ShopUIContainer"]
 z_index = 1

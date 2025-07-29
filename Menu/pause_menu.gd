@@ -4,6 +4,8 @@ var exiting = false
 
 var paused = false
 
+var song_paused: bool
+
 func _ready():
 	hide()
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
@@ -22,17 +24,17 @@ func pause_menu():
 	if paused:
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		hide()
-		#get_node("/root/World").process_mode = PROCESS_MODE_INHERIT
+		AudioManager.audioPlayer.stream_paused = song_paused
 		get_tree().paused = false
 	else:
-		#get_node("/root/World").process_mode = PROCESS_MODE_DISABLED
+		song_paused = AudioManager.audioPlayer.stream_paused
+		AudioManager.pause_song()
 		get_tree().paused = true
 		show()
 		if Input.get_connected_joypads().size() > 0 or !OptionsMenu.use_mouse_for_menus:
 			if !Input.joy_connection_changed.is_connected(Callable(self, "_on_joy_connection_changed")):
 				Input.joy_connection_changed.connect(_on_joy_connection_changed)
 			$MarginContainer/VBoxContainer/ResumeButton.grab_focus()
-			#pause_menu.get_node("MarginContainer/VBoxContainer/ResumeButton").grab_focus()
 		else:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	paused = !paused

@@ -59,7 +59,7 @@ offset_bottom = 242.0
 color = Color(0, 0, 0, 1)
 
 [node name="Player" parent="." instance=ExtResource("2_sly73")]
-position = Vector2(64, 63)
+position = Vector2(-100, -100)
 
 [node name="Camera" parent="." instance=ExtResource("3_qv8w2")]
 

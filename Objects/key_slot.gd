@@ -32,7 +32,7 @@ func _input(event):
 
 
 func unlock():
-	get_node("/root/World").save_room_state(position) #save state of key slot
+	get_node("/root/World").save_room_state(position, true) #save state of key slot
 	var tween = self.create_tween()
 	tween.set_ease(Tween.EASE_IN)
 	tween.set_trans(Tween.TRANS_QUAD)

@@ -4,7 +4,7 @@
 [ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="2_cuv06"]
 [ext_resource type="Theme" uid="uid://b6lhu6b1qu0a3" path="res://Themes/button_theme_new.tres" id="3_75l38"]
 [ext_resource type="Texture2D" uid="uid://cywpsaa73tid3" path="res://Assets/MenuTextures/Button Texture.png" id="4_ehvr7"]
-[ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/prstartk.ttf" id="5_64eyr"]
+[ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/Big Font.ttf" id="5_64eyr"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6juxa"]
 shader = ExtResource("2_cuv06")

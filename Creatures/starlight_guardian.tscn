@@ -60,18 +60,21 @@ shader = ExtResource("9_dwrfa")
 shader_parameter/color = Color(1, 1, 1, 1)
 shader_parameter/strength = 0.0
 shader_parameter/ignore_black = false
+shader_parameter/replace_color = Color(1, 1, 1, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_44hx8"]
 shader = ExtResource("9_dwrfa")
 shader_parameter/color = Color(1, 1, 1, 1)
 shader_parameter/strength = 0.0
 shader_parameter/ignore_black = false
+shader_parameter/replace_color = Color(1, 1, 1, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_orctt"]
 shader = ExtResource("9_dwrfa")
 shader_parameter/color = Color(1, 1, 1, 1)
 shader_parameter/strength = 0.0
 shader_parameter/ignore_black = false
+shader_parameter/replace_color = Color(1, 1, 1, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_3m5f4"]
 radius = 13.0384

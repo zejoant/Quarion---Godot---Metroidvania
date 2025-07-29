@@ -107,7 +107,7 @@ func rain():
 		var bullet = load("res://Objects/bullet.tscn").instantiate()
 		bullet.setup(2.0, Vector2(rng.randf_range(-0.5, 0.5), 1), Vector2(rng.randi_range(3, 35)*8, 0), true, true, 40)
 		call_deferred("add_child", bullet) 
-		await get_tree().create_timer(0.2-float(difficulty)*0.045, false).timeout
+		await get_tree().create_timer(0.2-float(difficulty)*0.04, false).timeout
 		bullet_cooldown = false
 	
 
@@ -206,7 +206,7 @@ func bouncing_attack():
 			attack_state = 4
 			$Boss/AnimationPlayer.play("Sad Ground Hit")
 			$Boss/DamageColl.disabled = true
-			await get_tree().create_timer(3-float(difficulty)/1.5, false).timeout
+			await get_tree().create_timer(3-float(difficulty)*0.6, false).timeout
 			if attack_state == 4 and health:
 				reset_lunge()
 		else:
@@ -329,8 +329,8 @@ func param_setup():
 		difficulty = 1
 
 func _on_body_entered(body):
+	player.bubble_invincibility_time = 0.5
 	$ActivateBossColl.set_deferred("disabled", true)
-	boss.get_node("DamageColl").set_deferred("disabled", false)
 	AudioManager.play_song(load("res://Music/Hi GI Joe!.wav"))
 	
 	player = body
@@ -341,6 +341,7 @@ func _on_body_entered(body):
 	
 	await self.create_tween().tween_interval(2).finished
 	#get_node("/root/World/Camera").radial_blur(0.03, 0.6, 12)
+	boss.get_node("DamageColl").set_deferred("disabled", false)
 	AudioManager.play_audio(sfxs.get_sfx("scream"))
 	get_node("/root/World/Camera").radial_blur(0.03, 0.6, 12)
 	boss.visible = true
@@ -361,10 +362,10 @@ func _on_hit_area_body_entered(body): #damage boss
 	body.bounce(body.jump_vel)
 
 func die():
+	player.bubble_invincibility_time = 0.3
 	$Boss/AnimationPlayer.play("Default")
-	#get_node("/root/World/MusicPlayer").stop()
 	AudioManager.pause_song()
-	get_node("/root/World").save_room_state($ActivateBossColl.position)
+	get_node("/root/World").save_room_state($ActivateBossColl.position, true)
 	AudioManager.play_audio(sfxs.get_sfx("death charge"), 1.44)
 	get_node("/root/World/Camera").zoom_camera(1.8, 3)
 	tween2 = self.create_tween()
@@ -382,10 +383,8 @@ func die():
 	$Boss/SilhouetteParticles.visible = false
 	$Boss/DeathParticles.emitting = true
 	$Boss/DeathParticles2.emitting = true
-	get_node("/root/World").completion_percentage += 5
 	get_node("/root/World/Camera").shake(4, 0.03, 3)
 	get_node("/root/World/Camera").invert_color(1, 0.3)
-	#get_node("/root/World").resume_previous_music()
 	AudioManager.resume_previous_song()
 
 func set_shader_value(value: float, path: String, param: String):

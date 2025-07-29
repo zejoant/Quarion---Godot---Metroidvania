@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=6 format=3 uid="uid://dpgqirdxhg45n"]
 
-[ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/prstartk.ttf" id="1_h3o7a"]
+[ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/Big Font.ttf" id="1_h3o7a"]
 [ext_resource type="Texture2D" uid="uid://c2dsudt2on35a" path="res://Assets/MenuTextures/Checkbox Checked.png" id="2_3t8dn"]
 [ext_resource type="Texture2D" uid="uid://d10ti04j6bxh7" path="res://Assets/MenuTextures/CheckBox Unchecked.png" id="3_283wv"]
 [ext_resource type="Texture2D" uid="uid://cywpsaa73tid3" path="res://Assets/MenuTextures/Button Texture.png" id="4_8o5af"]

@@ -1,0 +1,21 @@
+[gd_scene load_steps=6 format=3 uid="uid://dey4k01lm3p46"]
+
+[ext_resource type="Shader" path="res://Shaders/palette_swap.gdshader" id="1_3ryfl"]
+[ext_resource type="Script" path="res://Creatures/companion.gd" id="1_r57tk"]
+[ext_resource type="Texture2D" uid="uid://srrdnqsgkk6u" path="res://Assets/Player Palettes.png" id="2_fw56m"]
+[ext_resource type="Texture2D" uid="uid://b4a3gpanglo75" path="res://Assets/Character Sprite Sheet.png" id="3_h611a"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sgua2"]
+shader = ExtResource("1_3ryfl")
+shader_parameter/use_palette_alpha = false
+shader_parameter/palette_choice = 6
+shader_parameter/color_tolerance = 0.01
+shader_parameter/palette = ExtResource("2_fw56m")
+
+[node name="Companion" type="Sprite2D"]
+z_index = 4
+material = SubResource("ShaderMaterial_sgua2")
+texture = ExtResource("3_h611a")
+region_enabled = true
+region_rect = Rect2(0, 0, 16, 16)
+script = ExtResource("1_r57tk")

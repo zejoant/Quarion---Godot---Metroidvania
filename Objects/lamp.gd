@@ -17,7 +17,10 @@ func activate():
 		$CPUParticles2D.restart()  
 		$CPUParticles2D.emitting = true
 		$AnimationPlayer.play("Active")
-		world.save_checkpoint_room(position)
+		if world.changed_room_frames <= 3:
+			world.save_checkpoint_room(position)
+			world.reset_room_objects("Crumble")
+			world.temporary_actions_to_permanent()
 		cooldown = true
 		await get_tree().create_timer(2, false).timeout
 		cooldown = false

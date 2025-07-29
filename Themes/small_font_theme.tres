@@ -1,0 +1,11 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://cy86cwc1oigm7"]
+
+[ext_resource type="FontFile" uid="uid://dcrk43hh0erpd" path="res://Fonts/Small Font.ttf" id="1_y0jcq"]
+
+[resource]
+Label/colors/font_color = Color(0.686275, 0.65098, 0.552941, 1)
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/constants/line_spacing = 1
+Label/constants/outline_size = 4
+Label/font_sizes/font_size = 6
+Label/fonts/font = ExtResource("1_y0jcq")

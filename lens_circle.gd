@@ -52,6 +52,8 @@ func change_lens(room_coords, instant: bool = false, behind_foreground: int = 0)
 		#lens_size = 3
 	elif room_coords == Vector2(0, 8):
 		lens_size = 3
+	elif room_coords == Vector2(0, 5):
+		lens_size = 2
 	elif room_coords == Vector2(9, 5):
 		lens_size = 2
 	elif room_coords == Vector2(8, 5):
@@ -82,11 +84,11 @@ func change_lens(room_coords, instant: bool = false, behind_foreground: int = 0)
 				if scale == default_size:
 					scale = Vector2(0.1, 0.1)
 			tween.parallel().tween_property($CoverRect, "modulate:a", 0, 2)
-			tween.parallel().tween_property(self, "scale", Vector2(lens_size, lens_size), 2)
+			tween.parallel().tween_property(self, "scale", Vector2(lens_size, lens_size), 1.5)
 		else:
 			$CoverRect.modulate.a = 0
 			action = "to_light"
-			tween.parallel().tween_property(self, "scale", default_size, 3)
+			tween.parallel().tween_property(self, "scale", default_size, 2.5)
 	else:
 		if lens_size != 0:
 			scale = Vector2(lens_size, lens_size)

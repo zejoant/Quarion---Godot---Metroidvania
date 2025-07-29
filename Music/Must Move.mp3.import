@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://pqwjilc67k3f"
+path="res://.godot/imported/Must Move.mp3-5dd6c570b0e3de88a028716b77cc868b.mp3str"
+
+[deps]
+
+source_file="res://Music/Must Move.mp3"
+dest_files=["res://.godot/imported/Must Move.mp3-5dd6c570b0e3de88a028716b77cc868b.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

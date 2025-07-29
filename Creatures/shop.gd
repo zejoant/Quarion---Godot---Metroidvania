@@ -38,12 +38,23 @@ func _ready():
 		$ShopUIContainer/BubbleButton.focus_mode = 0 as Control.FocusMode
 
 	
-func _on_joy_connection_changed(_device_id, connected):
+func _on_joy_connection_changed(device_id, connected):
 	release_all_focus()
 	if !connected and OptionsMenu.use_mouse_for_menus:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		$ShopUIContainer/ExitInputComponents/PS4Input.visible = false
+		$ShopUIContainer/ExitInputComponents/XboxInput.visible = false
+		$ShopUIContainer/ExitInputComponents/KeyboardInput.visible = true
 	else:
 		#$ShopUIContainer/KeyButton.grab_focus()
+		$ShopUIContainer/ExitInputComponents/KeyboardInput.visible = false
+		if Input.get_joy_name(device_id) == "PS4 Controller":
+			$ShopUIContainer/ExitInputComponents/PS4Input.visible = true
+		elif Input.get_joy_name(device_id) == "XInput Gamepad":
+			$ShopUIContainer/ExitInputComponents/XboxInput.visible = true
+		else:
+			$ShopUIContainer/ExitInputComponents/KeyboardInput.visible = true
+			
 		find_next_focus($ShopUIContainer/BubbleButton)
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 
@@ -169,7 +180,7 @@ func _on_key_button_pressed():
 	
 	AudioManager.play_audio(sfxs.get_sfx("buy"))
 	player.green_key_state = "collected"
-	get_node("/root/World").completion_percentage += 2
+	get_node("/root/World").add_to_completion_percentage("Shop")
 	bought_items[0] = true
 	get_node("/root/World/Camera").set_keys("Green")
 	player.update_apple_count(-10)
@@ -187,9 +198,9 @@ func _on_amulet_button_pressed():
 	
 	AudioManager.play_audio(sfxs.get_sfx("buy"))
 	player.amulet_pieces += 1
-	get_node("/root/World").completion_percentage += 1
+	get_node("/root/World").add_to_completion_percentage("AmuletPiece")
 	bought_items[1] = true
-	get_node("/root/World/Player").update_apple_count(-15)
+	get_node("/root/World/Player").update_apple_count(-18)
 	exit_shop()
 	get_node("/root/World/Camera").collect_amulet_piece()
 
@@ -205,10 +216,10 @@ func _on_bubble_button_pressed():
 	find_next_focus($ShopUIContainer/BubbleButton)
 	
 	AudioManager.play_audio(sfxs.get_sfx("buy"))
-	get_node("/root/World").completion_percentage += 2
+	get_node("/root/World").add_to_completion_percentage("Shop")
 	player.bubble_action(true, false)
 	bought_items[2] = true
-	get_node("/root/World/Player").update_apple_count(-26)
+	get_node("/root/World/Player").update_apple_count(-22)
 
 
 func _on_body_entered(body):

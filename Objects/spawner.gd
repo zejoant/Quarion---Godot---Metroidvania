@@ -4,12 +4,6 @@ extends Node2D
 @export var object : PackedScene = load("res://Objects/boulder.tscn")
 var cooldown = false
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	print(object.resource_name)
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(_delta):
 	if !cooldown:
 		cooldown = true
@@ -19,6 +13,4 @@ func _physics_process(_delta):
 
 func spawn_object():
 	var inst = object.instantiate()
-	#if inst.name == "Boulder":
-	#	pass
 	call_deferred("add_child", inst)

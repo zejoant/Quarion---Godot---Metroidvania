@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://xolt4j5mm04m"]
+[gd_scene load_steps=22 format=3 uid="uid://xolt4j5mm04m"]
 
 [ext_resource type="PackedScene" uid="uid://coud47gbx6bt8" path="res://tile_map.tscn" id="1_io0rd"]
 [ext_resource type="PackedScene" uid="uid://bw1r3nxt3ya8x" path="res://Objects/gate.tscn" id="2_bfuxr"]
@@ -82,6 +82,28 @@ animations = [{
 "texture": null
 }],
 "loop": false,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_31atv"]
+atlas = ExtResource("4_p5a7d")
+region = Rect2(224, 192, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bl38t"]
+atlas = ExtResource("4_p5a7d")
+region = Rect2(256, 192, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_t6bf6"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_31atv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bl38t")
+}],
+"loop": true,
 "name": &"default",
 "speed": 5.0
 }]
@@ -196,3 +218,19 @@ frame_progress = 1.0
 visible = false
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("7_0x6jf")
+
+[node name="BlackCover" type="ColorRect" parent="BossEnvironment"]
+modulate = Color(1, 1, 1, 0)
+z_index = 4
+offset_left = -152.0
+offset_top = -190.0
+offset_right = 471.0
+offset_bottom = 331.0
+color = Color(0, 0, 0, 1)
+
+[node name="HermitFleeSprite" type="AnimatedSprite2D" parent="BossEnvironment"]
+modulate = Color(1, 1, 1, 0)
+z_index = 5
+sprite_frames = SubResource("SpriteFrames_t6bf6")
+autoplay = "default"
+flip_h = true

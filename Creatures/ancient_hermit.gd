@@ -30,7 +30,6 @@ var attack_count = 0
 
 var aim_pos: Vector2
 var same_dir_time: float = 0
-#var follow_pos: Vector2
 
 var time = 0
 var lev_distance: float = 1
@@ -43,6 +42,8 @@ var tween1: Tween
 var teleportTween: Tween
 
 var long_afterimage: bool = false
+
+var hermit_flee: bool = false
 
 var paused: bool = false
 
@@ -96,7 +97,10 @@ func _physics_process(_delta):
 			if tween1:
 				tween1.kill()
 			tween1 = self.create_tween()
-			await tween1.tween_interval(1).finished
+			if health > 3:
+				await tween1.tween_interval(1).finished
+			else:
+				await tween1.tween_interval(0.4).finished
 			choose_attack()
 		elif boss_state == BossState.AROUND_SHOTS:
 			around_shots()
@@ -118,6 +122,10 @@ func _physics_process(_delta):
 		if afterimage_active:
 			afterimage()
 		
+		time += 1
+	
+	if hermit_flee:
+		p.get_node("HermitFleeSprite").position = Vector2(152.0 - float(time/2.2), 96.0 - 4.0*sin(float(time)/20.0)*sqrt(float(time)/4.0) - float(time/4.0))
 		time += 1
 
 func second_phase_fakout():
@@ -876,7 +884,8 @@ func _hit_on_head(body):
 		body.bounce(body.jump_vel)
 		cam.shake(4, 0.03, 3)
 		enable_wallspikes(false)
-		tween1.kill()
+		if tween1:
+			tween1.kill()
 		teleportTween.kill()
 		
 		#glass shield stuff
@@ -929,7 +938,6 @@ func _hit_on_head(body):
 		if health == 0:
 			die()
 			return
-		print(health)
 		
 		if air_state == AirState.LEVITATING:
 			var t = self.create_tween()
@@ -960,18 +968,28 @@ func _hit_on_head(body):
 			boss_state = BossState.CHOOSE_ATTACK
 
 func die():
+	#cam.flash(1, 0, 0.1, 0.2)
+	player.velocity = Vector2(0, 0)
+	player.disable_movement(true)
+	player.visible = false
+	player.paused = true
+	player.position.y = 20*8
+	p.get_node("BlackCover").modulate.a = 1
 	set_hit_mode(HitMode.GHOST)
 	AudioManager.stop_song()
 	boss_state = BossState.IDLE
 	get_node("/root/World").secret_boss_beaten = true
 	#get_node("/root/World").save_room_state(Vector2(168, 148))
 	player.bubble_invincibility_time = 0.3
-	get_node("/root/World").completion_percentage += 2
+	get_node("/root/World").add_to_completion_percentage("Hermit")
 	
 	air_state = AirState.GROUNDED
-	if position != Vector2(152, 72):
-		teleport(Vector2(152, 72), true)
-		await get_tree().create_timer(0.42, false).timeout
+	position = Vector2(152, 96)
+	cam.zoom_camera(1.4, 0)
+	#position = Vector2(152, 72)
+	#if position != Vector2(152, 72):
+	#	teleport(Vector2(152, 72), true)
+	#	await get_tree().create_timer(0.42, false).timeout
 	
 	$AnimationPlayer.play("implode")
 	AudioManager.play_audio(load("res://Sfx/power up charge.wav"), 1.543)
@@ -979,13 +997,27 @@ func die():
 	cam.invert_color(1, 0.2)
 	AudioManager.play_audio(sfxs.get_sfx("hit"))
 	AudioManager.play_audio(sfxs.get_sfx("death_explosion"))
-	afterimage_active = false
+	
 	$BossSprite.visible = false
-	#$BossSprite.material.set_shader_parameter("strength", 0)
 	$RingExplosionParticles.emitting = true
 	$PixelExplosionParticles.emitting = true
+	await get_tree().create_timer(0.1, false).timeout
 	
-	await get_tree().create_timer(2, false).timeout
+	AudioManager.play_audio(sfxs.get_sfx("scream"))
+	p.get_node("HermitFleeSprite").position = position
+	p.get_node("HermitFleeSprite").modulate.a = 0.6
+	hermit_flee = true
+	time = 0
+	
+	await get_tree().create_timer(2.2, false).timeout
+	p.get_node("HermitFleeSprite").modulate.a = 0
+	p.create_tween().tween_property(p.get_node("BlackCover"), "modulate:a", 0, 1)
+	cam.zoom_camera(1, 1)
+	player.visible = true
+	player.paused = false
+	player.disable_movement(false)
+	afterimage_active = false
+	$BossSprite.material.set_shader_parameter("strength", 0)
 	p.get_node("Gate").open()
 	p.get_node("Gate2").open()
 	AudioManager.resume_previous_song()

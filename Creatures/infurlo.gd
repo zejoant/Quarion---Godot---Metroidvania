@@ -4,8 +4,10 @@ extends StaticBody2D
 @export_range(0, 120) var cooldown: int = 60 ## cooldown in frames
 @export_range(0, 120) var offset: int = 0 ## offset in frames
 @export_enum("up", "down", "right", "left") var direction = "down" ##shoot direction
+@export_enum("crimson", "brick", "rock") var style = "crimson"
 @export var sound : bool = false
 @export var blast_effect: bool = true
+@export var bullet_collide_effect: bool = true
 
 var bullet = preload("res://Objects/bullet.tscn")
 var dir
@@ -24,6 +26,16 @@ func _ready():
 		dir = Vector2(1, 0)
 	if direction == "left":
 		dir = Vector2(-1, 0)
+	$FrontSprite.rotation = dir.angle() - PI/2.0
+	$BackSprite.rotation = dir.angle() - PI/2.0
+	$BlastEffect.rotation = dir.angle() - PI/2.0
+	
+	if style == "rock":
+		$FrontSprite.region_rect.position.y += 8
+		$BackSprite.region_rect.position.y += 8
+	elif style == "brick":
+		$FrontSprite.region_rect.position.y += 16
+		$BackSprite.region_rect.position.y += 16
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -45,6 +57,8 @@ func _physics_process(_delta):
 		b.position = position
 		b.sprite = "ball"
 		b.grace_period = 20
+		if !bullet_collide_effect:
+			b.collide_effect = false
 		if sound:
 			AudioManager.play_audio(sfxs.get_sfx("shoot"))
 			b.sound = true

@@ -7,6 +7,7 @@ extends Area2D
 func _on_body_entered(_body):
 	AudioManager.play_audio(sfxs.get_sfx("teleport"))
 	get_node("/root/World").change_room(destination_room)
+	get_node("/root/World/Player").velocity = Vector2(0, 0)
 	get_node("/root/World/Player").position = destination_position*8
 	get_node("/root/World/Camera").flash(1, 0, 1, 1)
 

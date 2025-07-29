@@ -12,6 +12,7 @@ func _ready():
 		$KeySprite.region_rect.position.x -= 16
 
 func collect():
+	get_node("/root/World").save_room_state(position/8, true)
 	AudioManager.play_audio(sfxs.get_sfx("collect"))
 	
 	AudioManager.pause_song()
@@ -19,14 +20,13 @@ func collect():
 	player.update_animations = false
 	player.get_node("AnimationPlayer").play("hold_up_item")
 	z_index = 0
-	position = Vector2(player.position.x, player.position.y - 16)
+	position = Vector2(player.position.x, position.y - 14)
 	await get_tree().create_timer(1.3, false).timeout
 	
 	player.disable_movement(false)
 	player.update_animations = true
 	AudioManager.resume_song()
 	
-	get_node("/root/World").save_room_state(position/8)
 	
 	if type == "green":
 		get_node("/root/World/Player").green_key_state = "collected"

@@ -10,9 +10,10 @@ var cam_size
 
 var checkpoint_room : Vector2
 var checkpoint_pos : Vector2
-
 var room_state = []
 var opened_doors = []
+var room_state_saved = []
+var opened_doors_saved = []
 
 var previous_song_pos: float
 var previous_song: String
@@ -22,7 +23,10 @@ var respawn_song: String
 
 var bought_shop_items: Array[bool] 
 var other_ui_open: bool = false
+
 var secret_boss_beaten: bool = false
+var red_boss_beaten: bool = false
+var red_as_companion
 
 #for changing room
 var new_room_path
@@ -55,13 +59,16 @@ func _ready():
 		checkpoint_pos = Vector2(11.5*8, 19*8)#Vector2(cam_size.x/2, cam_size.y/2)
 	else:
 		load_data()
-		$Camera/UILayer/UIContainer/AppleCount.text = str(player.apple_count)
+		temporary_actions_to_permanent()
 		if player.green_key_state == "collected":
 			$Camera.set_keys("Green")
 		if player.red_key_state == "collected":
 			$Camera.set_keys("Red")
 		if player.has_item_map:
-			$WorldMap/MapComps/ItemMap.visible = true
+			$WorldMap.enable_item_map()
+		
+		if red_boss_beaten and secret_boss_beaten:
+			add_red_as_companion()
 		
 		get_node("Camera").flash(1, 0, 0.2, 0.3)
 		await get_tree().create_timer(0.05, false).timeout
@@ -72,6 +79,7 @@ func _ready():
 	room_coords = checkpoint_room#Vector2(8, 3)#(0, 1) #starting room
 	var scene_instance = load("res://Rooms/room_" + str(room_coords.x) + str(room_coords.y) + ".tscn").instantiate()
 	add_child(scene_instance)
+	changed_room_frames = 5
 	if new_game:
 		get_tilemap().reset_water_tiles()
 	#	scene_instance.get_node("Tilemap").queue_free()
@@ -79,7 +87,8 @@ func _ready():
 	
 	$WorldMap.add_room(room_coords)
 	
-	AudioManager.play_song(load("res://Music/746887_BITTRIP-REMIX-02-CORE.mp3"))
+	AudioManager.play_song(load("res://Music/Must Move.mp3"))
+	#AudioManager.play_song(load("res://Music/746887_BITTRIP-REMIX-02-CORE.mp3"))
 	AudioManager.save_respawn_song()
 	#$MusicPlayer.stream = load("res://Music/746887_BITTRIP-REMIX-02-CORE.mp3")
 	#$MusicPlayer.play()
@@ -91,10 +100,8 @@ func _process(delta):
 	
 	if Input.is_action_just_pressed("Pause") and !other_ui_open:
 		$CanvasLayer/PauseMenu.pause_menu()
-		#pauseMenu()
 	
 	timer += delta #time in seconds, with 3 decimal places
-	#$Label.text = String.num(completion_percentage, 3)
 
 func setup_arrays():
 	var map_width = 10
@@ -109,6 +116,9 @@ func setup_arrays():
 	
 	opened_doors.resize(100) #setup opened_doors array
 	opened_doors.fill(false)
+	
+	room_state_saved = room_state.duplicate(true)
+	opened_doors_saved = opened_doors.duplicate(true)
 
 #func _notification(what):
 	#if what == NOTIFICATION_WM_CLOSE_REQUEST:
@@ -145,7 +155,6 @@ func exit_room_check():
 	#if new_room_coords != room_coords:
 	new_room_coords = room_wrap_check(new_room_coords, exit_dir)
 	if room_coords != new_room_coords:
-		changed_room_frames = 5
 		change_room(new_room_coords)
 	
 	#print(Time.get_ticks_msec()-t0)
@@ -154,6 +163,9 @@ func exit_room_check():
 func change_room(new_coords):
 	if $Camera.p_up_window_open:
 		$Camera.close_p_up_window(true)
+	
+	player.reset_particles()
+	changed_room_frames = 5
 	
 	if room_coords != new_coords:
 		$Camera/LensCircle.change_lens(new_coords)
@@ -192,16 +204,32 @@ func save_checkpoint_room(pos):
 func return_to_checkpoint():
 	#load_data()
 	#if checkpoint_room != room_coords:
+	#player.position = Vector2(-100, -100)
 	change_room(checkpoint_room)
 	player.position = Vector2(checkpoint_pos.x, checkpoint_pos.y)
 
+func temporary_actions_to_permanent(): #saves stuff like clicking on buttons and opening doors to be permanent
+	#print("permanent")
+	opened_doors_saved = opened_doors.duplicate(true)
+	room_state_saved = room_state.duplicate(true)
+	player.apple_count_saved = player.apple_count
+
+func revert_temporary_actions(): #revers actions like pressing buttons and openings doors if they have not been made permanent
+	#print("revert")
+	opened_doors = opened_doors_saved.duplicate(true)
+	room_state = room_state_saved.duplicate(true)
+	get_node("/root/World").completion_percentage -= 0.4*(player.apple_count-player.apple_count_saved)
+	player.update_apple_count(player.apple_count_saved, true)
+
 func get_tilemap() -> TileMap:
-	var room = get_node_or_null("Room" + str(room_coords.x) + str(room_coords.y))
+	var room = get_room()
 	if room != null:
 		return room.get_node("Tilemap")
 	else:
 		return null
 
+func get_room() -> Node2D:
+	return get_node_or_null("Room" + str(room_coords.x) + str(room_coords.y))
 
 func room_wrap_check(new_room_coords, exit_dir) -> Vector2:
 	if room_coords == Vector2(5, 6) and exit_dir == "down":
@@ -220,10 +248,10 @@ func room_wrap_check(new_room_coords, exit_dir) -> Vector2:
 		if 240.0 < player.position.x and player.position.x < 262.0:
 			return Vector2(7, 6)
 	
-	elif room_coords == Vector2(1, 5) and exit_dir == "left": #should be changed after moving room
+	elif room_coords == Vector2(0, 5) and exit_dir == "left":
 		return Vector2(9, 5)
 	elif room_coords == Vector2(9, 5) and exit_dir == "right":
-		return Vector2(1, 5)
+		return Vector2(0, 5)
 	
 	elif room_coords == Vector2(9, 0) and exit_dir == "right":
 		return Vector2(8, 0)
@@ -245,21 +273,54 @@ func room_wrap_check(new_room_coords, exit_dir) -> Vector2:
 	return(new_room_coords)
 
 #saves permanent changes to a room such as collected items
-func save_room_state(obj_state):
+func save_room_state(obj_state, permanent: bool = false):
 	room_state[room_coords.x][room_coords.y].append(obj_state)
+	if permanent:
+		room_state_saved = room_state.duplicate(true)
 
 #gets permanent changes to a room such as collected items
 func get_room_state() -> Array:
 	return room_state[room_coords.x][room_coords.y]
 
+func add_red_as_companion():
+	red_as_companion = load("res://Creatures/companion.tscn").instantiate()
+	add_child(red_as_companion)
+
+func reset_room_objects(group: String = "Resetable"):
+	var room = get_room()
+	if room:
+		for node in room.get_children():
+			if node.is_in_group(group):
+				node.reset_to_default()
+
+func add_to_completion_percentage(type: String):
+	if type == "Apple": #50x
+		completion_percentage += 0.4
+	elif type == "Room": #80x
+		completion_percentage += 0.15
+	elif type == "PowerUp": #3x
+		completion_percentage += 14
+	elif type == "DoubleJump": #1x
+		completion_percentage += 12
+	elif type == "Freeze": #1x
+		completion_percentage += 2
+	elif type == "Shop": #2x
+		completion_percentage += 2
+	elif type == "AmuletPiece": #5x
+		completion_percentage += 1
+	elif type == "ItemMap": #1x
+		completion_percentage += 1
+	elif type == "Hermit": #1x
+		completion_percentage += 2
+
 func save_game():
 	AudioManager.save_respawn_song()
 	SaveManager.save_game(self)
-	
+
 func load_data():
 	SaveManager.load_game(self)
-	
-	
+
+
 func end_game():
 	$Player.can_move = false
 	$Camera.fade("000000", 1, 0.5, 1, 0.5)

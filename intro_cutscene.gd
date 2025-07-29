@@ -23,3 +23,6 @@ func run_animation():
 	$Camera/LensCircle2.visible = false
 	$AnimationPlayer.play("Start")
 	#$AnimationPlayer.speed_scale = 3
+
+func play_song():
+	AudioManager.play_song(load("res://Music/Fabbenraba.mp3"))

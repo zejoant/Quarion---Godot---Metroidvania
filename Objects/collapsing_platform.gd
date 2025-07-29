@@ -1,9 +1,12 @@
 #@tool
 extends StaticBody2D
 
+@export var sfxs : AudioLibrary
 @export var width : int = 3
 @export_enum("both", "left", "right", "none") var edge_type = "both"
 @export_enum("gray", "red", "green") var color = "gray"
+
+var crumble_tween: Tween
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -35,7 +38,41 @@ func setup():
 		$"Center".region_rect = Rect2(0, 0, (width-1)*8, 8)
 		$Left.visible = false
 	
-	#color setup
+	set_color()
+
+func _on_player_detection_body_entered(_body):
+	$PlayerDetection/CollisionShape2D.set_deferred("disabled", true)
+	
+	$"Center".region_rect.position.y += 8
+	$"Left".region_rect.position.y += 8
+	$"Right".region_rect.position.y += 8
+	AudioManager.play_audio(sfxs.get_sfx("crumble"))
+	crumble_tween = self.create_tween()
+	await crumble_tween.tween_interval(0.2).finished
+	$"Center".region_rect.position.y += 8
+	$"Left".region_rect.position.y += 8
+	$"Right".region_rect.position.y += 8
+	AudioManager.play_audio(sfxs.get_sfx("crumble"))
+	crumble_tween = self.create_tween()
+	await crumble_tween.tween_interval(0.2).finished
+	$"Center".visible = false
+	$"Left".visible = false
+	$"Right".visible = false
+	$Solid.disabled = true
+	AudioManager.play_audio(sfxs.get_sfx("crumble"))
+
+func reset_to_default():
+	if crumble_tween:
+		crumble_tween.kill()
+	$Solid.set_deferred("disabled", false)
+	$PlayerDetection/CollisionShape2D.set_deferred("disabled", false)
+	#$Solid.disabled = false
+	$"Center".visible = true
+	$"Left".visible = true
+	$"Right".visible = true
+	set_color()
+
+func set_color():
 	$"Center".region_rect.position = Vector2(0, 0)
 	$"Left".region_rect.position = Vector2(0, 0)
 	$"Right".region_rect.position = Vector2(8, 0)
@@ -48,19 +85,3 @@ func setup():
 		$"Center".region_rect.position = Vector2(0, 48)
 		$"Left".region_rect.position = Vector2(0, 48)
 		$"Right".region_rect.position = Vector2(8, 48)
-
-func _on_player_detection_body_entered(_body):
-	$PlayerDetection/CollisionShape2D.set_deferred("disabled", true)
-	
-	$"Center".region_rect.position.y += 8
-	$"Left".region_rect.position.y += 8
-	$"Right".region_rect.position.y += 8
-	await self.create_tween().tween_interval(0.2).finished
-	$"Center".region_rect.position.y += 8
-	$"Left".region_rect.position.y += 8
-	$"Right".region_rect.position.y += 8
-	await self.create_tween().tween_interval(0.2).finished
-	$"Center".visible = false
-	$"Left".visible = false
-	$"Right".visible = false
-	$Solid.disabled = true

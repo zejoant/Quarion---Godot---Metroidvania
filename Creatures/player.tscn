@@ -1,4 +1,4 @@
-[gd_scene load_steps=96 format=3 uid="uid://4ythqhswhcg7"]
+[gd_scene load_steps=105 format=3 uid="uid://4ythqhswhcg7"]
 
 [ext_resource type="Script" path="res://Creatures/player.gd" id="1_1p4uo"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="4_q56as"]
@@ -152,6 +152,22 @@ tracks/0/keys = {
 "values": [Rect2(80, 0, 16, 16)]
 }
 
+[sub_resource type="Animation" id="Animation_3h7wh"]
+resource_name = "Hand On Shoulder"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(80, 48, 16, 16)]
+}
+
 [sub_resource type="Animation" id="Animation_4isl1"]
 resource_name = "Idle"
 length = 1.00001
@@ -168,6 +184,18 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [Rect2(160, 0, 16, 16), Rect2(176, 0, 16, 16), Rect2(192, 0, 16, 16), Rect2(208, 0, 16, 16)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("HurtEffect:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_gwdlv"]
@@ -297,6 +325,18 @@ tracks/3/keys = {
 "update": 1,
 "values": [false]
 }
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Zzzzzz:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_6vd3i"]
 resource_name = "Walk"
@@ -348,17 +388,65 @@ tracks/0/keys = {
 "values": [Rect2(64, 48, 16, 16)]
 }
 
+[sub_resource type="Animation" id="Animation_lf8df"]
+resource_name = "Sit"
+length = 1.20001
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [Rect2(96, 48, 16, 16), Rect2(112, 48, 16, 16), Rect2(128, 48, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_glj5x"]
+resource_name = "Rest"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(144, 48, 16, 16)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Zzzzzz:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5gao2"]
 _data = {
 "Damage": SubResource("Animation_0turj"),
 "Dash": SubResource("Animation_gyl8p"),
 "Fall": SubResource("Animation_bh08o"),
+"Hand On Shoulder": SubResource("Animation_3h7wh"),
 "Idle": SubResource("Animation_4isl1"),
 "Jump": SubResource("Animation_gwdlv"),
 "Kneel": SubResource("Animation_hwsib"),
 "Land": SubResource("Animation_6c6sk"),
 "Lie Down": SubResource("Animation_aggab"),
 "RESET": SubResource("Animation_ndq0k"),
+"Rest": SubResource("Animation_glj5x"),
+"Sit": SubResource("Animation_lf8df"),
 "Walk": SubResource("Animation_6vd3i"),
 "WallSlide": SubResource("Animation_x8b06"),
 "hold_up_item": SubResource("Animation_fe8de")
@@ -629,6 +717,46 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_woe4c"]
+radius = 1.0
+height = 6.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_osn3x"]
+atlas = ExtResource("15_kmrac")
+region = Rect2(256, 272, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1c4e5"]
+atlas = ExtResource("15_kmrac")
+region = Rect2(272, 272, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_58j0n"]
+atlas = ExtResource("15_kmrac")
+region = Rect2(256, 256, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ks8yq"]
+atlas = ExtResource("15_kmrac")
+region = Rect2(272, 256, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ktcsu"]
+animations = [{
+"frames": [{
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_osn3x")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_1c4e5")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_58j0n")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_ks8yq")
+}],
+"loop": true,
+"name": &"default",
+"speed": 1.0
+}]
+
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 8
 floor_constant_speed = true
@@ -682,7 +810,7 @@ emitting = false
 amount = 50
 lifetime = 3.0
 one_shot = true
-explosiveness = 0.9
+explosiveness = 0.96
 lifetime_randomness = 0.8
 emission_shape = 3
 emission_rect_extents = Vector2(40, 3)
@@ -863,15 +991,6 @@ anim_speed_min = 1.0
 anim_speed_max = 1.0
 anim_speed_curve = SubResource("Curve_0ywr0")
 
-[node name="CollissionRays" type="Node2D" parent="."]
-z_index = 4
-
-[node name="CeilingRay" type="RayCast2D" parent="CollissionRays"]
-unique_name_in_owner = true
-z_index = 1
-target_position = Vector2(0, -3)
-hit_from_inside = true
-
 [node name="HurtEffect" type="Sprite2D" parent="."]
 visible = false
 z_index = 6
@@ -910,5 +1029,21 @@ sprite_frames = SubResource("SpriteFrames_orrf8")
 autoplay = "default"
 frame_progress = 0.689298
 
+[node name="InsideWallDetector" type="Area2D" parent="."]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InsideWallDetector"]
+position = Vector2(0, 3)
+shape = SubResource("CapsuleShape2D_woe4c")
+
+[node name="Zzzzzz" type="AnimatedSprite2D" parent="."]
+visible = false
+z_index = 5
+position = Vector2(4, -9)
+sprite_frames = SubResource("SpriteFrames_ktcsu")
+autoplay = "default"
+frame_progress = 0.201946
+
 [connection signal="body_shape_entered" from="Area2D" to="." method="_on_area_2d_body_shape_entered"]
 [connection signal="body_shape_entered" from="WaterDetector" to="." method="on_water_entered"]
+[connection signal="body_shape_entered" from="InsideWallDetector" to="." method="_on_inside_wall"]

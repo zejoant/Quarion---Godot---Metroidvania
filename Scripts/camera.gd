@@ -1,13 +1,20 @@
 extends Camera2D
 
 @export var sfxs : AudioLibrary ## Tagged audio files to play from this scene
-var tween
-var flash_tween
-var p_up_tween
 var map_open = false
 
 var keys_collected = 0
 var p_up_window_open = false
+
+var shake_origin
+
+var tween: Tween
+var zoom_tween: Tween
+var radial_tween: Tween
+var flash_tween: Tween
+var fade_tween: Tween
+var invert_tween: Tween
+var p_up_tween: Tween
 
 func _ready():
 	close_p_up_window(true)
@@ -105,6 +112,9 @@ func flash(opacity, enter, hold, exit, color: Color = Color(1, 1, 1, 0)):
 	old_color.a = 0
 	$FlashLayer.modulate = color#Color(1, 1, 1, 0)
 	
+	if fade_tween:
+		fade_tween.kill()
+	
 	flash_tween = self.create_tween()
 	flash_tween.tween_property($FlashLayer, "modulate:a", opacity, enter) #fade in the new opacity
 	flash_tween.tween_interval(hold)
@@ -117,38 +127,45 @@ func fade(color: String, opacity: float, enter: float, hold: float, exit: float)
 	if flash_tween:
 		flash_tween.kill()
 	$FlashLayer.modulate = Color(color + "00")
-	tween = self.create_tween()
+	fade_tween = self.create_tween()
 	
-	tween.tween_property($FlashLayer, "modulate:a", opacity, enter) #fade in the new opacity
-	tween.tween_property($FlashLayer, "modulate:a", opacity, hold) #hold the opacity for a time
-	tween.tween_property($FlashLayer, "modulate:a", 0, exit) #fade out to original opacity
+	fade_tween.tween_property($FlashLayer, "modulate:a", opacity, enter) #fade in the new opacity
+	fade_tween.tween_property($FlashLayer, "modulate:a", opacity, hold) #hold the opacity for a time
+	fade_tween.tween_property($FlashLayer, "modulate:a", 0, exit) #fade out to original opacity
 
 func shake(strength: int, interval: float, count: int):
 	var rng = RandomNumberGenerator.new()
-	var origin = Vector2(152, 96)#position
+	shake_origin = Vector2(152, 96)#position
 	for i in count:
-		position = Vector2(origin.x + rng.randf_range(-1, 1)*strength, origin.y + rng.randf_range(-1, 1)*strength)
+		position = Vector2(shake_origin.x + rng.randf_range(-1, 1)*strength, shake_origin.y + rng.randf_range(-1, 1)*strength)
 		await get_tree().create_timer(interval, false).timeout
-	position = origin
+	position = shake_origin
 
 func zoom_camera(amount: float, time: float, aim: Vector2 = Vector2(152, 96)):
-	tween = self.create_tween()
-	tween.set_ease(Tween.EASE_IN_OUT)
-	tween.set_trans(Tween.TRANS_QUAD)
-	tween.parallel().tween_property(self, "zoom", Vector2(amount, amount), time)
-	tween.parallel().tween_property(self, "position", aim, time)
+	shake_origin = aim
+	if time == 0:
+		zoom = Vector2(amount, amount)
+		position = aim
+	else:
+		if zoom_tween:
+			zoom_tween.kill()
+		zoom_tween = self.create_tween()
+		zoom_tween.set_ease(Tween.EASE_IN_OUT)
+		zoom_tween.set_trans(Tween.TRANS_QUAD)
+		zoom_tween.parallel().tween_property(self, "zoom", Vector2(amount, amount), time)
+		zoom_tween.parallel().tween_property(self, "position", aim, time)
 
 func radial_blur(power: float = 0.03, duration: float = 0.3, sampling_count: int = 6):
 	var callable = Callable(self, "set_shader_value").bind("RadialBlurLayer/ColorRect", "blur_power")
 	$RadialBlurLayer/ColorRect.material.set_shader_parameter("sampling_count", sampling_count)
-	tween = self.create_tween()
-	tween.tween_method(callable, power, 0, duration); # args: (method / start value / end value / duration)
+	radial_tween = self.create_tween()
+	radial_tween.tween_method(callable, power, 0, duration); # args: (method / start value / end value / duration)
 
 
 func invert_color(power: float, duration: float):
 	var callable = Callable(self, "set_shader_value").bind("InvertColorLayer/ColorRect", "strength")
-	tween = self.create_tween()
-	await tween.tween_method(callable, power, 0.0, duration).finished # args: (method / start value / end value / duration)
+	invert_tween = self.create_tween()
+	await invert_tween.tween_method(callable, power, 0.0, duration).finished # args: (method / start value / end value / duration)
 	
 
 func set_shader_value(value: float, path: String, param: String):
@@ -198,9 +215,10 @@ func open_p_up_window(p_up: String):
 	p_up_tween = self.create_tween()
 	p_up_tween.tween_property($PowerUpTexts/InputIndicator, "modulate:a", 1, 0.2)
 
+func hide_ui(show_ui: bool = false):
+	$UILayer/UIContainer.visible = show_ui
+
 func _input(event):
 	if $PowerUpTexts/InputIndicator.modulate.a > 0 and p_up_window_open and event.is_action_pressed("ui_up"):
 		close_p_up_window()
-	#elif !p_up_window_open and event.is_action_pressed("ui_up"):
-		#open_p_up_window("SwiftwindAmulet")
 	

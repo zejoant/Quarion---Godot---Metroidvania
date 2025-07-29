@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bbq86p0psyqyi" path="res://Assets/Map.png" id="1_javka"]
 [ext_resource type="Texture2D" uid="uid://b4a3gpanglo75" path="res://Assets/Character Sprite Sheet.png" id="3_pyjwo"]
 [ext_resource type="Texture2D" uid="uid://b20trkwhnbuts" path="res://Assets/Map Icon Tileset.png" id="4_u75n4"]
-[ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/prstartk.ttf" id="5_k0exq"]
+[ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/Big Font.ttf" id="5_4d4ga"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_l5ygg"]
 
@@ -107,9 +107,9 @@ tile_size = Vector2i(4, 4)
 sources/1 = SubResource("TileSetAtlasSource_hd15r")
 
 [sub_resource type="LabelSettings" id="LabelSettings_w8e4f"]
-font = ExtResource("5_k0exq")
+font = ExtResource("5_4d4ga")
 font_size = 5
-font_color = Color(0.2376, 0.31104, 0.36, 1)
+font_color = Color(0.686275, 0.65098, 0.552941, 1)
 
 [node name="WorldMap" type="Node2D"]
 z_index = 50
@@ -153,6 +153,7 @@ format = 2
 layer_0/tile_data = PackedInt32Array(1048606, 1, 0, 786433, 1, 0, 2097163, 1, 0, 2555918, 1, 0, 2031631, 1, 0, 655376, 1, 0, 1048593, 1, 0, 2555925, 1, 0, 851991, 1, 0, 1245209, 1, 0, 1638427, 1, 0, 2031648, 1, 0, 2555937, 1, 0, 1048611, 1, 0, 524324, 1, 0, 1245221, 1, 0, 2818085, 1, 0, 2228267, 1, 0, 852012, 1, 0, 2424878, 1, 0, 1310768, 1, 0, 1703985, 1, 0, 2818097, 1, 0, 852021, 1, 0, 1507382, 1, 0, 655416, 1, 0, 2949176, 1, 0, 2424890, 1, 0, 1048637, 1, 0, 2424893, 1, 0, 1310782, 1, 0, 917569, 1, 0, 1638466, 1, 0, 1900614, 1, 0, 2818119, 1, 0, 2162761, 1, 0, 1638474, 1, 0, 1114187, 1, 0, 2687052, 1, 0, 3014736, 1, 0, 1638481, 1, 0, 1114201, 1, 0, 196701, 1, 0, 524382, 1, 0, 983134, 1, 0, 1441886, 1, 0, 2097246, 1, 0, 2424926, 1, 0, 524308, 1, 0, 786452, 1, 0, 1048596, 1, 0)
 
 [node name="CompletionText" type="Label" parent="MapComps"]
+visible = false
 offset_left = 262.0
 offset_top = 185.0
 offset_right = 302.0
