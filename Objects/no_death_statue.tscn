@@ -8,7 +8,7 @@ load_path = "res://.godot/imported/Character Sprite Sheet.png-6472d1c33ce763aa37
 
 [node name="NoDeathStatue" type="Node2D"]
 visible = false
-z_index = 3
+z_index = 2
 script = ExtResource("1_ce1tn")
 
 [node name="NoDeathStatue" type="Sprite2D" parent="."]

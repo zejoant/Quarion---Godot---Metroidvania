@@ -169,7 +169,7 @@ func lunge():
 			%Aim.modulate.a = 0
 			#boss.modulate = Color(1, 1, 1, 1)
 			$GroundHitEffect.position = boss.position
-			if difficulty != 2:
+			if difficulty == 0:
 				$Boss/AnimationPlayer.play("Sad Ground Hit")
 				$Boss/DamageColl.disabled = true
 				await get_tree().create_timer(3-difficulty, false).timeout
@@ -202,7 +202,7 @@ func bouncing_attack():
 		get_node("/root/World/Camera").shake(3, 0.03, 3)
 		AudioManager.play_audio(sfxs.get_sfx("impact"))
 		$GroundHitEffect.position = boss.position
-		if bullet_count == 3:
+		if (difficulty == 2 and bullet_count == 3) or (difficulty == 1 and bullet_count == 1):
 			attack_state = 4
 			$Boss/AnimationPlayer.play("Sad Ground Hit")
 			$Boss/DamageColl.disabled = true
@@ -329,7 +329,6 @@ func param_setup():
 		difficulty = 1
 
 func _on_body_entered(body):
-	player.bubble_invincibility_time = 0.5
 	$ActivateBossColl.set_deferred("disabled", true)
 	AudioManager.play_song(load("res://Music/Hi GI Joe!.wav"))
 	
@@ -338,7 +337,9 @@ func _on_body_entered(body):
 	
 	$Gate.close()
 	$Gate2.close()
+	get_node("/root/World/Camera").hide_ui(false)
 	
+	player.bubble_invincibility_time = 0.5
 	await self.create_tween().tween_interval(2).finished
 	#get_node("/root/World/Camera").radial_blur(0.03, 0.6, 12)
 	boss.get_node("DamageColl").set_deferred("disabled", false)
@@ -385,6 +386,7 @@ func die():
 	$Boss/DeathParticles2.emitting = true
 	get_node("/root/World/Camera").shake(4, 0.03, 3)
 	get_node("/root/World/Camera").invert_color(1, 0.3)
+	get_node("/root/World/Camera").hide_ui(true)
 	AudioManager.resume_previous_song()
 
 func set_shader_value(value: float, path: String, param: String):

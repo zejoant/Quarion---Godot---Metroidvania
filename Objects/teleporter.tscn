@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://coii0bc70hkej"]
+[gd_scene load_steps=32 format=3 uid="uid://coii0bc70hkej"]
 
 [ext_resource type="Script" path="res://Objects/teleporter.gd" id="1_5tq3n"]
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="2_2gntq"]
@@ -16,8 +16,8 @@ stream = ExtResource("4_n2xb7")
 script = ExtResource("2_hi10r")
 sound_effects = Array[ExtResource("3_rq14c")]([SubResource("Resource_4pqgt")])
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_jspuy"]
-radius = 8.06226
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_frk8r"]
+size = Vector2(20, 3)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_yf7c7"]
 blend_mode = 1
@@ -113,6 +113,38 @@ _data = {
 "RESET": SubResource("Animation_qtyu7")
 }
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_17onn"]
+atlas = ExtResource("2_2gntq")
+region = Rect2(152, 32, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_govyp"]
+atlas = ExtResource("2_2gntq")
+region = Rect2(152, 33, 32, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vguon"]
+atlas = ExtResource("2_2gntq")
+region = Rect2(152, 34, 32, 14)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_irexn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_17onn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_govyp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vguon")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_govyp")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
 [node name="Teleporter" type="Area2D"]
 collision_layer = 0
 collision_mask = 8
@@ -126,7 +158,9 @@ region_enabled = true
 region_rect = Rect2(128, 48, 24, 40)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_jspuy")
+z_index = 2
+position = Vector2(0, 18.5)
+shape = SubResource("RectangleShape2D_frk8r")
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="."]
 z_index = 2
@@ -205,4 +239,13 @@ libraries = {
 }
 autoplay = "Idle"
 
+[node name="InputIndicator" type="AnimatedSprite2D" parent="."]
+visible = false
+z_index = 5
+position = Vector2(0, -28)
+sprite_frames = SubResource("SpriteFrames_irexn")
+autoplay = "default"
+frame_progress = 0.707795
+
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

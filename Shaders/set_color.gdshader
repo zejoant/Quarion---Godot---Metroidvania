@@ -8,9 +8,5 @@ uniform vec4 replace_color : source_color = vec4(1.0);
 
 void fragment()
 {
-	//if(replace_color == vec4(1.0) || COLOR.rgba == replace_color){
-		//COLOR.rgba = mix(COLOR.rgba, COLOR.a == 0.0 ? vec4(color.rgb, 0.0) : (ignore_black && COLOR.rgba == vec4(0, 0, 0, 1)?COLOR.rgba:color.rgba), strength);
-	//}
-	
 	COLOR.rgba = (replace_color == vec4(1.0) || distance(COLOR.rgba, replace_color) < 0.01) ? mix(COLOR.rgba, COLOR.a == 0.0 ? vec4(color.rgb, 0.0) : (ignore_black && COLOR.rgba == vec4(0, 0, 0, 1)?COLOR.rgba:color.rgba), strength) : COLOR.rgba;
 }

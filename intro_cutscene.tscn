@@ -1,20 +1,104 @@
-[gd_scene load_steps=54 format=3 uid="uid://cagepo1tljh6w"]
+[gd_scene load_steps=84 format=3 uid="uid://cagepo1tljh6w"]
 
 [ext_resource type="Script" path="res://intro_cutscene.gd" id="1_0lk36"]
 [ext_resource type="Texture2D" uid="uid://dnuk8to6m018a" path="res://Assets/Ship Textures.png" id="1_6myr4"]
 [ext_resource type="PackedScene" uid="uid://coud47gbx6bt8" path="res://tile_map.tscn" id="2_1c5hd"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_jopmg"]
 [ext_resource type="Texture2D" uid="uid://bn306u45m6wu1" path="res://Assets/Line Particle.png" id="2_os855"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_yt6ay"]
+[ext_resource type="AudioStream" uid="uid://dbrwyu3bewu6j" path="res://Sfx/anticipation.wav" id="4_2pfxb"]
 [ext_resource type="PackedScene" uid="uid://co44befovf2y7" path="res://Objects/button_door.tscn" id="4_3yap5"]
 [ext_resource type="Texture2D" uid="uid://blrke6p7xbb7e" path="res://Assets/Tileset.png" id="5_8c68n"]
+[ext_resource type="AudioStream" uid="uid://dpgp8wcmohxic" path="res://Sfx/boss hit.wav" id="5_doi8n"]
 [ext_resource type="Texture2D" uid="uid://b4a3gpanglo75" path="res://Assets/Character Sprite Sheet.png" id="5_fxfmj"]
+[ext_resource type="AudioStream" uid="uid://be0egb1qxyv6n" path="res://Sfx/ship crash.wav" id="6_6oyen"]
 [ext_resource type="Texture2D" uid="uid://ddmw17cae58fo" path="res://Assets/Boulder Sprites.png" id="6_bcjlj"]
+[ext_resource type="AudioStream" uid="uid://ds8rsq8hl0v6b" path="res://Sfx/jump2.wav" id="7_1p1do"]
 [ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="7_e8vvc"]
 [ext_resource type="PackedScene" uid="uid://c4y4hleyev5w2" path="res://camera.tscn" id="8_6o7pj"]
+[ext_resource type="AudioStream" uid="uid://u6t0cnvvb3sl" path="res://Sfx/land.wav" id="8_i0bgv"]
+[ext_resource type="AudioStream" uid="uid://cjby0sgcfmxan" path="res://Sfx/tiny impact.wav" id="9_dxu0b"]
 [ext_resource type="PackedScene" uid="uid://dwvkc14i850p4" path="res://lens_circle.tscn" id="10_0k8vg"]
+[ext_resource type="AudioStream" uid="uid://bc2y5r2rtpfee" path="res://Sfx/hit 2.wav" id="10_wuhu4"]
+[ext_resource type="AudioStream" uid="uid://cvei1fxhx2gf1" path="res://Sfx/ship impact.wav" id="11_60uko"]
 [ext_resource type="Texture2D" uid="uid://e42iyy5akf4h" path="res://Assets/Glow Circle.png" id="11_xcgop"]
-[ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/Big Font.ttf" id="12_qwr3o"]
+[ext_resource type="AudioStream" uid="uid://c2es6d2osv838" path="res://Sfx/teleport short.wav" id="12_h8g3a"]
+[ext_resource type="AudioStream" uid="uid://rv35l5rwpllw" path="res://Sfx/ship thrusters on.wav" id="13_65322"]
 [ext_resource type="Shader" path="res://Shaders/set_color.gdshader" id="13_d8uqd"]
 [ext_resource type="Shader" path="res://Shaders/invert_color.gdshader" id="13_gg42i"]
+[ext_resource type="AudioStream" uid="uid://c6awqtpd8jux1" path="res://Sfx/hit.wav" id="14_lwiws"]
+[ext_resource type="AudioStream" uid="uid://wfv3b0n8g3aj" path="res://Sfx/meteorite pass.wav" id="15_appo3"]
+[ext_resource type="AudioStream" uid="uid://dta0hcugodv0f" path="res://Sfx/footstep echo.wav" id="16_dyak0"]
+[ext_resource type="Theme" uid="uid://cy86cwc1oigm7" path="res://Themes/small_font_theme.tres" id="26_sa7u4"]
+
+[sub_resource type="Resource" id="Resource_4vwu3"]
+script = ExtResource("3_yt6ay")
+tag = "build_up"
+stream = ExtResource("4_2pfxb")
+
+[sub_resource type="Resource" id="Resource_due1w"]
+script = ExtResource("3_yt6ay")
+tag = "hit"
+stream = ExtResource("5_doi8n")
+
+[sub_resource type="Resource" id="Resource_dwgng"]
+script = ExtResource("3_yt6ay")
+tag = "crash"
+stream = ExtResource("6_6oyen")
+
+[sub_resource type="Resource" id="Resource_5a1m2"]
+script = ExtResource("3_yt6ay")
+tag = "player_jump"
+stream = ExtResource("7_1p1do")
+
+[sub_resource type="Resource" id="Resource_vmsm4"]
+script = ExtResource("3_yt6ay")
+tag = "player_land"
+stream = ExtResource("8_i0bgv")
+
+[sub_resource type="Resource" id="Resource_7q3hf"]
+script = ExtResource("3_yt6ay")
+tag = "player_move"
+stream = ExtResource("9_dxu0b")
+
+[sub_resource type="Resource" id="Resource_ax8i3"]
+script = ExtResource("3_yt6ay")
+tag = "tree_fall"
+stream = ExtResource("10_wuhu4")
+
+[sub_resource type="Resource" id="Resource_1434c"]
+script = ExtResource("3_yt6ay")
+tag = "ship_impact"
+stream = ExtResource("11_60uko")
+
+[sub_resource type="Resource" id="Resource_hnjhl"]
+script = ExtResource("3_yt6ay")
+tag = "teleport"
+stream = ExtResource("12_h8g3a")
+
+[sub_resource type="Resource" id="Resource_qaauc"]
+script = ExtResource("3_yt6ay")
+tag = "brainwash"
+stream = ExtResource("13_65322")
+
+[sub_resource type="Resource" id="Resource_afeus"]
+script = ExtResource("3_yt6ay")
+tag = "push_yellow"
+stream = ExtResource("14_lwiws")
+
+[sub_resource type="Resource" id="Resource_krnln"]
+script = ExtResource("3_yt6ay")
+tag = "meteorite_pass"
+stream = ExtResource("15_appo3")
+
+[sub_resource type="Resource" id="Resource_k2y8p"]
+script = ExtResource("3_yt6ay")
+tag = "footstep"
+stream = ExtResource("16_dyak0")
+
+[sub_resource type="Resource" id="Resource_sfhm7"]
+script = ExtResource("2_jopmg")
+sound_effects = Array[ExtResource("3_yt6ay")]([SubResource("Resource_4vwu3"), SubResource("Resource_due1w"), SubResource("Resource_dwgng"), SubResource("Resource_5a1m2"), SubResource("Resource_vmsm4"), SubResource("Resource_7q3hf"), SubResource("Resource_ax8i3"), SubResource("Resource_1434c"), SubResource("Resource_hnjhl"), SubResource("Resource_qaauc"), SubResource("Resource_afeus"), SubResource("Resource_krnln"), SubResource("Resource_k2y8p")])
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0plah"]
 atlas = ExtResource("1_6myr4")
@@ -180,13 +264,6 @@ particles_anim_loop = false
 offsets = PackedFloat32Array(0.00666667, 1)
 colors = PackedColorArray(0.19591, 0.1782, 0.33, 1, 0.788235, 0.556863, 0.74902, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_p3vj4"]
-font = ExtResource("12_qwr3o")
-font_size = 4
-font_color = Color(0.406, 0.5336, 0.58, 1)
-outline_size = 3
-outline_color = Color(0, 0, 0, 1)
-
 [sub_resource type="Gradient" id="Gradient_i40vs"]
 offsets = PackedFloat32Array(0, 0.35, 0.62, 1)
 colors = PackedColorArray(0.0456, 0.0461733, 0.08, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0470588, 0.0470588, 0.0784314, 1)
@@ -236,6 +313,16 @@ point_count = 2
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_l2c70"]
 shader = ExtResource("13_gg42i")
 shader_parameter/strength = 1.0
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_nn30v"]
+blend_mode = 2
+particles_animation = true
+particles_anim_h_frames = 5
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="Gradient_48d6u"]
+colors = PackedColorArray(0.226708, 0.226707, 0.226707, 1, 0.47788, 0.47788, 0.47788, 1)
 
 [sub_resource type="Animation" id="Animation_pkn0x"]
 length = 0.001
@@ -1116,7 +1203,7 @@ tracks/13/path = NodePath("Meteorites/Boulder1:position")
 tracks/13/interp = 1
 tracks/13/loop_wrap = true
 tracks/13/keys = {
-"times": PackedFloat32Array(6.95, 8.45),
+"times": PackedFloat32Array(6.95, 8.55),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector2(316, 28), Vector2(-12, 28)]
@@ -1128,7 +1215,7 @@ tracks/14/path = NodePath("Meteorites/Boulder1:rotation")
 tracks/14/interp = 1
 tracks/14/loop_wrap = true
 tracks/14/keys = {
-"times": PackedFloat32Array(6.95, 8.45),
+"times": PackedFloat32Array(6.95, 8.55),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [0.0, -3.14159]
@@ -1140,7 +1227,7 @@ tracks/15/path = NodePath("Meteorites/Boulder2:position")
 tracks/15/interp = 1
 tracks/15/loop_wrap = true
 tracks/15/keys = {
-"times": PackedFloat32Array(8.75, 10.6),
+"times": PackedFloat32Array(8.85, 10.45),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector2(316, 160), Vector2(-12, 160)]
@@ -1152,7 +1239,7 @@ tracks/16/path = NodePath("Meteorites/Boulder2:rotation")
 tracks/16/interp = 1
 tracks/16/loop_wrap = true
 tracks/16/keys = {
-"times": PackedFloat32Array(8.75, 10.6),
+"times": PackedFloat32Array(8.85, 10.45),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [0.0, 1.74533]
@@ -1479,7 +1566,7 @@ tracks/40/loop_wrap = true
 tracks/40/keys = {
 "handle_modes": PackedInt32Array(0, 0),
 "points": PackedFloat32Array(96.0014, -0.25, 0, 0.25, 0, 352, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(17.75, 17.8)
+"times": PackedFloat32Array(17.7858, 17.8)
 }
 tracks/41/type = "value"
 tracks/41/imported = false
@@ -1726,11 +1813,119 @@ tracks/61/path = NodePath(".")
 tracks/61/interp = 1
 tracks/61/loop_wrap = true
 tracks/61/keys = {
-"times": PackedFloat32Array(11.65),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(2.9, 3.6, 4.15, 4.95, 5.3, 5.85, 6.95, 8.85, 10.1763, 11.6411, 11.65, 12.85, 13.7, 14.05, 15.05, 16.25, 16.65, 17.25, 17.8, 31.15, 33.5, 33.85, 36.95, 37.55, 40.3, 42.5, 43.5, 44.5, 45.5, 46.5, 47.5, 48.5, 49.5, 50.5, 51.5, 52.5, 55.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "values": [{
+"args": ["player_jump"],
+"method": &"play_sfx"
+}, {
+"args": ["player_land"],
+"method": &"play_sfx"
+}, {
+"args": ["player_jump"],
+"method": &"play_sfx"
+}, {
+"args": ["player_land"],
+"method": &"play_sfx"
+}, {
+"args": ["player_move"],
+"method": &"play_sfx"
+}, {
+"args": ["player_move"],
+"method": &"play_sfx"
+}, {
+"args": ["meteorite_pass"],
+"method": &"play_sfx"
+}, {
+"args": ["meteorite_pass"],
+"method": &"play_sfx"
+}, {
+"args": ["build_up"],
+"method": &"play_sfx"
+}, {
+"args": ["hit"],
+"method": &"play_sfx"
+}, {
 "args": [],
 "method": &"play_song"
+}, {
+"args": ["ship_impact"],
+"method": &"play_sfx"
+}, {
+"args": ["ship_impact"],
+"method": &"play_sfx"
+}, {
+"args": ["ship_impact"],
+"method": &"play_sfx"
+}, {
+"args": ["ship_impact"],
+"method": &"play_sfx"
+}, {
+"args": ["ship_impact"],
+"method": &"play_sfx"
+}, {
+"args": ["tree_fall"],
+"method": &"play_sfx"
+}, {
+"args": ["ship_impact"],
+"method": &"play_sfx"
+}, {
+"args": ["crash"],
+"method": &"play_sfx"
+}, {
+"args": ["teleport"],
+"method": &"play_sfx"
+}, {
+"args": ["player_move"],
+"method": &"play_sfx"
+}, {
+"args": ["brainwash"],
+"method": &"play_sfx"
+}, {
+"args": ["player_move"],
+"method": &"play_sfx"
+}, {
+"args": ["teleport"],
+"method": &"play_sfx"
+}, {
+"args": ["player_move"],
+"method": &"play_sfx"
+}, {
+"args": ["footstep"],
+"method": &"play_sfx"
+}, {
+"args": ["footstep"],
+"method": &"play_sfx"
+}, {
+"args": ["footstep"],
+"method": &"play_sfx"
+}, {
+"args": ["footstep"],
+"method": &"play_sfx"
+}, {
+"args": ["footstep"],
+"method": &"play_sfx"
+}, {
+"args": ["footstep"],
+"method": &"play_sfx"
+}, {
+"args": ["footstep"],
+"method": &"play_sfx"
+}, {
+"args": ["footstep"],
+"method": &"play_sfx"
+}, {
+"args": ["footstep"],
+"method": &"play_sfx"
+}, {
+"args": ["footstep"],
+"method": &"play_sfx"
+}, {
+"args": ["footstep"],
+"method": &"play_sfx"
+}, {
+"args": ["push_yellow"],
+"method": &"play_sfx"
 }]
 }
 
@@ -1742,6 +1937,7 @@ _data = {
 
 [node name="IntroObjects" type="Node2D"]
 script = ExtResource("1_0lk36")
+sfxs = SubResource("Resource_sfhm7")
 
 [node name="OutsideShip" type="Node2D" parent="."]
 
@@ -2003,12 +2199,12 @@ follow_player = false
 [node name="SkipText" type="Label" parent="Camera"]
 modulate = Color(1, 1, 1, 0)
 z_index = 49
-offset_left = 63.0
-offset_top = 91.0
-offset_right = 152.0
-offset_bottom = 96.0
+offset_left = 76.0
+offset_top = 87.9986
+offset_right = 165.0
+offset_bottom = 95.9986
+theme = ExtResource("26_sa7u4")
 text = "Click to skip cutscene"
-label_settings = SubResource("LabelSettings_p3vj4")
 
 [node name="TextureRect" type="TextureRect" parent="Camera"]
 z_index = -17
@@ -2172,6 +2368,46 @@ region_rect = Rect2(0, 0, 8, 8)
 material = SubResource("ShaderMaterial_l2c70")
 position = Vector2(-1, -1)
 texture = ExtResource("6_bcjlj")
+
+[node name="SmokeParticles1" type="CPUParticles2D" parent="Rooms"]
+z_index = 6
+material = SubResource("CanvasItemMaterial_nn30v")
+position = Vector2(108, 435)
+amount = 15
+lifetime = 5.0
+preprocess = 5.0
+texture = ExtResource("7_e8vvc")
+direction = Vector2(-0.7, 1)
+spread = 20.0
+gravity = Vector2(0, -5)
+initial_velocity_min = 4.0
+initial_velocity_max = 8.0
+linear_accel_min = -2.0
+color_ramp = SubResource("Gradient_48d6u")
+anim_speed_min = -1.0
+anim_speed_max = -1.0
+anim_offset_min = 0.6
+anim_offset_max = 0.8
+
+[node name="SmokeParticles2" type="CPUParticles2D" parent="Rooms"]
+z_index = 6
+material = SubResource("CanvasItemMaterial_nn30v")
+position = Vector2(58, 425)
+amount = 15
+lifetime = 5.0
+preprocess = 5.0
+texture = ExtResource("7_e8vvc")
+direction = Vector2(-0.7, 1)
+spread = 20.0
+gravity = Vector2(0, -5)
+initial_velocity_min = 4.0
+initial_velocity_max = 8.0
+linear_accel_min = -2.0
+color_ramp = SubResource("Gradient_48d6u")
+anim_speed_min = -1.0
+anim_speed_max = -1.0
+anim_offset_min = 0.6
+anim_offset_max = 0.8
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

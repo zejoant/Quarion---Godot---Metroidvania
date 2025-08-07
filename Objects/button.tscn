@@ -19,7 +19,7 @@ sound_effects = Array[ExtResource("3_fc8un")]([SubResource("Resource_jx4no")])
 size = Vector2(14, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8apq0"]
-size = Vector2(5, 5)
+size = Vector2(2.8079, 2.8079)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gps2p"]
 size = Vector2(12, 2)
@@ -132,15 +132,13 @@ position = Vector2(0, 2.5)
 shape = SubResource("RectangleShape2D_a4ma6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-7, 5)
+position = Vector2(-7, 4)
 rotation = 0.785398
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_8apq0")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
-position = Vector2(7, 5)
+position = Vector2(7, 4)
 rotation = 0.785398
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_8apq0")
 
 [node name="ClickArea" type="Area2D" parent="."]

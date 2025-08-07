@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://b2w0yd38s86as"]
+[gd_scene load_steps=37 format=3 uid="uid://b2w0yd38s86as"]
 
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_j8p5t"]
 [ext_resource type="Script" path="res://Creatures/shop.gd" id="1_rdm87"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_3cgbn"]
 [ext_resource type="AudioStream" uid="uid://cuy81ixe0v84k" path="res://Sfx/buy.wav" id="4_flmjn"]
 [ext_resource type="AudioStream" uid="uid://c21duyyxn6wmu" path="res://Sfx/select denied 2.wav" id="5_kc10a"]
+[ext_resource type="AudioStream" uid="uid://wue3bvl1kau0" path="res://Sfx/wood creak.wav" id="6_75rwi"]
 [ext_resource type="Texture2D" uid="uid://ei6wc530bgtj" path="res://Assets/Shop Menu.png" id="7_wyv82"]
 [ext_resource type="Theme" uid="uid://cy86cwc1oigm7" path="res://Themes/small_font_theme.tres" id="8_48bfo"]
 
@@ -19,9 +20,14 @@ script = ExtResource("3_3cgbn")
 tag = "buy_deny"
 stream = ExtResource("5_kc10a")
 
+[sub_resource type="Resource" id="Resource_eugcy"]
+script = ExtResource("3_3cgbn")
+tag = "open/close"
+stream = ExtResource("6_75rwi")
+
 [sub_resource type="Resource" id="Resource_7ig6x"]
 script = ExtResource("2_tgo2l")
-sound_effects = Array[ExtResource("3_3cgbn")]([SubResource("Resource_unrtb"), SubResource("Resource_3vcdu")])
+sound_effects = Array[ExtResource("3_3cgbn")]([SubResource("Resource_unrtb"), SubResource("Resource_3vcdu"), SubResource("Resource_eugcy")])
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k4nsj"]
 size = Vector2(16, 16)
@@ -310,6 +316,17 @@ offset_top = 30.0
 offset_bottom = 192.0
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="ShopUIContainer"]
+layer = 2
+
+[node name="StopMouse" type="ColorRect" parent="ShopUIContainer/CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
 
 [node name="InputIndicator" type="AnimatedSprite2D" parent="."]
 visible = false

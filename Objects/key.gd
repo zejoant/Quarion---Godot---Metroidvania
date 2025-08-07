@@ -20,7 +20,7 @@ func collect():
 	player.update_animations = false
 	player.get_node("AnimationPlayer").play("hold_up_item")
 	z_index = 0
-	position = Vector2(player.position.x, position.y - 14)
+	position = Vector2(player.position.x, position.y - 16)
 	await get_tree().create_timer(1.3, false).timeout
 	
 	player.disable_movement(false)

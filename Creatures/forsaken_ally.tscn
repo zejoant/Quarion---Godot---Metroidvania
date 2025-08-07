@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=3 uid="uid://ibrctco0fpdp"]
+[gd_scene load_steps=64 format=3 uid="uid://ibrctco0fpdp"]
 
 [ext_resource type="Script" path="res://Creatures/forsaken_ally.gd" id="1_2os6r"]
 [ext_resource type="PackedScene" uid="uid://bw1r3nxt3ya8x" path="res://Objects/gate.tscn" id="1_exbt4"]
@@ -46,9 +46,14 @@ script = ExtResource("3_s620o")
 tag = "tiny_hit"
 stream = ExtResource("9_trj1j")
 
+[sub_resource type="Resource" id="Resource_q3d2g"]
+script = ExtResource("3_s620o")
+tag = "dodge"
+stream = ExtResource("7_etp48")
+
 [sub_resource type="Resource" id="Resource_6rsu8"]
 script = ExtResource("2_8wgr1")
-sound_effects = Array[ExtResource("3_s620o")]([SubResource("Resource_gbhgb"), SubResource("Resource_v1emv"), SubResource("Resource_887xx"), SubResource("Resource_76amk"), SubResource("Resource_57x3f"), SubResource("Resource_fnb5t")])
+sound_effects = Array[ExtResource("3_s620o")]([SubResource("Resource_gbhgb"), SubResource("Resource_v1emv"), SubResource("Resource_887xx"), SubResource("Resource_76amk"), SubResource("Resource_57x3f"), SubResource("Resource_fnb5t"), SubResource("Resource_q3d2g")])
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3m31y"]
 shader = ExtResource("8_fpeqh")
@@ -512,7 +517,7 @@ tracks/8/keys = {
 "args": ["dash"],
 "method": &"play_sfx"
 }, {
-"args": ["hermit_scream"],
+"args": ["hermit_scream", 1.5],
 "method": &"play_sfx"
 }, {
 "args": ["tiny_hit"],

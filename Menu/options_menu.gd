@@ -1,111 +1,109 @@
 extends Control
 class_name OptionsMenu
 
+@export var sfxs : AudioLibrary
 var back_scene = "menu"
-static var sfx_slider_value = 0
-static var music_slider_value = 0
+static var sfx_slider_value = 0.5
+static var music_slider_value = 0.5
 #static var window_mode = 0
 static var fullscreen = false
 static var borderless = false
 
 static var use_mouse_for_menus = true
+static var speedrun_timer = false
 
 var previous_window_size = Vector2i(304, 192)
 
 func _ready():
 	$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.value = sfx_slider_value
 	$MarginContainer/VBoxContainer/AudioHBox/MusicVbox/MusicSlider.value = music_slider_value
-	#$MarginContainer/VBoxContainer/WindowMode.selected = window_mode
-	#_on_window_mode_item_selected(window_mode)
+	AudioServer.set_bus_volume_db(2, linear_to_db(sfx_slider_value))
+	AudioServer.set_bus_volume_db(1, linear_to_db(music_slider_value))
+	
+	$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.value_changed.connect(_on_sfx_slider_value_changed)
+	$MarginContainer/VBoxContainer/AudioHBox/MusicVbox/MusicSlider.value_changed.connect(_on_music_slider_value_changed)
 	
 	$MarginContainer/VBoxContainer/VideoVBox/FullscreenCheck.button_pressed = fullscreen
 	$MarginContainer/VBoxContainer/VideoVBox/BorderlessCheck.button_pressed = borderless
 	
 	$MarginContainer/VBoxContainer/MouseHBox/MouseMenusCheck.button_pressed = use_mouse_for_menus
+	$MarginContainer/VBoxContainer/MouseHBox/TimerCheck.button_pressed = speedrun_timer
 	
-	#if Input.get_connected_joypads().size() > 0:
-		#get_viewport().gui_release_focus()
-		#$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.grab_focus()
-		#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
 	_on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
 
 func _on_joy_connection_changed(_device_id, connected):
-	if use_mouse_for_menus:
-		if !connected:
-			get_viewport().gui_release_focus()
-			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		else:
-			get_viewport().gui_release_focus()
-			$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.grab_focus()
-			Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	if !connected and use_mouse_for_menus:
+		get_viewport().gui_release_focus()
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		$CanvasLayer/StopMouse.mouse_filter = MOUSE_FILTER_IGNORE
 	else:
-		$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.grab_focus()
+		get_viewport().gui_release_focus()
+		$MarginContainer/VBoxContainer/BackHBox/BackButton.grab_focus()
+		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+		$CanvasLayer/StopMouse.mouse_filter = MOUSE_FILTER_STOP
 	
 	if !connected:
-		$MarginContainer/VBoxContainer/MouseHBox.visible = true
+		$MarginContainer/VBoxContainer/MouseHBox/MouseMenusCheck.visible = true
 		$MarginContainer/VBoxContainer/VideoVBox/BorderlessCheck.focus_neighbor_bottom = "../../MouseHBox/MouseMenusCheck"
 		$MarginContainer/VBoxContainer/BackHBox/BackButton.focus_neighbor_top = "../../MouseHBox/MouseMenusCheck"
 	else:
-		
-		$MarginContainer/VBoxContainer/MouseHBox.visible = false
-		$MarginContainer/VBoxContainer/VideoVBox/BorderlessCheck.focus_neighbor_bottom = "../../BackHBox/BackButton"
-		$MarginContainer/VBoxContainer/BackHBox/BackButton.focus_neighbor_top = "../../VideoVBox/BorderlessCheck"
+		$MarginContainer/VBoxContainer/MouseHBox/MouseMenusCheck.visible = false
+		$MarginContainer/VBoxContainer/VideoVBox/BorderlessCheck.focus_neighbor_bottom = "../../MouseHBox/TimerCheck"#"../../BackHBox/BackButton"
+		$MarginContainer/VBoxContainer/BackHBox/BackButton.focus_neighbor_top = "../../MouseHBox/TimerCheck"#"../../VideoVBox/BorderlessCheck"
 
 func _input(event):
-	if event.is_action_released("UI Back"):
+	if event.is_action_pressed("ui_cancel"):
 		_on_back_button_pressed()
-	
-	#if !get_viewport().gui_get_focus_owner():
-		#if event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down") or event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right"):
-			#$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.grab_focus()
+		accept_event()
 
 func _on_back_button_pressed():
-	#Input.joy_connection_changed.disconnect(_on_joy_connection_changed)
+	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
 	save_settings()
 	if back_scene == "menu":
 		get_node("/root/MainMenu/Menu").visible = true
-		if Input.get_connected_joypads().size() > 0 or !OptionsMenu.use_mouse_for_menus:
-			get_node("/root/MainMenu/Menu/MarginContainer/VBoxContainer/VBoxContainer/OptionsButton").grab_focus()
-		queue_free()
-		#get_tree().change_scene_to_file("res://Menu/main_menu.tscn")
+		get_node("/root/MainMenu")._on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
 	elif back_scene == "game":
 		get_parent().get_node("PauseMenu").show()
-		if Input.get_connected_joypads().size() > 0 or !OptionsMenu.use_mouse_for_menus:
-			get_parent().get_node("PauseMenu/MarginContainer/VBoxContainer/ResumeButton").grab_focus()
-		queue_free()
+		get_parent().get_node("PauseMenu")._on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
+	queue_free()
 
 func save_settings():
 	SaveManager.save_settings()
 
 
-func _on_sfx_slider_value_changed(value, propagate_shift: bool = true):
+func _on_sfx_slider_value_changed(value, propagate_shift: bool = true, sound: bool = true):
+	if value and sound:
+		AudioManager.play_audio(sfxs.get_sfx("slider"), value)
 	sfx_slider_value = value
-	if value == -25:
+	if value == 0:
 		AudioServer.set_bus_mute(2, true)
 	else:
 		AudioServer.set_bus_mute(2, false)
-		AudioServer.set_bus_volume_db(2, value)
+		AudioServer.set_bus_volume_db(2, linear_to_db(value))
 	
-	if Input.is_action_pressed("Dash") and propagate_shift:
+	if Input.is_key_pressed(KEY_SHIFT) and propagate_shift:
 		$MarginContainer/VBoxContainer/AudioHBox/MusicVbox/MusicSlider.value = value
-		_on_music_slider_value_changed(value, false)
+		_on_music_slider_value_changed(value, false, false)
 
-func _on_music_slider_value_changed(value, propagate_shift: bool = true):
+func _on_music_slider_value_changed(value, propagate_shift: bool = true, sound: bool = true):
+	if value and sound:
+		AudioManager.play_audio(sfxs.get_sfx("slider"), value)
 	music_slider_value = value
-	if value == -25:
+	if value == 0:
 		AudioServer.set_bus_mute(1, true)
 	else:
 		AudioServer.set_bus_mute(1, false)
-		AudioServer.set_bus_volume_db(1, value)
+		AudioServer.set_bus_volume_db(1, linear_to_db(value))
 	
-	if Input.is_action_pressed("Dash") and propagate_shift:
+	if Input.is_key_pressed(KEY_SHIFT) and propagate_shift:
 		$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.value = value
-		_on_sfx_slider_value_changed(value, false)
+		_on_sfx_slider_value_changed(value, false, false)
 
 
 func _on_borderless_check_toggled(toggled_on):
+	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
 	if toggled_on:
 		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
 		borderless = true
@@ -115,6 +113,7 @@ func _on_borderless_check_toggled(toggled_on):
 
 
 func _on_fullscreen_check_toggled(toggled_on):
+	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
 	if toggled_on:
 		previous_window_size = DisplayServer.window_get_size()
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
@@ -127,32 +126,44 @@ func _on_fullscreen_check_toggled(toggled_on):
 		fullscreen = false
 
 func _on_mouse_menus_check_toggled(toggled_on):
+	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
 	if toggled_on:
 		use_mouse_for_menus = true
 		if Input.get_connected_joypads().size() == 0:
 			get_viewport().gui_release_focus()
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+			$CanvasLayer/StopMouse.mouse_filter = MOUSE_FILTER_IGNORE
 	else:
-		Input.warp_mouse(Vector2(100, 100))
+		#Input.warp_mouse(Vector2(100, 100))
 		use_mouse_for_menus = false
 		get_viewport().gui_release_focus()
 		$MarginContainer/VBoxContainer/MouseHBox/MouseMenusCheck.grab_focus()
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+		$CanvasLayer/StopMouse.mouse_filter = MOUSE_FILTER_STOP
 	#_on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
 
+func _on_timer_check_toggled(toggled_on):
+	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
+	speedrun_timer = toggled_on
+
 static func set_loaded_settings():
-	if sfx_slider_value == -25:
+	if sfx_slider_value == 0:
 		AudioServer.set_bus_mute(2, true)
 	else:
-		AudioServer.set_bus_volume_db(2, sfx_slider_value)
-	if music_slider_value == -25:
+		AudioServer.set_bus_volume_db(2, linear_to_db(sfx_slider_value))
+	if music_slider_value == 0:
 		AudioServer.set_bus_mute(1, true)
 	else:
-		AudioServer.set_bus_volume_db(1, music_slider_value)
+		AudioServer.set_bus_volume_db(1, linear_to_db(music_slider_value))
 	
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, borderless)
 	if fullscreen:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-		
 
-
+func _on_keybind_button_pressed():
+	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
+	save_settings()
+	var keybind_menu = load("res://Menu/keybind_menu.tscn").instantiate()
+	keybind_menu.back_scene = back_scene
+	get_parent().add_child(keybind_menu)
+	queue_free()

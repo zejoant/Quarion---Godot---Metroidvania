@@ -1,0 +1,19 @@
+[gd_scene load_steps=7 format=3 uid="uid://bec0ycjh2t6v"]
+
+[ext_resource type="Script" path="res://Objects/boulder_spawner.gd" id="1_cvtr3"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_5fndl"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_xbkdr"]
+[ext_resource type="AudioStream" uid="uid://kggmeuin55nr" path="res://Sfx/rolling boulders.wav" id="4_rm1c2"]
+
+[sub_resource type="Resource" id="Resource_w525v"]
+script = ExtResource("3_xbkdr")
+tag = "boulder_sound"
+stream = ExtResource("4_rm1c2")
+
+[sub_resource type="Resource" id="Resource_yfr2r"]
+script = ExtResource("2_5fndl")
+sound_effects = Array[ExtResource("3_xbkdr")]([SubResource("Resource_w525v")])
+
+[node name="BoulderSpawner" type="Node2D"]
+script = ExtResource("1_cvtr3")
+sfxs = SubResource("Resource_yfr2r")

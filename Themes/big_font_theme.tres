@@ -1,0 +1,9 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://clpes5g3k6kou"]
+
+[ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/Big Font.ttf" id="1_sbxyw"]
+
+[resource]
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/constants/outline_size = 4
+Label/font_sizes/font_size = 8
+Label/fonts/font = ExtResource("1_sbxyw")

@@ -71,7 +71,9 @@ func _ready():
 		p.scale.x = -1
 		p.position.x = 304
 		player_from_right = true
-		
+	
+	cam.hide_ui(false)
+	
 	intro_sequence()
 
 func _physics_process(_delta):
@@ -133,7 +135,7 @@ func second_phase_fakout():
 		set_hit_mode(HitMode.GHOST)
 		air_state = AirState.GROUNDED
 		AudioManager.pause_song()
-		AudioManager.play_audio(load("res://Sfx/power up charge.wav"), 0.72)
+		AudioManager.play_audio(load("res://Sfx/power up charge.wav"), 0.72, 1, self)
 		attack_state = 1
 		
 	if attack_state == 1:
@@ -175,6 +177,7 @@ func second_phase_fakout():
 		afterimage_active = true
 		teleport(Vector2(152, 72), true, 0, "levitate", false)
 		await get_tree().create_timer(0.21, false).timeout
+		AudioManager.play_audio(sfxs.get_sfx("scream"), 1, 1.5)
 		get_node("/root/World/Camera").radial_blur(0.03, 1, 12)
 		await get_tree().create_timer(0.5, false).timeout
 		boss_state = BossState.CHOOSE_ATTACK
@@ -992,7 +995,7 @@ func die():
 	#	await get_tree().create_timer(0.42, false).timeout
 	
 	$AnimationPlayer.play("implode")
-	AudioManager.play_audio(load("res://Sfx/power up charge.wav"), 1.543)
+	AudioManager.play_audio(load("res://Sfx/power up charge.wav"), 1.543, 1, self)
 	await get_tree().create_timer(3.5, false).timeout
 	cam.invert_color(1, 0.2)
 	AudioManager.play_audio(sfxs.get_sfx("hit"))
@@ -1003,7 +1006,7 @@ func die():
 	$PixelExplosionParticles.emitting = true
 	await get_tree().create_timer(0.1, false).timeout
 	
-	AudioManager.play_audio(sfxs.get_sfx("scream"))
+	AudioManager.play_audio(sfxs.get_sfx("scream"), 1, 1.5)
 	p.get_node("HermitFleeSprite").position = position
 	p.get_node("HermitFleeSprite").modulate.a = 0.6
 	hermit_flee = true
@@ -1020,6 +1023,7 @@ func die():
 	$BossSprite.material.set_shader_parameter("strength", 0)
 	p.get_node("Gate").open()
 	p.get_node("Gate2").open()
+	cam.hide_ui(true)
 	AudioManager.resume_previous_song()
 	call_deferred("queue_free")
 

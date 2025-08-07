@@ -1,0 +1,79 @@
+[gd_scene load_steps=9 format=3 uid="uid://b440xrs87qvwu"]
+
+[ext_resource type="Texture2D" uid="uid://cywpsaa73tid3" path="res://Assets/MenuTextures/Button Texture.png" id="1_0lns6"]
+[ext_resource type="Theme" uid="uid://cy86cwc1oigm7" path="res://Themes/small_font_theme.tres" id="1_k7tlo"]
+[ext_resource type="FontFile" uid="uid://dcrk43hh0erpd" path="res://Fonts/Small Font.ttf" id="2_52seu"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xkl72"]
+texture = ExtResource("1_0lns6")
+texture_margin_left = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 3.0
+region_rect = Rect2(138, 45, 60, 3)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_l0i6w"]
+texture = ExtResource("1_0lns6")
+texture_margin_left = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 3.0
+region_rect = Rect2(136, 40, 64, 4)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uoul4"]
+
+[sub_resource type="Theme" id="Theme_1y55q"]
+Button/styles/focus = SubResource("StyleBoxTexture_xkl72")
+Button/styles/hover = SubResource("StyleBoxTexture_xkl72")
+Button/styles/normal = SubResource("StyleBoxTexture_l0i6w")
+Button/styles/pressed = SubResource("StyleBoxEmpty_uoul4")
+
+[sub_resource type="Theme" id="Theme_qm80l"]
+Label/colors/font_color = Color(0.686275, 0.65098, 0.552941, 1)
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/constants/line_spacing = 1
+Label/constants/outline_size = 4
+Label/font_sizes/font_size = 8
+Label/fonts/font = ExtResource("2_52seu")
+
+[node name="InputButton" type="Button"]
+custom_minimum_size = Vector2(0, 18)
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 8.0
+grow_horizontal = 2
+theme = SubResource("Theme_1y55q")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_right = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="LabelAction" type="Label" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+mouse_filter = 1
+theme = ExtResource("1_k7tlo")
+theme_override_colors/font_color = Color(0.945098, 0.929412, 0.886275, 1)
+text = "Move Right"
+vertical_alignment = 1
+
+[node name="Control" type="Control" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="LabelInput" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+theme = SubResource("Theme_qm80l")
+text = "Input Key"
+horizontal_alignment = 2
+vertical_alignment = 1
+text_overrun_behavior = 3

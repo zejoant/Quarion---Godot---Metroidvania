@@ -2,12 +2,12 @@ extends Control
 
 @export var sfxs : AudioLibrary
 var world = preload("res://world.tscn").instantiate()
-static var settings_loaded = false
+#static var settings_loaded = false
 
 func _ready():
-	if !settings_loaded:
-		SaveManager.load_settings()
-		settings_loaded = true
+	#if !settings_loaded:
+	#	SaveManager.load_settings()
+	#	settings_loaded = true
 	
 	#if SaveManager.save_file_exists():
 	#	$Menu/MarginContainer/VBoxContainer/VBoxContainer/ContinueButton.disabled = true
@@ -21,10 +21,12 @@ func _on_joy_connection_changed(_device_id, connected):
 	if !connected and OptionsMenu.use_mouse_for_menus:
 		get_viewport().gui_release_focus()
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		$Menu/StopMouse.mouse_filter = MOUSE_FILTER_IGNORE
 	else:
 		get_viewport().gui_release_focus()
 		$Menu/MarginContainer/VBoxContainer/VBoxContainer/ContinueButton.grab_focus()
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+		$Menu/StopMouse.mouse_filter = MOUSE_FILTER_STOP
 		
 #func _input(event):
 	#if !get_viewport().gui_get_focus_owner():
@@ -33,7 +35,7 @@ func _on_joy_connection_changed(_device_id, connected):
 
 func _on_continue_button_pressed():
 	#Input.joy_connection_changed.disconnect(_on_joy_connection_changed)
-	AudioManager.play_audio(sfxs.get_sfx("click"))
+	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
 	if FileAccess.file_exists("user://save_file.save"):
 		disable_buttons()
 		self.create_tween().tween_property($Menu, "offset:x", -150, 0.2)
@@ -49,9 +51,7 @@ func _on_continue_button_pressed():
 		_on_new_game_button_pressed()
 
 func _on_new_game_button_pressed():
-	AudioManager.play_audio(sfxs.get_sfx("click"))
-	#get_node("Menu").visible = false
-	#Input.joy_connection_changed.disconnect(_on_joy_connection_changed)
+	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
 	disable_buttons()
 	$IntroObjects.count = 1
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
@@ -59,7 +59,6 @@ func _on_new_game_button_pressed():
 	self.create_tween().tween_property($Menu, "offset:x", -150, 0.2)
 	self.create_tween().tween_method(set_blur_power, 1.032, 0, 0.5); # args: (method / start value / end value / duration)
 	$IntroObjects.run_animation()
-	#get_node("IntroObjects/AnimationPlayer").play("Start")
 	
 func disable_buttons():
 	$Menu/MarginContainer/VBoxContainer/VBoxContainer/NewGameButton.disabled = true
@@ -71,13 +70,11 @@ func set_blur_power(power: float):
 	get_node("BlurRect").material.set_shader_parameter("amount", power)
 
 func _on_options_button_pressed():
-	AudioManager.play_audio(sfxs.get_sfx("click"))
-	#Input.joy_connection_changed.disconnect(_on_joy_connection_changed)
+	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
 	$Menu.visible = false
 	var options = load("res://Menu/options_menu.tscn").instantiate()
 	$OptionsLayer.add_child(options)
-	#get_tree().change_scene_to_file("res://Menu/options_menu.tscn")
 
 func _on_quit_button_pressed():
-	AudioManager.play_audio(sfxs.get_sfx("click"))
+	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
 	get_tree().quit()

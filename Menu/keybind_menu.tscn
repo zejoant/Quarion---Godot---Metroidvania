@@ -1,0 +1,228 @@
+[gd_scene load_steps=28 format=3 uid="uid://bej5ygboi8k4a"]
+
+[ext_resource type="PackedScene" uid="uid://b440xrs87qvwu" path="res://Menu/input_button.tscn" id="1_gnlka"]
+[ext_resource type="Script" path="res://Menu/keybind_menu.gd" id="1_sjqi3"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_ci740"]
+[ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="2_whk2a"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_6p8s3"]
+[ext_resource type="Theme" uid="uid://b6lhu6b1qu0a3" path="res://Themes/button_theme_new.tres" id="3_v8fde"]
+[ext_resource type="Theme" uid="uid://cy86cwc1oigm7" path="res://Themes/small_font_theme.tres" id="4_f4hhg"]
+[ext_resource type="AudioStream" uid="uid://pfw4an2t2qpt" path="res://Sfx/menu click 2.wav" id="4_nobpt"]
+[ext_resource type="FontFile" uid="uid://dcrk43hh0erpd" path="res://Fonts/Small Font.ttf" id="4_so3dx"]
+[ext_resource type="Texture2D" uid="uid://cywpsaa73tid3" path="res://Assets/MenuTextures/Button Texture.png" id="5_ho3dk"]
+[ext_resource type="AudioStream" uid="uid://bix5b6cfgmyo6" path="res://Sfx/menu input.wav" id="5_vf382"]
+
+[sub_resource type="Resource" id="Resource_716in"]
+script = ExtResource("3_6p8s3")
+tag = "click"
+stream = ExtResource("4_nobpt")
+
+[sub_resource type="Resource" id="Resource_au6e8"]
+script = ExtResource("3_6p8s3")
+tag = "key"
+stream = ExtResource("5_vf382")
+
+[sub_resource type="Resource" id="Resource_5tdej"]
+script = ExtResource("2_ci740")
+sound_effects = Array[ExtResource("3_6p8s3")]([SubResource("Resource_716in"), SubResource("Resource_au6e8")])
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y0a7x"]
+shader = ExtResource("2_whk2a")
+shader_parameter/amount = 2.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2xsng"]
+texture = ExtResource("5_ho3dk")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+region_rect = Rect2(140, 12, 56, 24)
+
+[sub_resource type="Theme" id="Theme_urw4a"]
+Panel/styles/panel = SubResource("StyleBoxTexture_2xsng")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0xjuf"]
+texture = ExtResource("5_ho3dk")
+texture_margin_left = 3.0
+texture_margin_top = 4.0
+texture_margin_right = 3.0
+texture_margin_bottom = 4.0
+region_rect = Rect2(80, 48, 7, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uen42"]
+texture = ExtResource("5_ho3dk")
+texture_margin_left = 3.0
+texture_margin_top = 4.0
+texture_margin_right = 3.0
+texture_margin_bottom = 4.0
+region_rect = Rect2(89, 48, 7, 16)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wwco2"]
+content_margin_left = 3.0
+content_margin_right = 4.0
+bg_color = Color(0, 0, 0, 0.423529)
+
+[sub_resource type="Theme" id="Theme_v4gcc"]
+VScrollBar/styles/grabber = SubResource("StyleBoxTexture_0xjuf")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxTexture_uen42")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxTexture_uen42")
+VScrollBar/styles/scroll = SubResource("StyleBoxFlat_wwco2")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aiwof"]
+texture = ExtResource("5_ho3dk")
+texture_margin_left = 8.0
+texture_margin_top = 5.0
+texture_margin_right = 8.0
+texture_margin_bottom = 5.0
+region_rect = Rect2(16, 44, 48, 24)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_h4hm0"]
+texture = ExtResource("5_ho3dk")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(73, 11, 63, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m3q7b"]
+texture = ExtResource("5_ho3dk")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(73, 11, 63, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_iyykc"]
+texture = ExtResource("5_ho3dk")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(12, 11, 56, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_y31l4"]
+texture = ExtResource("5_ho3dk")
+texture_margin_left = 12.0
+texture_margin_top = 6.0
+texture_margin_right = 12.0
+texture_margin_bottom = 6.0
+region_rect = Rect2(12, 43, 56, 26)
+
+[sub_resource type="Theme" id="Theme_snos0"]
+default_font_size = 8
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/constants/outline_size = 4
+Button/font_sizes/font_size = 8
+Button/fonts/font = ExtResource("4_so3dx")
+Button/styles/disabled = SubResource("StyleBoxTexture_aiwof")
+Button/styles/focus = SubResource("StyleBoxTexture_h4hm0")
+Button/styles/hover = SubResource("StyleBoxTexture_m3q7b")
+Button/styles/normal = SubResource("StyleBoxTexture_iyykc")
+Button/styles/pressed = SubResource("StyleBoxTexture_y31l4")
+
+[node name="KeybindMenu" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sjqi3")
+sfxs = SubResource("Resource_5tdej")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_y0a7x")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.5, 1.5)
+pivot_offset = Vector2(152, 96)
+mouse_filter = 2
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -119.0
+offset_top = -84.0
+offset_right = 119.0
+offset_bottom = 84.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_urw4a")
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_v4gcc")
+follow_focus = true
+
+[node name="ActionList" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="InputButton" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ActionList" instance=ExtResource("1_gnlka")]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("4_f4hhg")
+theme_override_colors/font_color = Color(0.768627, 0.298039, 0.298039, 1)
+text = "Custom keybinds will not be displayed on prompts in-game"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="BackButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(72, 0)
+layout_mode = 2
+theme = ExtResource("3_v8fde")
+text = "Back"
+
+[node name="ResetButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(72, 0)
+layout_mode = 2
+theme = SubResource("Theme_snos0")
+text = "Reset to Default"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="StopMouse" type="ColorRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+
+[connection signal="pressed" from="Panel/MarginContainer/VBoxContainer/HBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="Panel/MarginContainer/VBoxContainer/HBoxContainer/ResetButton" to="." method="_on_reset_button_pressed"]

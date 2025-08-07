@@ -32,7 +32,7 @@ var red_as_companion
 var new_room_path
 var old_room
 
-var timer: float = 0.0
+#var timer: float = 0.0
 var completion_percentage: float = 0
 
 @onready var red_boss_room = preload("res://Rooms/room_10.tscn")
@@ -42,12 +42,14 @@ var changed_room_frames: int = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	cam_size = get_node("Camera").get_viewport_rect().size
 	player = get_node("Player")
-	$Camera/UILayer/UIContainer.visible = true
+	$Camera/UILayer.visible = true
+	#$Camera.hide_ui(true)
 	bought_shop_items.resize(3)
 	bought_shop_items.fill(false)
+	changed_room_frames = 5
 	
 	#get_tree().set_auto_accept_quit(false)
 	
@@ -71,37 +73,33 @@ func _ready():
 			add_red_as_companion()
 		
 		get_node("Camera").flash(1, 0, 0.2, 0.3)
-		await get_tree().create_timer(0.05, false).timeout
+		#await get_tree().create_timer(0.05, false).timeout
 	
 	player.position = checkpoint_pos
 	$Camera/LensCircle.change_lens(checkpoint_room, true)
 	
-	room_coords = checkpoint_room#Vector2(8, 3)#(0, 1) #starting room
+	room_coords = checkpoint_room
 	var scene_instance = load("res://Rooms/room_" + str(room_coords.x) + str(room_coords.y) + ".tscn").instantiate()
 	add_child(scene_instance)
-	changed_room_frames = 5
 	if new_game:
 		get_tilemap().reset_water_tiles()
-	#	scene_instance.get_node("Tilemap").queue_free()
-	#	scene_instance.add_child(load("res://tile_map.tscn").instantiate())
 	
 	$WorldMap.add_room(room_coords)
+	get_tilemap().resume_animated_tiles()
 	
-	AudioManager.play_song(load("res://Music/Must Move.mp3"))
-	#AudioManager.play_song(load("res://Music/746887_BITTRIP-REMIX-02-CORE.mp3"))
+	AudioManager.play_song(load("res://Music/Drephen Steek.mp3"))
+	#if player.has_opened_map:
+		#AudioManager.play_song(load("res://Music/Must Move.mp3"))
+	#else:
+		#AudioManager.play_song(load("res://Music/Temp_Ambience.mp3"))
 	AudioManager.save_respawn_song()
-	#$MusicPlayer.stream = load("res://Music/746887_BITTRIP-REMIX-02-CORE.mp3")
-	#$MusicPlayer.play()
-	#respawn_song = $MusicPlayer.stream.resource_path
 
-func _process(delta):
+func _process(_delta):
 	changed_room_frames -= 1
 	exit_room_check()
 	
 	if Input.is_action_just_pressed("Pause") and !other_ui_open:
 		$CanvasLayer/PauseMenu.pause_menu()
-	
-	timer += delta #time in seconds, with 3 decimal places
 
 func setup_arrays():
 	var map_width = 10
@@ -120,18 +118,17 @@ func setup_arrays():
 	room_state_saved = room_state.duplicate(true)
 	opened_doors_saved = opened_doors.duplicate(true)
 
-#func _notification(what):
-	#if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		#save_game()
-		#await get_tree().create_timer(0.1).timeout
-		#get_tree().call_deferred("quit")
+func _notification(what):
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		save_game()
+		await get_tree().create_timer(0.1).timeout
+		get_tree().call_deferred("quit")
 	
 #checks if the player has exited the room. If so it chnages the room and player pos.
 func exit_room_check():
 	var new_room_coords = room_coords
 	var exit_dir = "right"
 	
-	#var t0 = Time.get_ticks_msec()
 	if player.position.x >= cam_size.x:
 		player.position.x = 1
 		exit_dir = "right"
@@ -152,13 +149,10 @@ func exit_room_check():
 	else:
 		return
 	
-	#if new_room_coords != room_coords:
 	new_room_coords = room_wrap_check(new_room_coords, exit_dir)
 	if room_coords != new_room_coords:
 		change_room(new_room_coords)
 	
-	#print(Time.get_ticks_msec()-t0)
-		
 #function for changing the current room
 func change_room(new_coords):
 	if $Camera.p_up_window_open:
@@ -187,12 +181,18 @@ func change_room(new_coords):
 		$WorldMap.add_room(room_coords) #adds room to map
 	
 	if new_coords == Vector2(4, 4) and !player.has_opened_map:
+		#AudioManager.fade_out_song(0.5)
 		if Input.get_connected_joypads().size() > 0:
 			$Player/OpenMapIndicator/KeyboardInput.visible = false
 			$Player/OpenMapIndicator/ControllerInput.visible = true
 		player.has_opened_map = true
-		await get_tree().create_timer(2, false).timeout
-		self.create_tween().tween_property($Player/OpenMapIndicator, "modulate:a", 1, 1)
+		
+		await get_tree().create_timer(0.6, false).timeout
+		#AudioManager.play_song(load("res://Music/Must Move.mp3"))
+		#AudioManager.save_respawn_song()
+		#AudioManager.fade_in_song(0)
+		await get_tree().create_timer(1.4, false).timeout
+		self.create_tween().tween_property($Player/OpenMapIndicator, "modulate:a", 1, 0.3)
 		await get_tree().create_timer(10, false).timeout
 		self.create_tween().tween_property($Player/OpenMapIndicator, "modulate:a", 0, 1)
 
@@ -209,13 +209,11 @@ func return_to_checkpoint():
 	player.position = Vector2(checkpoint_pos.x, checkpoint_pos.y)
 
 func temporary_actions_to_permanent(): #saves stuff like clicking on buttons and opening doors to be permanent
-	#print("permanent")
 	opened_doors_saved = opened_doors.duplicate(true)
 	room_state_saved = room_state.duplicate(true)
 	player.apple_count_saved = player.apple_count
 
 func revert_temporary_actions(): #revers actions like pressing buttons and openings doors if they have not been made permanent
-	#print("revert")
 	opened_doors = opened_doors_saved.duplicate(true)
 	room_state = room_state_saved.duplicate(true)
 	get_node("/root/World").completion_percentage -= 0.4*(player.apple_count-player.apple_count_saved)
@@ -229,9 +227,14 @@ func get_tilemap() -> TileMap:
 		return null
 
 func get_room() -> Node2D:
-	return get_node_or_null("Room" + str(room_coords.x) + str(room_coords.y))
+	var room = get_node_or_null("Room" + str(room_coords.x) + str(room_coords.y))
+	if room:
+		return room
+	return self
+	#return get_node_or_null("Room" + str(room_coords.x) + str(room_coords.y))
 
 func room_wrap_check(new_room_coords, exit_dir) -> Vector2:
+	$WorldMap.in_subarea = false
 	if room_coords == Vector2(5, 6) and exit_dir == "down":
 		return Vector2(5, 5)
 	elif room_coords == Vector2(5, 5) and exit_dir == "up":
@@ -255,16 +258,13 @@ func room_wrap_check(new_room_coords, exit_dir) -> Vector2:
 	
 	elif room_coords == Vector2(9, 0) and exit_dir == "right":
 		return Vector2(8, 0)
-	#elif room_coords == Vector2(8, 0) and exit_dir == "left":
-	#	return Vector2(9, 0)
 	
-	elif room_coords == Vector2(0, 1) and exit_dir == "up": #rick
+	elif room_coords == Vector2(0, 1) and exit_dir == "up": #apaolo
 		player.position.x += 12*8
 		$WorldMap.in_subarea = true
 		return Vector2(0, 8)
-	elif room_coords == Vector2(0, 8) and exit_dir == "down": #rick
+	elif room_coords == Vector2(0, 8) and exit_dir == "down": #apaolo
 		player.position.x -= 12*8
-		$WorldMap.in_subarea = false
 		return Vector2(0, 1)
 	
 	elif room_coords == Vector2(4, 7) and (exit_dir == "down" or exit_dir == "up"):
@@ -282,6 +282,15 @@ func save_room_state(obj_state, permanent: bool = false):
 func get_room_state() -> Array:
 	return room_state[room_coords.x][room_coords.y]
 
+func get_speedrun_timer() -> Node:
+	return get_node("Camera/UILayer/SpeedrunTimer")
+
+func get_speedrun_time() -> float:
+	return get_node("Camera/UILayer/SpeedrunTimer").timer
+
+func set_speedrun_time(t: float):
+	get_node("Camera/UILayer/SpeedrunTimer").timer = t
+
 func add_red_as_companion():
 	red_as_companion = load("res://Creatures/companion.tscn").instantiate()
 	add_child(red_as_companion)
@@ -296,8 +305,8 @@ func reset_room_objects(group: String = "Resetable"):
 func add_to_completion_percentage(type: String):
 	if type == "Apple": #50x
 		completion_percentage += 0.4
-	elif type == "Room": #80x
-		completion_percentage += 0.15
+	elif type == "Room": #78x
+		completion_percentage += 2.0/13.0#0.15
 	elif type == "PowerUp": #3x
 		completion_percentage += 14
 	elif type == "DoubleJump": #1x
@@ -319,7 +328,6 @@ func save_game():
 
 func load_data():
 	SaveManager.load_game(self)
-
 
 func end_game():
 	$Player.can_move = false

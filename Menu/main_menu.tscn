@@ -1,28 +1,23 @@
-[gd_scene load_steps=16 format=3 uid="uid://bbcuafrlc8tnb"]
+[gd_scene load_steps=15 format=3 uid="uid://bbcuafrlc8tnb"]
 
 [ext_resource type="Script" path="res://Menu/main_menu.gd" id="1_af00c"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_j2owd"]
 [ext_resource type="Texture2D" uid="uid://dkt3i4vijtw41" path="res://Assets/MenuTextures/Title.png" id="3_4bi3r"]
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_cp0hx"]
 [ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="3_ip0rl"]
-[ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/Big Font.ttf" id="4_87sp4"]
-[ext_resource type="AudioStream" uid="uid://bix5b6cfgmyo6" path="res://Sfx/menu input.wav" id="4_h4qcl"]
+[ext_resource type="AudioStream" uid="uid://pfw4an2t2qpt" path="res://Sfx/menu click 2.wav" id="4_20qtt"]
 [ext_resource type="Theme" uid="uid://b6lhu6b1qu0a3" path="res://Themes/button_theme_new.tres" id="5_v0tn8"]
 [ext_resource type="PackedScene" uid="uid://cagepo1tljh6w" path="res://intro_cutscene.tscn" id="6_ipu0k"]
+[ext_resource type="Theme" uid="uid://cy86cwc1oigm7" path="res://Themes/small_font_theme.tres" id="7_ajjnw"]
 
 [sub_resource type="Resource" id="Resource_6y2wp"]
 script = ExtResource("3_cp0hx")
 tag = "click"
-stream = ExtResource("4_h4qcl")
+stream = ExtResource("4_20qtt")
 
 [sub_resource type="Resource" id="Resource_h0dg2"]
 script = ExtResource("2_j2owd")
 sound_effects = Array[ExtResource("3_cp0hx")]([SubResource("Resource_6y2wp")])
-
-[sub_resource type="LabelSettings" id="LabelSettings_gvhdu"]
-font = ExtResource("4_87sp4")
-font_size = 3
-font_color = Color(0.2376, 0.31104, 0.36, 1)
 
 [sub_resource type="Gradient" id="Gradient_1ot73"]
 offsets = PackedFloat32Array(0, 0.35, 0.62, 1)
@@ -51,9 +46,9 @@ layer = 2
 [node name="MarginContainer" type="MarginContainer" parent="Menu"]
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_left = 3.0
+offset_left = 5.0
 offset_top = 4.0
-offset_right = 131.0
+offset_right = 133.0
 offset_bottom = -4.0
 grow_vertical = 2
 
@@ -73,6 +68,7 @@ modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Menu/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(72, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 10
@@ -98,24 +94,32 @@ layout_mode = 2
 focus_neighbor_top = NodePath("../NewGameButton")
 focus_neighbor_bottom = NodePath("../QuitButton")
 theme = ExtResource("5_v0tn8")
-theme_override_constants/h_separation = 0
-text = "Options"
+text = "Settings"
 
 [node name="QuitButton" type="Button" parent="Menu/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../OptionsButton")
 focus_neighbor_bottom = NodePath("../ContinueButton")
 theme = ExtResource("5_v0tn8")
-theme_override_constants/h_separation = 0
 text = "Quit"
 
 [node name="VersionNumber" type="Label" parent="Menu"]
-offset_left = 264.0
-offset_top = 188.0
-offset_right = 304.0
-offset_bottom = 192.0
+offset_left = 261.0
+offset_top = 184.0
+offset_right = 303.0
+offset_bottom = 193.0
+theme = ExtResource("7_ajjnw")
+theme_override_colors/font_color = Color(0.341176, 0.321569, 0.505882, 1)
 text = "Version 1.0.0"
-label_settings = SubResource("LabelSettings_gvhdu")
+
+[node name="StopMouse" type="ColorRect" parent="Menu"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0)
 
 [node name="TextureRect" type="TextureRect" parent="."]
 visible = false

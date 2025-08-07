@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://pqwjilc67k3f"
+path="res://.godot/imported/Drephen Steek.mp3-a8c0905a88f40b32ba18f826290f3a97.mp3str"
+
+[deps]
+
+source_file="res://Music/Drephen Steek.mp3"
+dest_files=["res://.godot/imported/Drephen Steek.mp3-a8c0905a88f40b32ba18f826290f3a97.mp3str"]
+
+[params]
+
+loop=true
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

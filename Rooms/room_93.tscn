@@ -26,6 +26,7 @@ position = Vector2(96, 140)
 [node name="HLoopingPlatform2" parent="." instance=ExtResource("3_teso4")]
 direction = "right"
 speed = 1.4
+sound = true
 
 [node name="ColorRect" parent="HLoopingPlatform2" index="0"]
 offset_left = 88.0

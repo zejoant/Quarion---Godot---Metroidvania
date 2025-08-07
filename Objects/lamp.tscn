@@ -160,7 +160,7 @@ autoplay = "Inactive"
 position = Vector2(0, -8)
 texture = ExtResource("1_4185q")
 region_enabled = true
-region_rect = Rect2(48, 64, 8, 24)
+region_rect = Rect2(16, 64, 8, 24)
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 0.898039, 0)

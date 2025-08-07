@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://be5yjrn6tjek4"]
+
+[ext_resource type="Theme" uid="uid://cy86cwc1oigm7" path="res://Themes/small_font_theme.tres" id="1_3pvmh"]
+[ext_resource type="Script" path="res://speedrun_timer.gd" id="2_enhe6"]
+
+[node name="SpeedrunTimer" type="Label"]
+process_mode = 3
+visible = false
+offset_right = 42.0
+offset_bottom = 16.0
+theme = ExtResource("1_3pvmh")
+theme_override_colors/font_color = Color(0.945098, 0.929412, 0.886275, 1)
+text = "00:00:00.000"
+script = ExtResource("2_enhe6")

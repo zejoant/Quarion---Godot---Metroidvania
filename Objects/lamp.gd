@@ -12,7 +12,7 @@ func _ready():
 
 func activate():
 	if !cooldown:
-		AudioManager.play_audio(sfx)
+		AudioManager.play_audio(sfx, 1, 1.2)
 		$CPUParticles2D.emitting = false
 		$CPUParticles2D.restart()  
 		$CPUParticles2D.emitting = true
@@ -21,6 +21,7 @@ func activate():
 			world.save_checkpoint_room(position)
 			world.reset_room_objects("Crumble")
 			world.temporary_actions_to_permanent()
+			world.save_game()
 		cooldown = true
 		await get_tree().create_timer(2, false).timeout
 		cooldown = false

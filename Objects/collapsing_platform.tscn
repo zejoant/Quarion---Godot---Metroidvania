@@ -5,12 +5,12 @@
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_nmhw7"]
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_dhxpg"]
 [ext_resource type="Texture2D" uid="uid://c5cnqwc683tb1" path="res://Assets/Crumble Edge.png" id="3_p7lbe"]
-[ext_resource type="AudioStream" uid="uid://bbtbo7w7alaog" path="res://Sfx/statue open mouth.wav" id="4_nahjn"]
+[ext_resource type="AudioStream" uid="uid://2r2krfrh87nt" path="res://Sfx/tiny impact 2.wav" id="4_tcrow"]
 
 [sub_resource type="Resource" id="Resource_mxv1j"]
 script = ExtResource("3_dhxpg")
 tag = "crumble"
-stream = ExtResource("4_nahjn")
+stream = ExtResource("4_tcrow")
 
 [sub_resource type="Resource" id="Resource_04tg1"]
 script = ExtResource("2_nmhw7")

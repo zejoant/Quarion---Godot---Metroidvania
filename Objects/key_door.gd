@@ -1,12 +1,14 @@
 #@tool
 extends StaticBody2D
 
+@export var sfxs : AudioLibrary
 @export var length : int = 3
 #@export var audio : bool = false
 @export_enum("up", "down", "left", "right") var direction = "up"
 @export_enum("open", "closed") var initial_state = "closed"
 @export_enum("green", "red") var color = "green"
-@export var sfxs : AudioLibrary
+@export var glow_size = 5
+@export var glow_time = 0.5
 
 var dir
 var anim_tween
@@ -20,13 +22,9 @@ func _ready():
 		queue_free()
 	elif color == "red" and player.red_key_state == "used":
 		queue_free()
-	setup()
-	
-	#var room_states = get_node("/root/World").get_room_state()
-	#for pos in room_states:
-	#	if Vector2i(position) == Vector2i(pos): #check if door has already been opened
-	#		queue_free()
-	
+	else:
+		setup()
+
 
 func open():
 	await self.create_tween().tween_property(self, "position", origin, 1).finished
@@ -36,6 +34,11 @@ func open():
 func close():
 	self.create_tween().tween_property(self, "position", origin + length*8*dir, 1)
 
+func glow():
+	AudioManager.play_audio(sfxs.get_sfx("glow"))
+	$OpenGlow.visible = true
+	self.create_tween().tween_property($OpenGlow, "modulate:a", 0, glow_time)
+	self.create_tween().tween_property($OpenGlow, "scale", Vector2(glow_size, glow_size), glow_time)
 
 func setup():
 	$BottomSprite.position.y = (length-1)*8
@@ -52,8 +55,11 @@ func setup():
 	
 	if color == "red":
 		$ColorSprite.region_rect.position.x = 8
+		$OpenGlow.modulate = Color8(196, 76, 76, 189)
 	else:
 		$ColorSprite.region_rect.position.x = 0
+		$OpenGlow.modulate = Color8(120, 180, 92, 189)
+		
 	
 	if direction == "up":
 		rotation = 0

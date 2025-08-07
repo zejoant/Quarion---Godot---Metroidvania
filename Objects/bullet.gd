@@ -31,7 +31,7 @@ func _physics_process(_delta):
 			$CPUParticles2D.emitting = false
 			$CollisionShape2D.disabled = true
 		if sound:
-			AudioManager.play_audio(sfxs.get_sfx("collide"))
+			AudioManager.play_audio(sfxs.get_sfx("collide"), 1, RandomNumberGenerator.new().randf_range(0.9, 1.1))
 		await get_tree().create_timer(1, false).timeout
 		call_deferred("queue_free")
 	else:

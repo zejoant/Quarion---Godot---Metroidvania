@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cyhsi2y46wljs"
+path="res://.godot/imported/unlock door.wav-3cfb26a531cd92db00163d3725007d79.sample"
+
+[deps]
+
+source_file="res://Sfx/unlock door.wav"
+dest_files=["res://.godot/imported/unlock door.wav-3cfb26a531cd92db00163d3725007d79.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

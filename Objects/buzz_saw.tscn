@@ -1,7 +1,19 @@
-[gd_scene load_steps=4 format=3 uid="uid://55yea8bvmjot"]
+[gd_scene load_steps=9 format=3 uid="uid://55yea8bvmjot"]
 
 [ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="1_4hcsu"]
 [ext_resource type="Script" path="res://Objects/buzz_saw.gd" id="1_i7oo7"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_l7iky"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_ao15s"]
+[ext_resource type="AudioStream" uid="uid://dbqtbn4uo0vmn" path="res://Sfx/saw spin.wav" id="4_rld3l"]
+
+[sub_resource type="Resource" id="Resource_1twep"]
+script = ExtResource("3_ao15s")
+tag = "spin"
+stream = ExtResource("4_rld3l")
+
+[sub_resource type="Resource" id="Resource_rt5ch"]
+script = ExtResource("2_l7iky")
+sound_effects = Array[ExtResource("3_ao15s")]([SubResource("Resource_1twep")])
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_m0km4"]
 
@@ -9,6 +21,7 @@
 collision_layer = 2
 collision_mask = 0
 script = ExtResource("1_i7oo7")
+sfxs = SubResource("Resource_rt5ch")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_4hcsu")

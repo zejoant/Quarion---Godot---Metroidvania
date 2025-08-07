@@ -8,21 +8,29 @@ var previous_song_pos
 var respawn_song
 var respawn_song_pos
 
-func play_audio(stream: AudioStream, speed: float = 1):
+func _ready():
+	audioPlayer = AudioStreamPlayer.new()
+	audioPlayer.bus = "Music"
+	audioPlayer.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(audioPlayer)
+
+func play_audio(stream: AudioStream, speed: float = 1, volume: float = 1, parent = self):
 	var sfxPlayer = AudioStreamPlayer.new()
+	sfxPlayer.volume_db = volume*40-40
 	sfxPlayer.pitch_scale = speed
 	sfxPlayer.bus = "Sfx"
 	sfxPlayer.stream = stream
 	sfxPlayer.finished.connect(remove_audio_player.bind(sfxPlayer))
-	add_child(sfxPlayer)
+	parent.call_deferred("add_child", sfxPlayer)
+	await Engine.get_main_loop().process_frame
 	sfxPlayer.play()
 
 func play_song(stream: AudioStream, playback_pos: float = 0.0):
-	if !audioPlayer:
-		audioPlayer = AudioStreamPlayer.new()
-		audioPlayer.bus = "Music"
-		audioPlayer.process_mode = Node.PROCESS_MODE_ALWAYS
-		add_child(audioPlayer)
+	#if !audioPlayer:
+		#audioPlayer = AudioStreamPlayer.new()
+		#audioPlayer.bus = "Music"
+		#audioPlayer.process_mode = Node.PROCESS_MODE_ALWAYS
+		#add_child(audioPlayer)
 		
 	if audioPlayer.has_stream_playback():
 		previous_song = audioPlayer.stream.resource_path
@@ -59,4 +67,10 @@ func save_respawn_song():
 
 func set_speed(speed: float):
 	audioPlayer.pitch_scale = speed
+
+func fade_out_song(time: float = 0.3):
+	self.create_tween().tween_property(audioPlayer, "volume_db", -40, time)
+
+func fade_in_song(time: float = 0.3):
+	self.create_tween().tween_property(audioPlayer, "volume_db", 0, time)
 	

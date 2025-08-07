@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://wfv3b0n8g3aj"
+path="res://.godot/imported/meteorite pass.wav-d42d1fd1aecf80893642af1200c1d459.sample"
+
+[deps]
+
+source_file="res://Sfx/meteorite pass.wav"
+dest_files=["res://.godot/imported/meteorite pass.wav-d42d1fd1aecf80893642af1200c1d459.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

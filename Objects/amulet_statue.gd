@@ -18,7 +18,7 @@ func _ready():
 
 
 func _input(event):
-	if event.is_action_pressed("UI Up") and player.amulet_pieces == 5 and player_in_area:
+	if event.is_action_pressed("Interact") and player.amulet_pieces == 5 and player_in_area:
 		$InputIndicator.visible = false
 		player.amulet_pieces = -1
 		world.save_room_state(position/8, true)

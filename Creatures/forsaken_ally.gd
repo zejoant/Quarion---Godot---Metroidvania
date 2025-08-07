@@ -49,6 +49,7 @@ var warning_particle = preload("res://Particles/warning_particle.tscn")
 func _ready():
 	player = get_node("/root/World/Player")
 	camera = get_node("/root/World/Camera")
+	camera.hide_ui(false)
 	follow_pos = player.position
 	#follow_velocity = player.velocity
 	if get_node("/root/World").red_boss_beaten == true:
@@ -294,7 +295,7 @@ func dive_attack():
 					$DiveImpactComp/DiveImpactParticles.emission_rect_extents.x = 96
 			
 			if $ForsakenAlly/GroundRay.is_colliding() and boss.position.y > 12*8: #hit ground
-				AudioManager.play_audio(sfxs.get_sfx("dash"))
+				AudioManager.play_audio(sfxs.get_sfx("dash"), 1, 1.2)
 				#camera.radial_blur()
 				camera.shake(5, 0.03, 3)
 				camera.invert_color(0.7, 0.3)
@@ -390,6 +391,7 @@ func dodge_player(dodge_speed: float, center: bool, reset_attack: bool):
 	dodging = true
 	$ForsakenAlly/HitArea/HitColl.set_deferred("disabled", true)
 	$ForsakenAlly/HurtColl.set_deferred("disabled", true)
+	AudioManager.play_audio(sfxs.get_sfx("dodge"), 1, 1.1)
 	if reset_attack:
 		boss_state = BossState.IDLE
 		$ForsakenAlly/BossAnimPlayer.play("Jump")
@@ -499,7 +501,7 @@ func _on_hit_area_body_entered(body):
 				self.create_tween().tween_property($ForsakenAlly/HermitGhost, "modulate:a", 0, 0.9)
 				player.paused = true
 				await get_tree().create_timer(0.5, false).timeout
-				AudioManager.play_audio(sfxs.get_sfx("hermit_scream"))
+				AudioManager.play_audio(sfxs.get_sfx("hermit_scream"), 1, 1.5)
 				self.create_tween().tween_property($ForsakenAlly/HermitGhost, "scale", Vector2(5, 5), 0.3)
 				#camera.zoom_camera(1, 0.2)
 				player.paused = false
@@ -594,6 +596,7 @@ func die():
 		await get_tree().create_timer(3, false).timeout
 		boss.visible = false
 		player.visible = true
+		camera.hide_ui(true)
 		$Gate2.open()
 		get_node("/root/World").add_red_as_companion()
 	
@@ -657,7 +660,7 @@ func intro_sequence():
 		#player.get_node("BubbleSprite").modulate.a
 		player.disable_movement(true)
 		player.can_die = false
-		player.position.x = 304#35*8
+		player.position.x = 303#35*8
 		player.velocity.x = -player.x_speed
 		await get_tree().create_timer(1.25, false).timeout
 		
@@ -717,7 +720,7 @@ func intro_sequence():
 		AudioManager.resume_song()
 	else:
 		player.disable_movement(true)
-		player.position.x = 304#35*8
+		player.position.x = 303#35*8
 		player.velocity.x = -player.x_speed
 		await get_tree().create_timer(0.7, false).timeout
 		player.velocity.x = 0 
@@ -748,8 +751,8 @@ func create_orb(orb_pos: Vector2, orb_speed: Vector2, orb_acc: Vector2, friction
 	orb.friction_y = friction_y
 	add_child(orb)
 
-func play_sfx(sfx_name: String):
-	AudioManager.play_audio(sfxs.get_sfx(sfx_name))
+func play_sfx(sfx_name: String, volume: float = 1):
+	AudioManager.play_audio(sfxs.get_sfx(sfx_name), 1, volume)
 
 #func _on_body_entered(_body):
 	#$ActivationColl.set_deferred("disabled", true)

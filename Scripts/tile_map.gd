@@ -1,5 +1,6 @@
 extends TileMap
 
+@export var sfxs : AudioLibrary
 var source_id
 var atlas_coord
 var tile_data: TileData
@@ -9,8 +10,15 @@ var tile_size := tile_set.tile_size.x
 var world
 var fade_tween
 
-#static var erased_cells:= PackedVector2Array()
-#static var erased_cells: Array[Vector4i]
+var freeze_sfx_cooldown = 0
+var rng = RandomNumberGenerator.new()
+
+var animated_tiles: PackedVector2Array = PackedVector2Array([
+	Vector2i(2, 11), Vector2i(2, 12), Vector2i(2, 13), Vector2i(2, 14), Vector2i(2, 15), Vector2i(2, 16), Vector2i(2, 17), Vector2i(4, 17), Vector2i(6, 14), Vector2i(6, 15), Vector2i(6, 16), Vector2i(10, 11), Vector2i(10, 12), Vector2i(10, 14), Vector2i(10, 15), Vector2i(12, 14), Vector2i(12, 15), Vector2i(14, 11), 
+	Vector2i(16, 14), Vector2i(16, 15), Vector2i(16, 16), Vector2i(18, 16), Vector2i(19, 12), Vector2i(20, 15), Vector2i(20, 16), Vector2i(20, 17), Vector2i(22, 16), #crimson foliage
+	Vector2i(50, 13), Vector2i(50, 15), Vector2i(50, 16), Vector2i(50, 17), Vector2i(55, 13), Vector2i(55, 15), Vector2i(55, 16), Vector2i(55, 17), Vector2i(60, 13), Vector2i(61, 13) #water
+])
+
 static var blue_block := false
 
 func _ready() -> void:
@@ -83,7 +91,7 @@ func get_custom_data_with_coords(tile_coords: Vector2) -> String:
 	var tile_info = get_cell_tile_data(layer, tile_coords)
 	if tile_info is TileData:
 		return tile_info.get_custom_data("Functional Tiles")
-	return "my guy, there is nothing here"
+	return "no tile data"
 
 func is_tile_one_way(rid: RID) -> bool:
 	var pos = get_coords_for_body_rid(rid)
@@ -132,3 +140,32 @@ func reset_water_tiles():
 		tile_data = tile_set.get_source(0).get_tile_data(atlas_coords, 0)
 		if tile_data:
 			tile_data.set_collision_polygons_count(0, 0)
+
+func pause_animated_tiles(): #dum ass animatedtexture resource not pausing when process is paused
+	var source = tile_set.get_source(0) as TileSetAtlasSource
+	for atlas_coords in animated_tiles:
+		source.set_tile_animation_speed(atlas_coords, 0.0001)
+
+func resume_animated_tiles(): #dum ass animatedtexture resource not pausing when process is paused
+	var source = tile_set.get_source(0) as TileSetAtlasSource
+	for atlas_coords in animated_tiles:
+		source.set_tile_animation_speed(atlas_coords, 1)
+
+func freeze_water_tile(body_rid):
+	var tile_coords = get_coords_for_body_rid(body_rid)
+	var tile_info = get_cell_tile_data(0, tile_coords)
+	if tile_info != null and tile_info.get_custom_data("Functional Tiles") == "Water":
+		freeze_sfx_cooldown -= 1
+		if freeze_sfx_cooldown <= 0:
+			AudioManager.play_audio(sfxs.get_sfx("freeze"), rng.randf_range(1, 2), rng.randf_range(0.9, 1))
+			freeze_sfx_cooldown = 2
+		erase_cell(0, tile_coords)
+		set_cell(1, tile_coords, 0, Vector2i(43, 4), 0)
+		
+		#ice breaks after a short time, not sure if ill keep it in
+		#await body.create_tween().tween_interval(0.2).finished
+		#body.set_cell(4, tile_coords, 0, Vector2i(43, 5), 0)
+		#await body.create_tween().tween_interval(0.2).finished
+		#body.set_cell(4, tile_coords, 0, Vector2i(43, 6), 0)
+		#await body.create_tween().tween_interval(0.2).finished
+		#body.erase_cell(4, tile_coords)

@@ -1,15 +1,30 @@
-[gd_scene load_steps=51 format=3 uid="uid://cwafd3q5y7u6m"]
+[gd_scene load_steps=49 format=3 uid="uid://cwafd3q5y7u6m"]
 
 [ext_resource type="Script" path="res://outro_cutscene.gd" id="1_67kqt"]
 [ext_resource type="Texture2D" uid="uid://bn306u45m6wu1" path="res://Assets/Line Particle.png" id="1_qhqm7"]
 [ext_resource type="Texture2D" uid="uid://dnuk8to6m018a" path="res://Assets/Ship Textures.png" id="2_5k7d6"]
 [ext_resource type="PackedScene" uid="uid://c4y4hleyev5w2" path="res://camera.tscn" id="2_ni403"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_xygkw"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_l6yqt"]
 [ext_resource type="Shader" path="res://Shaders/pixelate.gdshader" id="4_7merp"]
+[ext_resource type="AudioStream" uid="uid://c6lqn8mannaey" path="res://Sfx/photo slide.wav" id="4_ev7e6"]
 [ext_resource type="AudioStream" uid="uid://cwbt6vou8bhdv" path="res://Music/Chipfezt.mp3" id="5_benn3"]
 [ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/Big Font.ttf" id="6_j7a2d"]
 [ext_resource type="PackedScene" uid="uid://c412d8dttjo6j" path="res://Rooms/room_21.tscn" id="7_gppp7"]
 [ext_resource type="Texture2D" uid="uid://blrke6p7xbb7e" path="res://Assets/Tileset.png" id="8_3oukq"]
 [ext_resource type="Texture2D" uid="uid://xbljxdld76ae" path="res://Assets/True Ending Photo.png" id="10_l5lmt"]
+[ext_resource type="Texture2D" uid="uid://dkt3i4vijtw41" path="res://Assets/MenuTextures/Title.png" id="12_eo0kh"]
+[ext_resource type="Theme" uid="uid://cy86cwc1oigm7" path="res://Themes/small_font_theme.tres" id="13_egapq"]
+[ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="16_tvxl6"]
+
+[sub_resource type="Resource" id="Resource_t2gnu"]
+script = ExtResource("3_l6yqt")
+tag = "photo"
+stream = ExtResource("4_ev7e6")
+
+[sub_resource type="Resource" id="Resource_6g3le"]
+script = ExtResource("2_xygkw")
+sound_effects = Array[ExtResource("3_l6yqt")]([SubResource("Resource_t2gnu")])
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_qt2ou"]
 load_path = "res://.godot/imported/Line Particle.png-ca29923f7b62240508620dc4fd1bee4a.ctex"
@@ -120,7 +135,7 @@ gradient = SubResource("Gradient_i40vs")
 
 [sub_resource type="Animation" id="Animation_hgnsc"]
 resource_name = "Default"
-length = 45.5
+length = 50.0
 tracks/0/type = "bezier"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -271,10 +286,10 @@ tracks/12/path = NodePath("CreditsComp:position")
 tracks/12/interp = 1
 tracks/12/loop_wrap = true
 tracks/12/keys = {
-"times": PackedFloat32Array(0, 3.4, 40),
+"times": PackedFloat32Array(0, 3.4, 40.7),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Vector2(0, 192), Vector2(0, 192), Vector2(0, -500)]
+"values": [Vector2(0, 192), Vector2(0, 192), Vector2(0, -510)]
 }
 tracks/13/type = "value"
 tracks/13/imported = false
@@ -307,7 +322,7 @@ tracks/15/path = NodePath("ExitText:modulate")
 tracks/15/interp = 1
 tracks/15/loop_wrap = true
 tracks/15/keys = {
-"times": PackedFloat32Array(0, 45, 45.3),
+"times": PackedFloat32Array(0, 49.6, 49.9),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
@@ -319,7 +334,7 @@ tracks/16/path = NodePath(".:can_exit")
 tracks/16/interp = 1
 tracks/16/loop_wrap = true
 tracks/16/keys = {
-"times": PackedFloat32Array(0, 45),
+"times": PackedFloat32Array(0, 49.6),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [false, true]
@@ -331,7 +346,7 @@ tracks/17/path = NodePath("AnimationPlayer:speed_scale")
 tracks/17/interp = 1
 tracks/17/loop_wrap = true
 tracks/17/keys = {
-"times": PackedFloat32Array(0, 45.3, 45.34),
+"times": PackedFloat32Array(0, 49.9, 50),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [1.0, 1.0, 0.0]
@@ -347,6 +362,30 @@ tracks/18/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [false]
+}
+tracks/19/type = "value"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("StatsComp:modulate")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = {
+"times": PackedFloat32Array(0, 45, 45.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/20/type = "value"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath("ColorRect:material:shader_parameter/amount")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = {
+"times": PackedFloat32Array(0, 45, 45.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.8]
 }
 
 [sub_resource type="Animation" id="Animation_kjbf5"]
@@ -568,10 +607,58 @@ tracks/17/keys = {
 "update": 1,
 "values": [true]
 }
+tracks/18/type = "value"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("TrueEndingPhoto:scale")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(2.52632, 2.52632)]
+}
+tracks/19/type = "value"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("TrueEndingPhoto:rotation")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-0.174533]
+}
+tracks/20/type = "value"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath("StatsComp:modulate")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/21/type = "value"
+tracks/21/imported = false
+tracks/21/enabled = true
+tracks/21/path = NodePath("ColorRect:material:shader_parameter/amount")
+tracks/21/interp = 1
+tracks/21/loop_wrap = true
+tracks/21/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
 
 [sub_resource type="Animation" id="Animation_ydxy5"]
 resource_name = "True Ending"
-length = 45.5
+length = 50.0
 tracks/0/type = "bezier"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -710,10 +797,10 @@ tracks/11/path = NodePath("CreditsComp:position")
 tracks/11/interp = 1
 tracks/11/loop_wrap = true
 tracks/11/keys = {
-"times": PackedFloat32Array(0, 3.4, 40),
+"times": PackedFloat32Array(0, 3.4, 40.7),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Vector2(0, 192), Vector2(0, 192), Vector2(0, -500)]
+"values": [Vector2(0, 192), Vector2(0, 192), Vector2(0, -510)]
 }
 tracks/12/type = "value"
 tracks/12/imported = false
@@ -722,7 +809,7 @@ tracks/12/path = NodePath("ExitText:modulate")
 tracks/12/interp = 1
 tracks/12/loop_wrap = true
 tracks/12/keys = {
-"times": PackedFloat32Array(0, 45, 45.3),
+"times": PackedFloat32Array(0, 49.6, 49.9),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
@@ -734,7 +821,7 @@ tracks/13/path = NodePath(".:can_exit")
 tracks/13/interp = 1
 tracks/13/loop_wrap = true
 tracks/13/keys = {
-"times": PackedFloat32Array(0, 45),
+"times": PackedFloat32Array(0, 49.6),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [false, true]
@@ -746,7 +833,7 @@ tracks/14/path = NodePath("AnimationPlayer:speed_scale")
 tracks/14/interp = 1
 tracks/14/loop_wrap = true
 tracks/14/keys = {
-"times": PackedFloat32Array(0, 45.3, 45.34),
+"times": PackedFloat32Array(0, 49.9, 50),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [1.0, 1.0, 0.0]
@@ -758,10 +845,10 @@ tracks/15/path = NodePath("TrueEndingPhoto:visible")
 tracks/15/interp = 1
 tracks/15/loop_wrap = true
 tracks/15/keys = {
-"times": PackedFloat32Array(40.7),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(39.1, 40.7),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [true]
+"values": [false, true]
 }
 tracks/16/type = "value"
 tracks/16/imported = false
@@ -787,6 +874,68 @@ tracks/17/keys = {
 "update": 1,
 "values": [false]
 }
+tracks/18/type = "value"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("TrueEndingPhoto:scale")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = {
+"times": PackedFloat32Array(40.7, 41.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(4, 4), Vector2(2, 2)]
+}
+tracks/19/type = "value"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("TrueEndingPhoto:rotation")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = {
+"times": PackedFloat32Array(40.7, 41.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.174533, -0.0872665]
+}
+tracks/20/type = "method"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath(".")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = {
+"times": PackedFloat32Array(41),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": ["photo"],
+"method": &"play_sfx"
+}]
+}
+tracks/21/type = "value"
+tracks/21/imported = false
+tracks/21/enabled = true
+tracks/21/path = NodePath("StatsComp:modulate")
+tracks/21/interp = 1
+tracks/21/loop_wrap = true
+tracks/21/keys = {
+"times": PackedFloat32Array(0, 45, 45.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 2.23518e-06), Color(1, 1, 1, 2.23518e-06), Color(1, 1, 1, 1)]
+}
+tracks/22/type = "value"
+tracks/22/imported = false
+tracks/22/enabled = true
+tracks/22/path = NodePath("ColorRect:material:shader_parameter/amount")
+tracks/22/interp = 1
+tracks/22/loop_wrap = true
+tracks/22/keys = {
+"times": PackedFloat32Array(0, 45, 45.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.8]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_3155i"]
 _data = {
@@ -796,13 +945,6 @@ _data = {
 "True Ending": SubResource("Animation_ydxy5")
 }
 
-[sub_resource type="LabelSettings" id="LabelSettings_oi2d5"]
-font = ExtResource("6_j7a2d")
-font_size = 8
-font_color = Color(0.945098, 0.929412, 0.886275, 1)
-outline_size = 4
-outline_color = Color(0, 0, 0, 1)
-
 [sub_resource type="LabelSettings" id="LabelSettings_8jwux"]
 font = ExtResource("6_j7a2d")
 font_size = 8
@@ -810,78 +952,13 @@ font_color = Color(0.945098, 0.929412, 0.886275, 1)
 outline_size = 4
 outline_color = Color(0, 0, 0, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_1lkdx"]
-font = ExtResource("6_j7a2d")
-font_size = 8
-font_color = Color(0.945098, 0.929412, 0.886275, 1)
-outline_size = 4
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_rk1qr"]
-font = ExtResource("6_j7a2d")
-font_size = 8
-font_color = Color(0.945098, 0.929412, 0.886275, 1)
-outline_size = 4
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_307h8"]
-font = ExtResource("6_j7a2d")
-font_size = 8
-font_color = Color(0.945098, 0.929412, 0.886275, 1)
-outline_size = 4
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_8wjxw"]
-font = ExtResource("6_j7a2d")
-font_size = 8
-font_color = Color(0.945098, 0.929412, 0.886275, 1)
-outline_size = 4
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_g1s1l"]
-font = ExtResource("6_j7a2d")
-font_size = 8
-font_color = Color(0.945098, 0.929412, 0.886275, 1)
-outline_size = 4
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_qnfbw"]
-font = ExtResource("6_j7a2d")
-font_size = 8
-font_color = Color(0.945098, 0.929412, 0.886275, 1)
-outline_size = 4
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_hpsqf"]
-font = ExtResource("6_j7a2d")
-font_size = 8
-font_color = Color(0.945098, 0.929412, 0.886275, 1)
-outline_size = 4
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_4jqca"]
-font = ExtResource("6_j7a2d")
-font_size = 8
-font_color = Color(0.945098, 0.929412, 0.886275, 1)
-outline_size = 4
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_en328"]
-font = ExtResource("6_j7a2d")
-font_size = 8
-font_color = Color(0.945098, 0.929412, 0.886275, 1)
-outline_size = 4
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_3iqg3"]
-font = ExtResource("6_j7a2d")
-font_size = 4
-font_color = Color(0.406, 0.5336, 0.58, 1)
-outline_size = 3
-outline_color = Color(0, 0, 0, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_w7h1d"]
+shader = ExtResource("16_tvxl6")
+shader_parameter/amount = 0.0
 
 [node name="OutroCutscene" type="Node2D"]
 script = ExtResource("1_67kqt")
+sfxs = SubResource("Resource_6g3le")
 
 [node name="Camera" parent="." instance=ExtResource("2_ni403")]
 position = Vector2(152, 396)
@@ -1087,126 +1164,229 @@ region_enabled = true
 region_rect = Rect2(208, 112, 16, 16)
 
 [node name="CreditsComp" type="Node2D" parent="."]
+z_index = 49
 position = Vector2(0, 192)
 
-[node name="Credits" type="Label" parent="CreditsComp"]
-z_index = 3
+[node name="TextureRect" type="TextureRect" parent="CreditsComp"]
+offset_left = 88.0
+offset_right = 216.0
+offset_bottom = 24.0
+texture = ExtResource("12_eo0kh")
+stretch_mode = 2
+
+[node name="CreatorName" type="Label" parent="CreditsComp"]
+offset_top = 27.0
 offset_right = 304.0
-offset_bottom = 470.0
-text = "
-Quarion
-Created by Zejoant"
-label_settings = SubResource("LabelSettings_oi2d5")
+offset_bottom = 63.0
+theme = ExtResource("13_egapq")
+text = "Created by Zejoant"
 horizontal_alignment = 1
 
-[node name="SpecialThanks" type="Label" parent="CreditsComp"]
-z_index = 3
+[node name="Music" type="Label" parent="CreditsComp"]
 offset_top = 88.0
 offset_right = 304.0
 offset_bottom = 140.0
-text = "Special thanks to
-Incidius
-BlaccEye
-BreadKing
-Cronibet"
+text = "Music"
 label_settings = SubResource("LabelSettings_8jwux")
 horizontal_alignment = 1
 
-[node name="Stat1" type="Label" parent="CreditsComp"]
-z_index = 3
-offset_top = 198.0
+[node name="MusicName" type="Label" parent="CreditsComp"]
+offset_top = 100.0
 offset_right = 304.0
-offset_bottom = 206.0
-text = "Deaths:"
-label_settings = SubResource("LabelSettings_1lkdx")
+offset_bottom = 152.0
+theme = ExtResource("13_egapq")
+text = "by Apaolo"
 horizontal_alignment = 1
 
-[node name="DeathCount" type="Label" parent="CreditsComp"]
-z_index = 3
-offset_top = 212.612
+[node name="TheRest" type="Label" parent="CreditsComp"]
+offset_top = 176.0
 offset_right = 304.0
-offset_bottom = 220.612
-text = "0"
-label_settings = SubResource("LabelSettings_rk1qr")
+offset_bottom = 228.0
+text = "Level Design, Art and Sound Design"
+label_settings = SubResource("LabelSettings_8jwux")
 horizontal_alignment = 1
 
-[node name="Stat2" type="Label" parent="CreditsComp"]
-z_index = 3
+[node name="TheRestName" type="Label" parent="CreditsComp"]
+offset_top = 188.0
+offset_right = 304.0
+offset_bottom = 240.0
+theme = ExtResource("13_egapq")
+text = "by Zejoant"
+horizontal_alignment = 1
+
+[node name="Trailer" type="Label" parent="CreditsComp"]
 offset_top = 264.0
 offset_right = 304.0
-offset_bottom = 272.0
-text = "Jumps:"
-label_settings = SubResource("LabelSettings_307h8")
+offset_bottom = 316.0
+text = "Trailer"
+label_settings = SubResource("LabelSettings_8jwux")
 horizontal_alignment = 1
 
-[node name="JumpCount" type="Label" parent="CreditsComp"]
-z_index = 3
-offset_top = 278.612
+[node name="TrailerName" type="Label" parent="CreditsComp"]
+offset_top = 276.0
 offset_right = 304.0
-offset_bottom = 286.612
-text = "0"
-label_settings = SubResource("LabelSettings_8wjxw")
+offset_bottom = 328.0
+theme = ExtResource("13_egapq")
+text = "by Rifct"
 horizontal_alignment = 1
 
-[node name="Stat3" type="Label" parent="CreditsComp"]
-z_index = 3
-offset_top = 330.0
-offset_right = 304.0
-offset_bottom = 338.0
-text = "Completion time:"
-label_settings = SubResource("LabelSettings_g1s1l")
-horizontal_alignment = 1
-
-[node name="CompletionTime" type="Label" parent="CreditsComp"]
-z_index = 3
-offset_top = 344.612
-offset_right = 304.0
-offset_bottom = 352.612
-text = "0"
-label_settings = SubResource("LabelSettings_qnfbw")
-horizontal_alignment = 1
-
-[node name="Stat4" type="Label" parent="CreditsComp"]
-z_index = 3
-offset_top = 396.0
+[node name="Playtesters" type="Label" parent="CreditsComp"]
+offset_top = 352.0
 offset_right = 304.0
 offset_bottom = 404.0
-text = "Completion percentage:"
-label_settings = SubResource("LabelSettings_hpsqf")
+text = "Playtesters"
+label_settings = SubResource("LabelSettings_8jwux")
 horizontal_alignment = 1
 
-[node name="CompletionPercentage" type="Label" parent="CreditsComp"]
-z_index = 3
-offset_top = 410.612
+[node name="PlaytesterNames" type="Label" parent="CreditsComp"]
+offset_top = 364.0
 offset_right = 304.0
-offset_bottom = 418.612
-text = "0"
-label_settings = SubResource("LabelSettings_4jqca")
+offset_bottom = 416.0
+theme = ExtResource("13_egapq")
+text = "Incidius
+emzie
+Rifct
+Gastrod
+BleccEye"
 horizontal_alignment = 1
 
-[node name="Stat5" type="Label" parent="CreditsComp"]
-z_index = 3
-offset_top = 462.0
+[node name="SpecialThanks" type="Label" parent="CreditsComp"]
+offset_top = 440.0
 offset_right = 304.0
-offset_bottom = 470.0
-text = "Thanks for playing :)"
-label_settings = SubResource("LabelSettings_en328")
+offset_bottom = 492.0
+text = "Special Thanks"
+label_settings = SubResource("LabelSettings_8jwux")
+horizontal_alignment = 1
+
+[node name="PlaytesterNames2" type="Label" parent="CreditsComp"]
+offset_top = 452.0
+offset_right = 304.0
+offset_bottom = 505.0
+theme = ExtResource("13_egapq")
+text = "Breadking
+Cronibet
+Incidius
+BleccEye
+Rifct
+Your Mom"
+horizontal_alignment = 1
+
+[node name="InspiredBy" type="Label" parent="CreditsComp"]
+offset_top = 528.0
+offset_right = 304.0
+offset_bottom = 580.0
+text = "Inspired By"
+label_settings = SubResource("LabelSettings_8jwux")
+horizontal_alignment = 1
+
+[node name="InspiredByNames" type="Label" parent="CreditsComp"]
+offset_top = 541.0
+offset_right = 304.0
+offset_bottom = 593.0
+theme = ExtResource("13_egapq")
+text = "You Have to Win the Game
+VVVVVV
+Animal Well"
+horizontal_alignment = 1
+
+[node name="InspiredBy2" type="Label" parent="CreditsComp"]
+offset_top = 616.0
+offset_right = 304.0
+offset_bottom = 668.0
+text = "Thanks for Playing!"
+label_settings = SubResource("LabelSettings_8jwux")
+horizontal_alignment = 1
+
+[node name="StatsComp" type="Node2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+z_index = 49
+
+[node name="DeathsTitle" type="Label" parent="StatsComp"]
+offset_top = 344.0
+offset_right = 304.0
+offset_bottom = 352.0
+text = "Deaths"
+label_settings = SubResource("LabelSettings_8jwux")
+horizontal_alignment = 1
+
+[node name="DeathsValue" type="Label" parent="StatsComp"]
+offset_top = 357.0
+offset_right = 304.0
+offset_bottom = 365.0
+theme = ExtResource("13_egapq")
+text = "#"
+horizontal_alignment = 1
+
+[node name="JumpsTitle" type="Label" parent="StatsComp"]
+offset_top = 372.0
+offset_right = 304.0
+offset_bottom = 380.0
+text = "Jumps"
+label_settings = SubResource("LabelSettings_8jwux")
+horizontal_alignment = 1
+
+[node name="JumpsValue" type="Label" parent="StatsComp"]
+offset_top = 385.0
+offset_right = 304.0
+offset_bottom = 393.0
+theme = ExtResource("13_egapq")
+text = "#"
+horizontal_alignment = 1
+
+[node name="TimeTitle" type="Label" parent="StatsComp"]
+offset_top = 400.0
+offset_right = 304.0
+offset_bottom = 408.0
+text = "Completion Time"
+label_settings = SubResource("LabelSettings_8jwux")
+horizontal_alignment = 1
+
+[node name="TimeValue" type="Label" parent="StatsComp"]
+offset_top = 413.0
+offset_right = 304.0
+offset_bottom = 421.0
+theme = ExtResource("13_egapq")
+text = "#"
+horizontal_alignment = 1
+
+[node name="PercentTitle" type="Label" parent="StatsComp"]
+offset_top = 428.0
+offset_right = 304.0
+offset_bottom = 436.0
+text = "Completion Percentage"
+label_settings = SubResource("LabelSettings_8jwux")
+horizontal_alignment = 1
+
+[node name="PercentValue" type="Label" parent="StatsComp"]
+offset_top = 441.0
+offset_right = 304.0
+offset_bottom = 449.0
+theme = ExtResource("13_egapq")
+text = "#"
 horizontal_alignment = 1
 
 [node name="ExitText" type="Label" parent="."]
 z_index = 49
-offset_left = 211.0
-offset_top = 485.0
-offset_right = 303.0
-offset_bottom = 490.0
+offset_left = 225.0
+offset_top = 484.0
+offset_right = 317.0
+offset_bottom = 492.0
+theme = ExtResource("13_egapq")
 text = "Click to return to menu"
-label_settings = SubResource("LabelSettings_3iqg3")
 
 [node name="TrueEndingPhoto" type="Sprite2D" parent="."]
 visible = false
 z_index = 3
 position = Vector2(152, 396)
+rotation = -0.174533
 scale = Vector2(2.52632, 2.52632)
 texture = ExtResource("10_l5lmt")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = 3
+material = SubResource("ShaderMaterial_w7h1d")
+offset_top = 300.0
+offset_right = 304.0
+offset_bottom = 492.0
 
 [editable path="Camera"]

@@ -23,6 +23,12 @@ func _ready():
 
 func update_apple_count(value: int):
 	$UILayer/UIContainer/AppleCount.text = str(value)
+	if value == 0:
+		for item in get_parent().bought_shop_items:
+			if !item:
+				return
+		$UILayer/UIContainer/AppleCount.visible = false
+		$UILayer/UIContainer/AppleSprite.visible = false
 
 func set_keys(state: String, remove: bool = false):
 	if remove:
@@ -193,6 +199,7 @@ func close_p_up_window(instant: bool = false):
 	$PowerUpTexts/SwiftwindAmulet.visible = false
 	$PowerUpTexts/PegasusBoots.visible = false
 	$PowerUpTexts/FreezewakeCharm.visible = false
+	$PowerUpTexts/TreasureMap.visible = false
 
 func open_p_up_window(p_up: String):
 	$PowerUpTexts/InputIndicator.modulate.a = 0
@@ -210,15 +217,16 @@ func open_p_up_window(p_up: String):
 	p_up_tween.parallel().tween_property($PowerUpTexts/BorderTop, "offset:y", -14, 0.3)
 	await p_up_tween.parallel().tween_property($PowerUpTexts/BorderBottom, "offset:y", 14, 0.3).finished
 	
-	await get_tree().create_timer(2.2, false).timeout
+	await get_tree().create_timer(1.5, false).timeout
 	#p_up_window_open = true
 	p_up_tween = self.create_tween()
 	p_up_tween.tween_property($PowerUpTexts/InputIndicator, "modulate:a", 1, 0.2)
 
 func hide_ui(show_ui: bool = false):
 	$UILayer/UIContainer.visible = show_ui
+	
 
 func _input(event):
-	if $PowerUpTexts/InputIndicator.modulate.a > 0 and p_up_window_open and event.is_action_pressed("ui_up"):
+	if $PowerUpTexts/InputIndicator.modulate.a > 0 and p_up_window_open and event.is_action_pressed("Interact"):
 		close_p_up_window()
 	

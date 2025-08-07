@@ -1,5 +1,6 @@
 extends StaticBody2D
 
+@export var sfxs : AudioLibrary
 @export_range(0, 304) var distance: int = 64
 @export_range(0, 1) var start_pos: float = 0.5
 @export_enum("horizontal", "vertical") var axis = "vertical"
@@ -51,8 +52,10 @@ func _physics_process(_delta):
 			tween1.set_ease(Tween.EASE_OUT)
 			tween1.set_trans(Tween.TRANS_SINE)
 			if start_dir == "back":
+				AudioManager.play_audio(sfxs.get_sfx("spin"), 1/(time*start_pos), 0.7, self)
 				await tween1.tween_property(self, "position", origin+dir*distance/2.0, time*start_pos).finished
 			else:
+				AudioManager.play_audio(sfxs.get_sfx("spin"), 1/(time*(1.0-start_pos)), 0.7, self)
 				await tween1.tween_property(self, "position", origin+dir*distance/2.0, time*(1.0-start_pos)).finished
 		dir *= -1
 		state = 1
@@ -62,6 +65,7 @@ func _physics_process(_delta):
 		tween1 = self.create_tween()
 		tween1.set_ease(Tween.EASE_IN_OUT)
 		tween1.set_trans(Tween.TRANS_SINE)
+		AudioManager.play_audio(sfxs.get_sfx("spin"), 1/time, 0.7, self)
 		await tween1.tween_property(self, "position", origin + dir * distance/2.0, time).finished
 		dir *= -1
 		state = 1

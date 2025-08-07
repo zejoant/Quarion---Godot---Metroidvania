@@ -15,6 +15,7 @@ var color
 var player_in_area: bool = false
 
 var bought_items: Array[bool]
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	player = get_node("/root/World/Player")
@@ -41,12 +42,13 @@ func _ready():
 func _on_joy_connection_changed(device_id, connected):
 	release_all_focus()
 	if !connected and OptionsMenu.use_mouse_for_menus:
+		$ShopUIContainer/CanvasLayer/StopMouse.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		$ShopUIContainer/ExitInputComponents/PS4Input.visible = false
 		$ShopUIContainer/ExitInputComponents/XboxInput.visible = false
 		$ShopUIContainer/ExitInputComponents/KeyboardInput.visible = true
 	else:
-		#$ShopUIContainer/KeyButton.grab_focus()
+		$ShopUIContainer/CanvasLayer/StopMouse.mouse_filter = Control.MOUSE_FILTER_STOP
 		$ShopUIContainer/ExitInputComponents/KeyboardInput.visible = false
 		if Input.get_joy_name(device_id) == "PS4 Controller":
 			$ShopUIContainer/ExitInputComponents/PS4Input.visible = true
@@ -59,8 +61,10 @@ func _on_joy_connection_changed(device_id, connected):
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 
 func open_setup():
+	AudioManager.play_audio(sfxs.get_sfx("open/close"), 1, 1.2)
 	open = true
 	ui.visible = true
+	$InputIndicator.visible = false
 	self.create_tween().tween_property($ShopUIContainer/UICover, "modulate:a", 0, 0.3)
 	player.disable_movement()
 	get_node("/root/World").other_ui_open = true
@@ -92,25 +96,29 @@ func selector_flash():
 
 func _input(event):
 	if !open and player_in_area: #and player.get_node("Area2D").has_overlapping_bodies() and player.get_node("Area2D").get_overlapping_bodies().has(self):
-		if event.is_action_pressed("ui_up"):
+		if event.is_action_pressed("Interact"):
 			open_setup()
 	else:
-		if event.is_action_released("Pause") or event.is_action_released("UI Back"):
+		if event.is_action_released("Pause") or event.is_action_released("ui_cancel"):
 			exit_shop()
 	
 	#if !get_viewport().gui_get_focus_owner():
 		#if event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down") or event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right"):
 			#find_next_focus($ShopUIContainer/BubbleButton, true)
 
-func exit_shop():
+func exit_shop(p_enable: bool = true):
+	AudioManager.play_audio(sfxs.get_sfx("open/close"), 1, 1.2)
+	$ShopUIContainer/CanvasLayer/StopMouse.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	await self.create_tween().tween_property($ShopUIContainer/UICover, "modulate:a", 1, 0.3).finished
 	ui.visible = false
+	$InputIndicator.visible = true
 	get_node("/root/World").save_game()
 	
 	get_node("/root/World").other_ui_open = false
 	open = false
-	player.disable_movement(false)
+	if p_enable:
+		player.disable_movement(false)
 
 func _on_key_button_focus_entered():
 	set_focus(0)
@@ -183,7 +191,7 @@ func _on_key_button_pressed():
 	get_node("/root/World").add_to_completion_percentage("Shop")
 	bought_items[0] = true
 	get_node("/root/World/Camera").set_keys("Green")
-	player.update_apple_count(-10)
+	player.update_apple_count(-10, false, true)
 
 
 func _on_amulet_button_pressed():
@@ -200,8 +208,8 @@ func _on_amulet_button_pressed():
 	player.amulet_pieces += 1
 	get_node("/root/World").add_to_completion_percentage("AmuletPiece")
 	bought_items[1] = true
-	get_node("/root/World/Player").update_apple_count(-18)
-	exit_shop()
+	get_node("/root/World/Player").update_apple_count(-18, false, true)
+	exit_shop(false)
 	get_node("/root/World/Camera").collect_amulet_piece()
 
 
@@ -219,7 +227,7 @@ func _on_bubble_button_pressed():
 	get_node("/root/World").add_to_completion_percentage("Shop")
 	player.bubble_action(true, false)
 	bought_items[2] = true
-	get_node("/root/World/Player").update_apple_count(-22)
+	get_node("/root/World/Player").update_apple_count(-22, false, true)
 
 
 func _on_body_entered(body):

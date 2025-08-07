@@ -36,7 +36,7 @@ color = "red"
 [node name="Teleporter" parent="." instance=ExtResource("5_qkxrn")]
 position = Vector2(36, 156)
 destination_room = Vector2(8, 3)
-destination_position = Vector2(12, 21)
+destination_position = Vector2(12, 22)
 
 [node name="Button" parent="." instance=ExtResource("5_6uhs3")]
 position = Vector2(24, 44)

@@ -26,7 +26,6 @@ script = ExtResource("1_0wo8c")
 sfxs = SubResource("Resource_21mvb")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(1, 0)
 texture = ExtResource("2_gr5vf")
 region_enabled = true
 region_rect = Rect2(88, 72, 8, 8)

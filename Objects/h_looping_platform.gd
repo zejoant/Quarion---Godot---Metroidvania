@@ -1,8 +1,11 @@
 #@tool
 extends Node2D
 
+var sfx = preload("res://Sfx/looping platform.wav")
+
 @export_enum("left", "right") var direction = "left"
 @export var speed : float = 1.0
+@export var sound: bool = false
 var moving = false
 var dir
 var start_pos
@@ -11,6 +14,8 @@ var player
 const loop_distance = 56
 
 func _ready():
+	if sound:
+		AudioManager.play_audio(sfx, speed/2.0, 0.8, self)
 	player = get_node("/root/World/Player")
 	platform = $ColorRect/StaticBody2D
 	start_pos = platform.position.x

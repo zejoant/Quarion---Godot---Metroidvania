@@ -25,8 +25,15 @@ func _ready():
 			visible = false
 
 func open():
+	AudioManager.play_audio(sfxs.get_sfx("glow"))
+	$OpenGlow.visible = true
+	self.create_tween().tween_property($OpenGlow, "modulate:a", 0, 0.5)
+	self.create_tween().tween_property($OpenGlow, "scale", Vector2(5, 5), 0.5)
+	#$CPUParticles2D2.emitting = true
 	await self.create_tween().tween_property(self, "position", origin - length*8*dir, 1).finished
-	visible = false
+	$TopSprite.visible = false
+	$ColorSprite.visible = false
+	$BottomSprite.visible = false
 	AudioManager.play_audio(sfxs.get_sfx("thump"))
 
 func setup():

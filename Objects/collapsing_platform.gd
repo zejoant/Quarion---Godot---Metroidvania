@@ -7,10 +7,12 @@ extends StaticBody2D
 @export_enum("gray", "red", "green") var color = "gray"
 
 var crumble_tween: Tween
+var first_frame = true
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	setup()
+	await self.create_tween().tween_interval(0.1).finished
+	first_frame = false
 
 func setup():
 	#temporary stuff for @tool
@@ -41,25 +43,26 @@ func setup():
 	set_color()
 
 func _on_player_detection_body_entered(_body):
-	$PlayerDetection/CollisionShape2D.set_deferred("disabled", true)
-	
-	$"Center".region_rect.position.y += 8
-	$"Left".region_rect.position.y += 8
-	$"Right".region_rect.position.y += 8
-	AudioManager.play_audio(sfxs.get_sfx("crumble"))
-	crumble_tween = self.create_tween()
-	await crumble_tween.tween_interval(0.2).finished
-	$"Center".region_rect.position.y += 8
-	$"Left".region_rect.position.y += 8
-	$"Right".region_rect.position.y += 8
-	AudioManager.play_audio(sfxs.get_sfx("crumble"))
-	crumble_tween = self.create_tween()
-	await crumble_tween.tween_interval(0.2).finished
-	$"Center".visible = false
-	$"Left".visible = false
-	$"Right".visible = false
-	$Solid.disabled = true
-	AudioManager.play_audio(sfxs.get_sfx("crumble"))
+	if !first_frame:
+		$PlayerDetection/CollisionShape2D.set_deferred("disabled", true)
+		
+		$"Center".region_rect.position.y += 8
+		$"Left".region_rect.position.y += 8
+		$"Right".region_rect.position.y += 8
+		AudioManager.play_audio(sfxs.get_sfx("crumble"), 1, 0.75)
+		crumble_tween = self.create_tween()
+		await crumble_tween.tween_interval(0.2).finished
+		$"Center".region_rect.position.y += 8
+		$"Left".region_rect.position.y += 8
+		$"Right".region_rect.position.y += 8
+		AudioManager.play_audio(sfxs.get_sfx("crumble"), 1, 0.6)
+		crumble_tween = self.create_tween()
+		await crumble_tween.tween_interval(0.2).finished
+		$"Center".visible = false
+		$"Left".visible = false
+		$"Right".visible = false
+		$Solid.disabled = true
+		AudioManager.play_audio(sfxs.get_sfx("crumble"), 1, 0.5)
 
 func reset_to_default():
 	if crumble_tween:

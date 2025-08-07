@@ -19,7 +19,7 @@ func _ready():
 
 func _physics_process(_delta):
 	if follow_player:
-		global_position = player.position
+		global_position = Vector2i(player.position)
 		#position = player.position
 	#else:
 	#	position = non_follow_pos
@@ -53,9 +53,9 @@ func change_lens(room_coords, instant: bool = false, behind_foreground: int = 0)
 	elif room_coords == Vector2(0, 8):
 		lens_size = 3
 	elif room_coords == Vector2(0, 5):
-		lens_size = 2
+		lens_size = 3
 	elif room_coords == Vector2(9, 5):
-		lens_size = 2
+		lens_size = 3
 	elif room_coords == Vector2(8, 5):
 		lens_size = 2.5
 		
@@ -94,4 +94,3 @@ func change_lens(room_coords, instant: bool = false, behind_foreground: int = 0)
 			scale = Vector2(lens_size, lens_size)
 		else:
 			scale = default_size
-		

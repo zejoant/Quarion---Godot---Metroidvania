@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cmhog23ndhjrk"
+path="res://.godot/imported/boulder hit.wav-454dd49129933ccf3c83d5f2ef4be85b.sample"
+
+[deps]
+
+source_file="res://Sfx/boulder hit.wav"
+dest_files=["res://.godot/imported/boulder hit.wav-454dd49129933ccf3c83d5f2ef4be85b.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

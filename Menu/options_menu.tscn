@@ -1,28 +1,72 @@
-[gd_scene load_steps=37 format=3 uid="uid://xlhqgyxr5f5s"]
+[gd_scene load_steps=30 format=3 uid="uid://xlhqgyxr5f5s"]
 
 [ext_resource type="Script" path="res://Menu/options_menu.gd" id="1_x504m"]
 [ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="2_a3tmx"]
+[ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_yu2nv"]
+[ext_resource type="Theme" uid="uid://clpes5g3k6kou" path="res://Themes/big_font_theme.tres" id="3_b7aa4"]
+[ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_fj4c0"]
 [ext_resource type="Theme" uid="uid://b6lhu6b1qu0a3" path="res://Themes/button_theme_new.tres" id="3_ghitf"]
+[ext_resource type="Theme" uid="uid://cy86cwc1oigm7" path="res://Themes/small_font_theme.tres" id="4_6phi7"]
 [ext_resource type="Texture2D" uid="uid://cywpsaa73tid3" path="res://Assets/MenuTextures/Button Texture.png" id="4_dsysb"]
-[ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/Big Font.ttf" id="5_e33ne"]
+[ext_resource type="AudioStream" uid="uid://pfw4an2t2qpt" path="res://Sfx/menu click 2.wav" id="4_poprm"]
+[ext_resource type="AudioStream" uid="uid://c77le0cicbyi1" path="res://Sfx/menu click.wav" id="5_me4fo"]
 [ext_resource type="Theme" uid="uid://2035heuy0kah" path="res://Themes/slider_theme.tres" id="6_wbg1x"]
 [ext_resource type="Theme" uid="uid://dpgqirdxhg45n" path="res://Themes/check_box_theme.tres" id="8_hcnu7"]
 [ext_resource type="Texture2D" uid="uid://c2dsudt2on35a" path="res://Assets/MenuTextures/Checkbox Checked.png" id="9_goqop"]
-[ext_resource type="Theme" uid="uid://cuob8mv0ptd72" path="res://Themes/option_button_theme.tres" id="9_hlkcv"]
+[ext_resource type="FontFile" uid="uid://dcrk43hh0erpd" path="res://Fonts/Small Font.ttf" id="9_nwq8q"]
 [ext_resource type="Texture2D" uid="uid://d10ti04j6bxh7" path="res://Assets/MenuTextures/CheckBox Unchecked.png" id="10_myq66"]
+
+[sub_resource type="Resource" id="Resource_n8jut"]
+script = ExtResource("3_fj4c0")
+tag = "click"
+stream = ExtResource("4_poprm")
+
+[sub_resource type="Resource" id="Resource_mllq6"]
+script = ExtResource("3_fj4c0")
+tag = "slider"
+stream = ExtResource("5_me4fo")
+
+[sub_resource type="Resource" id="Resource_6x5fs"]
+script = ExtResource("2_yu2nv")
+sound_effects = Array[ExtResource("3_fj4c0")]([SubResource("Resource_n8jut"), SubResource("Resource_mllq6")])
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4rjve"]
 shader = ExtResource("2_a3tmx")
 shader_parameter/amount = 2.0
 
-[sub_resource type="LabelSettings" id="LabelSettings_d7d3h"]
-font_size = 8
-outline_size = 4
-outline_color = Color(0, 0, 0, 1)
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vvhc8"]
+texture = ExtResource("4_dsysb")
+texture_margin_left = 5.0
+texture_margin_top = 7.0
+texture_margin_right = 6.0
+texture_margin_bottom = 7.0
+expand_margin_left = 3.0
+region_rect = Rect2(6, 86, 55, 15)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y26gb"]
+[sub_resource type="Theme" id="Theme_04gwd"]
+default_font_size = 8
+CheckBox/colors/font_focus_color = Color(0.745098, 0.894118, 0.658824, 1)
+CheckBox/colors/font_hover_color = Color(0.745098, 0.894118, 0.658824, 1)
+CheckBox/colors/font_outline_color = Color(0, 0, 0, 1)
+CheckBox/constants/outline_size = 4
+CheckBox/fonts/font = ExtResource("9_nwq8q")
+CheckBox/icons/checked = ExtResource("9_goqop")
+CheckBox/icons/unchecked = ExtResource("10_myq66")
+CheckBox/styles/focus = SubResource("StyleBoxTexture_vvhc8")
+CheckBox/styles/hover = SubResource("StyleBoxTexture_vvhc8")
+CheckBox/styles/hover_pressed = SubResource("StyleBoxTexture_vvhc8")
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6sjfk"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uwmf5"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aiwof"]
+texture = ExtResource("4_dsysb")
+texture_margin_left = 8.0
+texture_margin_top = 5.0
+texture_margin_right = 8.0
+texture_margin_bottom = 5.0
+region_rect = Rect2(16, 44, 48, 24)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_h4hm0"]
 texture = ExtResource("4_dsysb")
 texture_margin_left = 12.0
 texture_margin_top = 5.0
@@ -30,40 +74,6 @@ texture_margin_right = 12.0
 texture_margin_bottom = 5.0
 expand_margin_top = 1.0
 region_rect = Rect2(73, 11, 63, 26)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4ok1x"]
-texture = ExtResource("4_dsysb")
-texture_margin_left = 12.0
-texture_margin_top = 5.0
-texture_margin_right = 12.0
-texture_margin_bottom = 5.0
-expand_margin_top = 1.0
-region_rect = Rect2(12, 11, 56, 26)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_r7vkj"]
-texture = ExtResource("4_dsysb")
-texture_margin_left = 12.0
-texture_margin_top = 6.0
-texture_margin_right = 12.0
-texture_margin_bottom = 6.0
-region_rect = Rect2(12, 43, 56, 26)
-
-[sub_resource type="Theme" id="Theme_mans0"]
-default_font = ExtResource("5_e33ne")
-default_font_size = 8
-Button/colors/font_color = Color(1, 1, 1, 1)
-Button/font_sizes/font_size = 8
-Button/styles/focus = SubResource("StyleBoxEmpty_y26gb")
-Button/styles/hover = SubResource("StyleBoxTexture_6sjfk")
-Button/styles/normal = SubResource("StyleBoxTexture_4ok1x")
-Button/styles/pressed = SubResource("StyleBoxTexture_r7vkj")
-
-[sub_resource type="LabelSettings" id="LabelSettings_h284f"]
-font_size = 8
-outline_size = 4
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t3563"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m3q7b"]
 texture = ExtResource("4_dsysb")
@@ -91,101 +101,18 @@ texture_margin_right = 12.0
 texture_margin_bottom = 6.0
 region_rect = Rect2(12, 43, 56, 26)
 
-[sub_resource type="Theme" id="Theme_ci3ny"]
-default_font = ExtResource("5_e33ne")
+[sub_resource type="Theme" id="Theme_ar8ty"]
 default_font_size = 8
 Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/constants/outline_size = 4
 Button/font_sizes/font_size = 8
-Button/styles/focus = SubResource("StyleBoxEmpty_t3563")
+Button/fonts/font = ExtResource("9_nwq8q")
+Button/styles/disabled = SubResource("StyleBoxTexture_aiwof")
+Button/styles/focus = SubResource("StyleBoxTexture_h4hm0")
 Button/styles/hover = SubResource("StyleBoxTexture_m3q7b")
 Button/styles/normal = SubResource("StyleBoxTexture_iyykc")
 Button/styles/pressed = SubResource("StyleBoxTexture_y31l4")
-
-[sub_resource type="LabelSettings" id="LabelSettings_s1mgq"]
-font_size = 8
-outline_size = 4
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0pl7j"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_sa4xp"]
-font_size = 8
-outline_size = 4
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_j6nx3"]
-texture = ExtResource("4_dsysb")
-texture_margin_left = 12.0
-texture_margin_top = 5.0
-texture_margin_right = 12.0
-texture_margin_bottom = 5.0
-expand_margin_top = 1.0
-region_rect = Rect2(73, 11, 63, 26)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mft0i"]
-texture = ExtResource("4_dsysb")
-texture_margin_left = 12.0
-texture_margin_top = 5.0
-texture_margin_right = 12.0
-texture_margin_bottom = 5.0
-expand_margin_top = 1.0
-region_rect = Rect2(73, 11, 63, 26)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dux5c"]
-texture = ExtResource("4_dsysb")
-texture_margin_left = 12.0
-texture_margin_top = 5.0
-texture_margin_right = 12.0
-texture_margin_bottom = 5.0
-expand_margin_top = 1.0
-region_rect = Rect2(12, 11, 56, 26)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_akf17"]
-texture = ExtResource("4_dsysb")
-texture_margin_left = 12.0
-texture_margin_top = 6.0
-texture_margin_right = 12.0
-texture_margin_bottom = 6.0
-region_rect = Rect2(12, 43, 56, 26)
-
-[sub_resource type="Theme" id="Theme_8dw6r"]
-default_font = ExtResource("5_e33ne")
-default_font_size = 8
-Button/colors/font_color = Color(1, 1, 1, 1)
-Button/font_sizes/font_size = 8
-Button/styles/focus = SubResource("StyleBoxTexture_j6nx3")
-Button/styles/hover = SubResource("StyleBoxTexture_mft0i")
-Button/styles/normal = SubResource("StyleBoxTexture_dux5c")
-Button/styles/pressed = SubResource("StyleBoxTexture_akf17")
-
-[sub_resource type="LabelSettings" id="LabelSettings_5q1ee"]
-font_size = 8
-outline_size = 4
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vvhc8"]
-texture = ExtResource("4_dsysb")
-texture_margin_left = 5.0
-texture_margin_top = 7.0
-texture_margin_right = 6.0
-texture_margin_bottom = 7.0
-expand_margin_left = 3.0
-region_rect = Rect2(6, 86, 55, 15)
-
-[sub_resource type="Theme" id="Theme_04gwd"]
-default_font_size = 8
-CheckBox/colors/font_focus_color = Color(0.745098, 0.894118, 0.658824, 1)
-CheckBox/colors/font_hover_color = Color(0.745098, 0.894118, 0.658824, 1)
-CheckBox/colors/font_outline_color = Color(0, 0, 0, 1)
-CheckBox/constants/outline_size = 4
-CheckBox/fonts/font = ExtResource("5_e33ne")
-CheckBox/icons/checked = ExtResource("9_goqop")
-CheckBox/icons/unchecked = ExtResource("10_myq66")
-CheckBox/styles/focus = SubResource("StyleBoxTexture_vvhc8")
-CheckBox/styles/hover = SubResource("StyleBoxTexture_vvhc8")
-CheckBox/styles/hover_pressed = SubResource("StyleBoxTexture_vvhc8")
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uwmf5"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kekjq"]
 
@@ -198,6 +125,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_x504m")
+sfxs = SubResource("Resource_6x5fs")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_4rjve")
@@ -213,6 +141,7 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(1.5, 1.5)
 pivot_offset = Vector2(152, 96)
+mouse_filter = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -229,11 +158,9 @@ theme_override_constants/separation = 10
 alignment = 1
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
-visible = false
 layout_mode = 2
-theme = ExtResource("3_ghitf")
+theme = ExtResource("3_b7aa4")
 text = "Audio Settings"
-label_settings = SubResource("LabelSettings_d7d3h")
 horizontal_alignment = 1
 
 [node name="AudioHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
@@ -242,69 +169,51 @@ layout_mode = 2
 [node name="SfxVBox" type="VBoxContainer" parent="MarginContainer/VBoxContainer/AudioHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 0
 
 [node name="Label3" type="Label" parent="MarginContainer/VBoxContainer/AudioHBox/SfxVBox"]
 layout_mode = 2
-theme = SubResource("Theme_mans0")
+theme = ExtResource("4_6phi7")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Sfx"
-label_settings = SubResource("LabelSettings_h284f")
 horizontal_alignment = 1
 
 [node name="SfxSlider" type="HSlider" parent="MarginContainer/VBoxContainer/AudioHBox/SfxVBox"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../../../BackHBox/BackButton")
 theme = ExtResource("6_wbg1x")
-min_value = -25.0
-max_value = 25.0
+max_value = 1.0
+step = 0.1
 
 [node name="MusicVbox" type="VBoxContainer" parent="MarginContainer/VBoxContainer/AudioHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 0
 
 [node name="Label3" type="Label" parent="MarginContainer/VBoxContainer/AudioHBox/MusicVbox"]
 layout_mode = 2
-theme = SubResource("Theme_ci3ny")
+theme = ExtResource("4_6phi7")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Music"
-label_settings = SubResource("LabelSettings_s1mgq")
 horizontal_alignment = 1
 
 [node name="MusicSlider" type="HSlider" parent="MarginContainer/VBoxContainer/AudioHBox/MusicVbox"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../../../BackHBox/KeybindButton")
 theme = ExtResource("6_wbg1x")
-min_value = -25.0
-max_value = 25.0
-
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 9
-theme_override_styles/separator = SubResource("StyleBoxEmpty_0pl7j")
+max_value = 1.0
+step = 0.1
 
 [node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
-visible = false
 layout_mode = 2
-theme = ExtResource("3_ghitf")
+theme = ExtResource("3_b7aa4")
 text = "Video Settings"
-label_settings = SubResource("LabelSettings_sa4xp")
 horizontal_alignment = 1
-
-[node name="WindowMode" type="OptionButton" parent="MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 4
-theme = ExtResource("9_hlkcv")
-theme_override_font_sizes/font_size = 8
-alignment = 1
-item_count = 3
-selected = 0
-popup/item_0/text = "Windowed"
-popup/item_0/id = 0
-popup/item_1/text = "Windowed Borderless"
-popup/item_1/id = 1
-popup/item_2/text = "Fullscreen"
-popup/item_2/id = 2
 
 [node name="VideoVBox" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_constants/separation = 0
 
 [node name="FullscreenCheck" type="CheckBox" parent="MarginContainer/VBoxContainer/VideoVBox"]
 layout_mode = 2
@@ -321,16 +230,9 @@ focus_neighbor_bottom = NodePath("../../MouseHBox/MouseMenusCheck")
 theme = ExtResource("8_hcnu7")
 text = "Borderless"
 
-[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-theme = SubResource("Theme_8dw6r")
-text = "Controlls"
-label_settings = SubResource("LabelSettings_5q1ee")
-horizontal_alignment = 1
-
 [node name="MouseHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+alignment = 1
 
 [node name="MouseMenusCheck" type="CheckBox" parent="MarginContainer/VBoxContainer/MouseHBox"]
 layout_mode = 2
@@ -338,33 +240,66 @@ focus_neighbor_top = NodePath("../../VideoVBox/BorderlessCheck")
 focus_neighbor_bottom = NodePath("../../BackHBox/BackButton")
 theme = SubResource("Theme_04gwd")
 button_pressed = true
-text = "Use Mouse for Menus"
+text = "Mouse for Menus"
+
+[node name="TimerCheck" type="CheckBox" parent="MarginContainer/VBoxContainer/MouseHBox"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../../VideoVBox/BorderlessCheck")
+focus_neighbor_bottom = NodePath("../../BackHBox/KeybindButton")
+theme = SubResource("Theme_04gwd")
+text = "Speedrun Timer"
 
 [node name="BackHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="VSeparator2" type="VSeparator" parent="MarginContainer/VBoxContainer/BackHBox"]
+[node name="HSeparatorL" type="VSeparator" parent="MarginContainer/VBoxContainer/BackHBox"]
 layout_mode = 2
-theme_override_constants/separation = 32
+theme_override_constants/separation = 16
 theme_override_styles/separator = SubResource("StyleBoxEmpty_uwmf5")
 
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer/BackHBox"]
+custom_minimum_size = Vector2(54, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 focus_neighbor_top = NodePath("../../MouseHBox/MouseMenusCheck")
+focus_neighbor_right = NodePath("../KeybindButton")
 focus_neighbor_bottom = NodePath("../../AudioHBox/SfxVBox/SfxSlider")
 theme = ExtResource("3_ghitf")
 text = "Back"
 
-[node name="VSeparator" type="VSeparator" parent="MarginContainer/VBoxContainer/BackHBox"]
+[node name="Control" type="Control" parent="MarginContainer/VBoxContainer/BackHBox"]
 layout_mode = 2
-theme_override_constants/separation = 32
+size_flags_horizontal = 3
+
+[node name="KeybindButton" type="Button" parent="MarginContainer/VBoxContainer/BackHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_neighbor_left = NodePath("../BackButton")
+focus_neighbor_top = NodePath("../../MouseHBox/TimerCheck")
+focus_neighbor_bottom = NodePath("../../AudioHBox/MusicVbox/MusicSlider")
+theme = SubResource("Theme_ar8ty")
+text = "Keybinds"
+
+[node name="HSeparatorR" type="VSeparator" parent="MarginContainer/VBoxContainer/BackHBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
 theme_override_styles/separator = SubResource("StyleBoxEmpty_kekjq")
 
-[connection signal="value_changed" from="MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider" to="." method="_on_sfx_slider_value_changed"]
-[connection signal="value_changed" from="MarginContainer/VBoxContainer/AudioHBox/MusicVbox/MusicSlider" to="." method="_on_music_slider_value_changed"]
-[connection signal="item_selected" from="MarginContainer/VBoxContainer/WindowMode" to="." method="_on_window_mode_item_selected"]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="StopMouse" type="ColorRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0)
+
 [connection signal="toggled" from="MarginContainer/VBoxContainer/VideoVBox/FullscreenCheck" to="." method="_on_fullscreen_check_toggled"]
 [connection signal="toggled" from="MarginContainer/VBoxContainer/VideoVBox/BorderlessCheck" to="." method="_on_borderless_check_toggled"]
 [connection signal="toggled" from="MarginContainer/VBoxContainer/MouseHBox/MouseMenusCheck" to="." method="_on_mouse_menus_check_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/MouseHBox/TimerCheck" to="." method="_on_timer_check_toggled"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/BackHBox/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/BackHBox/KeybindButton" to="." method="_on_keybind_button_pressed"]
