@@ -3,6 +3,7 @@ extends Area2D
 @export_enum("green", "red") var color = "green"
 @export var sfxs : AudioLibrary
 var player
+var cam
 
 var player_in_area: bool = false
 
@@ -11,6 +12,7 @@ var doors_in_room: Array = []
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	player = get_node("/root/World/Player")
+	cam = get_node("/root/World/Camera")
 	setup()
 	
 	for pos in get_node("/root/World").get_room_state():
@@ -23,12 +25,14 @@ func _input(event):
 	if player_in_area and event.is_action_pressed("Interact") and !$Key.visible:
 		if color == "green" and player.green_key_state == "collected":
 			player.green_key_state = "used"
-			get_node("/root/World/Camera").set_keys("Green", true)
+			#get_node("/root/World/Camera").set_keys("Green", true)
+			cam.remove_collected_item(cam.CollectedItem.GREEN_KEY)
 			AudioManager.play_audio(sfxs.get_sfx("click"))
 			unlock()
 		elif color == "red" and player.red_key_state == "collected":
 			player.red_key_state = "used"
-			get_node("/root/World/Camera").set_keys("Red", true)
+			#get_node("/root/World/Camera").set_keys("Red", true)
+			cam.remove_collected_item(cam.CollectedItem.RED_KEY)
 			AudioManager.play_audio(sfxs.get_sfx("click"))
 			unlock()
 
@@ -61,26 +65,11 @@ func setup():
 		$Base.region_rect.position.x += 16
 		$Key.region_rect.position.x += 16
 
-#func get_all_children(in_node, array := []):
-	#array.push_back(in_node)
-	#for child in in_node.get_children():
-		#array = get_all_children(child, array)
-	#return array
-
-#func interactable() -> bool:
-	#if color == "green" and player.green_key_state == "collected":
-		#return true
-	#elif color == "red" and player.red_key_state == "collected":
-		#return true
-	#return false
-
-
 func _on_body_entered(body):
 	if body is CharacterBody2D:
 		if (color == "green" and body.green_key_state == "collected") or (color == "red" and body.red_key_state == "collected"):
 			player_in_area = true
 			$InputIndicator.visible = true
-
 
 func _on_body_exited(body):
 	if body is CharacterBody2D:

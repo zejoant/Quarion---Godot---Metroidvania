@@ -26,6 +26,7 @@ boot_splash/minimum_display_time=2000
 
 AudioManager="*res://Scripts/Classes/audio_manager.gd"
 SaveManager="*res://Scripts/Classes/save_manager.gd"
+SteamManager="*res://Scripts/Classes/steam_manager.gd"
 
 [display]
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=84 format=3 uid="uid://cagepo1tljh6w"]
+[gd_scene load_steps=82 format=3 uid="uid://cagepo1tljh6w"]
 
 [ext_resource type="Script" path="res://intro_cutscene.gd" id="1_0lk36"]
 [ext_resource type="Texture2D" uid="uid://dnuk8to6m018a" path="res://Assets/Ship Textures.png" id="1_6myr4"]
@@ -28,7 +28,6 @@
 [ext_resource type="Shader" path="res://Shaders/invert_color.gdshader" id="13_gg42i"]
 [ext_resource type="AudioStream" uid="uid://c6awqtpd8jux1" path="res://Sfx/hit.wav" id="14_lwiws"]
 [ext_resource type="AudioStream" uid="uid://wfv3b0n8g3aj" path="res://Sfx/meteorite pass.wav" id="15_appo3"]
-[ext_resource type="AudioStream" uid="uid://dta0hcugodv0f" path="res://Sfx/footstep echo.wav" id="16_dyak0"]
 [ext_resource type="Theme" uid="uid://cy86cwc1oigm7" path="res://Themes/small_font_theme.tres" id="26_sa7u4"]
 
 [sub_resource type="Resource" id="Resource_4vwu3"]
@@ -91,14 +90,9 @@ script = ExtResource("3_yt6ay")
 tag = "meteorite_pass"
 stream = ExtResource("15_appo3")
 
-[sub_resource type="Resource" id="Resource_k2y8p"]
-script = ExtResource("3_yt6ay")
-tag = "footstep"
-stream = ExtResource("16_dyak0")
-
 [sub_resource type="Resource" id="Resource_sfhm7"]
 script = ExtResource("2_jopmg")
-sound_effects = Array[ExtResource("3_yt6ay")]([SubResource("Resource_4vwu3"), SubResource("Resource_due1w"), SubResource("Resource_dwgng"), SubResource("Resource_5a1m2"), SubResource("Resource_vmsm4"), SubResource("Resource_7q3hf"), SubResource("Resource_ax8i3"), SubResource("Resource_1434c"), SubResource("Resource_hnjhl"), SubResource("Resource_qaauc"), SubResource("Resource_afeus"), SubResource("Resource_krnln"), SubResource("Resource_k2y8p")])
+sound_effects = Array[ExtResource("3_yt6ay")]([SubResource("Resource_4vwu3"), SubResource("Resource_due1w"), SubResource("Resource_dwgng"), SubResource("Resource_5a1m2"), SubResource("Resource_vmsm4"), SubResource("Resource_7q3hf"), SubResource("Resource_ax8i3"), SubResource("Resource_1434c"), SubResource("Resource_hnjhl"), SubResource("Resource_qaauc"), SubResource("Resource_afeus"), SubResource("Resource_krnln")])
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0plah"]
 atlas = ExtResource("1_6myr4")
@@ -1813,8 +1807,8 @@ tracks/61/path = NodePath(".")
 tracks/61/interp = 1
 tracks/61/loop_wrap = true
 tracks/61/keys = {
-"times": PackedFloat32Array(2.9, 3.6, 4.15, 4.95, 5.3, 5.85, 6.95, 8.85, 10.1763, 11.6411, 11.65, 12.85, 13.7, 14.05, 15.05, 16.25, 16.65, 17.25, 17.8, 31.15, 33.5, 33.85, 36.95, 37.55, 40.3, 42.5, 43.5, 44.5, 45.5, 46.5, 47.5, 48.5, 49.5, 50.5, 51.5, 52.5, 55.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(2.9, 3.6, 4.15, 4.95, 5.3, 5.85, 6.95, 8.85, 10.1763, 11.6411, 11.65, 12.85, 13.7, 14.05, 15.05, 16.25, 16.65, 17.25, 17.8, 31.15, 33.5, 33.85, 36.95, 37.55, 40.3, 55.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "values": [{
 "args": ["player_jump"],
 "method": &"play_sfx"
@@ -1889,39 +1883,6 @@ tracks/61/keys = {
 "method": &"play_sfx"
 }, {
 "args": ["player_move"],
-"method": &"play_sfx"
-}, {
-"args": ["footstep"],
-"method": &"play_sfx"
-}, {
-"args": ["footstep"],
-"method": &"play_sfx"
-}, {
-"args": ["footstep"],
-"method": &"play_sfx"
-}, {
-"args": ["footstep"],
-"method": &"play_sfx"
-}, {
-"args": ["footstep"],
-"method": &"play_sfx"
-}, {
-"args": ["footstep"],
-"method": &"play_sfx"
-}, {
-"args": ["footstep"],
-"method": &"play_sfx"
-}, {
-"args": ["footstep"],
-"method": &"play_sfx"
-}, {
-"args": ["footstep"],
-"method": &"play_sfx"
-}, {
-"args": ["footstep"],
-"method": &"play_sfx"
-}, {
-"args": ["footstep"],
 "method": &"play_sfx"
 }, {
 "args": ["push_yellow"],

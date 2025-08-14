@@ -1,6 +1,7 @@
 extends TileMap
 
 @export var sfxs : AudioLibrary
+@export var foreground: bool = false
 var source_id
 var atlas_coord
 var tile_data: TileData
@@ -23,26 +24,15 @@ static var blue_block := false
 
 func _ready() -> void:
 	world = get_node_or_null("/root/World") #or_null for purposes of testing scenes where world is not loaded
-	if world:
+	if world and !foreground:
 		check_for_collected_tiles()
 		check_for_functional_tiles()
-
-
-#func reload_from_disk():
-	##var my_tile_set_path = get_path()
-	##if my_tile_set_path.is_empty():
-	##	print("Error: TileSet is not saved to a file. Cannot reload from disk.")
-	##	return
-	#var new_tileset_instance = load("res://tile_map.tscn")
-	#emit_signal("tileset_reloaded", new_tileset_instance)
-#
-#signal tileset_reloaded(new_tileset_resource: TileSet)
 	
 #deletes any tiles that have been collected so they dont show up again (apples)
 func check_for_collected_tiles():
 	for cell in world.get_room_state():
 		custom_data = get_custom_data_with_coords(cell)
-		if custom_data == "Collectable" or custom_data == "PBlueBlocks" or custom_data == "PWallClimb" or custom_data == "PDash" or custom_data == "PDoubleJump":
+		if custom_data != "no tile data":
 			erase_cell(layer, cell)
 
 
@@ -154,7 +144,8 @@ func resume_animated_tiles(): #dum ass animatedtexture resource not pausing when
 func freeze_water_tile(body_rid):
 	var tile_coords = get_coords_for_body_rid(body_rid)
 	var tile_info = get_cell_tile_data(0, tile_coords)
-	if tile_info != null and tile_info.get_custom_data("Functional Tiles") == "Water":
+	var c_data = tile_info.get_custom_data("Functional Tiles")
+	if tile_info != null and (c_data == "Water" or c_data == "WaterFall"):
 		freeze_sfx_cooldown -= 1
 		if freeze_sfx_cooldown <= 0:
 			AudioManager.play_audio(sfxs.get_sfx("freeze"), rng.randf_range(1, 2), rng.randf_range(0.9, 1))

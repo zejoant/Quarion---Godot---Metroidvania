@@ -1,4 +1,5 @@
 extends Node2D
+class_name Hermit
 
 @export var sfxs : AudioLibrary
 
@@ -127,7 +128,7 @@ func _physics_process(_delta):
 		time += 1
 	
 	if hermit_flee:
-		p.get_node("HermitFleeSprite").position = Vector2(152.0 - float(time/2.2), 96.0 - 4.0*sin(float(time)/20.0)*sqrt(float(time)/4.0) - float(time/4.0))
+		p.get_node("HermitFleeSprite").position = Vector2(152.0 - float(time/2.2), 96.0 - sin(float(time)/20.0)*sqrt(float(time)/4.0) - float(time/4.0))
 		time += 1
 
 func second_phase_fakout():
@@ -984,6 +985,7 @@ func die():
 	get_node("/root/World").secret_boss_beaten = true
 	#get_node("/root/World").save_room_state(Vector2(168, 148))
 	player.bubble_invincibility_time = 0.3
+	SteamManager.get_achivement("HermitBoss")
 	get_node("/root/World").add_to_completion_percentage("Hermit")
 	
 	air_state = AirState.GROUNDED

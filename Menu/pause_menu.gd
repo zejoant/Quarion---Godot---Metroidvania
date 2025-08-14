@@ -26,7 +26,8 @@ func _on_joy_connection_changed(_device_id, connected):
 
 func pause_menu():
 	if paused:
-		get_node("/root/World").get_tilemap().resume_animated_tiles()
+		if get_node("/root/World").get_tilemap():
+			get_node("/root/World").get_tilemap().resume_animated_tiles()
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		hide()
 		paused = false
@@ -34,7 +35,8 @@ func pause_menu():
 		get_tree().paused = false
 		$CanvasLayer/StopMouse.mouse_filter = MOUSE_FILTER_IGNORE
 	else:
-		get_node("/root/World").get_tilemap().pause_animated_tiles()
+		if get_node("/root/World").get_tilemap():
+			get_node("/root/World").get_tilemap().pause_animated_tiles()
 		song_paused = AudioManager.audioPlayer.stream_paused
 		AudioManager.pause_song()
 		get_tree().paused = true

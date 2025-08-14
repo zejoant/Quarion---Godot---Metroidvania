@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bbcuafrlc8tnb"]
+[gd_scene load_steps=23 format=3 uid="uid://bbcuafrlc8tnb"]
 
 [ext_resource type="Script" path="res://Menu/main_menu.gd" id="1_af00c"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_j2owd"]
@@ -9,6 +9,8 @@
 [ext_resource type="Theme" uid="uid://b6lhu6b1qu0a3" path="res://Themes/button_theme_new.tres" id="5_v0tn8"]
 [ext_resource type="PackedScene" uid="uid://cagepo1tljh6w" path="res://intro_cutscene.tscn" id="6_ipu0k"]
 [ext_resource type="Theme" uid="uid://cy86cwc1oigm7" path="res://Themes/small_font_theme.tres" id="7_ajjnw"]
+[ext_resource type="FontFile" uid="uid://dcrk43hh0erpd" path="res://Fonts/Small Font.ttf" id="8_r42y0"]
+[ext_resource type="Texture2D" uid="uid://cywpsaa73tid3" path="res://Assets/MenuTextures/Button Texture.png" id="9_2ke7m"]
 
 [sub_resource type="Resource" id="Resource_6y2wp"]
 script = ExtResource("3_cp0hx")
@@ -18,6 +20,62 @@ stream = ExtResource("4_20qtt")
 [sub_resource type="Resource" id="Resource_h0dg2"]
 script = ExtResource("2_j2owd")
 sound_effects = Array[ExtResource("3_cp0hx")]([SubResource("Resource_6y2wp")])
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aiwof"]
+texture = ExtResource("9_2ke7m")
+texture_margin_left = 8.0
+texture_margin_top = 5.0
+texture_margin_right = 8.0
+texture_margin_bottom = 5.0
+region_rect = Rect2(16, 44, 48, 24)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_j6nx3"]
+texture = ExtResource("9_2ke7m")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(73, 11, 63, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m3q7b"]
+texture = ExtResource("9_2ke7m")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(73, 11, 63, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_iyykc"]
+texture = ExtResource("9_2ke7m")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(12, 11, 56, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_y31l4"]
+texture = ExtResource("9_2ke7m")
+texture_margin_left = 12.0
+texture_margin_top = 6.0
+texture_margin_right = 12.0
+texture_margin_bottom = 6.0
+region_rect = Rect2(12, 43, 56, 26)
+
+[sub_resource type="Theme" id="Theme_pjanq"]
+default_font_size = 8
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/constants/outline_size = 4
+Button/font_sizes/font_size = 8
+Button/fonts/font = ExtResource("8_r42y0")
+Button/styles/disabled = SubResource("StyleBoxTexture_aiwof")
+Button/styles/focus = SubResource("StyleBoxTexture_j6nx3")
+Button/styles/hover = SubResource("StyleBoxTexture_m3q7b")
+Button/styles/normal = SubResource("StyleBoxTexture_iyykc")
+Button/styles/pressed = SubResource("StyleBoxTexture_y31l4")
 
 [sub_resource type="Gradient" id="Gradient_1ot73"]
 offsets = PackedFloat32Array(0, 0.35, 0.62, 1)
@@ -116,10 +174,36 @@ text = "Version 1.0.0"
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = 377.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(1, 1, 1, 0)
+color = Color(0, 0, 0, 1)
+
+[node name="NewGameMode" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="MarginContainer" type="MarginContainer" parent="NewGameMode"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="NewGameMode/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="NormalModeButton" type="Button" parent="NewGameMode/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_v0tn8")
+text = "Normal Mode"
+
+[node name="NoDeathModeButton" type="Button" parent="NewGameMode/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme = SubResource("Theme_pjanq")
+text = "No Death Mode"
 
 [node name="TextureRect" type="TextureRect" parent="."]
 visible = false
@@ -147,7 +231,7 @@ grow_vertical = 2
 scale = Vector2(1.5, 1.5)
 
 [node name="FadeToBlack" type="ColorRect" parent="."]
-z_index = 1
+z_index = 10
 layout_mode = 0
 offset_left = -40.0
 offset_right = 264.0
@@ -161,3 +245,5 @@ layer = 2
 [connection signal="pressed" from="Menu/MarginContainer/VBoxContainer/VBoxContainer/NewGameButton" to="." method="_on_new_game_button_pressed"]
 [connection signal="pressed" from="Menu/MarginContainer/VBoxContainer/VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed" from="Menu/MarginContainer/VBoxContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="NewGameMode/MarginContainer/HBoxContainer/NormalModeButton" to="." method="_on_normal_mode_button_pressed"]
+[connection signal="pressed" from="NewGameMode/MarginContainer/HBoxContainer/NoDeathModeButton" to="." method="_on_no_death_mode_button_pressed"]

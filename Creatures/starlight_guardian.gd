@@ -190,7 +190,14 @@ func bouncing_attack():
 		homing_speed = (boss.position.x - last_pos.x)
 		if abs(homing_speed) > 3:
 			homing_speed = sign(homing_speed)*3
-		bounce_accel = ((rng.randi_range(3, 27)*10+2) - boss.position.x - 60 * homing_speed)/1770
+			
+		var target_pos = rng.randi_range(int(boss.position.x) - 19*8, int(boss.position.x) + 19*8)
+		if target_pos < 32:
+			target_pos = 32
+		elif target_pos > 272:
+			target_pos = 272
+		#bounce_accel = ((rng.randi_range(3, 27)*10+2) - boss.position.x - 60 * homing_speed)/1770
+		bounce_accel = (target_pos - boss.position.x - 60 * homing_speed)/1770
 		
 		tween2 = self.create_tween()
 		tween2.set_trans(Tween.TRANS_QUAD)

@@ -6,6 +6,9 @@ var cooldown : bool = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	world = get_node("/root/World")
+	if world.no_death_mode:
+		queue_free()
+		return
 	
 	if world.room_coords == world.checkpoint_room and Vector2(position.x, position.y-8) == world.checkpoint_pos:
 		$AnimationPlayer.play("Active")

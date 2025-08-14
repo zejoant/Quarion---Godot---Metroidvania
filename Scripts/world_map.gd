@@ -12,6 +12,8 @@ var in_subarea: bool = false
 
 var map_debug_mode = false
 
+var visited_rooms: int = 0
+
 func _ready():
 	world = get_node("/root/World")
 	player = get_node("/root/World/Player")
@@ -26,12 +28,14 @@ func _process(_delta):
 
 func update_player_icon():
 	if !in_subarea:
-		%RoomMap/PlayerIcon.position = Vector2(world.room_coords.x*38, world.room_coords.y*24-3) + player.position/8
+		%PlayerIcon.position = Vector2(world.room_coords.x*38, world.room_coords.y*24-3) + player.position/8
+		%PlayerIcon.scale.x = player.get_node("Sprite2D").scale.x
 		#%RoomMap/PlayerIcon.position.y -= 3
 
 func open_or_close():
 	AudioManager.play_audio(sfxs.get_sfx("open"))
 	if !open:
+		world.prompts_to_show["MapPrompt"] = false
 		if map_debug_mode:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		$BGOverLay.modulate = Color(0, 0, 0, 0.8)
@@ -40,7 +44,6 @@ func open_or_close():
 		update_player_icon()
 		$MapComps/CompletionText.text = str(floor(world.completion_percentage), "%")
 		player.x_speed = 55.0
-		player.get_node("OpenMapIndicator").modulate.a = 0
 	elif open:
 		if map_debug_mode:
 			Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
@@ -54,8 +57,12 @@ func add_room(room_coords: Vector2):
 	if %RoomMap.get_cell_source_id(0, Vector2i(room_coords)) == -1:
 		latest_added_room = room_coords
 		%RoomMap.set_cell(0, room_coords, 0, room_coords, 0)
+		visited_rooms += 1
 		if room_coords != Vector2(0, 0) and room_coords != Vector2(1, 0):
 			world.add_to_completion_percentage("Room")
+	
+	if visited_rooms == 50:
+		SteamManager.get_achivement("FullMap")
 
 func add_apple_from_room(pos: Vector2):
 	#if world.room_coords == latest_added_room:
@@ -70,7 +77,7 @@ func remove_apple_from_map(pos: Vector2):
 	%ItemMap.erase_cell(0, Vector2i(item_map_pos.round()))
 
 func enable_item_map():
-	$MapComps/ItemMap.visible = true
+	%ItemMap.visible = true
 	$MapComps/CompletionText.visible = true
 
 func debug_all_rooms():
@@ -81,7 +88,7 @@ func debug_all_rooms():
 
 func _input(event):
 	if event is InputEventMouseButton and event.pressed and map_debug_mode and open:
-		var mouse_pos = $MapComps/ItemMap.get_local_mouse_position()
+		var mouse_pos = %ItemMap.get_local_mouse_position()
 		var room = Vector2(int(mouse_pos.x/38.0), int(mouse_pos.y/24.0))
 		var room_pos = Vector2(fmod(mouse_pos.x, 38), fmod(mouse_pos.y, 24))
 		player.position = room_pos*8

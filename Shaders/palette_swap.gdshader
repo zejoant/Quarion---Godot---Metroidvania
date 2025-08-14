@@ -27,7 +27,6 @@ void fragment() { //loops through each pixel in the image
 		vec2 uv; //position of the color in palettes png
 		uv.x = idx / float(color_count.x - 1); //x pos of color in palette row (0-1)
 		uv.y = float(palette_choice)/float(color_count.y-1); //y pos of palette row (0-1)
-		//uv.y = (mod(TIME * fps, max(float(color_count.y - 1 - int(skip_first_row)), 1.0)) + float(skip_first_row))  / float(color_count.y - 1);
 		
 		vec4 palette_color = texture(palette, uv); //the palette color corresponding to the original texture palette
 		COLOR = vec4(palette_color.rgb, mix(original_color.a, palette_color.a, float(use_palette_alpha))); //sets the current pixel to the new color

@@ -9,7 +9,7 @@ extends Node2D
 var cooldown = false
 
 func _ready():
-	AudioManager.play_audio(sfxs.get_sfx("boulder_sound"), 1, 1, get_node("/root/World").get_room())
+	AudioManager.play_audio(sfxs.get_sfx("boulder_sound"), 1, 0.7, self)
 
 func _physics_process(_delta):
 	if !cooldown:

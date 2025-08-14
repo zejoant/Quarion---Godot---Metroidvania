@@ -190,7 +190,8 @@ func _on_key_button_pressed():
 	player.green_key_state = "collected"
 	get_node("/root/World").add_to_completion_percentage("Shop")
 	bought_items[0] = true
-	get_node("/root/World/Camera").set_keys("Green")
+	get_node("/root/World/Camera").add_collected_item(get_node("/root/World/Camera").CollectedItem.GREEN_KEY)
+	#get_node("/root/World/Camera").set_keys("Green")
 	player.update_apple_count(-10, false, true)
 
 
@@ -224,6 +225,7 @@ func _on_bubble_button_pressed():
 	find_next_focus($ShopUIContainer/BubbleButton)
 	
 	AudioManager.play_audio(sfxs.get_sfx("buy"))
+	SteamManager.get_achivement("Bubble")
 	get_node("/root/World").add_to_completion_percentage("Shop")
 	player.bubble_action(true, false)
 	bought_items[2] = true

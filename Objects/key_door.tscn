@@ -38,20 +38,20 @@ initial_state = "open"
 texture_repeat = 1
 texture = ExtResource("2_rv05j")
 region_enabled = true
-region_rect = Rect2(16, 0, 8, 8)
+region_rect = Rect2(0, 0, 8, 8)
 
 [node name="ColorSprite" type="Sprite2D" parent="."]
 texture_repeat = 2
 position = Vector2(0, 8)
 texture = ExtResource("2_rv05j")
 region_enabled = true
-region_rect = Rect2(0, 0, 8, 8)
+region_rect = Rect2(24, 0, 8, 8)
 
 [node name="BottomSprite" type="Sprite2D" parent="."]
 position = Vector2(0, 16)
 texture = ExtResource("2_rv05j")
 region_enabled = true
-region_rect = Rect2(24, 0, 8, 8)
+region_rect = Rect2(8, 0, 8, 8)
 
 [node name="DoorColl" type="CollisionShape2D" parent="."]
 position = Vector2(0, 8)

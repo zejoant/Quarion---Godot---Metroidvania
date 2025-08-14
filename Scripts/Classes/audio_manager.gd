@@ -14,16 +14,23 @@ func _ready():
 	audioPlayer.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(audioPlayer)
 
-func play_audio(stream: AudioStream, speed: float = 1, volume: float = 1, parent = self):
+func play_audio(stream: AudioStream, speed: float = 1, volume: float = 1, parent = self, start_pos = 0.0, fade_in: = 0.0):
 	var sfxPlayer = AudioStreamPlayer.new()
+	#sfxPlayer.bus = bus
 	sfxPlayer.volume_db = volume*40-40
 	sfxPlayer.pitch_scale = speed
 	sfxPlayer.bus = "Sfx"
 	sfxPlayer.stream = stream
 	sfxPlayer.finished.connect(remove_audio_player.bind(sfxPlayer))
 	parent.call_deferred("add_child", sfxPlayer)
-	await Engine.get_main_loop().process_frame
-	sfxPlayer.play()
+	#await Engine.get_main_loop().process_frame
+	await sfxPlayer.tree_entered
+	if parent:
+		sfxPlayer.play(start_pos)
+		
+		if fade_in:
+			sfxPlayer.volume_db = -40
+			self.create_tween().tween_property(sfxPlayer, "volume_db", volume*40-40, fade_in)
 
 func play_song(stream: AudioStream, playback_pos: float = 0.0):
 	#if !audioPlayer:
@@ -36,6 +43,9 @@ func play_song(stream: AudioStream, playback_pos: float = 0.0):
 		previous_song = audioPlayer.stream.resource_path
 		previous_song_pos = audioPlayer.get_playback_position()
 		audioPlayer.stop()
+	
+	if previous_song == respawn_song: #save respawn song pos if song is changed
+		respawn_song_pos = previous_song_pos
 		
 	audioPlayer.stream = stream
 	audioPlayer.play(playback_pos)
@@ -58,6 +68,8 @@ func resume_previous_song():
 	play_song(load(previous_song), previous_song_pos)
 
 func resume_respawn_song():
+	if audioPlayer.stream.resource_path == respawn_song:
+		respawn_song_pos = audioPlayer.get_playback_position()
 	audioPlayer.stream = load(respawn_song)
 	audioPlayer.play(respawn_song_pos)
 

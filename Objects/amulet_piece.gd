@@ -10,26 +10,27 @@ func _ready():
 			queue_free()
 
 func collect():
-	world.save_room_state(position/8, true)
-	AudioManager.play_audio(sfxs.get_sfx("collect"))
-	
-	AudioManager.pause_song()
-	player.disable_movement()
-	player.update_animations = false
-	player.get_node("AnimationPlayer").play("hold_up_item")
-	z_index = 0
-	position = Vector2(player.position.x, position.y - 16)
-	await get_tree().create_timer(1.3, false).timeout
-	
-	#player.disable_movement(false)
-	player.update_animations = true
-	#AudioManager.resume_song()
-	visible = false
-	
-	await get_tree().create_timer(0.2, false).timeout
-	
-	world.player.amulet_pieces += 1
-	#world.completion_percentage += 1
-	world.add_to_completion_percentage("AmuletPiece")
-	world.get_node("Camera").collect_amulet_piece()
-	queue_free()
+	if world.player.amulet_pieces < 5:
+		world.save_room_state(position/8, true)
+		AudioManager.play_audio(sfxs.get_sfx("collect"))
+		
+		AudioManager.pause_song()
+		player.disable_movement()
+		player.update_animations = false
+		player.get_node("AnimationPlayer").play("hold_up_item")
+		z_index = 0
+		position = Vector2(player.position.x, position.y - 16)
+		await get_tree().create_timer(1.3, false).timeout
+		
+		#player.disable_movement(false)
+		player.update_animations = true
+		#AudioManager.resume_song()
+		visible = false
+		
+		await get_tree().create_timer(0.2, false).timeout
+		
+		world.player.amulet_pieces += 1
+		#world.completion_percentage += 1
+		world.add_to_completion_percentage("AmuletPiece")
+		world.get_node("Camera").collect_amulet_piece()
+		queue_free()

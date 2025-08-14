@@ -13,6 +13,8 @@ var platform
 var player
 const loop_distance = 56
 
+var leave_frame = false
+
 func _ready():
 	if sound:
 		AudioManager.play_audio(sfx, speed/2.0, 0.8, self)
@@ -36,4 +38,8 @@ func move_platform(pos):
 	if !player.is_dead:
 		if player.get_slide_collision_count() != 0 and player.get_slide_collision(0).get_collider() == $ColorRect/StaticBody2D:
 			player.position.x += pos-platform.position.x
+			leave_frame = true
+		elif leave_frame:
+			player.position.x += pos-platform.position.x
+			leave_frame = false
 	platform.position.x = pos

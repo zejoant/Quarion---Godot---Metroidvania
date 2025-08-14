@@ -3,6 +3,7 @@ extends StaticBody2D
 @export_enum("green", "red") var type = "green" 
 @export var sfxs : AudioLibrary
 @onready var player = get_node("/root/World/Player")
+@onready var cam = get_node("/root/World/Camera")
 
 func _ready():
 	for pos in get_node("/root/World").get_room_state():
@@ -29,12 +30,14 @@ func collect():
 	
 	
 	if type == "green":
-		get_node("/root/World/Player").green_key_state = "collected"
+		player.green_key_state = "collected"
 		#get_node("/root/World/Camera/UIContainer/GreenKeySprite").visible = true
-		get_node("/root/World/Camera").set_keys("Green")
+		cam.add_collected_item(cam.CollectedItem.GREEN_KEY)
+		#cam.set_keys("Green")
 	elif type == "red":
-		get_node("/root/World/Player").red_key_state = "collected"
+		player.red_key_state = "collected"
 		#get_node("/root/World/Camera/UIContainer/RedKeySprite").visible = true
-		get_node("/root/World/Camera").set_keys("Red")
+		cam.add_collected_item(cam.CollectedItem.RED_KEY)
+		#cam.set_keys("Red")
 	
 	queue_free()

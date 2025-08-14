@@ -56,6 +56,7 @@ func save_settings():
 	file.store_var(OptionsMenu.borderless)
 	file.store_var(OptionsMenu.use_mouse_for_menus)
 	file.store_var(OptionsMenu.speedrun_timer)
+	file.store_var(OptionsMenu.no_death_mode_unlocked)
 	
 	file.close()
 
@@ -68,6 +69,7 @@ func load_settings():
 		OptionsMenu.borderless = file.get_var()
 		OptionsMenu.use_mouse_for_menus = file.get_var()
 		OptionsMenu.speedrun_timer = file.get_var()
+		OptionsMenu.no_death_mode_unlocked = file.get_var()
 		OptionsMenu.set_loaded_settings()
 		
 		file.close()
@@ -82,21 +84,29 @@ func save_game(world: Node):
 	file.store_var(world.player.has_double_jump)
 	file.store_var(world.player.has_freeze)
 	file.store_var(world.player.has_blue_blocks)
+	file.store_var(world.player.has_phantom_dash)
 	file.store_var(world.get_node("WorldMap/MapComps/RoomMap").get_used_cells(0))
 	file.store_var(world.player.green_key_state)
 	file.store_var(world.player.red_key_state)
 	file.store_var(world.opened_doors_saved)
-	file.store_var(world.player.apple_count_saved)
 	file.store_var(world.bought_shop_items)
+	file.store_var(world.player.apple_count_saved)
+	file.store_var(world.apple_total_saved) 
 	file.store_var(world.player.amulet_pieces)
 	file.store_var(world.player.has_bubble)
 	file.store_var(world.red_boss_beaten)
 	file.store_var(world.secret_boss_beaten)
+	file.store_var(world.player.current_palette)
+	
+	#one-time stuff
+	file.store_var(world.prompts_to_show)
+	#file.store_var(world.show_drop_prompt)
+	#file.store_var(world.show_map_prompt)
 	
 	#map stuff
 	file.store_var(world.player.has_item_map)
 	file.store_var(world.get_node("WorldMap/MapComps/ItemMap").get_used_cells(0))
-	file.store_var(world.player.has_opened_map)
+	#file.store_var(world.player.has_opened_map)
 	
 	#staff roll stats
 	file.store_var(world.get_speedrun_time())
@@ -117,24 +127,32 @@ func load_game(world: Node):
 		world.player.has_double_jump = file.get_var()
 		world.player.has_freeze = file.get_var()
 		world.player.has_blue_blocks = file.get_var()
+		world.player.has_phantom_dash = file.get_var()
 		for room in file.get_var():
 			world.get_node("WorldMap").add_room(room)
 		world.player.green_key_state = file.get_var()
 		world.player.red_key_state = file.get_var()	
 		world.opened_doors = file.get_var()
 		#world.player.apple_count = file.get_var()
-		world.player.update_apple_count(file.get_var(), true, true)
 		world.bought_shop_items.assign(file.get_var())
+		world.player.update_apple_count(file.get_var(), true, true)
+		world.apple_total = file.get_var()
 		world.get_node("Camera").enable_amulet_pieces(file.get_var())
 		world.player.bubble_action(file.get_var())
 		world.red_boss_beaten = file.get_var()
 		world.secret_boss_beaten = file.get_var()
+		world.player.update_palette(file.get_var())
+		
+		#one-time stuff
+		world.prompts_to_show = file.get_var() as Dictionary
+		#world.show_drop_prompt = file.get_var()
+		#world.show_map_prompt = file.get_var()
 		
 		#map stuff
 		world.player.has_item_map = file.get_var()
 		for apple_pos in file.get_var():
 			world.get_node("WorldMap").add_apple_from_pos(apple_pos)
-		world.player.has_opened_map = file.get_var()
+		#world.player.has_opened_map = file.get_var()
 		
 		#staff roll stats
 		world.set_speedrun_time(file.get_var())

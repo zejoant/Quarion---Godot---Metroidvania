@@ -1,4 +1,4 @@
-[gd_scene load_steps=64 format=3 uid="uid://ibrctco0fpdp"]
+[gd_scene load_steps=66 format=3 uid="uid://ibrctco0fpdp"]
 
 [ext_resource type="Script" path="res://Creatures/forsaken_ally.gd" id="1_2os6r"]
 [ext_resource type="PackedScene" uid="uid://bw1r3nxt3ya8x" path="res://Objects/gate.tscn" id="1_exbt4"]
@@ -15,6 +15,8 @@
 [ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="8_uoyv7"]
 [ext_resource type="AudioStream" uid="uid://2r2krfrh87nt" path="res://Sfx/tiny impact 2.wav" id="9_trj1j"]
 [ext_resource type="Texture2D" uid="uid://b4a3gpanglo75" path="res://Assets/Character Sprite Sheet.png" id="9_vd1y7"]
+[ext_resource type="Shader" path="res://Shaders/palette_swap.gdshader" id="13_mpic0"]
+[ext_resource type="Texture2D" uid="uid://srrdnqsgkk6u" path="res://Assets/Player Palettes.png" id="14_xkc5g"]
 
 [sub_resource type="Resource" id="Resource_gbhgb"]
 script = ExtResource("3_s620o")
@@ -30,11 +32,6 @@ stream = ExtResource("5_e1k82")
 script = ExtResource("3_s620o")
 tag = "jump"
 stream = ExtResource("6_ngjvg")
-
-[sub_resource type="Resource" id="Resource_76amk"]
-script = ExtResource("3_s620o")
-tag = "dash_2"
-stream = ExtResource("7_etp48")
 
 [sub_resource type="Resource" id="Resource_57x3f"]
 script = ExtResource("3_s620o")
@@ -53,7 +50,7 @@ stream = ExtResource("7_etp48")
 
 [sub_resource type="Resource" id="Resource_6rsu8"]
 script = ExtResource("2_8wgr1")
-sound_effects = Array[ExtResource("3_s620o")]([SubResource("Resource_gbhgb"), SubResource("Resource_v1emv"), SubResource("Resource_887xx"), SubResource("Resource_76amk"), SubResource("Resource_57x3f"), SubResource("Resource_fnb5t"), SubResource("Resource_q3d2g")])
+sound_effects = Array[ExtResource("3_s620o")]([SubResource("Resource_gbhgb"), SubResource("Resource_v1emv"), SubResource("Resource_887xx"), SubResource("Resource_57x3f"), SubResource("Resource_fnb5t"), SubResource("Resource_q3d2g")])
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3m31y"]
 shader = ExtResource("8_fpeqh")
@@ -322,6 +319,18 @@ tracks/7/keys = {
 "update": 0,
 "values": [Color(0.13, 0.1, 0.16, 1)]
 }
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("BossSprite:material")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [SubResource("ShaderMaterial_3m31y")]
+}
 
 [sub_resource type="Animation" id="Animation_yxlfh"]
 resource_name = "Reach Out"
@@ -404,6 +413,13 @@ tracks/4/keys = {
 "update": 1,
 "values": [Vector2(1, 1), Vector2(-1, 1)]
 }
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7hrym"]
+shader = ExtResource("13_mpic0")
+shader_parameter/use_palette_alpha = false
+shader_parameter/palette_choice = 0
+shader_parameter/color_tolerance = 0.01
+shader_parameter/palette = ExtResource("14_xkc5g")
 
 [sub_resource type="Animation" id="Animation_dl46d"]
 resource_name = "Slow-Mo Fall + Release Hermit"
@@ -526,6 +542,18 @@ tracks/8/keys = {
 "args": ["tiny_hit"],
 "method": &"play_sfx"
 }]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("BossSprite:material")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 4.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [SubResource("ShaderMaterial_3m31y"), SubResource("ShaderMaterial_7hrym")]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_vfgup"]

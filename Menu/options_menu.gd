@@ -12,7 +12,11 @@ static var borderless = false
 static var use_mouse_for_menus = true
 static var speedrun_timer = false
 
-var previous_window_size = Vector2i(304, 192)
+static var no_death_mode_unlocked = false
+
+var previous_window_mode = DisplayServer.WINDOW_MODE_WINDOWED
+
+var sound_cooldown = false
 
 func _ready():
 	$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.value = sfx_slider_value
@@ -28,7 +32,6 @@ func _ready():
 	
 	$MarginContainer/VBoxContainer/MouseHBox/MouseMenusCheck.button_pressed = use_mouse_for_menus
 	$MarginContainer/VBoxContainer/MouseHBox/TimerCheck.button_pressed = speedrun_timer
-	
 	
 	_on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
@@ -73,34 +76,41 @@ func save_settings():
 	SaveManager.save_settings()
 
 
-func _on_sfx_slider_value_changed(value, propagate_shift: bool = true, sound: bool = true):
-	if value and sound:
-		AudioManager.play_audio(sfxs.get_sfx("slider"), value)
+func _on_sfx_slider_value_changed(value):
 	sfx_slider_value = value
-	if value == 0:
-		AudioServer.set_bus_mute(2, true)
-	else:
-		AudioServer.set_bus_mute(2, false)
-		AudioServer.set_bus_volume_db(2, linear_to_db(value))
+	#if value == 0:
+		#AudioServer.set_bus_mute(2, true)
+	#else:
+	AudioServer.set_bus_mute(2, false)
+	AudioServer.set_bus_volume_db(2, linear_to_db(value))
 	
-	if Input.is_key_pressed(KEY_SHIFT) and propagate_shift:
+	if Input.is_key_pressed(KEY_SHIFT):
 		$MarginContainer/VBoxContainer/AudioHBox/MusicVbox/MusicSlider.value = value
-		_on_music_slider_value_changed(value, false, false)
-
-func _on_music_slider_value_changed(value, propagate_shift: bool = true, sound: bool = true):
-	if value and sound:
-		AudioManager.play_audio(sfxs.get_sfx("slider"), value)
-	music_slider_value = value
-	if value == 0:
-		AudioServer.set_bus_mute(1, true)
-	else:
-		AudioServer.set_bus_mute(1, false)
-		AudioServer.set_bus_volume_db(1, linear_to_db(value))
 	
-	if Input.is_key_pressed(KEY_SHIFT) and propagate_shift:
-		$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.value = value
-		_on_sfx_slider_value_changed(value, false, false)
+	if value:
+		if !sound_cooldown:
+			sound_cooldown = true
+			AudioManager.play_audio(sfxs.get_sfx("slider"), value)
+			await get_tree().create_timer(0.05).timeout
+			sound_cooldown = false
 
+func _on_music_slider_value_changed(value):
+	music_slider_value = value
+	#if value == 0:
+	#	AudioServer.set_bus_mute(1, true)
+	#else:
+	AudioServer.set_bus_mute(1, false)
+	AudioServer.set_bus_volume_db(1, linear_to_db(value))
+	
+	if Input.is_key_pressed(KEY_SHIFT):
+		$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.value = value
+
+	if value:
+		if !sound_cooldown:
+			sound_cooldown = true
+			AudioManager.play_audio(sfxs.get_sfx("slider"), value)
+			await get_tree().create_timer(0.05).timeout
+			sound_cooldown = false
 
 func _on_borderless_check_toggled(toggled_on):
 	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
@@ -115,14 +125,11 @@ func _on_borderless_check_toggled(toggled_on):
 func _on_fullscreen_check_toggled(toggled_on):
 	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
 	if toggled_on:
-		previous_window_size = DisplayServer.window_get_size()
+		previous_window_mode = DisplayServer.window_get_mode()
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 		fullscreen = true
 	else:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		DisplayServer.window_set_size(previous_window_size)
-		if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+		DisplayServer.window_set_mode(previous_window_mode)
 		fullscreen = false
 
 func _on_mouse_menus_check_toggled(toggled_on):

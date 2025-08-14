@@ -26,7 +26,7 @@ func _physics_process(_delta):
 			velocity.x += dir
 		elif $RayCast1.is_colliding():
 			if velocity.x != 0:
-				AudioManager.play_audio(sfxs.get_sfx("hit"), 1, 0.8)
+				AudioManager.play_audio(sfxs.get_sfx("hit"), 1, 0.7)
 			velocity.x = 0
 	
 	elif mode == "turn on wall":
@@ -37,7 +37,7 @@ func _physics_process(_delta):
 			dir *= -1
 			$RayCast1.scale.x = dir
 			if abs(velocity.x) > 20:
-				AudioManager.play_audio(sfxs.get_sfx("hit"), 1, 0.8)
+				AudioManager.play_audio(sfxs.get_sfx("hit"), 1, 0.7)
 			velocity.x = 0
 	
 	#y-axis stuff
@@ -45,7 +45,7 @@ func _physics_process(_delta):
 		velocity.y += 2
 	elif $RayCast2.is_colliding() and velocity.y >= 0:
 		if velocity.y > 20:
-			AudioManager.play_audio(sfxs.get_sfx("hit"), 1, 0.8)
+			AudioManager.play_audio(sfxs.get_sfx("hit"), 1, 0.7)
 		velocity.y = -velocity.y / 4.0
 	
 	if position.y > 30*8 or position.y < -6*8 or position.x > 44*8 or position.x < -6*8:

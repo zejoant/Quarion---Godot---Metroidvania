@@ -52,10 +52,10 @@ func _physics_process(_delta):
 			tween1.set_ease(Tween.EASE_OUT)
 			tween1.set_trans(Tween.TRANS_SINE)
 			if start_dir == "back":
-				AudioManager.play_audio(sfxs.get_sfx("spin"), 1/(time*start_pos), 0.7, self)
+				AudioManager.play_audio(sfxs.get_sfx("spin"), 1/time, 0.7, self, start_pos, 0.2)
 				await tween1.tween_property(self, "position", origin+dir*distance/2.0, time*start_pos).finished
 			else:
-				AudioManager.play_audio(sfxs.get_sfx("spin"), 1/(time*(1.0-start_pos)), 0.7, self)
+				AudioManager.play_audio(sfxs.get_sfx("spin"), 1/time, 0.7, self, start_pos, 0.2)
 				await tween1.tween_property(self, "position", origin+dir*distance/2.0, time*(1.0-start_pos)).finished
 		dir *= -1
 		state = 1

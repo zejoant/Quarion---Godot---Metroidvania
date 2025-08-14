@@ -1,4 +1,4 @@
-[gd_scene load_steps=88 format=3 uid="uid://4ythqhswhcg7"]
+[gd_scene load_steps=74 format=3 uid="uid://4ythqhswhcg7"]
 
 [ext_resource type="Script" path="res://Creatures/player.gd" id="1_1p4uo"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="4_q56as"]
@@ -8,7 +8,6 @@
 [ext_resource type="AudioStream" uid="uid://c6awqtpd8jux1" path="res://Sfx/hit.wav" id="8_6ihyg"]
 [ext_resource type="AudioStream" uid="uid://wm84dwuyqcmd" path="res://Sfx/dash3.wav" id="8_laqsj"]
 [ext_resource type="AudioStream" uid="uid://dp0epi0rhkcul" path="res://Sfx/death explosion.wav" id="9_0iuyt"]
-[ext_resource type="AudioStream" uid="uid://b7txeulgr6bb2" path="res://Sfx/collect.wav" id="9_f8tde"]
 [ext_resource type="Texture2D" uid="uid://cg4qvbi357tcr" path="res://Assets/Blob Particle.png" id="10_ta6lj"]
 [ext_resource type="Texture2D" uid="uid://dei1vxmeg8aah" path="res://Assets/Hurt Effect.png" id="12_jxe34"]
 [ext_resource type="Shader" path="res://Shaders/palette_swap.gdshader" id="13_b8g8h"]
@@ -16,7 +15,6 @@
 [ext_resource type="Texture2D" uid="uid://srrdnqsgkk6u" path="res://Assets/Player Palettes.png" id="14_q6unr"]
 [ext_resource type="Texture2D" uid="uid://b4a3gpanglo75" path="res://Assets/Character Sprite Sheet.png" id="15_kmrac"]
 [ext_resource type="Texture2D" uid="uid://cwdnxgl7k8n26" path="res://Assets/Sparkle2 Particles.png" id="18_layc7"]
-[ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="21_0fc8u"]
 
 [sub_resource type="Resource" id="Resource_yaidf"]
 script = ExtResource("5_ja3e4")
@@ -32,11 +30,6 @@ stream = ExtResource("7_8sakw")
 script = ExtResource("5_ja3e4")
 tag = "dash"
 stream = ExtResource("8_laqsj")
-
-[sub_resource type="Resource" id="Resource_nbj6v"]
-script = ExtResource("5_ja3e4")
-tag = "collect"
-stream = ExtResource("9_f8tde")
 
 [sub_resource type="Resource" id="Resource_ngtc0"]
 script = ExtResource("5_ja3e4")
@@ -55,7 +48,7 @@ stream = ExtResource("14_d3jwu")
 
 [sub_resource type="Resource" id="Resource_0m3bc"]
 script = ExtResource("4_q56as")
-sound_effects = Array[ExtResource("5_ja3e4")]([SubResource("Resource_yaidf"), SubResource("Resource_u3fen"), SubResource("Resource_dxcvt"), SubResource("Resource_nbj6v"), SubResource("Resource_ngtc0"), SubResource("Resource_w52dj"), SubResource("Resource_ewgnh")])
+sound_effects = Array[ExtResource("5_ja3e4")]([SubResource("Resource_yaidf"), SubResource("Resource_u3fen"), SubResource("Resource_dxcvt"), SubResource("Resource_ngtc0"), SubResource("Resource_w52dj"), SubResource("Resource_ewgnh")])
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vy8ue"]
 size = Vector2(6, 10)
@@ -558,102 +551,6 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ruonv"]
-atlas = ExtResource("21_0fc8u")
-region = Rect2(8, 33, 42, 8)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_5mk8n"]
-atlas = ExtResource("21_0fc8u")
-region = Rect2(8, 33, 42, 9)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_431h4"]
-atlas = ExtResource("21_0fc8u")
-region = Rect2(8, 33, 42, 10)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_n770w"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ruonv")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_5mk8n")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_431h4")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_5mk8n")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_2f7nr"]
-atlas = ExtResource("21_0fc8u")
-region = Rect2(51, 32, 9, 9)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_af4ua"]
-atlas = ExtResource("21_0fc8u")
-region = Rect2(51, 32, 9, 10)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_rthp0"]
-atlas = ExtResource("21_0fc8u")
-region = Rect2(51, 32, 9, 11)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_57n17"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_2f7nr")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_af4ua")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_rthp0")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_af4ua")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_f33lc"]
-atlas = ExtResource("21_0fc8u")
-region = Rect2(61, 32, 13, 9)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_yx6x8"]
-atlas = ExtResource("21_0fc8u")
-region = Rect2(61, 32, 13, 10)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_f2v5x"]
-atlas = ExtResource("21_0fc8u")
-region = Rect2(61, 32, 13, 11)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_orrf8"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_f33lc")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_yx6x8")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_f2v5x")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_yx6x8")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
-
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_woe4c"]
 radius = 1.0
 height = 5.0
@@ -694,11 +591,14 @@ animations = [{
 "speed": 1.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qgirt"]
+size = Vector2(2.1, 23)
+
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 8
 floor_constant_speed = true
 floor_block_on_wall = false
-floor_snap_length = 2.0
+floor_snap_length = 3.0
 platform_on_leave = 2
 safe_margin = 0.1
 script = ExtResource("1_1p4uo")
@@ -724,10 +624,12 @@ autoplay = "Idle"
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 6
+input_pickable = false
 
 [node name="EnemyColl" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(0, 3)
 shape = SubResource("RectangleShape2D_4by5i")
+debug_color = Color(0.7, 0, 0, 0.419608)
 
 [node name="WaterDetector" type="Area2D" parent="."]
 z_index = 4
@@ -737,6 +639,7 @@ collision_mask = 2
 
 [node name="NormalColl" type="CollisionShape2D" parent="WaterDetector"]
 shape = SubResource("RectangleShape2D_yubks")
+debug_color = Color(0.0116665, 0, 0.7, 0.419608)
 
 [node name="ParticleComps" type="Node2D" parent="."]
 
@@ -871,35 +774,13 @@ material = SubResource("CanvasItemMaterial_pgfru")
 sprite_frames = SubResource("SpriteFrames_lrosa")
 autoplay = "default"
 
-[node name="OpenMapIndicator" type="Node2D" parent="."]
-modulate = Color(1, 1, 1, 0)
-z_index = 5
-position = Vector2(0, -17)
-
-[node name="TextSprite" type="AnimatedSprite2D" parent="OpenMapIndicator"]
-sprite_frames = SubResource("SpriteFrames_n770w")
-autoplay = "default"
-frame_progress = 0.653726
-
-[node name="KeyboardInput" type="AnimatedSprite2D" parent="OpenMapIndicator"]
-position = Vector2(0, -8)
-sprite_frames = SubResource("SpriteFrames_57n17")
-autoplay = "default"
-frame_progress = 0.730812
-
-[node name="ControllerInput" type="AnimatedSprite2D" parent="OpenMapIndicator"]
-visible = false
-position = Vector2(0, -8)
-sprite_frames = SubResource("SpriteFrames_orrf8")
-autoplay = "default"
-frame_progress = 0.689298
-
 [node name="InsideWallDetector" type="Area2D" parent="."]
 collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InsideWallDetector"]
 position = Vector2(0, 3)
 shape = SubResource("CapsuleShape2D_woe4c")
+debug_color = Color(0.665, 0, 0.7, 0.419608)
 
 [node name="Zzzzzz" type="AnimatedSprite2D" parent="."]
 visible = false
@@ -915,6 +796,15 @@ z_index = 5
 position = Vector2(0, -2)
 target_position = Vector2(0, -8)
 collision_mask = 3
+
+[node name="LedgeArea" type="Area2D" parent="."]
+collision_layer = 0
+
+[node name="CollissionShape2D" type="CollisionShape2D" parent="LedgeArea"]
+z_index = 5
+position = Vector2(2.05, -4.5)
+shape = SubResource("RectangleShape2D_qgirt")
+debug_color = Color(0.151667, 0.7, 0, 0.419608)
 
 [connection signal="body_shape_entered" from="Area2D" to="." method="_on_area_2d_body_shape_entered"]
 [connection signal="body_shape_entered" from="WaterDetector" to="." method="on_water_entered"]

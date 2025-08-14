@@ -9,7 +9,7 @@
 [ext_resource type="Theme" uid="uid://cy86cwc1oigm7" path="res://Themes/small_font_theme.tres" id="4_6phi7"]
 [ext_resource type="Texture2D" uid="uid://cywpsaa73tid3" path="res://Assets/MenuTextures/Button Texture.png" id="4_dsysb"]
 [ext_resource type="AudioStream" uid="uid://pfw4an2t2qpt" path="res://Sfx/menu click 2.wav" id="4_poprm"]
-[ext_resource type="AudioStream" uid="uid://c77le0cicbyi1" path="res://Sfx/menu click.wav" id="5_me4fo"]
+[ext_resource type="AudioStream" uid="uid://888slqco5oi4" path="res://Sfx/menu click 3.wav" id="5_xrlgx"]
 [ext_resource type="Theme" uid="uid://2035heuy0kah" path="res://Themes/slider_theme.tres" id="6_wbg1x"]
 [ext_resource type="Theme" uid="uid://dpgqirdxhg45n" path="res://Themes/check_box_theme.tres" id="8_hcnu7"]
 [ext_resource type="Texture2D" uid="uid://c2dsudt2on35a" path="res://Assets/MenuTextures/Checkbox Checked.png" id="9_goqop"]
@@ -24,7 +24,7 @@ stream = ExtResource("4_poprm")
 [sub_resource type="Resource" id="Resource_mllq6"]
 script = ExtResource("3_fj4c0")
 tag = "slider"
-stream = ExtResource("5_me4fo")
+stream = ExtResource("5_xrlgx")
 
 [sub_resource type="Resource" id="Resource_6x5fs"]
 script = ExtResource("2_yu2nv")
@@ -175,7 +175,7 @@ theme_override_constants/separation = 0
 layout_mode = 2
 theme = ExtResource("4_6phi7")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Sfx"
+text = "SFX"
 horizontal_alignment = 1
 
 [node name="SfxSlider" type="HSlider" parent="MarginContainer/VBoxContainer/AudioHBox/SfxVBox"]

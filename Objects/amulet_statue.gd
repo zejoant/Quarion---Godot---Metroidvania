@@ -1,6 +1,7 @@
 extends StaticBody2D
 
 var player
+@onready var cam = get_node("/root/World/Camera")
 @onready var world = get_node("/root/World")
 @export var sfxs : AudioLibrary
 
@@ -20,6 +21,7 @@ func _ready():
 func _input(event):
 	if event.is_action_pressed("Interact") and player.amulet_pieces == 5 and player_in_area:
 		$InputIndicator.visible = false
+		cam.remove_collected_item(cam.CollectedItem.AMULET)
 		player.amulet_pieces = -1
 		world.save_room_state(position/8, true)
 		AudioManager.pause_song()

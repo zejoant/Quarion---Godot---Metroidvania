@@ -8,10 +8,12 @@ var completion_time: float = 0
 var completion_percentage: float = 0
 
 var good_ending: bool = false
+var player_palette: int = 0
 
 @export var can_exit: bool = false
 
 func _ready():
+	$TrueEndingPhoto.material.set_shader_parameter("palette_choice", player_palette)
 	$StatsComp/DeathsValue.text = str(death_count)
 	$StatsComp/JumpsValue.text = str(jump_count)
 	$StatsComp/TimeValue.text = time_convert(completion_time)
@@ -41,9 +43,18 @@ func time_convert(time):
 func _input(event):
 	if can_exit:
 		if event.is_action_released("ui_accept"):
+			can_exit = false
 			return_after_end()
 
 func return_after_end():
+	if !OptionsMenu.no_death_mode_unlocked:
+		OptionsMenu.no_death_mode_unlocked = true
+		var tween = self.create_tween()
+		tween.tween_property($BlackCover, "modulate:a", 1, 0.5)
+		tween.tween_property($NoDeathUnlocked, "modulate:a", 1, 0.5)
+		tween.tween_interval(2)
+		await tween.tween_property($NoDeathUnlocked, "modulate:a", 0, 0.5).finished
+	SaveManager.save_settings()
 	$Camera.fade("000000", 1, 0.5, 0.3, 0)
 	await get_tree().create_timer(0.7, false).timeout
 	get_tree().change_scene_to_file("res://Menu/main_menu.tscn")

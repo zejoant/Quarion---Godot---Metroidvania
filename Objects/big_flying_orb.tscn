@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_5uk7b"]
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_l5ugc"]
 [ext_resource type="AudioStream" uid="uid://dgu7edve14yxg" path="res://Sfx/big shot 1.wav" id="4_y7uxw"]
-[ext_resource type="AudioStream" uid="uid://cjwiec145yayi" path="res://Sfx/big shot 2.wav" id="5_i0pes"]
+[ext_resource type="AudioStream" uid="uid://c148xecwgfmql" path="res://Sfx/big shot 2.wav" id="5_ox7to"]
 [ext_resource type="AudioStream" uid="uid://bmu4et2yjvbb6" path="res://Sfx/charge up.wav" id="6_bfhaa"]
 
 [sub_resource type="Resource" id="Resource_kwokw"]
@@ -16,7 +16,7 @@ stream = ExtResource("4_y7uxw")
 [sub_resource type="Resource" id="Resource_ucnfk"]
 script = ExtResource("3_l5ugc")
 tag = "shot 2"
-stream = ExtResource("5_i0pes")
+stream = ExtResource("5_ox7to")
 
 [sub_resource type="Resource" id="Resource_yrdlx"]
 script = ExtResource("3_l5ugc")

@@ -5,8 +5,8 @@
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_redfe"]
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_115oh"]
 [ext_resource type="AudioStream" uid="uid://dvhc3ik2a2psb" path="res://Sfx/water drop.wav" id="4_0rm6a"]
-[ext_resource type="AudioStream" uid="uid://chlm0dloqlqkn" path="res://Sfx/GameSFX/Blops/Retro Blop StereoUP 09.wav" id="5_gk5fx"]
-[ext_resource type="AudioStream" uid="uid://bmytm7f7ulx5t" path="res://Sfx/GameSFX/Swoosh/Retro Swooosh 07.wav" id="6_l02oi"]
+[ext_resource type="AudioStream" uid="uid://c36ey5a6wruoq" path="res://Sfx/jump out of water.wav" id="5_ooccw"]
+[ext_resource type="AudioStream" uid="uid://dyrer5t6ybseu" path="res://Sfx/water splash.wav" id="6_qaxix"]
 
 [sub_resource type="Resource" id="Resource_y6106"]
 script = ExtResource("3_115oh")
@@ -16,12 +16,12 @@ stream = ExtResource("4_0rm6a")
 [sub_resource type="Resource" id="Resource_ulo8x"]
 script = ExtResource("3_115oh")
 tag = "jump"
-stream = ExtResource("5_gk5fx")
+stream = ExtResource("5_ooccw")
 
 [sub_resource type="Resource" id="Resource_4wb07"]
 script = ExtResource("3_115oh")
 tag = "splash"
-stream = ExtResource("6_l02oi")
+stream = ExtResource("6_qaxix")
 
 [sub_resource type="Resource" id="Resource_36vem"]
 script = ExtResource("2_redfe")

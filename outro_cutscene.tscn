@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=3 uid="uid://cwafd3q5y7u6m"]
+[gd_scene load_steps=53 format=3 uid="uid://cwafd3q5y7u6m"]
 
 [ext_resource type="Script" path="res://outro_cutscene.gd" id="1_67kqt"]
 [ext_resource type="Texture2D" uid="uid://bn306u45m6wu1" path="res://Assets/Line Particle.png" id="1_qhqm7"]
@@ -15,6 +15,8 @@
 [ext_resource type="Texture2D" uid="uid://xbljxdld76ae" path="res://Assets/True Ending Photo.png" id="10_l5lmt"]
 [ext_resource type="Texture2D" uid="uid://dkt3i4vijtw41" path="res://Assets/MenuTextures/Title.png" id="12_eo0kh"]
 [ext_resource type="Theme" uid="uid://cy86cwc1oigm7" path="res://Themes/small_font_theme.tres" id="13_egapq"]
+[ext_resource type="Shader" path="res://Shaders/palette_swap.gdshader" id="15_4vi3d"]
+[ext_resource type="Texture2D" uid="uid://srrdnqsgkk6u" path="res://Assets/Player Palettes.png" id="16_7ny7u"]
 [ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="16_tvxl6"]
 
 [sub_resource type="Resource" id="Resource_t2gnu"]
@@ -952,9 +954,18 @@ font_color = Color(0.945098, 0.929412, 0.886275, 1)
 outline_size = 4
 outline_color = Color(0, 0, 0, 1)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b2pr4"]
+shader = ExtResource("15_4vi3d")
+shader_parameter/use_palette_alpha = false
+shader_parameter/palette_choice = 0
+shader_parameter/color_tolerance = 0.01
+shader_parameter/palette = ExtResource("16_7ny7u")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_w7h1d"]
 shader = ExtResource("16_tvxl6")
 shader_parameter/amount = 0.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_q567h"]
 
 [node name="OutroCutscene" type="Node2D"]
 script = ExtResource("1_67kqt")
@@ -962,9 +973,6 @@ sfxs = SubResource("Resource_6g3le")
 
 [node name="Camera" parent="." instance=ExtResource("2_ni403")]
 position = Vector2(152, 396)
-
-[node name="UILayer" parent="Camera" index="5"]
-visible = false
 
 [node name="LensCircle" parent="Camera" index="6"]
 scale = Vector2(2, 2)
@@ -1244,7 +1252,7 @@ offset_right = 304.0
 offset_bottom = 416.0
 theme = ExtResource("13_egapq")
 text = "Incidius
-emzie
+RichConnerGMN
 Rifct
 Gastrod
 BleccEye"
@@ -1377,16 +1385,42 @@ text = "Click to return to menu"
 [node name="TrueEndingPhoto" type="Sprite2D" parent="."]
 visible = false
 z_index = 3
+material = SubResource("ShaderMaterial_b2pr4")
 position = Vector2(152, 396)
 rotation = -0.174533
 scale = Vector2(2.52632, 2.52632)
 texture = ExtResource("10_l5lmt")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-z_index = 3
+z_index = 4
 material = SubResource("ShaderMaterial_w7h1d")
 offset_top = 300.0
 offset_right = 304.0
 offset_bottom = 492.0
+
+[node name="BlackCover" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+z_index = 49
+offset_top = 300.0
+offset_right = 304.0
+offset_bottom = 492.0
+color = Color(0, 0, 0, 1)
+
+[node name="NoDeathUnlocked" type="Label" parent="."]
+modulate = Color(1, 1, 1, 0)
+z_index = 49
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 300.0
+offset_right = 304.0
+offset_bottom = 492.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("13_egapq")
+text = "No death mode unlocked!"
+label_settings = SubResource("LabelSettings_q567h")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [editable path="Camera"]

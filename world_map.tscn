@@ -1,13 +1,14 @@
-[gd_scene load_steps=16 format=3 uid="uid://tq5pdnyqtw32"]
+[gd_scene load_steps=21 format=3 uid="uid://tq5pdnyqtw32"]
 
 [ext_resource type="Script" path="res://Scripts/world_map.gd" id="1_a03dt"]
 [ext_resource type="Texture2D" uid="uid://bbq86p0psyqyi" path="res://Assets/Map.png" id="1_javka"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_0dsee"]
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_gxf5d"]
-[ext_resource type="Texture2D" uid="uid://b4a3gpanglo75" path="res://Assets/Character Sprite Sheet.png" id="3_pyjwo"]
 [ext_resource type="AudioStream" uid="uid://c6lqn8mannaey" path="res://Sfx/photo slide.wav" id="4_77k7h"]
 [ext_resource type="Texture2D" uid="uid://b20trkwhnbuts" path="res://Assets/Map Icon Tileset.png" id="4_u75n4"]
 [ext_resource type="Theme" uid="uid://cy86cwc1oigm7" path="res://Themes/small_font_theme.tres" id="5_7q837"]
+[ext_resource type="Shader" path="res://Shaders/palette_swap.gdshader" id="6_d7e15"]
+[ext_resource type="Texture2D" uid="uid://srrdnqsgkk6u" path="res://Assets/Player Palettes.png" id="7_2xtyy"]
 
 [sub_resource type="Resource" id="Resource_rhxoi"]
 script = ExtResource("3_gxf5d")
@@ -108,12 +109,40 @@ texture_region_size = Vector2i(38, 24)
 tile_size = Vector2i(38, 24)
 sources/0 = SubResource("TileSetAtlasSource_lqgc7")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_js1g4"]
+shader = ExtResource("6_d7e15")
+shader_parameter/use_palette_alpha = false
+shader_parameter/palette_choice = 0
+shader_parameter/color_tolerance = 0.01
+shader_parameter/palette = ExtResource("7_2xtyy")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bh8t1"]
+atlas = ExtResource("4_u75n4")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a8s23"]
+atlas = ExtResource("4_u75n4")
+region = Rect2(16, 16, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_om345"]
+animations = [{
+"frames": [{
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_bh8t1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a8s23")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hd15r"]
 texture = ExtResource("4_u75n4")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
-3:0/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_lou3f"]
 tile_size = Vector2i(4, 4)
@@ -145,12 +174,12 @@ scale = Vector2(0.8, 0.8)
 tile_set = SubResource("TileSet_pknh4")
 format = 2
 
-[node name="PlayerIcon" type="Sprite2D" parent="MapComps/RoomMap"]
+[node name="PlayerIcon" type="AnimatedSprite2D" parent="MapComps/RoomMap"]
 unique_name_in_owner = true
-z_index = 1
-texture = ExtResource("3_pyjwo")
-region_enabled = true
-region_rect = Rect2(48, 48, 16, 16)
+material = SubResource("ShaderMaterial_js1g4")
+sprite_frames = SubResource("SpriteFrames_om345")
+autoplay = "default"
+frame_progress = 0.0980071
 
 [node name="ItemMap" type="TileMap" parent="MapComps"]
 unique_name_in_owner = true
@@ -159,6 +188,8 @@ position = Vector2(-0.999999, 19)
 scale = Vector2(0.8, 0.8)
 tile_set = SubResource("TileSet_lou3f")
 format = 2
+layer_0/name = "Apples"
+layer_0/z_index = 1
 
 [node name="CompletionText" type="Label" parent="MapComps"]
 visible = false

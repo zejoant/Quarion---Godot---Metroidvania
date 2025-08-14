@@ -2,18 +2,14 @@ extends Control
 
 @export var sfxs : AudioLibrary
 var world = preload("res://world.tscn").instantiate()
+
+var no_death_mode_unlocked: bool = true
 #static var settings_loaded = false
 
 func _ready():
-	#if !settings_loaded:
-	#	SaveManager.load_settings()
-	#	settings_loaded = true
-	
-	#if SaveManager.save_file_exists():
-	#	$Menu/MarginContainer/VBoxContainer/VBoxContainer/ContinueButton.disabled = true
-	
+	no_death_mode_unlocked = OptionsMenu.no_death_mode_unlocked
+	self.create_tween().tween_property($Menu/StopMouse, "modulate:a", 0, 1)
 	_on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
-		
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
 
 
@@ -53,12 +49,13 @@ func _on_continue_button_pressed():
 func _on_new_game_button_pressed():
 	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
 	disable_buttons()
-	$IntroObjects.count = 1
-	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	$Menu/VersionNumber.visible = false
 	self.create_tween().tween_property($Menu, "offset:x", -150, 0.2)
-	self.create_tween().tween_method(set_blur_power, 1.032, 0, 0.5); # args: (method / start value / end value / duration)
-	$IntroObjects.run_animation()
+	
+	if !no_death_mode_unlocked:
+		run_intro_animation()
+	else:
+		$NewGameMode.visible = true
 	
 func disable_buttons():
 	$Menu/MarginContainer/VBoxContainer/VBoxContainer/NewGameButton.disabled = true
@@ -78,3 +75,19 @@ func _on_options_button_pressed():
 func _on_quit_button_pressed():
 	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
 	get_tree().quit()
+
+
+func _on_normal_mode_button_pressed():
+	$NewGameMode.visible = false
+	run_intro_animation()
+
+func _on_no_death_mode_button_pressed():
+	$IntroObjects.no_death_mode = true
+	$NewGameMode.visible = false
+	run_intro_animation()
+
+func run_intro_animation():
+	$IntroObjects.count = 1
+	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	self.create_tween().tween_method(set_blur_power, 1.032, 0, 0.5); # args: (method / start value / end value / duration)
+	$IntroObjects.run_animation()

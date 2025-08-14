@@ -8,7 +8,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sgua2"]
 shader = ExtResource("1_3ryfl")
 shader_parameter/use_palette_alpha = false
-shader_parameter/palette_choice = 6
+shader_parameter/palette_choice = 7
 shader_parameter/color_tolerance = 0.01
 shader_parameter/palette = ExtResource("2_fw56m")
 

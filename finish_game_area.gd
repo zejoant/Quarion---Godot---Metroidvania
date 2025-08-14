@@ -13,24 +13,32 @@ func _ready():
 	world = get_node("/root/World")
 	player = get_node("/root/World/Player")
 	camera = get_node("/root/World/Camera")
-	$PlayerSprite.material.set_shader_parameter("palette_choice", player.get_node("Sprite2D").material.get_shader_parameter("palette_choice"))
-	$"ShipComponents/Red&Yellow".material.set_shader_parameter("palette_choice", player.get_node("Sprite2D").material.get_shader_parameter("palette_choice"))
+	$PlayerSprite.material.set_shader_parameter("palette_choice", player.current_palette)
+	$"ShipComponents/Red&Yellow".material.set_shader_parameter("palette_choice", player.current_palette)
 	$Tilemap.set_layer_enabled(0, false)
 	$Tilemap.set_layer_enabled(4, false)
 	
 func _input(event):
 	if event.is_action_pressed("Interact") and player_in_area and player.velocity.x == 0 and !player.paused:
 		world.get_speedrun_timer().stop()
+		if world.get_speedrun_time() < 1200:
+			SteamManager.get_achivement("Speedrun")
+		if player.death_count == 0:
+			SteamManager.get_achivement("NoDeath")
+		
 		$InputIndicator.visible = false
 		player.paused = true
 		camera.fade("000000", 1, 0.5, 1, 0.5)
 		
 		await get_tree().create_timer(0.7, false).timeout #fix antenna
 		if world.secret_boss_beaten:
+			SteamManager.get_achivement("GoodEnding")
 			world.red_as_companion.visible = false
 			$RedSprite.visible = true
 			$RedSprite.position = Vector2(259, 161)
 			$RedSprite.region_rect = Rect2(192, 16, 16, 16)
+		else:
+			SteamManager.get_achivement("NormalEnding")
 		player.visible = false
 		$PlayerSprite.visible = true
 		$PlayerSprite.position = Vector2(40, 148)
@@ -141,6 +149,7 @@ func play_sfx(sfx_name: String, count: int, delay: float, start_delay: float = 0
 
 func change_to_outro():
 	var outro_cutscene = load("res://outro_cutscene.tscn").instantiate()
+	outro_cutscene.player_palette = player.current_palette
 	outro_cutscene.good_ending = world.secret_boss_beaten
 	outro_cutscene.death_count = player.death_count
 	outro_cutscene.jump_count = player.jump_count

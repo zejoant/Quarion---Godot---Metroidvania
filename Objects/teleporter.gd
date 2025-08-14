@@ -22,5 +22,5 @@ func _input(event):
 		get_node("/root/World").change_room(destination_room)
 		get_node("/root/World/Player").velocity = Vector2(0, 0)
 		get_node("/root/World/Player").position = destination_position*8
-		get_node("/root/World/Camera").flash(1, 0, 1, 1)
+		get_node("/root/World/Camera").flash(1, 0, 0.5, 0.5)
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://buraweurbllqg"]
+[gd_scene load_steps=58 format=3 uid="uid://buraweurbllqg"]
 
 [ext_resource type="Texture2D" uid="uid://clvq6o3fgyc7b" path="res://Assets/Power Up Flames.png" id="1_feq4l"]
 [ext_resource type="Script" path="res://Objects/power_up_flame.gd" id="1_jufde"]
@@ -81,6 +81,26 @@ region = Rect2(48, 96, 16, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_5ask2"]
 atlas = ExtResource("1_feq4l")
 region = Rect2(64, 96, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2ql2f"]
+atlas = ExtResource("1_feq4l")
+region = Rect2(0, 160, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4quli"]
+atlas = ExtResource("1_feq4l")
+region = Rect2(16, 160, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g42pi"]
+atlas = ExtResource("1_feq4l")
+region = Rect2(32, 160, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3rpru"]
+atlas = ExtResource("1_feq4l")
+region = Rect2(48, 160, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y6tqx"]
+atlas = ExtResource("1_feq4l")
+region = Rect2(64, 160, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bx1ir"]
 atlas = ExtResource("1_feq4l")
@@ -182,6 +202,26 @@ animations = [{
 }],
 "loop": true,
 "name": &"PegasusBoots",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2ql2f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4quli")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g42pi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3rpru")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y6tqx")
+}],
+"loop": true,
+"name": &"PhantomFlame",
 "speed": 5.0
 }, {
 "frames": [{
@@ -302,9 +342,8 @@ shape = SubResource("RectangleShape2D_q1owa")
 z_index = 3
 position = Vector2(0, -7)
 sprite_frames = SubResource("SpriteFrames_i3t0o")
-animation = &"SkyfishAura"
+animation = &"PhantomFlame"
 autoplay = "SkyfishAura"
-frame_progress = 0.932888
 
 [node name="PowerUpParticles" type="Node2D" parent="."]
 position = Vector2(0, 1)

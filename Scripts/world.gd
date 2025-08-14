@@ -28,6 +28,16 @@ var secret_boss_beaten: bool = false
 var red_boss_beaten: bool = false
 var red_as_companion
 
+var apple_total_saved: int
+var apple_total: int
+#var show_map_prompt: bool = true
+#var show_drop_prompt: bool = true
+
+var prompts_to_show = {
+	"MapPrompt": true,
+	"DropPrompt": true,
+}
+
 #for changing room
 var new_room_path
 var old_room
@@ -39,6 +49,8 @@ var completion_percentage: float = 0
 @onready var hermit_boss_room = preload("res://Rooms/room_50.tscn")
 
 var changed_room_frames: int = 0
+
+var no_death_mode: bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -56,16 +68,15 @@ func _ready():
 	setup_arrays()
 	
 	if new_game:
+		Hermit.has_seen_intro = false
+		ForsakenAlly.has_seen_intro = false
 		get_node("Camera").fade("000000", 1, 0, 0.2, 3)
 		checkpoint_room = starting_position
 		checkpoint_pos = Vector2(11.5*8, 19*8)#Vector2(cam_size.x/2, cam_size.y/2)
 	else:
 		load_data()
 		temporary_actions_to_permanent()
-		if player.green_key_state == "collected":
-			$Camera.set_keys("Green")
-		if player.red_key_state == "collected":
-			$Camera.set_keys("Red")
+		$Camera.load_items()
 		if player.has_item_map:
 			$WorldMap.enable_item_map()
 		
@@ -102,8 +113,8 @@ func _process(_delta):
 		$CanvasLayer/PauseMenu.pause_menu()
 
 func setup_arrays():
-	var map_width = 10
-	var map_height = 9
+	var map_width = 11
+	var map_height = 8
 	
 	room_state.resize(map_width) #X-dimension
 	for x in map_width: 
@@ -112,7 +123,7 @@ func setup_arrays():
 		for y in map_height:
 			room_state[x][y] = []
 	
-	opened_doors.resize(100) #setup opened_doors array
+	opened_doors.resize(50) #setup opened_doors array
 	opened_doors.fill(false)
 	
 	room_state_saved = room_state.duplicate(true)
@@ -153,6 +164,12 @@ func exit_room_check():
 	if room_coords != new_room_coords:
 		change_room(new_room_coords)
 	
+	if room_coords.x != 10:
+		$WorldMap.in_subarea = false
+	
+	if room_coords == Vector2(10, 0):
+		SteamManager.get_achivement("Apaolo")
+	
 #function for changing the current room
 func change_room(new_coords):
 	if $Camera.p_up_window_open:
@@ -180,21 +197,21 @@ func change_room(new_coords):
 			call_deferred("add_child", load(new_room_path).instantiate()) #loads new room
 		$WorldMap.add_room(room_coords) #adds room to map
 	
-	if new_coords == Vector2(4, 4) and !player.has_opened_map:
-		#AudioManager.fade_out_song(0.5)
-		if Input.get_connected_joypads().size() > 0:
-			$Player/OpenMapIndicator/KeyboardInput.visible = false
-			$Player/OpenMapIndicator/ControllerInput.visible = true
-		player.has_opened_map = true
-		
-		await get_tree().create_timer(0.6, false).timeout
-		#AudioManager.play_song(load("res://Music/Must Move.mp3"))
-		#AudioManager.save_respawn_song()
-		#AudioManager.fade_in_song(0)
-		await get_tree().create_timer(1.4, false).timeout
-		self.create_tween().tween_property($Player/OpenMapIndicator, "modulate:a", 1, 0.3)
-		await get_tree().create_timer(10, false).timeout
-		self.create_tween().tween_property($Player/OpenMapIndicator, "modulate:a", 0, 1)
+	#if new_coords == Vector2(4, 4) and !player.has_opened_map:
+		##AudioManager.fade_out_song(0.5)
+		#if Input.get_connected_joypads().size() > 0:
+			#$Player/OpenMapIndicator/KeyboardInput.visible = false
+			#$Player/OpenMapIndicator/ControllerInput.visible = true
+		##player.has_opened_map = true
+		#
+		#await get_tree().create_timer(0.6, false).timeout
+		##AudioManager.play_song(load("res://Music/Must Move.mp3"))
+		##AudioManager.save_respawn_song()
+		##AudioManager.fade_in_song(0)
+		#await get_tree().create_timer(1.4, false).timeout
+		#self.create_tween().tween_property($Player/OpenMapIndicator, "modulate:a", 1, 0.3)
+		#await get_tree().create_timer(10, false).timeout
+		#self.create_tween().tween_property($Player/OpenMapIndicator, "modulate:a", 0, 1)
 
 #saves the respawn position when grabbing a checkpoint
 func save_checkpoint_room(pos):
@@ -212,19 +229,22 @@ func temporary_actions_to_permanent(): #saves stuff like clicking on buttons and
 	opened_doors_saved = opened_doors.duplicate(true)
 	room_state_saved = room_state.duplicate(true)
 	player.apple_count_saved = player.apple_count
+	apple_total_saved = apple_total
+	if apple_total_saved == 50:
+		SteamManager.get_achivement("AllApples")
 
 func revert_temporary_actions(): #revers actions like pressing buttons and openings doors if they have not been made permanent
 	opened_doors = opened_doors_saved.duplicate(true)
 	room_state = room_state_saved.duplicate(true)
+	apple_total = apple_total_saved
 	get_node("/root/World").completion_percentage -= 0.4*(player.apple_count-player.apple_count_saved)
 	player.update_apple_count(player.apple_count_saved, true)
 
 func get_tilemap() -> TileMap:
 	var room = get_room()
 	if room != null:
-		return room.get_node("Tilemap")
-	else:
-		return null
+		return room.get_node_or_null("Tilemap")
+	return null
 
 func get_room() -> Node2D:
 	var room = get_node_or_null("Room" + str(room_coords.x) + str(room_coords.y))
@@ -234,7 +254,6 @@ func get_room() -> Node2D:
 	#return get_node_or_null("Room" + str(room_coords.x) + str(room_coords.y))
 
 func room_wrap_check(new_room_coords, exit_dir) -> Vector2:
-	$WorldMap.in_subarea = false
 	if room_coords == Vector2(5, 6) and exit_dir == "down":
 		return Vector2(5, 5)
 	elif room_coords == Vector2(5, 5) and exit_dir == "up":
@@ -259,13 +278,32 @@ func room_wrap_check(new_room_coords, exit_dir) -> Vector2:
 	elif room_coords == Vector2(9, 0) and exit_dir == "right":
 		return Vector2(8, 0)
 	
-	elif room_coords == Vector2(0, 1) and exit_dir == "up": #apaolo
+	#apaolo
+	elif room_coords == Vector2(0, 1) and exit_dir == "up":
 		player.position.x += 12*8
 		$WorldMap.in_subarea = true
-		return Vector2(0, 8)
-	elif room_coords == Vector2(0, 8) and exit_dir == "down": #apaolo
+		return Vector2(10, 0)
+	elif room_coords == Vector2(10, 0) and exit_dir == "down":
 		player.position.x -= 12*8
 		return Vector2(0, 1)
+	
+	#secret above red key
+	elif room_coords == Vector2(7, -1) and exit_dir == "right":
+		$WorldMap.in_subarea = true
+		return Vector2(10, 7)
+	elif room_coords == Vector2(8, 0) and exit_dir == "up":
+		$WorldMap.in_subarea = true
+		return Vector2(10, 7)
+	elif room_coords.x == 10 and (exit_dir == "left" or exit_dir == "right"):
+		return Vector2(10, room_coords.y)
+	elif room_coords == Vector2(10, 7) and exit_dir == "down":
+		return Vector2(8, 0)
+		
+	#elif room_coords.y == 0 and exit_dir == "up":
+		#$WorldMap.in_subarea = true
+		#return Vector2(room_coords.x, 8)
+	#elif room_coords.y == 8 and exit_dir == "down":
+		#return Vector2(room_coords.x, 0)
 	
 	elif room_coords == Vector2(4, 7) and (exit_dir == "down" or exit_dir == "up"):
 			return Vector2(4, 7)
@@ -321,10 +359,14 @@ func add_to_completion_percentage(type: String):
 		completion_percentage += 1
 	elif type == "Hermit": #1x
 		completion_percentage += 2
+	
+	if completion_percentage >= 100:
+		SteamManager.get_achivement("100%")
 
 func save_game():
-	AudioManager.save_respawn_song()
-	SaveManager.save_game(self)
+	if !no_death_mode:
+		AudioManager.save_respawn_song()
+		SaveManager.save_game(self)
 
 func load_data():
 	SaveManager.load_game(self)
@@ -334,3 +376,12 @@ func end_game():
 	$Camera.fade("000000", 1, 0.5, 1, 0.5)
 	await get_tree().create_timer(0.7).timeout
 	$Player.visible = false
+
+func return_to_main_menu(flash: bool = true):
+	if flash:
+		$Camera/FlashLayer.modulate = Color(1, 1, 1, 1)
+		var tween = self.create_tween()
+		await tween.tween_property($Camera/FlashLayer, "modulate", Color(0, 0, 0, 1), 1).finished
+	AudioManager.stop_song()
+	get_tree().paused = false
+	get_tree().change_scene_to_file("res://Menu/main_menu.tscn")

@@ -1,4 +1,5 @@
 extends Area2D
+class_name ForsakenAlly
 
 var player
 var camera
@@ -592,6 +593,7 @@ func die():
 		await get_tree().create_timer(1.3, false).timeout
 		self.create_tween().tween_property(player, "position:x", player.position.x - 2, 0.2)
 		await self.create_tween().tween_property(boss, "position:x", boss.position.x + 2, 0.2).finished
+		$ForsakenAlly/BossSprite.material.set_shader_parameter("palette_choice", player.current_palette)
 		player.visible = false # hug
 		await get_tree().create_timer(3, false).timeout
 		boss.visible = false

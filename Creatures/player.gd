@@ -35,12 +35,11 @@ var bubble_popped = true
 var bubble_invincibility_time = 0.3
 var affecting_force: int = 0
 
-#var in_interact_area = false
-var has_opened_map: bool = false
 var update_animations = false
 var can_move = true
 var is_dead = false
 var can_die = true
+var can_die_from_water = true
 var paused = false
 
 var death_count: int = 0
@@ -52,16 +51,17 @@ var jump_count: int = 0
 @export var has_double_jump = false
 @export var has_freeze = false
 @export var has_blue_blocks = false
+@export var has_phantom_dash = false
 
 @export_group("Items")
 @export_enum("uncollected", "collected", "used") var green_key_state = "uncollected"
 @export_enum("uncollected", "collected", "used") var red_key_state = "uncollected"
 @export_range(0, 5) var amulet_pieces: int = 0
-@export var has_shop_fast_travel = false
 @export var has_item_map = false
 @export var has_bubble = false
 @export_range(0, 9999) var apple_count : int = 0
 var apple_count_saved: int = 0
+var apple_count_total
 
 var respawn_tween: Tween
 var idle_timer: int = 0
@@ -69,7 +69,7 @@ var idle_timer: int = 0
 var last_jump_vel: float
 var can_head_push: bool = true
 
-var currentPalette: int = 0
+var current_palette: int = 0
 #endregion
 
 func _ready():
@@ -84,22 +84,12 @@ func _ready():
 		disable_movement(true)
 		update_animations = false
 	
-	if has_blue_blocks:
-		currentPalette = 1
-	if has_dash:
-		currentPalette = 2
-	if has_wallclimb:
-		currentPalette = 3
-	if has_double_jump:
-		currentPalette = 4
 	if has_freeze:
 		var tilemap = load("res://tile_map.tscn").instantiate()
 		tilemap.change_water_tiles()
 		tilemap = null
-		currentPalette = 5
-	elif !has_blue_blocks and !has_dash and !has_wallclimb and !has_double_jump:
-		currentPalette = 0
-	$Sprite2D.material.set_shader_parameter("palette_choice", currentPalette)
+	
+	update_palette(current_palette)
 	
 	if !can_move:
 		await get_tree().create_timer(2, false).timeout
@@ -116,7 +106,7 @@ func _physics_process(_delta):
 			coyote = 5
 			can_dash = true
 			can_double_jump = true
-		elif !is_on_floor(): #applies gravity if in air
+		else: #applies gravity if in air
 			if get_parent().get_node("WorldMap").open:
 				get_parent().get_node("WorldMap").open_or_close()
 			velocity.y += gravity
@@ -129,10 +119,12 @@ func _physics_process(_delta):
 					position.x = int(position.x/8.0) * 8 + 4
 					velocity.y = last_jump_vel
 					can_head_push = false
-					#last_jump_vel = 0
 		
 		if is_on_wall():
 			affecting_force = 0
+			$LedgeArea.scale.x = last_dir
+			if !$LedgeArea.has_overlapping_bodies() and velocity.y >= 0:
+				position.y -= 1
 		
 		#cooldown for dash
 		if dash_cooldown != 0:
@@ -146,17 +138,17 @@ func _physics_process(_delta):
 		elif coyote < 0:
 			can_jump = false
 		
-		animate_player()
 		check_inputs()
-		move_and_slide()
+		animate_player()
 		wallslide_check()
+		move_and_slide()
 	elif is_dead:
 		check_inputs(true)
 
 #checks all player inputs
 func check_inputs(dead_input: bool = false):
-	if Input.is_action_just_pressed("Quick Respawn") and (can_move or is_dead) and (!get_parent().red_boss_beaten or get_parent().secret_boss_beaten) and can_quick_respawn:
-		respawn(true)
+	if Input.is_action_just_pressed("Quick Respawn") and (can_move or is_dead) and (!get_parent().red_boss_beaten or get_parent().secret_boss_beaten) and can_quick_respawn and !get_parent().no_death_mode:
+		die(true)
 	if !dead_input:
 		if Input.is_action_just_pressed("Debug"):
 			AudioManager.play_audio(sfxs.get_sfx("collect"))
@@ -168,12 +160,14 @@ func check_inputs(dead_input: bool = false):
 			has_double_jump = true
 			#has_freeze = true
 			#get_parent().get_tilemap().change_water_tiles()
-			bubble_action(true, false)
+			#bubble_action(true, false)
 			update_apple_count(50, true)
+			#get_parent().apple_total = 49
+			#get_parent().completion_percentage = 99
 			#has_item_map = true
 			#get_parent().get_node("WorldMap/MapComps/ItemMap").visible = true
-			green_key_state = "collected"
-			red_key_state = "collected"
+			#green_key_state = "collected"
+			#red_key_state = "collected"
 			get_parent().get_node("Camera").enable_amulet_pieces(4)
 		if Input.is_action_just_pressed("Debug Checkpoint") and is_on_floor():
 			AudioManager.play_audio(sfxs.get_sfx("collect"))
@@ -260,18 +254,18 @@ func animate_player():
 		idle_timer = 0
 
 #death and respawning
-func respawn(quick_respawn: bool = false):
+func die(quick_respawn: bool = false, ignore_can_die: bool = false):
 	if !has_bubble or bubble_popped or quick_respawn:
 		var world = get_node("/root/World")
-		if !is_dead and can_die:
-			currentPalette = $Sprite2D.material.get_shader_parameter("palette_choice")
+		if !is_dead and (can_die or ignore_can_die):
 			death_count += 1
 			AudioManager.pause_song()
 			is_dead = true
 			if !bubble_popped:
 				bubble_action(false, true, false)
 			
-			$Sprite2D.material.set_shader_parameter("palette_choice", 6)
+			update_palette(7, false)
+			update_animations = false
 			$AnimationPlayer.play("Damage")
 			world.get_node("Camera").invert_color(1, 0.3)
 			world.get_node("Camera").shake(5, 0.05, 3)
@@ -279,9 +273,8 @@ func respawn(quick_respawn: bool = false):
 			
 			respawn_tween = self.create_tween()
 			await respawn_tween.tween_interval(0.5).finished
-			#await get_tree().create_timer(0.5, false).timeout
 			$Sprite2D.visible = false
-			$Sprite2D.material.set_shader_parameter("palette_choice", currentPalette)
+			$Area2D/EnemyColl.position.x = 0
 			$ParticleComps/DeathParticles/RingExplosionParticles.restart()  
 			$ParticleComps/DeathParticles/PixelExplosionParticles.restart() 
 			$ParticleComps/DeathParticles/RingExplosionParticles.emitting = true
@@ -290,69 +283,62 @@ func respawn(quick_respawn: bool = false):
 			
 			respawn_tween = self.create_tween()
 			await respawn_tween.tween_interval(1.4).finished
-			can_quick_respawn = false
-			#await get_tree().create_timer(1.4, false).timeout
-			world.get_node("Camera").flash(1, 0, 0.2, 0.3)
-			velocity = Vector2(0, 0)
-			dashing = false
-			dash_timer = dash_lim
-			affecting_force = 0
-			AudioManager.resume_respawn_song()
-			world.revert_temporary_actions()
-			world.return_to_checkpoint()
-			$Sprite2D.visible = true
-			is_dead = false
-			can_jump = true
-			can_move = true
-			bubble_action(false, false)
-			get_node("/root/World/Camera").hide_ui(true)
-			respawn_tween = self.create_tween()
-			await respawn_tween.tween_interval(1).finished
-			can_quick_respawn = true
+			respawn_at_checkpoint()
 		elif is_dead and quick_respawn:
-			can_quick_respawn = false
-			if respawn_tween:
-				respawn_tween.kill()
-			$Sprite2D.material.set_shader_parameter("palette_choice", currentPalette)
-			$AnimationPlayer.play("RESET")
-			$ParticleComps/DeathParticles/RingExplosionParticles.amount = 1
-			$ParticleComps/DeathParticles/PixelExplosionParticles.amount = 1
-			$ParticleComps/DeathParticles/RingExplosionParticles.amount = 50
-			$ParticleComps/DeathParticles/PixelExplosionParticles.amount = 70
-			world.get_node("Camera").flash(1, 0, 0.2, 0.3)
-			velocity = Vector2(0, 0)
-			dashing = false
-			dash_timer = dash_lim
-			affecting_force = 0
-			AudioManager.resume_respawn_song()
-			world.revert_temporary_actions()
-			world.return_to_checkpoint()
-			$Sprite2D.visible = true
-			is_dead = false
-			can_jump = true
-			can_move = true
-			bubble_action(false, false)
-			get_node("/root/World/Camera").hide_ui(true)
-			respawn_tween = self.create_tween()
-			await respawn_tween.tween_interval(1).finished
-			can_quick_respawn = true
+			respawn_at_checkpoint()
+			
 	elif can_die:
 		bubble_action(false, true)
+
+func respawn_at_checkpoint():
+	if get_parent().no_death_mode:
+		get_parent().return_to_main_menu()
+		return
+	if respawn_tween:
+				respawn_tween.kill()
+	#$Sprite2D.material.set_shader_parameter("palette_choice", current_palette)
+	update_palette(current_palette)
+	$AnimationPlayer.play("RESET")
+	$ParticleComps/DeathParticles/RingExplosionParticles.amount = 1
+	$ParticleComps/DeathParticles/PixelExplosionParticles.amount = 1
+	$ParticleComps/DeathParticles/RingExplosionParticles.amount = 50
+	$ParticleComps/DeathParticles/PixelExplosionParticles.amount = 70
+	
+	can_quick_respawn = false
+	get_node("/root/World/Camera").flash(1, 0, 0.2, 0.3)
+	velocity = Vector2(0, 0)
+	dashing = false
+	dash_timer = dash_lim
+	affecting_force = 0
+	AudioManager.resume_respawn_song()
+	get_parent().revert_temporary_actions()
+	get_parent().return_to_checkpoint()
+	$Sprite2D.visible = true
+	is_dead = false
+	can_jump = true
+	can_move = true
+	buffer = 0
+	update_animations = true
+	bubble_action(false, false)
+	get_node("/root/World/Camera").hide_ui(true)
+	respawn_tween = self.create_tween()
+	await respawn_tween.tween_interval(1).finished
+	can_quick_respawn = true
 
 func bubble_action(enable: bool = false, pop: bool = false, pop_effect: bool = true):
 	if has_bubble:
 		if pop:
 			bubble_popped = true
-			#$BubbleSprite.visible = false
 			if pop_effect:
 				$BubbleSprite.modulate.a = 1
 				if velocity.y >= 0:
 					velocity.y = jump_vel
 				else:
-					velocity.y = -jump_vel/10 #sign(velocity.y) * jump_vel
+					velocity.y = -velocity.y#jump_vel/10 #sign(velocity.y) * jump_vel
 				affecting_force = -sign(velocity.x) * 300
 				dash_timer = dash_lim
 				can_die = false
+				can_die_from_water = false
 				get_parent().get_node("Camera").invert_color(1, 0.3)
 				get_parent().get_node("Camera").shake(2, 0.05, 3)
 				AudioManager.play_audio(sfxs.get_sfx("bubble pop"))
@@ -360,14 +346,15 @@ func bubble_action(enable: bool = false, pop: bool = false, pop_effect: bool = t
 				paused = true
 				await get_tree().create_timer(0.1, false).timeout
 				paused = false
-				await get_tree().create_timer(bubble_invincibility_time, false).timeout
+				await get_tree().create_timer(bubble_invincibility_time*0.5, false).timeout
+				can_die_from_water = true
+				await get_tree().create_timer(bubble_invincibility_time*0.5, false).timeout
 				can_die = true
 			else:
 				$BubbleSprite.modulate.a = 0
 		else:
 			bubble_popped = false
 			bubble_invincibility_time = 0.3
-			#$BubbleSprite.visible = true
 			$BubbleSprite.play("default")
 			affecting_force = 0
 			
@@ -381,7 +368,7 @@ func bounce(strength):
 	if !is_dead:
 		can_dash = true
 		velocity.y = strength
-		move_and_slide()
+		#move_and_slide()
 		can_jump = false
 		#$AnimationPlayer.play("Jump")
 
@@ -476,10 +463,12 @@ func dash(dir: int = 0):
 	can_jump = false
 	dashing = true
 	velocity.x = 0
+	#$Area2D/EnemyColl.scale.x = 1.75
 	
 	if dir:
 		dash_timer = 0
 		$Sprite2D.scale.x = dir
+	
 
 	if is_on_floor() or coyote >= 0:
 		position.y -= 4
@@ -512,9 +501,13 @@ func process_dash():
 		dash_timer += 1
 		
 	if dash_timer == dash_lim:
+		$Area2D/EnemyColl.position.x = 0
+		#$Area2D/EnemyColl.scale.x = 1
 		$ParticleComps/DashParticles.emitting = false
 		dashing = false
 	
+	if dash_timer == 1:
+		$Area2D/EnemyColl.position.x = -5 * $Sprite2D.scale.x
 	
 	if dash_timer == 2:
 		var c = load("res://Particles/speed_circle.tscn").instantiate()
@@ -536,7 +529,6 @@ func wallslide_check():
 				velocity.y = 40
 	
 	elif can_walljump:
-	#if (!is_on_wall_only() or velocity.y <= 0) and can_walljump:
 		if walljump_coyote <= 0:
 			can_walljump = false
 		walljump_coyote -= 1
@@ -557,7 +549,8 @@ func walljump():
 #activates if player enters a body. Also provieds the body_rid which can give you the tile coords of the body
 func _on_area_2d_body_shape_entered(body_rid, body, _body_shape_index, _local_shape_index):
 	if body.is_in_group("Enemy"):#kills player
-		respawn()
+		if !has_phantom_dash or !dashing:
+			die()
 	elif body.is_in_group("Checkpoint"):
 		body.activate()
 		bubble_action(false, false)
@@ -568,8 +561,14 @@ func _on_area_2d_body_shape_entered(body_rid, body, _body_shape_index, _local_sh
 
 #does action based on the custom data of a tile
 func custom_data_action(custom_data: String):
-	if custom_data == "Spike" or (custom_data == "Water" and !has_freeze):
-		respawn()
+	if custom_data == "Spike":
+		die()
+	elif !has_freeze and custom_data == "Water":
+		if can_die_from_water:
+			die(false, true)
+		die()
+	elif !has_freeze and (custom_data == "WaterFall" and (!has_phantom_dash or !dashing)):
+		die()
 
 #replaces water with ice if you have the freeze power up
 func on_water_entered(body_rid, body, _body_shape_index, _local_shape_index):
@@ -608,6 +607,12 @@ func reset_particles():
 	$ParticleComps/LandParticles.amount = 5
 	$ParticleComps/DoubleJumpParticles.amount = 5
 
+func update_palette(col, permanent: bool = true):
+	if permanent:
+		current_palette = col
+	get_node("/root/World/WorldMap/MapComps/RoomMap/PlayerIcon").material.set_shader_parameter("palette_choice", col)
+	$Sprite2D.material.set_shader_parameter("palette_choice", col)
+
 #squish
 func _on_inside_wall(body_rid, body, _body_shape_index, _local_shape_index):
 	if (!(body is TileMap) or !body.is_tile_one_way(body_rid)) and !is_dead:
@@ -615,4 +620,4 @@ func _on_inside_wall(body_rid, body, _body_shape_index, _local_shape_index):
 			pass
 		else:
 			$Sprite2D.region_rect = Rect2(96, 0, 16, 16)
-		respawn(true)
+		die(true)

@@ -3,7 +3,7 @@ extends Camera2D
 @export var sfxs : AudioLibrary ## Tagged audio files to play from this scene
 var map_open = false
 
-var keys_collected = 0
+#var keys_collected = 0
 var p_up_window_open = false
 
 var shake_origin
@@ -16,10 +16,21 @@ var fade_tween: Tween
 var invert_tween: Tween
 var p_up_tween: Tween
 
+enum CollectedItem {RED_KEY, GREEN_KEY, AMULET}
+var item_display: Array[CollectedItem]
+
 func _ready():
 	close_p_up_window(true)
 	$InvertColorLayer/ColorRect.material.set_shader_parameter("strength", 0) #invert color disabled
 	$RadialBlurLayer/ColorRect.material.set_shader_parameter("blur_power", 0) #radical blur disabled
+
+func load_items():
+	if get_node("/root/World/Player").green_key_state == "collected":
+		add_collected_item(CollectedItem.GREEN_KEY)
+	if get_node("/root/World/Player").red_key_state == "collected":
+		add_collected_item(CollectedItem.RED_KEY)
+	if get_node("/root/World/Player").amulet_pieces == 5:
+		add_collected_item(CollectedItem.AMULET)
 
 func update_apple_count(value: int):
 	$UILayer/UIContainer/AppleCount.text = str(value)
@@ -30,36 +41,61 @@ func update_apple_count(value: int):
 		$UILayer/UIContainer/AppleCount.visible = false
 		$UILayer/UIContainer/AppleSprite.visible = false
 
-func set_keys(state: String, remove: bool = false):
-	if remove:
-		keys_collected -= 1
+func add_collected_item(item: CollectedItem):
+	item_display.append(item)
+	update_item_display()
+
+func remove_collected_item(item: CollectedItem):
+	item_display.erase(item)
+	update_item_display()
+
+func update_item_display():
+	$UILayer/UIContainer/RedKeySprite.visible = false
+	$UILayer/UIContainer/GreenKeySprite.visible = false
+	$UILayer/UIContainer/AmuletSprite.visible = false
 	
-	if keys_collected == 0:
-		$UILayer/UIContainer/RedKeySprite.position.x = 295
-		$UILayer/UIContainer/GreenKeySprite.position.x = 295
-		
-		if state == "Red":
-			$UILayer/UIContainer/RedKeySprite.visible = !remove
-		if state == "Green":
-			$UILayer/UIContainer/GreenKeySprite.visible = !remove
+	for i in item_display.size():
+		if item_display[i] == CollectedItem.RED_KEY:
+			$UILayer/UIContainer/RedKeySprite.position.x = 295 - 16*i
+			$UILayer/UIContainer/RedKeySprite.visible = true
+		elif item_display[i] == CollectedItem.GREEN_KEY:
+			$UILayer/UIContainer/GreenKeySprite.position.x = 295 - 16*i
+			$UILayer/UIContainer/GreenKeySprite.visible = true
+		elif item_display[i] == CollectedItem.AMULET:
+			$UILayer/UIContainer/AmuletSprite.position.x = 295 - 16*i
+			$UILayer/UIContainer/AmuletSprite.visible = true
 			
-	if keys_collected == 1:
-		if state == "Red":
-			$UILayer/UIContainer/RedKeySprite.position.x = 279
-			$UILayer/UIContainer/GreenKeySprite.position.x = 295
-			$UILayer/UIContainer/RedKeySprite.visible = !remove
-		if state == "Green":
-			$UILayer/UIContainer/GreenKeySprite.position.x = 279
-			$UILayer/UIContainer/RedKeySprite.position.x = 295
-			$UILayer/UIContainer/GreenKeySprite.visible = !remove
-			
-	if !remove:
-		keys_collected += 1
-	
-	if keys_collected < 0:
-		keys_collected = 0
-	elif keys_collected > 2:
-		keys_collected = 2
+
+#func set_keys(state: String, remove: bool = false):
+	#if remove:
+		#keys_collected -= 1
+	#
+	#if keys_collected == 0:
+		#$UILayer/UIContainer/RedKeySprite.position.x = 295
+		#$UILayer/UIContainer/GreenKeySprite.position.x = 295
+		#
+		#if state == "Red":
+			#$UILayer/UIContainer/RedKeySprite.visible = !remove
+		#if state == "Green":
+			#$UILayer/UIContainer/GreenKeySprite.visible = !remove
+			#
+	#if keys_collected == 1:
+		#if state == "Red":
+			#$UILayer/UIContainer/RedKeySprite.position.x = 279
+			#$UILayer/UIContainer/GreenKeySprite.position.x = 295
+			#$UILayer/UIContainer/RedKeySprite.visible = !remove
+		#if state == "Green":
+			#$UILayer/UIContainer/GreenKeySprite.position.x = 279
+			#$UILayer/UIContainer/RedKeySprite.position.x = 295
+			#$UILayer/UIContainer/GreenKeySprite.visible = !remove
+			#
+	#if !remove:
+		#keys_collected += 1
+	#
+	#if keys_collected < 0:
+		#keys_collected = 0
+	#elif keys_collected > 2:
+		#keys_collected = 2
 
 func enable_amulet_pieces(count: int):
 	get_parent().get_node("Player").amulet_pieces = count
@@ -90,16 +126,29 @@ func collect_amulet_piece():
 	self.create_tween().tween_property($UILayer/AmuletContainer, "scale", Vector2(2, 2), 0.2)
 	await get_tree().create_timer(2, false).timeout
 	
-	AudioManager.play_audio(sfxs.get_sfx("amulet_out"))
-	blur(0, 0.2)
-	if player.amulet_pieces == 5:
-		flash(1, 0.3, 0.5, 0.4, Color("#78b45c"))
 	tween = self.create_tween()
 	tween.set_ease(Tween.EASE_IN)
 	tween.set_trans(Tween.TRANS_BACK)
-	tween.parallel().tween_property($UILayer/AmuletContainer, "scale", Vector2(10, 10), 0.3)
-	await tween.parallel().tween_property($UILayer/AmuletContainer, "modulate:a", 0, 0.3).finished
+	if player.amulet_pieces == 5:
+		add_collected_item(CollectedItem.AMULET)
+		$UILayer/UIContainer/AmuletSprite.visible = false
+		tween.parallel().tween_property($UILayer/AmuletContainer, "position", $UILayer/UIContainer/AmuletSprite.position, 1)
+		await tween.parallel().tween_property($UILayer/AmuletContainer, "scale", Vector2(1, 1), 1).finished
+		for child in $UILayer/AmuletContainer.get_children():
+			if child == $UILayer/AmuletContainer/RingExplosionParticles:
+				child.emitting = true
+				continue
+			child.visible = false
+			$UILayer/UIContainer/AmuletSprite.visible = true
+		AudioManager.play_audio(sfxs.get_sfx("amulet_out"))
+		blur(0, 0.2)
+	else:
+		AudioManager.play_audio(sfxs.get_sfx("amulet_out"))
+		blur(0, 0.2)
+		tween.parallel().tween_property($UILayer/AmuletContainer, "scale", Vector2(10, 10), 0.3)
+		await tween.parallel().tween_property($UILayer/AmuletContainer, "modulate:a", 0, 0.3).finished
 	
+	SteamManager.get_achivement("FullAmulet")
 	player.disable_movement(false)
 	AudioManager.resume_song()
 	$FlashLayer.modulate = Color(1, 1, 1, 0)
@@ -200,6 +249,7 @@ func close_p_up_window(instant: bool = false):
 	$PowerUpTexts/PegasusBoots.visible = false
 	$PowerUpTexts/FreezewakeCharm.visible = false
 	$PowerUpTexts/TreasureMap.visible = false
+	$PowerUpTexts/PhantomFlame.visible = false
 
 func open_p_up_window(p_up: String):
 	$PowerUpTexts/InputIndicator.modulate.a = 0

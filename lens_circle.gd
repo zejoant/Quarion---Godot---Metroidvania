@@ -67,10 +67,15 @@ func change_lens(room_coords, instant: bool = false, behind_foreground: int = 0)
 		position = Vector2(0, 0)
 		lens_size = 3.5
 	
+	#the 2 fall rooms
 	elif room_coords == Vector2(5, 5) or room_coords == Vector2(5, 6):
 		follow_player = false
 		position = Vector2(0, 0)
 		instant = true
+	
+	elif room_coords.x == 10 and room_coords.y > 0:
+		follow_player = false
+		position = Vector2(0, 0)
 	
 	if !instant:
 		tween = self.create_tween()
