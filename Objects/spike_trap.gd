@@ -8,6 +8,7 @@ extends StaticBody2D
 @export var offset : float = 0
 @export var audio : bool = false
 @export_enum("up", "down", "left", "right") var direction = "up"
+@export var start_extended: bool = false
 
 var dir
 var anim_tween
@@ -23,6 +24,15 @@ func _ready():
 	animating = false
 	
 func _physics_process(_delta):
+	if start_extended:
+		animating = true
+		start_extended = false
+		extend_spike(length*8)
+		anim_tween = self.create_tween()
+		anim_tween.tween_interval(interval)
+		await anim_tween.tween_method(extend_spike, length*8, 0, 0.10).finished
+		animating = false
+	
 	if !animating:
 		animating = true
 		anim_tween = self.create_tween()
@@ -30,12 +40,10 @@ func _physics_process(_delta):
 		
 		if audio:
 			AudioManager.play_audio(sfxs.get_sfx("hit"))
-			
 		
 		anim_tween = self.create_tween()
-		#anim_tween.tween_interval(0.5)
 		anim_tween.tween_method(extend_spike, 0, length*8, 0.05)
-		anim_tween.tween_interval(interval)#1.2)
+		anim_tween.tween_interval(interval)
 		await anim_tween.tween_method(extend_spike, length*8, 0, 0.10).finished
 		
 		animating = false

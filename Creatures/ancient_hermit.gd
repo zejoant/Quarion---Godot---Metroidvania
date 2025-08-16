@@ -136,7 +136,7 @@ func second_phase_fakout():
 		set_hit_mode(HitMode.GHOST)
 		air_state = AirState.GROUNDED
 		AudioManager.pause_song()
-		AudioManager.play_audio(load("res://Sfx/power up charge.wav"), 0.72, 1, self)
+		AudioManager.play_audio(sfxs.get_sfx("explode_charge"), 0.72, 1, self)
 		attack_state = 1
 		
 	if attack_state == 1:
@@ -997,7 +997,7 @@ func die():
 	#	await get_tree().create_timer(0.42, false).timeout
 	
 	$AnimationPlayer.play("implode")
-	AudioManager.play_audio(load("res://Sfx/power up charge.wav"), 1.543, 1, self)
+	AudioManager.play_audio(sfxs.get_sfx("explode_charge"), 1.543, 1, self)
 	await get_tree().create_timer(3.5, false).timeout
 	cam.invert_color(1, 0.2)
 	AudioManager.play_audio(sfxs.get_sfx("hit"))

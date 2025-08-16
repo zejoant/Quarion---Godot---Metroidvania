@@ -1,54 +1,135 @@
-[gd_scene load_steps=4 format=3 uid="uid://b7gm4hymfn5u0"]
+[gd_scene load_steps=5 format=3 uid="uid://b7gm4hymfn5u0"]
 
-[ext_resource type="Script" path="res://Objects/h_looping_platform.gd" id="1_7l2pl"]
 [ext_resource type="Texture2D" uid="uid://ccrjaw3cup2p7" path="res://Assets/H Looping Platform Sprites.png" id="1_a7ov6"]
+
+[sub_resource type="GDScript" id="GDScript_p1jp7"]
+script/source = "#@tool
+extends StaticBody2D
+
+var sfx = preload(\"res://Sfx/looping platform.wav\")
+
+@export_enum(\"left\", \"right\") var direction = \"left\"
+@export var speed : float = 1.0
+@export var sound: bool = false
+var moving = false
+var dir
+var start_pos
+const loop_distance = 56
+var tween
+
+var player
+var player_on_platform = false
+
+func _ready():
+	if sound:
+		AudioManager.play_audio(sfx, speed/2.0, 0.8, self)
+	start_pos = position.x
+	if direction == \"left\":
+		dir = -1
+	else:
+		dir = 1
+
+func _physics_process(_delta):
+	if !moving:
+		moving = true
+		await self.create_tween().tween_method(move_platform, start_pos, start_pos + loop_distance*dir, speed).finished
+		position.x = start_pos
+		moving = false
+
+func move_platform(pos):
+	if player_on_platform:
+		player.position.x += pos-position.x
+	position.x = pos
+
+func _on_player_detection_body_entered(body):
+	if body is CharacterBody2D and !body.is_dead:
+		if tween:
+			tween.kill()
+		if !player:
+			player = body
+		player_on_platform = true
+
+func _on_player_detection_body_exited(body):
+	if body is CharacterBody2D:
+		tween = self.create_tween()
+		await tween.tween_interval(1.0/60.0).finished
+		player_on_platform = false
+"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_o8rgg"]
 size = Vector2(16, 4)
 
-[node name="HLoopingPlatform" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j7ajy"]
+size = Vector2(16, 1)
+
+[node name="HLoopingPlatform" type="StaticBody2D" groups=["MovingPlatform"]]
 z_index = 2
-script = ExtResource("1_7l2pl")
-
-[node name="ColorRect" type="ColorRect" parent="."]
-clip_children = 1
-offset_right = 304.0
-offset_bottom = 192.0
-
-[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect" groups=["MovingPlatform"]]
 position = Vector2(176, 84)
 collision_mask = 0
+script = SubResource("GDScript_p1jp7")
 
-[node name="BaseSprite" type="Sprite2D" parent="ColorRect/StaticBody2D"]
+[node name="BaseSprite" type="Sprite2D" parent="."]
 texture = ExtResource("1_a7ov6")
 region_enabled = true
 region_rect = Rect2(0, 0, 352, 8)
 
-[node name="PlatformSprite" type="Sprite2D" parent="ColorRect/StaticBody2D"]
+[node name="PlatformSprite" type="Sprite2D" parent="."]
 texture = ExtResource("1_a7ov6")
 region_enabled = true
 region_rect = Rect2(0, 8, 352, 8)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-40, -1)
 shape = SubResource("RectangleShape2D_o8rgg")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
 position = Vector2(16, -1)
 shape = SubResource("RectangleShape2D_o8rgg")
 
-[node name="CollisionShape2D3" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="."]
 position = Vector2(128, -1)
 shape = SubResource("RectangleShape2D_o8rgg")
 
-[node name="CollisionShape2D4" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="."]
 position = Vector2(72, -1)
 shape = SubResource("RectangleShape2D_o8rgg")
 
-[node name="CollisionShape2D5" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="."]
 position = Vector2(-96, -1)
 shape = SubResource("RectangleShape2D_o8rgg")
 
-[node name="CollisionShape2D6" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="."]
 position = Vector2(-152, -1)
 shape = SubResource("RectangleShape2D_o8rgg")
+
+[node name="PlayerDetection" type="Area2D" parent="."]
+position = Vector2(0, 1)
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetection"]
+position = Vector2(-152, -4)
+shape = SubResource("RectangleShape2D_j7ajy")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="PlayerDetection"]
+position = Vector2(-96, -4)
+shape = SubResource("RectangleShape2D_j7ajy")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="PlayerDetection"]
+position = Vector2(-40, -4)
+shape = SubResource("RectangleShape2D_j7ajy")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="PlayerDetection"]
+position = Vector2(16, -4)
+shape = SubResource("RectangleShape2D_j7ajy")
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="PlayerDetection"]
+position = Vector2(72, -4)
+shape = SubResource("RectangleShape2D_j7ajy")
+
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="PlayerDetection"]
+position = Vector2(128, -4)
+shape = SubResource("RectangleShape2D_j7ajy")
+
+[connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
+[connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]

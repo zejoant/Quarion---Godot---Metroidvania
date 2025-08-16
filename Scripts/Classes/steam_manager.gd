@@ -2,6 +2,8 @@ extends Node
 
 var app_id = "3870310"
 
+var valid_steam_user: bool = false
+
 func _init():
 	OS.set_environment("SteamAppID", app_id)
 	OS.set_environment("SteamGameID", app_id)
@@ -18,15 +20,17 @@ func _ready():
 	
 	print("Steam is running")
 	
+	valid_steam_user = Steam.getAuthenticationStatus()
+	
 	#clear_all_achivements()
 
 func get_achivement(achivement_name: String):
-	if !Steam.getAchievement(achivement_name)["achieved"]:
+	if valid_steam_user and !Steam.getAchievement(achivement_name)["achieved"]:
 		Steam.setAchievement(achivement_name)
 		Steam.storeStats()
 
 func remove_achivement(achivement_name: String):
-	if Steam.getAchievement(achivement_name)["achieved"]:
+	if valid_steam_user and Steam.getAchievement(achivement_name)["achieved"]:
 		Steam.clearAchievement(achivement_name)
 		Steam.storeStats()
 

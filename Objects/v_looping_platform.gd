@@ -1,5 +1,5 @@
 #@tool
-extends Node2D
+extends StaticBody2D
 
 var sfx = preload("res://Sfx/looping platform.wav")
 
@@ -9,16 +9,15 @@ var sfx = preload("res://Sfx/looping platform.wav")
 var moving = false
 var dir
 var start_pos
-var platform
-var player
 const loop_distance = 80#40
+
+var player_on_platform = false
+var player
 
 func _ready():
 	if sound:
 		AudioManager.play_audio(sfx, speed/2.0, 0.8, self)
-	player = get_node("/root/World/Player")
-	platform = $ColorRect/StaticBody2D
-	start_pos = platform.position.y
+	start_pos = position.y
 	if direction == "down":
 		dir = 1
 	else:
@@ -28,12 +27,22 @@ func _physics_process(_delta):
 	if !moving:
 		moving = true
 		await self.create_tween().tween_method(move_platform, start_pos, start_pos + loop_distance*dir, speed).finished
-		platform.position.y = start_pos
+		position.y = start_pos
 		
 		moving = false
 
 func move_platform(pos):
-	if !player.is_dead:
-		if player.get_slide_collision_count() != 0 and player.get_slide_collision(0).get_collider() == $ColorRect/StaticBody2D:
-			player.position.y += pos-platform.position.y
-	platform.position.y = pos
+	if player_on_platform:
+			player.position.y += pos-position.y
+	position.y = pos
+
+func _on_player_detection_body_entered(body):
+	#if body is CharacterBody2D and !body.is_dead:
+		#if !player:
+			#player = body
+		#player_on_platform = true
+	pass
+
+func _on_player_detection_body_exited(body):
+	if body is CharacterBody2D:
+		player_on_platform = false

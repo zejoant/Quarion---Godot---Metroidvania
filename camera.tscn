@@ -264,24 +264,24 @@ text = "0"
 
 [node name="GreenKeySprite" type="Sprite2D" parent="UILayer/UIContainer"]
 visible = false
-position = Vector2(295, 7)
+position = Vector2(295, 8)
 texture = ExtResource("4_8iw7y")
 region_enabled = true
 region_rect = Rect2(97, 51, 14, 10)
 
 [node name="RedKeySprite" type="Sprite2D" parent="UILayer/UIContainer"]
 visible = false
-position = Vector2(279, 7)
+position = Vector2(279, 8)
 texture = ExtResource("4_8iw7y")
 region_enabled = true
 region_rect = Rect2(81, 51, 14, 10)
 
 [node name="AmuletSprite" type="Sprite2D" parent="UILayer/UIContainer"]
 visible = false
-position = Vector2(263, 7)
+position = Vector2(263, 8)
 texture = ExtResource("4_8iw7y")
 region_enabled = true
-region_rect = Rect2(113, 51, 14, 10)
+region_rect = Rect2(113, 50, 14, 12)
 
 [node name="AmuletContainer" type="Node2D" parent="UILayer"]
 modulate = Color(1, 1, 1, 0)

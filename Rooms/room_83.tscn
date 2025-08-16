@@ -16,26 +16,20 @@ layer_2/tile_data = PackedInt32Array(524296, 524288, 19, 458760, 524288, 19, 393
 layer_3/tile_data = PackedInt32Array(12, 393216, 23, 131084, 393216, 23, 262156, 393216, 23, 393228, 393216, 23, 524300, 393216, 23, 655372, 393216, 23, 786444, 393216, 23, 917516, 393216, 23, 1048588, 393216, 23, 1179660, 393216, 23, 1310732, 393216, 23, 1441804, 393216, 23, 65558, 393216, 23, 196630, 393216, 23, 327702, 393216, 23, 458774, 393216, 23, 589846, 393216, 23, 720918, 393216, 23, 851990, 393216, 23, 983062, 393216, 23, 1114134, 393216, 23, 1245206, 393216, 23, 1376278, 393216, 23, 1507350, 393216, 23)
 
 [node name="VLoopingPlatform" parent="." instance=ExtResource("2_lqcn5")]
+position = Vector2(220, 52)
 direction = "down"
 speed = 2.2
-
-[node name="StaticBody2D" parent="VLoopingPlatform/ColorRect" index="0"]
-position = Vector2(156, 52)
 
 [node name="VLoopingPlatform2" parent="." instance=ExtResource("2_lqcn5")]
+position = Vector2(156, 52)
 direction = "down"
 speed = 2.2
 
-[node name="StaticBody2D" parent="VLoopingPlatform2/ColorRect" index="0"]
-position = Vector2(220, 52)
-
 [node name="VLoopingPlatform3" parent="." instance=ExtResource("2_lqcn5")]
+position = Vector2(44, 52)
 direction = "down"
 speed = 1.5
 sound = true
-
-[node name="StaticBody2D" parent="VLoopingPlatform3/ColorRect" index="0"]
-position = Vector2(44, 52)
 
 [node name="ForegroundCover" parent="." instance=ExtResource("3_uquu3")]
 
@@ -46,7 +40,4 @@ layer_1/tile_data = PackedInt32Array(1310729, 983040, 2, 1376265, 983040, 3, 144
 position = Vector2(96, 176.5)
 shape = SubResource("RectangleShape2D_ipt8h")
 
-[editable path="VLoopingPlatform"]
-[editable path="VLoopingPlatform2"]
-[editable path="VLoopingPlatform3"]
 [editable path="ForegroundCover"]

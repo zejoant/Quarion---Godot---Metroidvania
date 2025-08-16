@@ -25,17 +25,13 @@ layer_3/tile_data = PackedInt32Array(-65513, 1572864, 23, 65559, 1572864, 23, 19
 layer_4/tile_data = PackedInt32Array(5, 1572864, 23, 131077, 1572864, 23, 262149, 1572864, 23, 393221, 1572864, 23, 524293, 1572864, 23, 655365, 1572864, 23, 786437, 1572864, 23, 917509, 1572864, 23, 1048581, 1572864, 23, 1179653, 1572864, 23, 1310725, 1572864, 23, 1441797, 1572864, 23, 18, 1572864, 23, 131090, 1572864, 23, 262162, 1572864, 23, 393234, 1572864, 23, 524306, 1572864, 23, 655378, 1572864, 23, 786450, 1572864, 23, 917522, 1572864, 23, 1048594, 1572864, 23, 1179666, 1572864, 23, 1310738, 1572864, 23, 1441810, 1572864, 23, 29, 1572864, 23, 131101, 1572864, 23, 262173, 1572864, 23, 393245, 1572864, 23, 524317, 1572864, 23, 655389, 1572864, 23, 786461, 1572864, 23, 917533, 1572864, 23, 1048605, 1572864, 23, 1179677, 1572864, 23, 1310749, 1572864, 23, 1441821, 1572864, 23)
 
 [node name="HLoopingPlatform" parent="." instance=ExtResource("3_aa85w")]
-position = Vector2(168, -24)
+position = Vector2(344, 60)
 
 [node name="HLoopingPlatform2" parent="." instance=ExtResource("3_aa85w")]
-position = Vector2(44, 32)
+position = Vector2(116, 116)
 direction = "right"
 speed = 2.0
 sound = true
-
-[node name="ColorRect" parent="HLoopingPlatform2" index="0"]
-offset_left = -88.0
-offset_right = 264.0
 
 [node name="Button" parent="." instance=ExtResource("5_dp1us")]
 position = Vector2(19, 100)
@@ -46,5 +42,3 @@ id = 10
 position = Vector2(164, 28)
 length = 4
 id = 10
-
-[editable path="HLoopingPlatform2"]

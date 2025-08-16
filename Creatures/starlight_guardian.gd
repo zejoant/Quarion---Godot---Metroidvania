@@ -2,7 +2,7 @@
 extends Node2D
 
 @export var sfxs : AudioLibrary ## Tagged audio files to play from this scene
-@export_enum("green", "blue", "pink", "yellow") var color = "green"
+@export_enum("Green", "Blue", "Pink", "Yellow") var color = "Green"
 @export_range(0, 5) var start_raise : float = 0
 @export_range(0, 2) var difficulty : int = 0
 @export_range(18, 22) var floor_height : float = 20
@@ -35,6 +35,8 @@ var bullet_count = 0
 
 var homing_speed: float = 0.0
 var bounce_accel: float
+
+var bullet_scene = preload("res://Objects/bullet.tscn")
 
 func _ready():
 	var room_states = get_node("/root/World").get_room_state()
@@ -104,7 +106,7 @@ func rain():
 		
 	if !bullet_cooldown: #create a rain bullet
 		bullet_cooldown = true
-		var bullet = load("res://Objects/bullet.tscn").instantiate()
+		var bullet = bullet_scene.instantiate()
 		bullet.setup(2.0, Vector2(rng.randf_range(-0.5, 0.5), 1), Vector2(rng.randi_range(3, 35)*8, 0), true, true, 40)
 		call_deferred("add_child", bullet) 
 		await get_tree().create_timer(0.2-float(difficulty)*0.04, false).timeout
@@ -260,14 +262,14 @@ func aiming_bullets():
 		
 		AudioManager.play_audio(sfxs.get_sfx("shot"))
 		get_node("/root/World/Camera").flash(0.3, 0, 0, 0.2)
-		var bullet = load("res://Objects/bullet.tscn").instantiate()
+		var bullet = bullet_scene.instantiate()
 		bullet.setup(3.0, aim, boss.position, true, true, 0)
 		call_deferred("add_child", bullet)
 		if difficulty == 2:
-			bullet = load("res://Objects/bullet.tscn").instantiate()
+			bullet = bullet_scene.instantiate()
 			bullet.setup(3.0, aim.rotated(PI/4), boss.position, true, true, 0)
 			call_deferred("add_child", bullet)
-			bullet = load("res://Objects/bullet.tscn").instantiate()
+			bullet = bullet_scene.instantiate()
 			bullet.setup(3.0, aim.rotated(-PI/4), boss.position, true, true, 0)
 			call_deferred("add_child", bullet)
 		bullet_count += 1
@@ -307,7 +309,7 @@ func fly_by():
 		if rng.randi_range(0, 1): #low attack
 			tween2.tween_property(boss, "position:y", floor_height*8, 1.5)
 		else: #high attack
-			tween2.tween_property(boss, "position:y", (floor_height-4)*8, 1.4)
+			tween2.tween_property(boss, "position:y", (floor_height-3)*8, 1.4)
 		await get_tree().create_timer(3, false).timeout
 		boss.position.y = idle_origin.y + 16
 		reset_lunge()
@@ -317,19 +319,22 @@ func param_setup():
 	start_pos = boss.position
 	idle_origin = start_pos
 	#start_pos.y -= start_raise*8
+	sprite_sheet = load("res://Assets/Sun Boss " + color + ".png")
+	#if color == "green":
+		#sprite_sheet = load("res://Assets/Sun Boss Green.png")
+	#elif color == "blue":
+		#sprite_sheet = load("res://Assets/Sun Boss Blue.png")
+	#elif color == "pink":
+		#sprite_sheet = load("res://Assets/Sun Boss Pink.png")
+	#elif color == "yellow":
+		#sprite_sheet = load("res://Assets/Sun Boss Yellow.png")
 	
-	if color == "green":
-		sprite_sheet = load("res://Assets/Sun Boss Green.png")
-	elif color == "blue":
-		sprite_sheet = load("res://Assets/Sun Boss Blue.png")
-	elif color == "pink":
-		sprite_sheet = load("res://Assets/Sun Boss Pink.png")
-	elif color == "yellow":
-		sprite_sheet = load("res://Assets/Sun Boss Yellow.png")
-	
-	boss.get_node("BossSprites/Base").texture = sprite_sheet
-	boss.get_node("BossSprites/Spikes").texture = sprite_sheet
-	boss.get_node("BossSprites/Face").texture = sprite_sheet
+	$Boss/BossSprites/Base.texture = sprite_sheet
+	$Boss/BossSprites/Spikes.texture = sprite_sheet
+	$Boss/BossSprites/Face.texture = sprite_sheet
+	#boss.get_node("BossSprites/Base").texture = sprite_sheet
+	#boss.get_node("BossSprites/Spikes").texture = sprite_sheet
+	#boss.get_node("BossSprites/Face").texture = sprite_sheet
 	
 	var p = get_node("/root/World/Player")
 	if p.has_wallclimb != p.has_blue_blocks and difficulty == 0: #if you have killed one boss already

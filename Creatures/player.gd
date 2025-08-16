@@ -4,12 +4,13 @@ extends CharacterBody2D
 @export_group("Properties")
 @export var sfxs : AudioLibrary
 @export var jump_vel = -235.0
-@export var gravity = 13.0 #ProjectSettings.get_setting("physics/2d/default_gravity")
+@export var gravity = 13.0 / (1.0/60.0)
 @export var fall_limiter = 230
 @export var x_speed = 110.0
 
 var coyote = 0
 var buffer = 0
+var jump_queued: bool = false
 var can_jump = false
 var can_drop: bool = true
 var can_quick_respawn: bool = true
@@ -70,6 +71,8 @@ var last_jump_vel: float
 var can_head_push: bool = true
 
 var current_palette: int = 0
+
+@onready var world_map = get_parent().get_node("WorldMap")
 #endregion
 
 func _ready():
@@ -100,16 +103,19 @@ func _ready():
 		disable_movement(false)
 	
 #runs every frame
-func _physics_process(_delta):
+func _physics_process(delta):
 	if !is_dead and !paused:
 		if is_on_floor():
+			#if jump_queued:
+				#jump()
+				#jump_queued = false
 			coyote = 5
 			can_dash = true
 			can_double_jump = true
 		else: #applies gravity if in air
-			if get_parent().get_node("WorldMap").open:
-				get_parent().get_node("WorldMap").open_or_close()
-			velocity.y += gravity
+			if world_map.open:
+				world_map.open_or_close()
+			velocity.y += gravity * delta
 			coyote -= 1
 			if velocity.y > fall_limiter:
 				velocity.y = fall_limiter
@@ -145,13 +151,36 @@ func _physics_process(_delta):
 	elif is_dead:
 		check_inputs(true)
 
+#func _unhandled_input(event):
+	#if !can_move:
+		#return
+	#if event.is_action_released("Jump"): #release jump
+		#jump_queued = false
+		#buffer = 0 #reset jump buffer
+		#if velocity.y <= jump_vel / 4.0:
+				#velocity.y = jump_vel / 4.0
+	#elif event.is_action_pressed("Jump"):
+		#if can_double_jump and has_double_jump and !can_jump and !buffer: #double jump
+			#jump(true)
+		#elif can_jump: #normal jump
+			#jump()
+		#elif can_walljump or walljumping: #walljump
+			#walljump()
+		#else:
+			#jump_queued = true
+	#
+	#if event.is_action_pressed("Drop") and can_drop:
+		#drop()
+	#elif event.is_action_released("Drop"):
+		#can_drop = true
+
 #checks all player inputs
 func check_inputs(dead_input: bool = false):
 	if Input.is_action_just_pressed("Quick Respawn") and (can_move or is_dead) and (!get_parent().red_boss_beaten or get_parent().secret_boss_beaten) and can_quick_respawn and !get_parent().no_death_mode:
 		die(true)
 	if !dead_input:
 		if Input.is_action_just_pressed("Debug"):
-			AudioManager.play_audio(sfxs.get_sfx("collect"))
+			AudioManager.play_audio(sfxs.get_sfx("jump"))
 			#get_parent().secret_boss_beaten = true
 			#get_parent().red_boss_beaten = true
 			#has_blue_blocks = true
@@ -162,18 +191,18 @@ func check_inputs(dead_input: bool = false):
 			#get_parent().get_tilemap().change_water_tiles()
 			#bubble_action(true, false)
 			update_apple_count(50, true)
-			#get_parent().apple_total = 49
+			get_parent().apple_total = 50
 			#get_parent().completion_percentage = 99
 			#has_item_map = true
 			#get_parent().get_node("WorldMap/MapComps/ItemMap").visible = true
 			#green_key_state = "collected"
 			#red_key_state = "collected"
-			get_parent().get_node("Camera").enable_amulet_pieces(4)
+			#get_parent().get_node("Camera").enable_amulet_pieces(4)
 		if Input.is_action_just_pressed("Debug Checkpoint") and is_on_floor():
-			AudioManager.play_audio(sfxs.get_sfx("collect"))
+			AudioManager.play_audio(sfxs.get_sfx("jump"))
 			get_parent().save_checkpoint_room(position)
 		if Input.is_action_just_pressed("Debug Map"):
-			AudioManager.play_audio(sfxs.get_sfx("collect"))
+			AudioManager.play_audio(sfxs.get_sfx("jump"))
 			get_parent().get_node("WorldMap").debug_all_rooms()
 		if !can_move:
 			return
@@ -472,7 +501,10 @@ func dash(dir: int = 0):
 
 	if is_on_floor() or coyote >= 0:
 		position.y -= 4
-		#can_jump = true
+	
+	#dash_cooldown = true
+	#await get_tree().create_timer(0.5, false).timeout
+	#dash_cooldown = false
 	
 	var c = load("res://Particles/speed_circle.tscn").instantiate()
 	c.position = position

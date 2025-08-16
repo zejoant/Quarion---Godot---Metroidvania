@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://uww4cs1immal"]
+[gd_scene load_steps=5 format=3 uid="uid://uww4cs1immal"]
 
 [ext_resource type="Script" path="res://Objects/v_looping_platform.gd" id="1_odi88"]
 [ext_resource type="Texture2D" uid="uid://dpsc4v4ca7v7n" path="res://Assets/V Looping Platform Sprites.png" id="2_gwyh7"]
@@ -6,53 +6,53 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k3kh0"]
 size = Vector2(40, 6)
 
-[node name="VLoopingPlatform" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n5k1u"]
+size = Vector2(40, 1)
+
+[node name="VLoopingPlatform" type="StaticBody2D" groups=["MovingPlatform"]]
 z_index = 2
-script = ExtResource("1_odi88")
-
-[node name="ColorRect" type="ColorRect" parent="."]
-clip_children = 1
-offset_right = 304.0
-offset_bottom = 192.0
-
-[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect" groups=["MovingPlatform"]]
 position = Vector2(148, 116)
 collision_mask = 0
+script = ExtResource("1_odi88")
 
-[node name="BaseSprite" type="Sprite2D" parent="ColorRect/StaticBody2D"]
+[node name="BaseSprite" type="Sprite2D" parent="."]
 position = Vector2(0, 8)
 texture = ExtResource("2_gwyh7")
 region_enabled = true
 region_rect = Rect2(0, 0, 8, 248)
 
-[node name="PlatformSprite" type="Sprite2D" parent="ColorRect/StaticBody2D"]
+[node name="PlatformSprite" type="Sprite2D" parent="."]
 texture = ExtResource("2_gwyh7")
 region_enabled = true
 region_rect = Rect2(8, 0, 40, 232)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
-position = Vector2(0, -104)
-shape = SubResource("RectangleShape2D_k3kh0")
-disabled = true
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
 position = Vector2(0, -64)
 shape = SubResource("RectangleShape2D_k3kh0")
 
-[node name="CollisionShape2D3" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
-position = Vector2(0, -24)
-shape = SubResource("RectangleShape2D_k3kh0")
-disabled = true
-
-[node name="CollisionShape2D4" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="."]
 position = Vector2(0, 16)
 shape = SubResource("RectangleShape2D_k3kh0")
 
-[node name="CollisionShape2D5" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
-position = Vector2(0, 56)
-shape = SubResource("RectangleShape2D_k3kh0")
-disabled = true
-
-[node name="CollisionShape2D6" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="."]
 position = Vector2(0, 96)
 shape = SubResource("RectangleShape2D_k3kh0")
+
+[node name="PlayerDetection" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetection"]
+position = Vector2(0, 12.5)
+shape = SubResource("RectangleShape2D_n5k1u")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="PlayerDetection"]
+position = Vector2(0, 92.5)
+shape = SubResource("RectangleShape2D_n5k1u")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="PlayerDetection"]
+position = Vector2(0, -67.5)
+shape = SubResource("RectangleShape2D_n5k1u")
+
+[connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
+[connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]

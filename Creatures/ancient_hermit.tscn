@@ -1,4 +1,4 @@
-[gd_scene load_steps=85 format=3 uid="uid://d0qq6rrcgfcy7"]
+[gd_scene load_steps=87 format=3 uid="uid://d0qq6rrcgfcy7"]
 
 [ext_resource type="Script" path="res://Creatures/ancient_hermit.gd" id="1_20jgg"]
 [ext_resource type="Texture2D" uid="uid://b4a3gpanglo75" path="res://Assets/Character Sprite Sheet.png" id="1_q7f17"]
@@ -20,6 +20,7 @@
 [ext_resource type="AudioStream" uid="uid://buyjegaa2w5aq" path="res://Sfx/boss explode.wav" id="16_q46s4"]
 [ext_resource type="Texture2D" uid="uid://fasdgobjg7ma" path="res://Assets/Glass Shield.png" id="17_6a6fp"]
 [ext_resource type="AudioStream" uid="uid://d0goh4sa40ode" path="res://Sfx/hermit scream.wav" id="17_e0tcw"]
+[ext_resource type="AudioStream" uid="uid://ctcvftqbmxckp" path="res://Sfx/power up charge.wav" id="18_qbswb"]
 
 [sub_resource type="Resource" id="Resource_b7h27"]
 script = ExtResource("3_s8p6p")
@@ -91,9 +92,14 @@ script = ExtResource("3_s8p6p")
 tag = "scream"
 stream = ExtResource("17_e0tcw")
 
+[sub_resource type="Resource" id="Resource_hdmpe"]
+script = ExtResource("3_s8p6p")
+tag = "explode_charge"
+stream = ExtResource("18_qbswb")
+
 [sub_resource type="Resource" id="Resource_wj6xn"]
 script = ExtResource("2_3olcl")
-sound_effects = Array[ExtResource("3_s8p6p")]([SubResource("Resource_b7h27"), SubResource("Resource_ovoua"), SubResource("Resource_1neo1"), SubResource("Resource_n1tx2"), SubResource("Resource_05hc6"), SubResource("Resource_ndd10"), SubResource("Resource_prqb5"), SubResource("Resource_xt2v4"), SubResource("Resource_74ve2"), SubResource("Resource_s4fwr"), SubResource("Resource_mjv53"), SubResource("Resource_3kbr2"), SubResource("Resource_of4e3"), SubResource("Resource_kmhk8")])
+sound_effects = Array[ExtResource("3_s8p6p")]([SubResource("Resource_b7h27"), SubResource("Resource_ovoua"), SubResource("Resource_1neo1"), SubResource("Resource_n1tx2"), SubResource("Resource_05hc6"), SubResource("Resource_ndd10"), SubResource("Resource_prqb5"), SubResource("Resource_xt2v4"), SubResource("Resource_74ve2"), SubResource("Resource_s4fwr"), SubResource("Resource_mjv53"), SubResource("Resource_3kbr2"), SubResource("Resource_of4e3"), SubResource("Resource_kmhk8"), SubResource("Resource_hdmpe")])
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1hvh2"]
 size = Vector2(12, 16)
