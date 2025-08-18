@@ -242,6 +242,7 @@ scale = Vector2(1.5, 1.5)
 mouse_filter = 2
 
 [node name="UILayer" type="CanvasLayer" parent="."]
+layer = 2
 visible = false
 
 [node name="UIContainer" type="Node2D" parent="UILayer"]
@@ -351,6 +352,7 @@ region_enabled = true
 region_rect = Rect2(80, 118, 8, 10)
 
 [node name="SpeedrunTimer" parent="UILayer" instance=ExtResource("13_myei4")]
+z_index = -4
 offset_left = 131.0
 offset_top = 4.0
 offset_right = 173.0

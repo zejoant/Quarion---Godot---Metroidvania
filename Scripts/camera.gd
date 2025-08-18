@@ -142,13 +142,13 @@ func collect_amulet_piece():
 			$UILayer/UIContainer/AmuletSprite.visible = true
 		AudioManager.play_audio(sfxs.get_sfx("amulet_out"))
 		blur(0, 0.2)
+		SteamManager.get_achivement("FullAmulet")
 	else:
 		AudioManager.play_audio(sfxs.get_sfx("amulet_out"))
 		blur(0, 0.2)
 		tween.parallel().tween_property($UILayer/AmuletContainer, "scale", Vector2(10, 10), 0.3)
 		await tween.parallel().tween_property($UILayer/AmuletContainer, "modulate:a", 0, 0.3).finished
 	
-	SteamManager.get_achivement("FullAmulet")
 	player.disable_movement(false)
 	AudioManager.resume_song()
 	$FlashLayer.modulate = Color(1, 1, 1, 0)

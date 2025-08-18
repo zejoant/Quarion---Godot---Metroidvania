@@ -4,13 +4,12 @@ extends CharacterBody2D
 @export_group("Properties")
 @export var sfxs : AudioLibrary
 @export var jump_vel = -235.0
-@export var gravity = 13.0 / (1.0/60.0)
+@export var gravity = 780 #13.0 / (1.0/60.0)
 @export var fall_limiter = 230
 @export var x_speed = 110.0
 
 var coyote = 0
 var buffer = 0
-var jump_queued: bool = false
 var can_jump = false
 var can_drop: bool = true
 var can_quick_respawn: bool = true
@@ -20,7 +19,7 @@ var last_dir = 1
 
 const dash_lim = 9
 var dash_timer = dash_lim
-var dash_cooldown = 0
+var dash_cooldown = false
 var dashing = false
 var can_dash = true
 
@@ -69,6 +68,7 @@ var idle_timer: int = 0
 
 var last_jump_vel: float
 var can_head_push: bool = true
+var can_snap_up: bool = true
 
 var current_palette: int = 0
 
@@ -106,9 +106,6 @@ func _ready():
 func _physics_process(delta):
 	if !is_dead and !paused:
 		if is_on_floor():
-			#if jump_queued:
-				#jump()
-				#jump_queued = false
 			coyote = 5
 			can_dash = true
 			can_double_jump = true
@@ -128,15 +125,12 @@ func _physics_process(delta):
 		
 		if is_on_wall():
 			affecting_force = 0
-			$LedgeArea.scale.x = last_dir
-			if !$LedgeArea.has_overlapping_bodies() and velocity.y >= 0:
-				position.y -= 1
+			if can_snap_up:
+				snap_up()
+			can_snap_up = false
+		else:
+			can_snap_up = true
 		
-		#cooldown for dash
-		if dash_cooldown != 0:
-				dash_cooldown += 1
-				if dash_cooldown == 30:
-					dash_cooldown = 0
 		#enables jumping
 		if !dashing and buffer == 0 and (is_on_floor() or (coyote >= 0 and velocity.y >= 0)):
 			can_jump = true
@@ -151,59 +145,12 @@ func _physics_process(delta):
 	elif is_dead:
 		check_inputs(true)
 
-#func _unhandled_input(event):
-	#if !can_move:
-		#return
-	#if event.is_action_released("Jump"): #release jump
-		#jump_queued = false
-		#buffer = 0 #reset jump buffer
-		#if velocity.y <= jump_vel / 4.0:
-				#velocity.y = jump_vel / 4.0
-	#elif event.is_action_pressed("Jump"):
-		#if can_double_jump and has_double_jump and !can_jump and !buffer: #double jump
-			#jump(true)
-		#elif can_jump: #normal jump
-			#jump()
-		#elif can_walljump or walljumping: #walljump
-			#walljump()
-		#else:
-			#jump_queued = true
-	#
-	#if event.is_action_pressed("Drop") and can_drop:
-		#drop()
-	#elif event.is_action_released("Drop"):
-		#can_drop = true
-
 #checks all player inputs
 func check_inputs(dead_input: bool = false):
 	if Input.is_action_just_pressed("Quick Respawn") and (can_move or is_dead) and (!get_parent().red_boss_beaten or get_parent().secret_boss_beaten) and can_quick_respawn and !get_parent().no_death_mode:
 		die(true)
 	if !dead_input:
-		if Input.is_action_just_pressed("Debug"):
-			AudioManager.play_audio(sfxs.get_sfx("jump"))
-			#get_parent().secret_boss_beaten = true
-			#get_parent().red_boss_beaten = true
-			#has_blue_blocks = true
-			has_dash = true
-			has_wallclimb = true
-			has_double_jump = true
-			#has_freeze = true
-			#get_parent().get_tilemap().change_water_tiles()
-			#bubble_action(true, false)
-			update_apple_count(50, true)
-			get_parent().apple_total = 50
-			#get_parent().completion_percentage = 99
-			#has_item_map = true
-			#get_parent().get_node("WorldMap/MapComps/ItemMap").visible = true
-			#green_key_state = "collected"
-			#red_key_state = "collected"
-			#get_parent().get_node("Camera").enable_amulet_pieces(4)
-		if Input.is_action_just_pressed("Debug Checkpoint") and is_on_floor():
-			AudioManager.play_audio(sfxs.get_sfx("jump"))
-			get_parent().save_checkpoint_room(position)
-		if Input.is_action_just_pressed("Debug Map"):
-			AudioManager.play_audio(sfxs.get_sfx("jump"))
-			get_parent().get_node("WorldMap").debug_all_rooms()
+		debug_inputs()
 		if !can_move:
 			return
 			
@@ -217,7 +164,6 @@ func check_inputs(dead_input: bool = false):
 			jump()
 		elif (Input.is_action_just_pressed("Jump") and can_walljump) or walljumping:
 			walljump()
-		
 		
 		if Input.is_action_pressed("Drop") and can_drop:
 			drop()
@@ -240,6 +186,33 @@ func check_inputs(dead_input: bool = false):
 			get_parent().get_node("WorldMap").open_or_close()
 		
 		last_jump_vel = velocity.y
+
+func debug_inputs():
+	if Input.is_action_just_pressed("Debug"):
+		AudioManager.play_audio(sfxs.get_sfx("jump"))
+		#get_parent().secret_boss_beaten = true
+		#get_parent().red_boss_beaten = true
+		#has_blue_blocks = true
+		has_dash = true
+		has_wallclimb = true
+		has_double_jump = true
+		#has_freeze = true
+		#get_parent().get_tilemap().change_water_tiles()
+		bubble_action(true, false)
+		update_apple_count(50, true)
+		#get_parent().apple_total = 50
+		#get_parent().completion_percentage = 99
+		#has_item_map = true
+		#get_parent().get_node("WorldMap/MapComps/ItemMap").visible = true
+		#green_key_state = "collected"
+		#red_key_state = "collected"
+		#get_parent().get_node("Camera").enable_amulet_pieces(4)
+	if Input.is_action_just_pressed("Debug Checkpoint") and is_on_floor():
+		AudioManager.play_audio(sfxs.get_sfx("jump"))
+		get_parent().save_checkpoint_room(position)
+	if Input.is_action_just_pressed("Debug Map"):
+		AudioManager.play_audio(sfxs.get_sfx("jump"))
+		get_parent().get_node("WorldMap").debug_all_rooms()
 
 #handles all sprite animations of the player
 func animate_player():
@@ -379,6 +352,8 @@ func bubble_action(enable: bool = false, pop: bool = false, pop_effect: bool = t
 				can_die_from_water = true
 				await get_tree().create_timer(bubble_invincibility_time*0.5, false).timeout
 				can_die = true
+				if !Input.is_action_pressed("Jump"):
+					buffer = 0
 			else:
 				$BubbleSprite.modulate.a = 0
 		else:
@@ -487,29 +462,27 @@ func drop():
 #activates the dash ability
 func dash(dir: int = 0):
 	dash_timer = -3
-	dash_cooldown += 1
+	dash_cooldown = true
 	can_dash = false
 	can_jump = false
 	dashing = true
 	velocity.x = 0
-	#$Area2D/EnemyColl.scale.x = 1.75
+	affecting_force = 0
 	
 	if dir:
 		dash_timer = 0
 		$Sprite2D.scale.x = dir
 	
-
 	if is_on_floor() or coyote >= 0:
 		position.y -= 4
-	
-	#dash_cooldown = true
-	#await get_tree().create_timer(0.5, false).timeout
-	#dash_cooldown = false
 	
 	var c = load("res://Particles/speed_circle.tscn").instantiate()
 	c.position = position
 	c.scale.x = $Sprite2D.scale.x
 	get_parent().get_room().add_child(c)
+
+	await get_tree().create_timer(0.5, false).timeout
+	dash_cooldown = false
 
 #hanlde the dashing after a dash is activated
 func process_dash():
@@ -577,6 +550,14 @@ func walljump():
 		jump()
 		await get_tree().create_timer(7.0/60.0, false).timeout
 		walljumping = false
+
+func snap_up():
+	var coll_dir = get_slide_collision(0).get_normal().x#get_slide_collision(0).get_normal().x
+	if coll_dir != 0:
+		$LedgeArea.scale.x = -coll_dir
+		if !$LedgeArea.has_overlapping_bodies():# and velocity.y >= 0:
+			#position += Vector2(-coll_dir, -1)
+			position.y -= 1
 
 #activates if player enters a body. Also provieds the body_rid which can give you the tile coords of the body
 func _on_area_2d_body_shape_entered(body_rid, body, _body_shape_index, _local_shape_index):

@@ -1,7 +1,8 @@
 extends Area2D
 
 @export var sfxs : AudioLibrary
-var player
+@onready var world = get_node("/root/World")
+@onready var player = get_node("/root/World/Player")
 var ui
 var selector
 var description
@@ -18,11 +19,10 @@ var bought_items: Array[bool]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	player = get_node("/root/World/Player")
 	ui = $ShopUIContainer#get_node("/root/World/Camera/UILayer/ShopUIContainer")
 	selector = $ShopUIContainer/SelectorSprite#ui.get_node("SelectorSprite")
 	description = $ShopUIContainer/DescriptionSprite#ui.get_node("DescriptionSprite")
-	bought_items = get_node("/root/World").bought_shop_items
+	bought_items = world.bought_shop_items
 	
 	$ShopUIContainer.global_position = Vector2(304, 0)
 	
@@ -67,7 +67,7 @@ func open_setup():
 	$InputIndicator.visible = false
 	self.create_tween().tween_property($ShopUIContainer/UICover, "modulate:a", 0, 0.3)
 	player.disable_movement()
-	get_node("/root/World").other_ui_open = true
+	world.other_ui_open = true
 	selector_flash()
 	release_all_focus()
 	#if Input.get_connected_joypads().size() > 0:
@@ -98,7 +98,7 @@ func _input(event):
 	if !open and player_in_area: #and player.get_node("Area2D").has_overlapping_bodies() and player.get_node("Area2D").get_overlapping_bodies().has(self):
 		if event.is_action_pressed("Interact"):
 			open_setup()
-	else:
+	elif open:
 		if event.is_action_released("Pause") or event.is_action_released("ui_cancel"):
 			exit_shop()
 	
@@ -113,9 +113,9 @@ func exit_shop(p_enable: bool = true):
 	await self.create_tween().tween_property($ShopUIContainer/UICover, "modulate:a", 1, 0.3).finished
 	ui.visible = false
 	$InputIndicator.visible = true
-	get_node("/root/World").save_game()
+	world.save_game()
 	
-	get_node("/root/World").other_ui_open = false
+	world.other_ui_open = false
 	open = false
 	if p_enable:
 		player.disable_movement(false)
@@ -188,11 +188,12 @@ func _on_key_button_pressed():
 	
 	AudioManager.play_audio(sfxs.get_sfx("buy"))
 	player.green_key_state = "collected"
-	get_node("/root/World").add_to_completion_percentage("Shop")
+	world.add_to_completion_percentage("Shop")
 	bought_items[0] = true
 	get_node("/root/World/Camera").add_collected_item(get_node("/root/World/Camera").CollectedItem.GREEN_KEY)
 	#get_node("/root/World/Camera").set_keys("Green")
 	player.update_apple_count(-10, false, true)
+	world.temporary_actions_to_permanent()
 
 
 func _on_amulet_button_pressed():
@@ -207,9 +208,10 @@ func _on_amulet_button_pressed():
 	
 	AudioManager.play_audio(sfxs.get_sfx("buy"))
 	player.amulet_pieces += 1
-	get_node("/root/World").add_to_completion_percentage("AmuletPiece")
+	world.add_to_completion_percentage("AmuletPiece")
 	bought_items[1] = true
 	get_node("/root/World/Player").update_apple_count(-18, false, true)
+	world.temporary_actions_to_permanent()
 	exit_shop(false)
 	get_node("/root/World/Camera").collect_amulet_piece()
 
@@ -226,10 +228,11 @@ func _on_bubble_button_pressed():
 	
 	AudioManager.play_audio(sfxs.get_sfx("buy"))
 	SteamManager.get_achivement("Bubble")
-	get_node("/root/World").add_to_completion_percentage("Shop")
+	world.add_to_completion_percentage("Shop")
 	player.bubble_action(true, false)
 	bought_items[2] = true
 	get_node("/root/World/Player").update_apple_count(-22, false, true)
+	world.temporary_actions_to_permanent()
 
 
 func _on_body_entered(body):

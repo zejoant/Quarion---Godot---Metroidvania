@@ -61,7 +61,7 @@ func add_room(room_coords: Vector2):
 		if room_coords != Vector2(0, 0) and room_coords != Vector2(1, 0):
 			world.add_to_completion_percentage("Room")
 	
-	if visited_rooms == 50:
+	if visited_rooms == 80:
 		SteamManager.get_achivement("FullMap")
 
 func add_apple_from_room(pos: Vector2):

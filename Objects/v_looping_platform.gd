@@ -11,7 +11,7 @@ var dir
 var start_pos
 const loop_distance = 80#40
 
-var player_on_platform = false
+#var player_on_platform = false
 var player
 
 func _ready():
@@ -32,17 +32,6 @@ func _physics_process(_delta):
 		moving = false
 
 func move_platform(pos):
-	if player_on_platform:
-			player.position.y += pos-position.y
+	#if player_on_platform:
+	#		player.position.y += pos-position.y
 	position.y = pos
-
-func _on_player_detection_body_entered(body):
-	#if body is CharacterBody2D and !body.is_dead:
-		#if !player:
-			#player = body
-		#player_on_platform = true
-	pass
-
-func _on_player_detection_body_exited(body):
-	if body is CharacterBody2D:
-		player_on_platform = false

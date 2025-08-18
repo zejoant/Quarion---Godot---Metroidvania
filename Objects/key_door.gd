@@ -55,7 +55,7 @@ func setup():
 	
 	if color == "red":
 		$ColorSprite.region_rect.position.x = 32
-		$OpenGlow.modulate = Color8(196, 76, 76, 189)
+		$OpenGlow.modulate = Color8(98, 156, 208, 189)
 	else:
 		$ColorSprite.region_rect.position.x = 24
 		$OpenGlow.modulate = Color8(120, 180, 92, 189)

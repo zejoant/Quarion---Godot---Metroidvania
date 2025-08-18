@@ -50,7 +50,7 @@ func change_lens(room_coords, instant: bool = false, behind_foreground: int = 0)
 		lens_size = 2
 	#elif room_coords == Vector2(3, 5):
 		#lens_size = 3
-	elif room_coords == Vector2(0, 8):
+	elif room_coords == Vector2(10, 0):
 		lens_size = 3
 	elif room_coords == Vector2(0, 5):
 		lens_size = 3

@@ -1,13 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://uww4cs1immal"]
+[gd_scene load_steps=4 format=3 uid="uid://uww4cs1immal"]
 
 [ext_resource type="Script" path="res://Objects/v_looping_platform.gd" id="1_odi88"]
 [ext_resource type="Texture2D" uid="uid://dpsc4v4ca7v7n" path="res://Assets/V Looping Platform Sprites.png" id="2_gwyh7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k3kh0"]
 size = Vector2(40, 6)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_n5k1u"]
-size = Vector2(40, 1)
 
 [node name="VLoopingPlatform" type="StaticBody2D" groups=["MovingPlatform"]]
 z_index = 2
@@ -37,22 +34,3 @@ shape = SubResource("RectangleShape2D_k3kh0")
 [node name="CollisionShape2D6" type="CollisionShape2D" parent="."]
 position = Vector2(0, 96)
 shape = SubResource("RectangleShape2D_k3kh0")
-
-[node name="PlayerDetection" type="Area2D" parent="."]
-collision_layer = 0
-collision_mask = 8
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetection"]
-position = Vector2(0, 12.5)
-shape = SubResource("RectangleShape2D_n5k1u")
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="PlayerDetection"]
-position = Vector2(0, 92.5)
-shape = SubResource("RectangleShape2D_n5k1u")
-
-[node name="CollisionShape2D3" type="CollisionShape2D" parent="PlayerDetection"]
-position = Vector2(0, -67.5)
-shape = SubResource("RectangleShape2D_n5k1u")
-
-[connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
-[connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]

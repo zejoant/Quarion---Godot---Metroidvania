@@ -19,6 +19,10 @@ var previous_window_mode = DisplayServer.WINDOW_MODE_WINDOWED
 var sound_cooldown = false
 
 func _ready():
+	
+	if back_scene == "game":
+		get_node("/root/World/Camera/UILayer").visible = false
+	
 	$MarginContainer/VBoxContainer/AudioHBox/SfxVBox/SfxSlider.value = sfx_slider_value
 	$MarginContainer/VBoxContainer/AudioHBox/MusicVbox/MusicSlider.value = music_slider_value
 	AudioServer.set_bus_volume_db(2, linear_to_db(sfx_slider_value))
@@ -69,6 +73,7 @@ func _on_back_button_pressed():
 		get_node("/root/MainMenu")._on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
 	elif back_scene == "game":
 		get_parent().get_node("PauseMenu").show()
+		get_node("/root/World/Camera/UILayer").visible = true
 		get_parent().get_node("PauseMenu")._on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
 	queue_free()
 
@@ -125,7 +130,8 @@ func _on_borderless_check_toggled(toggled_on):
 func _on_fullscreen_check_toggled(toggled_on):
 	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
 	if toggled_on:
-		previous_window_mode = DisplayServer.window_get_mode()
+		if DisplayServer.window_get_mode() != DisplayServer.WINDOW_MODE_FULLSCREEN:
+			previous_window_mode = DisplayServer.window_get_mode()
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 		fullscreen = true
 	else:

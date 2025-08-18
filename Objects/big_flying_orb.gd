@@ -13,9 +13,22 @@ var homing_lifetime = 120
 
 func _ready():
 	player = get_node("/root/World/Player")
-	$AnimationPlayer.play("Default")
+	#$AnimationPlayer.play("Default")
 	scale = Vector2(0, 0)
 	AudioManager.play_audio(sfxs.get_sfx("charge up"))
+	
+	if homing:	
+		var yellow_gradient_data := {
+			0.0: Color(0xd3e478ff), #Color(0xd48d4fff)
+			1.0: Color(0xc44c4cff), #Color(0x5d296dff)
+		}
+		var grad = Gradient.new()
+		grad.offsets = yellow_gradient_data.keys()
+		grad.colors = yellow_gradient_data.values()
+		$CPUParticles2D2.color_initial_ramp = grad
+		$CPUParticles2D4.color_initial_ramp = grad
+		$TrailParticles.color_ramp = grad
+		$AnimatedSprite2D.play("Yellow")
 
 func _physics_process(_delta):
 	if scale.x < 1:
@@ -23,7 +36,6 @@ func _physics_process(_delta):
 		scale.y += 1.0/float(startup_speed)
 	else:
 		if $TrailParticles.visible != true:
-			#get_node("/root/World/Camera").flash(0.8, 0, 0.1, 0.2)
 			get_node("/root/World/Camera").invert_color(0.7, 0.3)
 			AudioManager.play_audio(sfxs.get_sfx("shot 1"))
 			AudioManager.play_audio(sfxs.get_sfx("shot 2"))
@@ -44,9 +56,3 @@ func _physics_process(_delta):
 			queue_free()
 		
 		homing_lifetime -= 1
-
-#func setup(s, d, p):
-#	speed = s
-#	direction = d
-#	position = p
-	

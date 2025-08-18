@@ -592,7 +592,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qgirt"]
-size = Vector2(2.1, 23)
+size = Vector2(2, 10.9)
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 8
@@ -802,7 +802,7 @@ collision_layer = 0
 
 [node name="CollissionShape2D" type="CollisionShape2D" parent="LedgeArea"]
 z_index = 5
-position = Vector2(2.05, -4.5)
+position = Vector2(2, 1.45)
 shape = SubResource("RectangleShape2D_qgirt")
 debug_color = Color(0.151667, 0.7, 0, 0.419608)
 

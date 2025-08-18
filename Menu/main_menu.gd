@@ -4,6 +4,7 @@ extends Control
 var world = preload("res://world.tscn").instantiate()
 
 var no_death_mode_unlocked: bool = true
+var in_mode_menu: bool = false
 #static var settings_loaded = false
 
 func _ready():
@@ -20,7 +21,10 @@ func _on_joy_connection_changed(_device_id, connected):
 		$Menu/StopMouse.mouse_filter = MOUSE_FILTER_IGNORE
 	else:
 		get_viewport().gui_release_focus()
-		$Menu/MarginContainer/VBoxContainer/VBoxContainer/ContinueButton.grab_focus()
+		if in_mode_menu:
+			$NewGameMode/MarginContainer/HBoxContainer/NormalModeButton.grab_focus()
+		else:
+			$Menu/MarginContainer/VBoxContainer/VBoxContainer/ContinueButton.grab_focus()
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		$Menu/StopMouse.mouse_filter = MOUSE_FILTER_STOP
 		
@@ -55,7 +59,9 @@ func _on_new_game_button_pressed():
 	if !no_death_mode_unlocked:
 		run_intro_animation()
 	else:
+		in_mode_menu = true
 		$NewGameMode.visible = true
+		_on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
 	
 func disable_buttons():
 	$Menu/MarginContainer/VBoxContainer/VBoxContainer/NewGameButton.disabled = true

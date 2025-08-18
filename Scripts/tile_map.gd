@@ -15,10 +15,12 @@ var freeze_sfx_cooldown = 0
 var rng = RandomNumberGenerator.new()
 
 var animated_tiles: PackedVector2Array = PackedVector2Array([
-	Vector2i(2, 11), Vector2i(2, 12), Vector2i(2, 13), Vector2i(2, 14), Vector2i(2, 15), Vector2i(2, 16), Vector2i(2, 17), Vector2i(4, 17), Vector2i(6, 14), Vector2i(6, 15), Vector2i(6, 16), Vector2i(10, 11), Vector2i(10, 12), Vector2i(10, 14), Vector2i(10, 15), Vector2i(12, 14), Vector2i(12, 15), Vector2i(14, 11), 
-	Vector2i(16, 14), Vector2i(16, 15), Vector2i(16, 16), Vector2i(18, 16), Vector2i(19, 12), Vector2i(20, 15), Vector2i(20, 16), Vector2i(20, 17), Vector2i(22, 16), #crimson foliage
-	Vector2i(50, 13), Vector2i(50, 15), Vector2i(50, 16), Vector2i(50, 17), Vector2i(55, 13), Vector2i(55, 15), Vector2i(55, 16), Vector2i(55, 17), Vector2i(60, 13), Vector2i(61, 13) #water
+	Vector2i(2, 11), Vector2i(2, 12), Vector2i(2, 13), Vector2i(2, 14), Vector2i(2, 15), Vector2i(2, 16), Vector2i(2, 17), Vector2i(4, 17), Vector2i(6, 14), Vector2i(6, 15), Vector2i(6, 16), Vector2i(10, 11), Vector2i(10, 12), Vector2i(10, 14), Vector2i(10, 15), Vector2i(12, 14), Vector2i(12, 15), Vector2i(14, 11), Vector2i(28, 5), 
+	Vector2i(16, 14), Vector2i(16, 15), Vector2i(16, 16), Vector2i(16, 17), Vector2i(18, 16), Vector2i(18, 17), Vector2i(19, 12), Vector2i(20, 15), Vector2i(20, 16), Vector2i(20, 17), Vector2i(22, 16), #crimson foliage
+	Vector2i(34, 11), Vector2i(34, 13), Vector2i(34, 14), Vector2i(34, 15), Vector2i(39, 11), Vector2i(39, 13), Vector2i(39, 14), Vector2i(39, 15), Vector2i(44, 11), Vector2i(45, 11) #water
 ])
+
+var freezable_tiles: PackedVector2Array = PackedVector2Array([Vector2i(34, 13),Vector2i(34, 14),Vector2i(34, 15),Vector2i(39, 13),Vector2i(39, 14),Vector2i(39, 15),Vector2i(44, 11),Vector2i(45, 11)])
 
 static var blue_block := false
 
@@ -117,16 +119,14 @@ func fade_foreground(fade_out):
 		fade_tween.tween_method(func(a): set_layer_modulate(4, a), Color(1, 1, 1, 0), Color(1,1,1,1),0.1)
 		
 func change_water_tiles():
-	#var source = tile_set.get_source(0) as TileSetAtlasSource
-	for atlas_coords in PackedVector2Array([Vector2(50, 15),Vector2(50, 16),Vector2(50, 17),Vector2(55, 15),Vector2(55, 16),Vector2(55, 17),Vector2(60, 13),Vector2(61, 13)]):
+	for atlas_coords in freezable_tiles:
 		tile_data = tile_set.get_source(0).get_tile_data(atlas_coords, 0)
 		if tile_data:
 			tile_data.add_collision_polygon(0)
 			tile_data.set_collision_polygon_points(0, 0, PackedVector2Array([Vector2(-4, -4), Vector2(4, -4), Vector2(4, 4), Vector2(-4, 4)]))
 
 func reset_water_tiles():
-	#var source = tile_set.get_source(0) as TileSetAtlasSource
-	for atlas_coords in PackedVector2Array([Vector2(50, 15),Vector2(50, 16),Vector2(50, 17),Vector2(55, 15),Vector2(55, 16),Vector2(55, 17),Vector2(60, 13),Vector2(61, 13)]):
+	for atlas_coords in freezable_tiles:
 		tile_data = tile_set.get_source(0).get_tile_data(atlas_coords, 0)
 		if tile_data:
 			tile_data.set_collision_polygons_count(0, 0)
@@ -154,9 +154,9 @@ func freeze_water_tile(body_rid):
 		set_cell(1, tile_coords, 0, Vector2i(43, 4), 0)
 		
 		#ice breaks after a short time, not sure if ill keep it in
-		#await body.create_tween().tween_interval(0.2).finished
-		#body.set_cell(4, tile_coords, 0, Vector2i(43, 5), 0)
-		#await body.create_tween().tween_interval(0.2).finished
-		#body.set_cell(4, tile_coords, 0, Vector2i(43, 6), 0)
-		#await body.create_tween().tween_interval(0.2).finished
-		#body.erase_cell(4, tile_coords)
+		#await self.create_tween().tween_interval(0.2).finished
+		#set_cell(1, tile_coords, 0, Vector2i(43, 5), 0)
+		#await self.create_tween().tween_interval(0.2).finished
+		#set_cell(1, tile_coords, 0, Vector2i(42, 5), 0)
+		#await self.create_tween().tween_interval(0.2).finished
+		#erase_cell(1, tile_coords)

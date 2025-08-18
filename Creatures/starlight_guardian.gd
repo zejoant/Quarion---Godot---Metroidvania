@@ -30,7 +30,7 @@ var idle_origin : Vector2
 var tween2
 var tween3
 
-var chance = 0
+var attack_count = 0
 var bullet_count = 0
 
 var homing_speed: float = 0.0
@@ -78,10 +78,10 @@ func _physics_process(_delta):
 
 
 func choose_attack():
-	var num = rng.randi_range(1+int(float(difficulty)/2.0), 3+int(float(difficulty)/2.0))
+	#var num = rng.randi_range(1+int(float(difficulty)/2.0), 3+int(float(difficulty)/2.0))
 	var attack = last_attack
 	
-	if num <= chance: #chance of lunge gets higher each attack
+	if attack_count >= 3: #chance of lunge gets higher each attack
 		attack = 1
 	else:
 		if difficulty > 0: #after first boss it can do aim shots
@@ -90,7 +90,7 @@ func choose_attack():
 		else:
 			while attack == last_attack:
 				attack = rng.randi_range(2, 3)
-		chance += 1
+		attack_count += 1
 	
 	boss_state = attack
 	last_attack = boss_state
@@ -99,7 +99,7 @@ func choose_attack():
 func rain():
 	if attack_state == 0 and boss_state == 2: #wait time, then the attack ends
 		get_node("/root/World/Camera").radial_blur(0.03, 0.6, 12)
-		AudioManager.play_audio(sfxs.get_sfx("scream"))
+		AudioManager.play_audio(sfxs.get_sfx("scream"), 1, 0.8)
 		attack_state = 1
 		await get_tree().create_timer(5, false).timeout
 		boss_state = -1
@@ -355,7 +355,7 @@ func _on_body_entered(body):
 	await self.create_tween().tween_interval(2).finished
 	#get_node("/root/World/Camera").radial_blur(0.03, 0.6, 12)
 	boss.get_node("DamageColl").set_deferred("disabled", false)
-	AudioManager.play_audio(sfxs.get_sfx("scream"))
+	AudioManager.play_audio(sfxs.get_sfx("scream"), 1, 0.8)
 	get_node("/root/World/Camera").radial_blur(0.03, 0.6, 12)
 	boss.visible = true
 	boss_state = -1
@@ -366,7 +366,7 @@ func _on_hit_area_body_entered(body): #damage boss
 	get_node("/root/World/Camera").invert_color(1, 0.3)
 	AudioManager.play_audio(sfxs.get_sfx("impact"))
 	
-	chance = 0
+	attack_count = 0
 	health -= 1
 	if !health:
 		die()

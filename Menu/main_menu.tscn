@@ -86,7 +86,7 @@ gradient = SubResource("Gradient_1ot73")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_e6l6g"]
 shader = ExtResource("3_ip0rl")
-shader_parameter/amount = 1.032
+shader_parameter/amount = 1.3
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
