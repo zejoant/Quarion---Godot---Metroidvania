@@ -104,6 +104,16 @@ texture_region_size = Vector2i(38, 24)
 9:5/0 = 0
 9:6/0 = 0
 9:7/0 = 0
+0:8/0 = 0
+9:8/0 = 0
+1:8/0 = 0
+2:8/0 = 0
+3:8/0 = 0
+4:8/0 = 0
+5:8/0 = 0
+6:8/0 = 0
+7:8/0 = 0
+8:8/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_pknh4"]
 tile_size = Vector2i(38, 24)
@@ -160,16 +170,17 @@ texture = SubResource("CanvasTexture_l5ygg")
 
 [node name="MapDebug" type="Sprite2D" parent="."]
 visible = false
-position = Vector2(152, 96)
+position = Vector2(0, 10)
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("1_javka")
+centered = false
 
 [node name="MapComps" type="Node2D" parent="."]
 
 [node name="RoomMap" type="TileMap" parent="MapComps"]
 unique_name_in_owner = true
 clip_children = 2
-position = Vector2(0, 19)
+position = Vector2(0, 10)
 scale = Vector2(0.8, 0.8)
 tile_set = SubResource("TileSet_pknh4")
 format = 2
@@ -184,7 +195,7 @@ frame_progress = 0.0980071
 [node name="ItemMap" type="TileMap" parent="MapComps"]
 unique_name_in_owner = true
 visible = false
-position = Vector2(-0.999999, 19)
+position = Vector2(-1, 10)
 scale = Vector2(0.8, 0.8)
 tile_set = SubResource("TileSet_lou3f")
 format = 2

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://ofi1c3ydjeuu"
+path="res://.godot/imported/Meteor Strike, Log It!.ogg-71a9df6fbfd14fe20619fcbd37d02122.oggvorbisstr"
+
+[deps]
+
+source_file="res://Music/Meteor Strike, Log It!.ogg"
+dest_files=["res://.godot/imported/Meteor Strike, Log It!.ogg-71a9df6fbfd14fe20619fcbd37d02122.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bvp2ihsua733y"
+path="res://.godot/imported/egreme_ [er].ogg-ad95d2a627470d50911b61a01f5c45f2.oggvorbisstr"
+
+[deps]
+
+source_file="res://Music/egreme_ [er].ogg"
+dest_files=["res://.godot/imported/egreme_ [er].ogg-ad95d2a627470d50911b61a01f5c45f2.oggvorbisstr"]
+
+[params]
+
+loop=true
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

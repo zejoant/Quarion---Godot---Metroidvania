@@ -596,10 +596,12 @@ size = Vector2(2, 10.9)
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 8
+collision_mask = 17
 floor_constant_speed = true
 floor_block_on_wall = false
 floor_snap_length = 3.0
 platform_on_leave = 2
+platform_floor_layers = 4294967041
 safe_margin = 0.1
 script = ExtResource("1_1p4uo")
 sfxs = SubResource("Resource_0m3bc")

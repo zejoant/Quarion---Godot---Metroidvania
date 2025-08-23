@@ -306,7 +306,7 @@ func fly_by():
 		tween2.set_trans(Tween.TRANS_SINE)
 		tween2.tween_property(boss, "position:y", boss.position.y - 8*3, 0.75)
 		tween2.set_ease(Tween.EASE_IN_OUT)
-		if rng.randi_range(0, 1): #low attack
+		if rng.randi_range(0, 2): #low attack
 			tween2.tween_property(boss, "position:y", floor_height*8, 1.5)
 		else: #high attack
 			tween2.tween_property(boss, "position:y", (floor_height-3)*8, 1.4)
@@ -342,19 +342,23 @@ func param_setup():
 
 func _on_body_entered(body):
 	$ActivateBossColl.set_deferred("disabled", true)
-	AudioManager.play_song(load("res://Music/Hi GI Joe!.wav"))
+	AudioManager.pause_song()
+	#AudioManager.play_audio(sfxs.get_sfx("anticipation"))
 	
 	player = body
 	activated = true
 	
 	$Gate.close()
 	$Gate2.close()
+	if difficulty == 2:
+		$Gate3.close()
 	get_node("/root/World/Camera").hide_ui(false)
 	
 	player.bubble_invincibility_time = 0.5
-	await self.create_tween().tween_interval(2).finished
+	await self.create_tween().tween_interval(1.47).finished
 	#get_node("/root/World/Camera").radial_blur(0.03, 0.6, 12)
 	boss.get_node("DamageColl").set_deferred("disabled", false)
+	AudioManager.play_song(load("res://Music/Starmates.ogg"))
 	AudioManager.play_audio(sfxs.get_sfx("scream"), 1, 0.8)
 	get_node("/root/World/Camera").radial_blur(0.03, 0.6, 12)
 	boss.visible = true
@@ -387,6 +391,8 @@ func die():
 	await tween2.tween_property(boss, "position", Vector2(start_pos.x, start_pos.y + start_raise*8), 3).finished
 	$Gate.open()
 	$Gate2.open()
+	if difficulty == 2:
+		$Gate3.open()
 	#boss.visible = false
 	get_node("/root/World/Camera").zoom_camera(1, 0)
 	AudioManager.play_audio(sfxs.get_sfx("death"))

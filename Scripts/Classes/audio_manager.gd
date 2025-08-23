@@ -1,12 +1,14 @@
 extends Node
 
-var audioPlayer
+var audioPlayer: AudioStreamPlayer
 
 var previous_song
 var previous_song_pos
 
 var respawn_song
 var respawn_song_pos
+
+var song_fade_tween: Tween
 
 func _ready():
 	audioPlayer = AudioStreamPlayer.new()
@@ -32,12 +34,21 @@ func play_audio(stream: AudioStream, speed: float = 1, volume: float = 1, parent
 			sfxPlayer.volume_db = -40
 			self.create_tween().tween_property(sfxPlayer, "volume_db", volume*40-40, fade_in)
 
-func play_song(stream: AudioStream, playback_pos: float = 0.0):
+func play_song(stream: AudioStream, playback_pos: float = 0.0, volume: float = 1.0, fade_in: float = 0.0):
 	#if !audioPlayer:
 		#audioPlayer = AudioStreamPlayer.new()
 		#audioPlayer.bus = "Music"
 		#audioPlayer.process_mode = Node.PROCESS_MODE_ALWAYS
 		#add_child(audioPlayer)
+	if song_fade_tween:
+		song_fade_tween.kill()
+	#print(linear_to_db(0.001), ", ", linear_to_db(1))
+	if fade_in:
+		audioPlayer.volume_db = linear_to_db(0.001)
+		song_fade_tween = self.create_tween()
+		song_fade_tween.tween_property(audioPlayer, "volume_db", linear_to_db(volume), fade_in)
+	else:
+		audioPlayer.volume_db = linear_to_db(volume)
 		
 	if audioPlayer.has_stream_playback():
 		previous_song = audioPlayer.stream.resource_path
@@ -61,8 +72,12 @@ func resume_song():
 	if audioPlayer and audioPlayer.has_stream_playback():
 		audioPlayer.stream_paused = false
 
-func stop_song():
+func stop_song(fade: float = 0):
+	if fade:
+		song_fade_tween = self.create_tween()
+		await song_fade_tween.tween_property(audioPlayer, "volume_db", linear_to_db(0.001), fade).finished
 	audioPlayer.stop()
+	audioPlayer.volume_db = linear_to_db(1)
 
 func resume_previous_song():
 	play_song(load(previous_song), previous_song_pos)

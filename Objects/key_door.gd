@@ -6,7 +6,7 @@ extends StaticBody2D
 #@export var audio : bool = false
 @export_enum("up", "down", "left", "right") var direction = "up"
 @export_enum("open", "closed") var initial_state = "closed"
-@export_enum("green", "red") var color = "green"
+@export_enum("green", "red", "blue") var color = "green"
 @export var glow_size = 5
 @export var glow_time = 0.5
 
@@ -18,12 +18,18 @@ var player
 func _ready():
 	origin = position
 	player = get_node("/root/World/Player")
-	if color == "green" and player.green_key_state == "used":
+	if player[color + "_key_state"] == "used":
 		queue_free()
-	elif color == "red" and player.red_key_state == "used":
-		queue_free()
+	#if color == "green" and player.green_key_state == "used":
+		#queue_free()
+	#elif color == "red" and player.red_key_state == "used":
+		#queue_free()
+	#elif color == "blue" and player.blue_key_state == "used":
+		#queue_free()
 	else:
 		setup()
+	
+	
 
 
 func open():
@@ -54,6 +60,9 @@ func setup():
 		$ColorSprite.position.y += 4
 	
 	if color == "red":
+		$ColorSprite.region_rect.position.x = 56
+		$OpenGlow.modulate = Color8(196, 76, 76, 189)
+	elif color == "blue":
 		$ColorSprite.region_rect.position.x = 32
 		$OpenGlow.modulate = Color8(98, 156, 208, 189)
 	else:

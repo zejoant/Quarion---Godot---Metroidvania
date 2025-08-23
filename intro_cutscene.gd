@@ -31,10 +31,11 @@ func _physics_process(_delta):
 func run_animation():
 	$Camera/LensCircle2.visible = false
 	$AnimationPlayer.play("Start")
-	#$AnimationPlayer.speed_scale = 3
+	AudioManager.stop_song(1)
 
 func play_sfx(sfx_name: String):
 	AudioManager.play_audio(sfxs.get_sfx(sfx_name))
 
-func play_song():
-	AudioManager.play_song(load("res://Music/Fabbenraba.mp3"))
+func play_song(song_name: String):
+	AudioManager.play_song(load(song_name))
+	#AudioManager.play_song(load("res://Music/Welcome to Noirauq.ogg"), start)

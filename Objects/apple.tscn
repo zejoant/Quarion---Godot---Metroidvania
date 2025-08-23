@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://0v1hh7ipjn5y"]
+[gd_scene load_steps=15 format=3 uid="uid://0v1hh7ipjn5y"]
 
 [ext_resource type="Script" path="res://Objects/apple.gd" id="1_0wo8c"]
 [ext_resource type="Texture2D" uid="uid://blrke6p7xbb7e" path="res://Assets/Tileset.png" id="2_gr5vf"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_vxvgo"]
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_85q70"]
 [ext_resource type="AudioStream" uid="uid://b7txeulgr6bb2" path="res://Sfx/collect.wav" id="4_kumkb"]
+[ext_resource type="Texture2D" uid="uid://ki6fa8wcsng7" path="res://Assets/Sparkle Animation.png" id="6_u4c2f"]
 
 [sub_resource type="Resource" id="Resource_y8b1g"]
 script = ExtResource("3_85q70")
@@ -17,6 +18,45 @@ sound_effects = Array[ExtResource("3_85q70")]([SubResource("Resource_y8b1g")])
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hcb14"]
 radius = 3.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y87t6"]
+atlas = ExtResource("6_u4c2f")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a1hus"]
+atlas = ExtResource("6_u4c2f")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6eo0e"]
+atlas = ExtResource("6_u4c2f")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dvl17"]
+atlas = ExtResource("6_u4c2f")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_av63n"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y87t6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a1hus")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6eo0e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dvl17")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": false,
+"name": &"default",
+"speed": 12.0
+}]
 
 [node name="Apple" type="StaticBody2D" groups=["Collectable"]]
 z_index = 4
@@ -33,3 +73,9 @@ region_rect = Rect2(88, 72, 8, 8)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 1)
 shape = SubResource("CircleShape2D_hcb14")
+
+[node name="Sparkle" type="AnimatedSprite2D" parent="."]
+z_index = 5
+sprite_frames = SubResource("SpriteFrames_av63n")
+frame = 4
+frame_progress = 1.0

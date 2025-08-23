@@ -1,6 +1,6 @@
 extends Area2D
 
-@export_enum("green", "red") var color = "green"
+@export_enum("green", "red", "blue") var color = "green"
 @export var sfxs : AudioLibrary
 var player
 var cam
@@ -25,14 +25,17 @@ func _input(event):
 	if player_in_area and event.is_action_pressed("Interact") and !$Key.visible:
 		if color == "green" and player.green_key_state == "collected":
 			player.green_key_state = "used"
-			#get_node("/root/World/Camera").set_keys("Green", true)
 			cam.remove_collected_item(cam.CollectedItem.GREEN_KEY)
 			AudioManager.play_audio(sfxs.get_sfx("click"))
 			unlock()
 		elif color == "red" and player.red_key_state == "collected":
 			player.red_key_state = "used"
-			#get_node("/root/World/Camera").set_keys("Red", true)
 			cam.remove_collected_item(cam.CollectedItem.RED_KEY)
+			AudioManager.play_audio(sfxs.get_sfx("click"))
+			unlock()
+		elif color == "blue" and player.blue_key_state == "collected":
+			player.blue_key_state = "used"
+			cam.remove_collected_item(cam.CollectedItem.BLUE_KEY)
 			AudioManager.play_audio(sfxs.get_sfx("click"))
 			unlock()
 
@@ -62,12 +65,21 @@ func unlock():
 
 func setup():
 	if color == "red":
+		$Base.region_rect.position = Vector2(32, 112)
+		$Key.region_rect.position.x += 8
+	elif color == "blue":
 		$Base.region_rect.position.x += 16
 		$Key.region_rect.position.x += 16
 
 func _on_body_entered(body):
 	if body is CharacterBody2D:
-		if (color == "green" and body.green_key_state == "collected") or (color == "red" and body.red_key_state == "collected"):
+		if color == "green" and body.green_key_state == "collected":
+			player_in_area = true
+			$InputIndicator.visible = true
+		elif color == "red" and body.red_key_state == "collected":
+			player_in_area = true
+			$InputIndicator.visible = true
+		elif color == "blue" and body.blue_key_state == "collected":
 			player_in_area = true
 			$InputIndicator.visible = true
 

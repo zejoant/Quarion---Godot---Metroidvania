@@ -1,6 +1,7 @@
 extends StaticBody2D
 
 @export var sfxs : AudioLibrary
+var collected = false
 
 func _ready():
 	for pos in get_node("/root/World").get_room_state():
@@ -10,12 +11,20 @@ func _ready():
 	get_node("/root/World/WorldMap").add_apple_from_room(position)
 
 func collect():
-	get_node("/root/World").apple_total += 1
-	get_node("/root/World").add_to_completion_percentage("Apple")
-	AudioManager.play_audio(sfxs.get_sfx("collect"), 1, 1.2)
-	get_node("/root/World").save_room_state(position/8)
-	#get_node("/root/World/WorldMap").remove_item()
-	get_node("/root/World/WorldMap").remove_apple_from_map(position)
-	get_node("/root/World/Player").update_apple_count(1)
-	
+	if !collected:
+		collected = true
+		get_node("/root/World").apple_total += 1
+		get_node("/root/World").add_to_completion_percentage("Apple")
+		AudioManager.play_audio(sfxs.get_sfx("collect"), 1, 1.2)
+		get_node("/root/World").save_room_state(position/8)
+		#get_node("/root/World/WorldMap").remove_item()
+		get_node("/root/World/WorldMap").remove_apple_from_map(position)
+		get_node("/root/World/Player").update_apple_count(1)
+		
+		$Sprite2D.visible = false
+		$Sparkle.play("default")
+		$Sparkle.animation_finished.connect(delete)
+
+func delete():
 	queue_free()
+	

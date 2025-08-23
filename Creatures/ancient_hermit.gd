@@ -733,7 +733,6 @@ func intro_sequence():
 		p.get_node("Red").visible = true
 		cam.fade("000000", 1, 0, 0.2, 0.5)
 		cam.zoom_camera(1.4, 0, Vector2(position.x+8, position.y-8*3))
-		has_seen_intro = true
 		player.position.y = 19*8
 		player.visible = false
 		await get_tree().create_timer(2, false).timeout
@@ -779,30 +778,51 @@ func intro_sequence():
 	await get_tree().create_timer(1, false).timeout
 	
 	#$AnimationPlayer.play("teleport_out")
-	teleport(lev_origin, false)
-	await get_tree().create_timer(0.21, false).timeout
+	#teleport(lev_origin, false)
+	#await get_tree().create_timer(0.21, false).timeout
 	
-	player.disable_movement(false)
 	player.get_node("ParticleComps/DashParticles").lifetime = 3
 	p.get_node("Gate").close()
 	p.get_node("Gate2").close()
-	AudioManager.resume_song()
-	AudioManager.play_song(load("res://Music/Everhood_The_Final_Battle.mp3"))
+	if !has_seen_intro:
+		has_seen_intro = true
+		AudioManager.resume_song()
+		AudioManager.play_song(load("res://Music/Kill the Sky People.ogg"), 8.7)
 	
-	#position = lev_origin
-	#$AnimationPlayer.play("teleport_in")
-	await get_tree().create_timer(0.21, false).timeout
+		lev_origin = Vector2(152, 112)
+		teleport(lev_origin, false)
+		await get_tree().create_timer(0.42, false).timeout
+		lev_distance = 0
+		time = 0
+		air_state = AirState.LEVITATING
+		$AnimationPlayer.play("build_up")
+		tween1 = self.create_tween()
+		tween1.set_ease(Tween.EASE_OUT)
+		tween1.set_trans(Tween.TRANS_SINE)
+		tween1.parallel().tween_property(self, "lev_origin", Vector2(152, 32), 8.3)
+		tween1.parallel().tween_property(self, "lev_distance", 1, 8.3)
+		await get_tree().create_timer(7.5, false).timeout
+		$AnimationPlayer.play("levitate")
+		await get_tree().create_timer(0.8, false).timeout
+		cam.radial_blur(0.03, 0.6, 12)
+		AudioManager.play_audio(sfxs.get_sfx("scream"), 1, 1.5)
+	else:
+		teleport(lev_origin, false)
+		await get_tree().create_timer(0.21, false).timeout
+		AudioManager.resume_song()
+		AudioManager.play_song(load("res://Music/Kill the Sky People.ogg"), 17.35)
+		AudioManager.play_audio(sfxs.get_sfx("scream"), 1, 1.5)
+		cam.radial_blur(0.03, 0.6, 12)
+	player.disable_movement(false)
+
 	if player_from_right:
 		p.scale.x = 1
 		p.position.x = 0
-		#p.get_node("TeleportLine").modulate.a = 0
 		player_from_right = false
 	
 	$AnimationPlayer.play("levitate")
 	air_state = AirState.LEVITATING
-	await get_tree().create_timer(2, false).timeout
 	
-	#boss_state = BossState.STAFF_SHOTS
 	boss_state = BossState.AROUND_SHOTS
 	last_attack = BossState.AROUND_SHOTS
 	last_hittable_attack = BossState.IDLE

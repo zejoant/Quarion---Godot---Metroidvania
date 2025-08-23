@@ -21,7 +21,10 @@ func activate():
 		$CPUParticles2D.emitting = true
 		$AnimationPlayer.play("Active")
 		if world.changed_room_frames <= 3:
-			world.save_checkpoint_room(position)
+			if abs(abs(rotation_degrees) - 180) < 0.1:
+				world.save_checkpoint_room(Vector2(position.x, position.y + 16))
+			else:
+				world.save_checkpoint_room(position)
 			world.reset_room_objects("Crumble")
 			world.temporary_actions_to_permanent()
 			world.save_game()

@@ -1807,9 +1807,12 @@ tracks/61/path = NodePath(".")
 tracks/61/interp = 1
 tracks/61/loop_wrap = true
 tracks/61/keys = {
-"times": PackedFloat32Array(2.9, 3.6, 4.15, 4.95, 5.3, 5.85, 6.95, 8.85, 10.1763, 11.6411, 11.65, 12.85, 13.7, 14.05, 15.05, 16.25, 16.65, 17.25, 17.8, 31.15, 33.5, 33.85, 36.95, 37.55, 40.3, 55.5),
+"times": PackedFloat32Array(1.55, 2.9, 3.6, 4.15, 4.95, 5.3, 5.85, 6.95, 8.85, 10.1763, 11.6411, 12.85, 13.7, 14.05, 15.05, 16.25, 16.65, 17.25, 17.8, 31.15, 33.5, 33.85, 36.95, 37.55, 40.3, 55.5),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "values": [{
+"args": ["res://Music/Meteor Strike, Log It!.ogg"],
+"method": &"play_song"
+}, {
 "args": ["player_jump"],
 "method": &"play_sfx"
 }, {
@@ -1839,9 +1842,6 @@ tracks/61/keys = {
 }, {
 "args": ["hit"],
 "method": &"play_sfx"
-}, {
-"args": [],
-"method": &"play_song"
 }, {
 "args": ["ship_impact"],
 "method": &"play_sfx"

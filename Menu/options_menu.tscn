@@ -182,8 +182,10 @@ horizontal_alignment = 1
 layout_mode = 2
 focus_neighbor_top = NodePath("../../../BackHBox/BackButton")
 theme = ExtResource("6_wbg1x")
+min_value = 0.001
 max_value = 1.0
 step = 0.1
+value = 0.001
 
 [node name="MusicVbox" type="VBoxContainer" parent="MarginContainer/VBoxContainer/AudioHBox"]
 layout_mode = 2
@@ -201,8 +203,10 @@ horizontal_alignment = 1
 layout_mode = 2
 focus_neighbor_top = NodePath("../../../BackHBox/KeybindButton")
 theme = ExtResource("6_wbg1x")
+min_value = 0.001
 max_value = 1.0
 step = 0.1
+value = 0.001
 
 [node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2

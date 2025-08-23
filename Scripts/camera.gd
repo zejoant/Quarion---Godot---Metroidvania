@@ -16,10 +16,11 @@ var fade_tween: Tween
 var invert_tween: Tween
 var p_up_tween: Tween
 
-enum CollectedItem {RED_KEY, GREEN_KEY, AMULET}
+enum CollectedItem {RED_KEY, GREEN_KEY, BLUE_KEY, AMULET}
 var item_display: Array[CollectedItem]
 
 func _ready():
+	$FlashLayer.modulate.a = 0
 	close_p_up_window(true)
 	$InvertColorLayer/ColorRect.material.set_shader_parameter("strength", 0) #invert color disabled
 	$RadialBlurLayer/ColorRect.material.set_shader_parameter("blur_power", 0) #radical blur disabled
@@ -52,19 +53,30 @@ func remove_collected_item(item: CollectedItem):
 func update_item_display():
 	$UILayer/UIContainer/RedKeySprite.visible = false
 	$UILayer/UIContainer/GreenKeySprite.visible = false
+	$UILayer/UIContainer/BlueKeySprite.visible = false
 	$UILayer/UIContainer/AmuletSprite.visible = false
 	
 	for i in item_display.size():
+		var target
 		if item_display[i] == CollectedItem.RED_KEY:
-			$UILayer/UIContainer/RedKeySprite.position.x = 295 - 16*i
-			$UILayer/UIContainer/RedKeySprite.visible = true
+			target = $UILayer/UIContainer/RedKeySprite
+			#$UILayer/UIContainer/RedKeySprite.position.x = 295 - 16*i
+			#$UILayer/UIContainer/RedKeySprite.visible = true
 		elif item_display[i] == CollectedItem.GREEN_KEY:
-			$UILayer/UIContainer/GreenKeySprite.position.x = 295 - 16*i
-			$UILayer/UIContainer/GreenKeySprite.visible = true
+			target = $UILayer/UIContainer/GreenKeySprite
+			#$UILayer/UIContainer/GreenKeySprite.position.x = 295 - 16*i
+			#$UILayer/UIContainer/GreenKeySprite.visible = true
+		elif item_display[i] == CollectedItem.BLUE_KEY:
+			target = $UILayer/UIContainer/BlueKeySprite
+			#$UILayer/UIContainer/BlueKeySprite.position.x = 295 - 16*i
+			#$UILayer/UIContainer/BlueKeySprite.visible = true
 		elif item_display[i] == CollectedItem.AMULET:
-			$UILayer/UIContainer/AmuletSprite.position.x = 295 - 16*i
-			$UILayer/UIContainer/AmuletSprite.visible = true
-			
+			target = $UILayer/UIContainer/AmuletSprite
+			#$UILayer/UIContainer/AmuletSprite.position.x = 295 - 16*i
+			#$UILayer/UIContainer/AmuletSprite.visible = true
+		
+		target.position.x = 295 - 16*i
+		target.visible = true
 
 #func set_keys(state: String, remove: bool = false):
 	#if remove:
@@ -108,6 +120,7 @@ func collect_amulet_piece():
 	var piece = get_node("UILayer/AmuletContainer/Piece" + str(player.amulet_pieces))
 	player.disable_movement()
 	AudioManager.pause_song()
+	get_node("/root/World").can_pause = false
 	blur(1.032, 0.3)
 	$FlashLayer.modulate = Color(0, 0, 0, 0.5)
 	$UILayer/AmuletContainer.modulate.a = 1
@@ -150,6 +163,7 @@ func collect_amulet_piece():
 		await tween.parallel().tween_property($UILayer/AmuletContainer, "modulate:a", 0, 0.3).finished
 	
 	player.disable_movement(false)
+	get_node("/root/World").can_pause = true
 	AudioManager.resume_song()
 	$FlashLayer.modulate = Color(1, 1, 1, 0)
 	$UILayer/AmuletContainer.scale = Vector2(2, 2)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3 uid="uid://30g7v64cfgce"]
+[gd_scene load_steps=47 format=3 uid="uid://30g7v64cfgce"]
 
 [ext_resource type="Script" path="res://Creatures/starlight_guardian.gd" id="1_3550h"]
 [ext_resource type="Texture2D" uid="uid://b6aii0mfltagh" path="res://Assets/Aim Line.png" id="2_f1le3"]
@@ -15,6 +15,7 @@
 [ext_resource type="AudioStream" uid="uid://cra2g4rwdhtfa" path="res://Sfx/sun scream.wav" id="8_mjwoc"]
 [ext_resource type="Shader" path="res://Shaders/set_color.gdshader" id="9_dwrfa"]
 [ext_resource type="AudioStream" uid="uid://ctcvftqbmxckp" path="res://Sfx/power up charge.wav" id="9_vquog"]
+[ext_resource type="AudioStream" uid="uid://dbrwyu3bewu6j" path="res://Sfx/anticipation.wav" id="10_c6vuy"]
 [ext_resource type="Texture2D" uid="uid://dxeer5jk1scat" path="res://Assets/Ring Particle.png" id="11_sfeb7"]
 [ext_resource type="Texture2D" uid="uid://trx677cd2gom" path="res://Assets/Red Boss Sprites.png" id="12_cf1a5"]
 
@@ -48,9 +49,14 @@ script = ExtResource("3_yucwd")
 tag = "death charge"
 stream = ExtResource("9_vquog")
 
+[sub_resource type="Resource" id="Resource_c6ec6"]
+script = ExtResource("3_yucwd")
+tag = "anticipation"
+stream = ExtResource("10_c6vuy")
+
 [sub_resource type="Resource" id="Resource_ka7o4"]
 script = ExtResource("2_hvxb4")
-sound_effects = Array[ExtResource("3_yucwd")]([SubResource("Resource_olp47"), SubResource("Resource_s177l"), SubResource("Resource_vua2e"), SubResource("Resource_mcese"), SubResource("Resource_fcffd"), SubResource("Resource_3wajc")])
+sound_effects = Array[ExtResource("3_yucwd")]([SubResource("Resource_olp47"), SubResource("Resource_s177l"), SubResource("Resource_vua2e"), SubResource("Resource_mcese"), SubResource("Resource_fcffd"), SubResource("Resource_3wajc"), SubResource("Resource_c6ec6")])
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_nl34h"]
 blend_mode = 1

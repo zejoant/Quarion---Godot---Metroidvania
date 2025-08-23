@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bidryskqnk75m"
+path="res://.godot/imported/Itzaithr Yuoarmi.ogg-cba1d6764053dacd93ee74470ba132d2.oggvorbisstr"
+
+[deps]
+
+source_file="res://Music/Itzaithr Yuoarmi.ogg"
+dest_files=["res://.godot/imported/Itzaithr Yuoarmi.ogg-cba1d6764053dacd93ee74470ba132d2.oggvorbisstr"]
+
+[params]
+
+loop=true
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

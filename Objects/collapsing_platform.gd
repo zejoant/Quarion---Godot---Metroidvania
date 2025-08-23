@@ -26,6 +26,9 @@ func setup():
 	$Right.position.x = 8 + 4*(width-3)
 	$Left.position.x = -8 - 4*(width-3)
 	
+	if abs(abs(rotation_degrees) - 90) < 0.1:
+		$PlayerDetection/CollisionShape2D.scale.x += 0.1
+	
 	#edge type setup
 	if edge_type == "none":
 		$"Center".region_rect = Rect2(0, 0, (width)*8, 8)

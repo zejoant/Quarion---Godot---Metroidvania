@@ -24,12 +24,17 @@ func _ready():
 	#$CreditsComp/CompletionTime.text = time_convert(completion_time)
 	#$CreditsComp/CompletionPercentage.text = str(int(completion_percentage), "%")
 	
+	#play_song("res://Music/Old Songs/Chipfezt.mp3")
+	#AudioManager.play_song(load("res://Music/Quarion ot Nruter Reven.ogg"))
 	$Camera.fade("000000", 1, 0, 0.5, 0.5)
 	await get_tree().create_timer(0.5, false).timeout
 	if good_ending:
 		$AnimationPlayer.play("True Ending")
 	else:
 		$AnimationPlayer.play("Default")
+
+func play_song(song_path: String):
+	AudioManager.play_song(load(song_path))
 
 func time_convert(time):
 	var hours = time/3600

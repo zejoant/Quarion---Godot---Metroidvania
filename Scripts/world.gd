@@ -1,14 +1,14 @@
 extends Node2D
 
-@export var starting_position = Vector2(2, 1)#Vector2(2, 1)
+@export var starting_position = Vector2i(2, 1)#Vector2(2, 1)
 
 var new_game = true
 
-var room_coords : Vector2
+var room_coords : Vector2i
 var player
 var cam_size
 
-var checkpoint_room : Vector2
+var checkpoint_room : Vector2i
 var checkpoint_pos : Vector2
 var room_state = []
 var opened_doors = []
@@ -52,6 +52,8 @@ var changed_room_frames: int = 0
 
 var no_death_mode: bool = false
 
+var can_pause: bool = true
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
@@ -62,8 +64,6 @@ func _ready():
 	bought_shop_items.resize(3)
 	bought_shop_items.fill(false)
 	changed_room_frames = 5
-	
-	#get_tree().set_auto_accept_quit(false)
 	
 	setup_arrays()
 	
@@ -98,7 +98,7 @@ func _ready():
 	$WorldMap.add_room(room_coords)
 	get_tilemap().resume_animated_tiles()
 	
-	AudioManager.play_song(load("res://Music/Drephen Steek.mp3"))
+	AudioManager.play_song(load("res://Music/egreme_ [er].ogg"))
 	#if player.has_opened_map:
 		#AudioManager.play_song(load("res://Music/Must Move.mp3"))
 	#else:
@@ -109,12 +109,12 @@ func _process(_delta):
 	changed_room_frames -= 1
 	exit_room_check()
 	
-	if Input.is_action_just_pressed("Pause") and !other_ui_open:
+	if Input.is_action_just_pressed("Pause") and !other_ui_open and can_pause:
 		$CanvasLayer/PauseMenu.pause_menu()
 
 func setup_arrays():
 	var map_width = 11
-	var map_height = 8
+	var map_height = 9
 	
 	room_state.resize(map_width) #X-dimension
 	for x in map_width: 
@@ -167,16 +167,22 @@ func exit_room_check():
 	if room_coords.x != 10:
 		$WorldMap.in_subarea = false
 	
-	if room_coords == Vector2(10, 0):
+	if room_coords == Vector2i(10, 0):
 		SteamManager.get_achivement("Apaolo")
 	
 #function for changing the current room
-func change_room(new_coords):
+func change_room(new_coords: Vector2i):
 	if $Camera.p_up_window_open:
 		$Camera.close_p_up_window(true)
 	
 	player.reset_particles()
 	changed_room_frames = 5
+	
+	if new_coords == Vector2i(10, 0):
+		AudioManager.play_song(load("res://Music/Listen Closely.ogg"))
+	elif room_coords == Vector2i(10, 0):
+		AudioManager.resume_previous_song()
+		#AudioManager.play_song(load("res://Music/egreme_ [er].ogg" ))
 	
 	if room_coords != new_coords:
 		$Camera/LensCircle.change_lens(new_coords)
@@ -196,22 +202,6 @@ func change_room(new_coords):
 		else:
 			call_deferred("add_child", load(new_room_path).instantiate()) #loads new room
 		$WorldMap.add_room(room_coords) #adds room to map
-	
-	#if new_coords == Vector2(4, 4) and !player.has_opened_map:
-		##AudioManager.fade_out_song(0.5)
-		#if Input.get_connected_joypads().size() > 0:
-			#$Player/OpenMapIndicator/KeyboardInput.visible = false
-			#$Player/OpenMapIndicator/ControllerInput.visible = true
-		##player.has_opened_map = true
-		#
-		#await get_tree().create_timer(0.6, false).timeout
-		##AudioManager.play_song(load("res://Music/Must Move.mp3"))
-		##AudioManager.save_respawn_song()
-		##AudioManager.fade_in_song(0)
-		#await get_tree().create_timer(1.4, false).timeout
-		#self.create_tween().tween_property($Player/OpenMapIndicator, "modulate:a", 1, 0.3)
-		#await get_tree().create_timer(10, false).timeout
-		#self.create_tween().tween_property($Player/OpenMapIndicator, "modulate:a", 0, 1)
 
 #saves the respawn position when grabbing a checkpoint
 func save_checkpoint_room(pos):
@@ -253,61 +243,61 @@ func get_room() -> Node2D:
 	return self
 	#return get_node_or_null("Room" + str(room_coords.x) + str(room_coords.y))
 
-func room_wrap_check(new_room_coords, exit_dir) -> Vector2:
-	if room_coords == Vector2(5, 6) and exit_dir == "down":
-		return Vector2(5, 5)
-	elif room_coords == Vector2(5, 5) and exit_dir == "up":
-		return Vector2(5, 6)
-	elif room_coords == Vector2(2, 6) and exit_dir == "down":
-		return Vector2(2, 5)
-		
-	elif room_coords == Vector2(6, 1) and exit_dir == "up":
-		return Vector2(6, 7)
-	elif room_coords == Vector2(6, 7) and exit_dir == "down":
-		return Vector2(6, 1)
+func room_wrap_check(new_room_coords, exit_dir) -> Vector2i:
+	if room_coords.y <= 0:
+		if room_coords.x == 6 and exit_dir == "up": #top of the map wrap
+			return Vector2i(6, 8)
+		elif room_coords.x == 9 and exit_dir == "right": #top right corner of map wrap
+			return Vector2i(8, 0)
+		elif room_coords.x == 10 and exit_dir == "down": #apaolo
+			player.position.x -= 12*8
+			return Vector2i(0, 1)
+		elif room_coords.x == 8 and exit_dir == "up": #road to phantom flame
+			$WorldMap.in_subarea = true
+			return Vector2i(10, 7)
+		elif room_coords == Vector2i(7, -1) and exit_dir == "right":
+			$WorldMap.in_subarea = true
+			return Vector2i(10, 7)
 	
-	elif room_coords == Vector2(7, 6) and (exit_dir == "down" or exit_dir == "up"):
-		if 240.0 < player.position.x and player.position.x < 262.0:
-			return Vector2(7, 6)
+	elif room_coords.y == 1:
+		if room_coords.x == 0 and exit_dir == "up": #apaolo
+			player.position.x += 12*8
+			$WorldMap.in_subarea = true
+			return Vector2i(10, 0)
 	
-	elif room_coords == Vector2(0, 5) and exit_dir == "left":
-		return Vector2(9, 5)
-	elif room_coords == Vector2(9, 5) and exit_dir == "right":
-		return Vector2(0, 5)
+	elif room_coords.y == 5: # horizontal map wrap from edges
+		if room_coords.x == 0 and exit_dir == "left":
+			return Vector2i(9, 5)
+		elif room_coords.x == 9 and exit_dir == "right":
+			return Vector2i(0, 5)
 	
-	elif room_coords == Vector2(9, 0) and exit_dir == "right":
-		return Vector2(8, 0)
+	elif room_coords.y == 6:
+		if room_coords.x == 5 and exit_dir == "up": #2 falling rooms wrap
+			return Vector2i(5, 7)
+		elif room_coords.x == 2 and exit_dir == "down": #rolling boulder room wrap
+			return Vector2i(2, 5)
 	
-	#apaolo
-	elif room_coords == Vector2(0, 1) and exit_dir == "up":
-		player.position.x += 12*8
-		$WorldMap.in_subarea = true
-		return Vector2(10, 0)
-	elif room_coords == Vector2(10, 0) and exit_dir == "down":
-		player.position.x -= 12*8
-		return Vector2(0, 1)
+	elif room_coords.y == 7:
+		if room_coords.x == 5 and exit_dir == "down":
+			return Vector2i(5, 6)
+		#elif room_coords.x == 7 and (exit_dir == "down" or exit_dir == "up"):
+			#if 240.0 < player.position.x and player.position.x < 262.0:
+				#return Vector2i(7, 7)
+		elif room_coords.x == 10 and exit_dir == "down": #exit back from phantom flame road
+			return Vector2i(8, 0)
 	
-	#secret above red key
-	elif room_coords == Vector2(7, -1) and exit_dir == "right":
-		$WorldMap.in_subarea = true
-		return Vector2(10, 7)
-	elif room_coords == Vector2(8, 0) and exit_dir == "up":
-		$WorldMap.in_subarea = true
-		return Vector2(10, 7)
-	elif room_coords.x == 10 and (exit_dir == "left" or exit_dir == "right"):
-		return Vector2(10, room_coords.y)
-	elif room_coords == Vector2(10, 7) and exit_dir == "down":
-		return Vector2(8, 0)
-		
-	#elif room_coords.y == 0 and exit_dir == "up":
-		#$WorldMap.in_subarea = true
-		#return Vector2(room_coords.x, 8)
-	#elif room_coords.y == 8 and exit_dir == "down":
-		#return Vector2(room_coords.x, 0)
+	elif room_coords.y == 8:
+		if room_coords.x == 6 and exit_dir == "down": #bottom of the map wrap
+			return Vector2i(6, 0)
+		elif room_coords.x == 4 and (exit_dir == "down" or exit_dir == "up"): #old lab vvvvvv room
+			return Vector2i(4, 8)
+		elif room_coords.x == 8 and (exit_dir == "left" or exit_dir == "right"):
+			if player.position.y > 7*8 and player.position.y < 17*8:
+				return Vector2i(8, 8)
 	
-	elif room_coords == Vector2(4, 7) and (exit_dir == "down" or exit_dir == "up"):
-			return Vector2(4, 7)
-		
+	if room_coords.x == 10 and (exit_dir == "left" or exit_dir == "right"): #phantom flame road
+		return Vector2i(10, room_coords.y)
+	
 	return(new_room_coords)
 
 #saves permanent changes to a room such as collected items

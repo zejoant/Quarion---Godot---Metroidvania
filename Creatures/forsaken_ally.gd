@@ -640,7 +640,7 @@ func update_aim(delta):
 
 
 func intro_sequence():
-	AudioManager.stop_song()
+	AudioManager.pause_song()
 	if !has_seen_intro:
 		has_seen_intro = true
 		
@@ -733,7 +733,7 @@ func intro_sequence():
 	toggle_hit_coll(HitMode.DODGE)
 	boss_state = BossState.RESET
 	#boss_state = BossState.SPIKE
-	AudioManager.play_song(load("res://Music/Everhood_The_Final_Battle.mp3"))
+	AudioManager.play_song(load("res://Music/Itzaithr Yuoarmi.ogg"))
 
 func set_tween(tween: Tween, t: int, e: int):
 	tween.set_trans(t)

@@ -6,7 +6,7 @@ var player
 var world
 var open
 
-var latest_added_room: Vector2
+var latest_added_room: Vector2i
 
 var in_subarea: bool = false
 
@@ -20,6 +20,9 @@ func _ready():
 	$BGOverLay.modulate = Color(1, 1, 1, 0)
 	$MapComps.modulate.a = 0
 	open = false
+	add_room(Vector2i(0, 0))
+	add_room(Vector2i(1, 0))
+	add_room(Vector2i(2, 0))
 	
 func _process(_delta):
 	if open:
@@ -52,13 +55,13 @@ func open_or_close():
 		open = false
 		player.x_speed = 110.0
 	
-func add_room(room_coords: Vector2):
-	latest_added_room = Vector2(-1, -1)
-	if %RoomMap.get_cell_source_id(0, Vector2i(room_coords)) == -1:
+func add_room(room_coords: Vector2i):
+	latest_added_room = Vector2i(-1, -1)
+	if %RoomMap.get_cell_source_id(0, room_coords) == -1 and room_coords.x < 10:
 		latest_added_room = room_coords
 		%RoomMap.set_cell(0, room_coords, 0, room_coords, 0)
 		visited_rooms += 1
-		if room_coords != Vector2(0, 0) and room_coords != Vector2(1, 0):
+		if room_coords != Vector2i(0, 0) and room_coords != Vector2i(1, 0):
 			world.add_to_completion_percentage("Room")
 	
 	if visited_rooms == 80:
@@ -83,13 +86,13 @@ func enable_item_map():
 func debug_all_rooms():
 	map_debug_mode = true
 	for x in range(0, 10):
-		for y in range(0, 8):
+		for y in range(0, 9):
 			add_room(Vector2(x, y))
 
 func _input(event):
 	if event is InputEventMouseButton and event.pressed and map_debug_mode and open:
 		var mouse_pos = %ItemMap.get_local_mouse_position()
-		var room = Vector2(int(mouse_pos.x/38.0), int(mouse_pos.y/24.0))
+		var room = Vector2i(int(mouse_pos.x/38.0), int(mouse_pos.y/24.0))
 		var room_pos = Vector2(fmod(mouse_pos.x, 38), fmod(mouse_pos.y, 24))
 		player.position = room_pos*8
 		world.change_room(room)

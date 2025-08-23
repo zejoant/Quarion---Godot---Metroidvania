@@ -37,12 +37,12 @@ func _physics_process(_delta):
 		moving = false
 
 func move_platform(pos):
-	if player_on_platform:
+	if player_on_platform and !player.is_dead:
 		player.position.x += pos-position.x
 	position.x = pos
 
 func _on_player_detection_body_entered(body):
-	if body is CharacterBody2D and !body.is_dead:
+	if body is CharacterBody2D:
 		if tween:
 			tween.kill()
 		if !player:

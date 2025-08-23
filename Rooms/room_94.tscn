@@ -28,7 +28,7 @@ audio = true
 direction = "right"
 
 [node name="ActivateBossColl" parent="BossEnvironment" index="3"]
-position = Vector2(24, 160)
+position = Vector2(26, 160)
 scale = Vector2(2, 4)
 
 [editable path="BossEnvironment"]

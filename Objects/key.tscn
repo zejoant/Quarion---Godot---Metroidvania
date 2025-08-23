@@ -19,6 +19,7 @@ sound_effects = Array[ExtResource("3_wte00")]([SubResource("Resource_t0q0f")])
 size = Vector2(13, 8)
 
 [node name="Key" type="StaticBody2D" groups=["Collectable"]]
+z_index = 2
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("1_5jue1")
@@ -27,7 +28,7 @@ sfxs = SubResource("Resource_raxu1")
 [node name="KeySprite" type="Sprite2D" parent="."]
 texture = ExtResource("1_6kh7e")
 region_enabled = true
-region_rect = Rect2(96, 51, 16, 10)
+region_rect = Rect2(96, 48, 16, 16)
 
 [node name="KeyColl" type="CollisionShape2D" parent="."]
 position = Vector2(-0.5, 0)

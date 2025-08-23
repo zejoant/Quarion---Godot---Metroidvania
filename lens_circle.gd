@@ -35,47 +35,73 @@ func change_lens(room_coords, instant: bool = false, behind_foreground: int = 0)
 		tween.kill()
 	
 	var lens_size: float = 0
-	if behind_foreground == 1:
+	#if behind_foreground == 1:
+		#lens_size = 2
+	
+	#rooms under wrecked ship
+	if room_coords == Vector2i(0, 1):
 		lens_size = 2
-		
-	if room_coords == Vector2(0, 1):
-		lens_size = 2
-	elif room_coords == Vector2(1, 1):
+	elif room_coords == Vector2i(1, 1):
 		lens_size = 1.3
-	elif room_coords == Vector2(5, 3):
+	
+	#shop room
+	elif room_coords == Vector2i(5, 4):
 		lens_size = 1.3
-	elif room_coords == Vector2(1, 6):
+	
+	#rolling boulder rooms
+	elif room_coords == Vector2i(1, 6):
 		lens_size = 2
-	elif room_coords == Vector2(2, 6):
+	elif room_coords == Vector2i(2, 6):
 		lens_size = 2
-	#elif room_coords == Vector2(3, 5):
-		#lens_size = 3
-	elif room_coords == Vector2(10, 0):
+	
+	#apaolo room
+	elif room_coords == Vector2i(10, 0):
 		lens_size = 3
-	elif room_coords == Vector2(0, 5):
+	
+	#behind blue key door rooms
+	elif room_coords == Vector2i(0, 5):
 		lens_size = 3
-	elif room_coords == Vector2(9, 5):
+	elif room_coords == Vector2i(9, 5):
 		lens_size = 3
-	elif room_coords == Vector2(8, 5):
+	elif room_coords == Vector2i(8, 5):
 		lens_size = 2.5
 		
 	#delapitated lab section
-	elif room_coords == Vector2(0, 6) or room_coords == Vector2(0, 7) or room_coords == Vector2(1, 7) or room_coords == Vector2(2, 7) or room_coords == Vector2(3, 7) or room_coords == Vector2(5, 7):
+	elif room_coords == Vector2i(0, 6):
 		lens_size = 4.2
-	elif room_coords == Vector2(4, 7):
-		follow_player = false
-		position = Vector2(0, 0)
-		lens_size = 3.5
+	elif room_coords.y == 7 and room_coords.x <= 2:
+		lens_size = 4.2
+	elif room_coords.y == 8 and room_coords.x <= 5:
+		lens_size = 4.2
+		if room_coords.x == 4:
+			follow_player = false
+			position = Vector2(0, 0)
+			lens_size = 3.5
 	
-	#the 2 fall rooms
-	elif room_coords == Vector2(5, 5) or room_coords == Vector2(5, 6):
+	# after double jump, room wrap
+	elif room_coords == Vector2i(8, 8):
 		follow_player = false
 		position = Vector2(0, 0)
 		instant = true
 	
-	elif room_coords.x == 10 and room_coords.y > 0:
+	#bottom left corner amulet piece room
+	elif room_coords == Vector2i(9, 8):
+		lens_size = 2.5
+	
+	#the 2 fall rooms
+	elif room_coords == Vector2i(5, 6) or room_coords == Vector2i(5, 7):
 		follow_player = false
 		position = Vector2(0, 0)
+		instant = true
+	
+	elif room_coords.x == 10 and room_coords.y > 0: #road to phantom flame
+		follow_player = false
+		position = Vector2(0, 0)
+	
+	if behind_foreground == 1:
+		lens_size = 2
+		follow_player = true
+		instant = false
 	
 	if !instant:
 		tween = self.create_tween()

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cv4dqafhol7mt"
+path="res://.godot/imported/Welcome to Noirauq.ogg-2a11e22b328ebae4947c0ebdab5af769.oggvorbisstr"
+
+[deps]
+
+source_file="res://Music/Welcome to Noirauq.ogg"
+dest_files=["res://.godot/imported/Welcome to Noirauq.ogg-2a11e22b328ebae4947c0ebdab5af769.oggvorbisstr"]
+
+[params]
+
+loop=true
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

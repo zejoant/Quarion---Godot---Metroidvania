@@ -5,7 +5,6 @@ class_name OptionsMenu
 var back_scene = "menu"
 static var sfx_slider_value = 0.5
 static var music_slider_value = 0.5
-#static var window_mode = 0
 static var fullscreen = false
 static var borderless = false
 
@@ -86,7 +85,7 @@ func _on_sfx_slider_value_changed(value):
 	#if value == 0:
 		#AudioServer.set_bus_mute(2, true)
 	#else:
-	AudioServer.set_bus_mute(2, false)
+	#AudioServer.set_bus_mute(2, false)
 	AudioServer.set_bus_volume_db(2, linear_to_db(value))
 	
 	if Input.is_key_pressed(KEY_SHIFT):
@@ -104,7 +103,7 @@ func _on_music_slider_value_changed(value):
 	#if value == 0:
 	#	AudioServer.set_bus_mute(1, true)
 	#else:
-	AudioServer.set_bus_mute(1, false)
+	#AudioServer.set_bus_mute(1, false)
 	AudioServer.set_bus_volume_db(1, linear_to_db(value))
 	
 	if Input.is_key_pressed(KEY_SHIFT):
@@ -135,6 +134,8 @@ func _on_fullscreen_check_toggled(toggled_on):
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 		fullscreen = true
 	else:
+		#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		#print(DisplayServer.window_get_size())
 		DisplayServer.window_set_mode(previous_window_mode)
 		fullscreen = false
 
@@ -171,6 +172,8 @@ static func set_loaded_settings():
 	
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, borderless)
 	if fullscreen:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		DisplayServer.window_set_size(Vector2i(304, 192))
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 
 func _on_keybind_button_pressed():

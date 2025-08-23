@@ -21,12 +21,12 @@ layer_3/tile_data = PackedInt32Array(8, 131072, 23, 131080, 131072, 23, 262152, 
 
 [node name="KeySlot" parent="." instance=ExtResource("2_bwg52")]
 position = Vector2(280, 144)
-color = "red"
+color = "blue"
 
 [node name="KeyDoor" parent="." instance=ExtResource("3_dwvqy")]
 position = Vector2(12, 156)
 initial_state = "closed"
-color = "red"
+color = "blue"
 glow_size = 10
 glow_time = 1.0
 

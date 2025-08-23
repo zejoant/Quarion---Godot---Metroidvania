@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://cwafd3q5y7u6m"]
+[gd_scene load_steps=52 format=3 uid="uid://cwafd3q5y7u6m"]
 
 [ext_resource type="Script" path="res://outro_cutscene.gd" id="1_67kqt"]
 [ext_resource type="Texture2D" uid="uid://bn306u45m6wu1" path="res://Assets/Line Particle.png" id="1_qhqm7"]
@@ -8,7 +8,6 @@
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_l6yqt"]
 [ext_resource type="Shader" path="res://Shaders/pixelate.gdshader" id="4_7merp"]
 [ext_resource type="AudioStream" uid="uid://c6lqn8mannaey" path="res://Sfx/photo slide.wav" id="4_ev7e6"]
-[ext_resource type="AudioStream" uid="uid://cwbt6vou8bhdv" path="res://Music/Chipfezt.mp3" id="5_benn3"]
 [ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/Big Font.ttf" id="6_j7a2d"]
 [ext_resource type="PackedScene" uid="uid://c412d8dttjo6j" path="res://Rooms/room_21.tscn" id="7_gppp7"]
 [ext_resource type="Texture2D" uid="uid://blrke6p7xbb7e" path="res://Assets/Tileset.png" id="8_3oukq"]
@@ -248,146 +247,136 @@ tracks/8/keys = {
 tracks/9/type = "value"
 tracks/9/imported = false
 tracks/9/enabled = true
-tracks/9/path = NodePath("AudioStreamPlayer2D:volume_db")
+tracks/9/path = NodePath("Camera/LensCircle:visible")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(40, 40.7),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.0, -40.0]
-}
-tracks/10/type = "value"
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/path = NodePath("Camera/LensCircle:visible")
-tracks/10/interp = 1
-tracks/10/loop_wrap = true
-tracks/10/keys = {
 "times": PackedFloat32Array(0, 40.7),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [false, true]
 }
-tracks/11/type = "value"
-tracks/11/imported = false
-tracks/11/enabled = true
-tracks/11/path = NodePath("AudioStreamPlayer2D:playing")
-tracks/11/interp = 1
-tracks/11/loop_wrap = true
-tracks/11/keys = {
-"times": PackedFloat32Array(40.7),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/12/type = "value"
-tracks/12/imported = false
-tracks/12/enabled = true
-tracks/12/path = NodePath("CreditsComp:position")
-tracks/12/interp = 1
-tracks/12/loop_wrap = true
-tracks/12/keys = {
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("CreditsComp:position")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
 "times": PackedFloat32Array(0, 3.4, 40.7),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Vector2(0, 192), Vector2(0, 192), Vector2(0, -510)]
 }
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("Camera/LensCircle:position")
-tracks/13/interp = 1
-tracks/13/loop_wrap = true
-tracks/13/keys = {
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Camera/LensCircle:position")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
 "times": PackedFloat32Array(40.7),
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(0, 0)]
 }
-tracks/14/type = "value"
-tracks/14/imported = false
-tracks/14/enabled = true
-tracks/14/path = NodePath("Camera/LensCircle:scale")
-tracks/14/interp = 1
-tracks/14/loop_wrap = true
-tracks/14/keys = {
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Camera/LensCircle:scale")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
 "times": PackedFloat32Array(40.7),
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(2, 2)]
 }
-tracks/15/type = "value"
-tracks/15/imported = false
-tracks/15/enabled = true
-tracks/15/path = NodePath("ExitText:modulate")
-tracks/15/interp = 1
-tracks/15/loop_wrap = true
-tracks/15/keys = {
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("ExitText:modulate")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
 "times": PackedFloat32Array(0, 49.6, 49.9),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
-tracks/16/type = "value"
-tracks/16/imported = false
-tracks/16/enabled = true
-tracks/16/path = NodePath(".:can_exit")
-tracks/16/interp = 1
-tracks/16/loop_wrap = true
-tracks/16/keys = {
+tracks/14/type = "value"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath(".:can_exit")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = {
 "times": PackedFloat32Array(0, 49.6),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [false, true]
 }
-tracks/17/type = "value"
-tracks/17/imported = false
-tracks/17/enabled = true
-tracks/17/path = NodePath("AnimationPlayer:speed_scale")
-tracks/17/interp = 1
-tracks/17/loop_wrap = true
-tracks/17/keys = {
+tracks/15/type = "value"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("AnimationPlayer:speed_scale")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = {
 "times": PackedFloat32Array(0, 49.9, 50),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [1.0, 1.0, 0.0]
 }
-tracks/18/type = "value"
-tracks/18/imported = false
-tracks/18/enabled = true
-tracks/18/path = NodePath("TrueEndingPhoto:visible")
-tracks/18/interp = 1
-tracks/18/loop_wrap = true
-tracks/18/keys = {
+tracks/16/type = "value"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("TrueEndingPhoto:visible")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [false]
 }
-tracks/19/type = "value"
-tracks/19/imported = false
-tracks/19/enabled = true
-tracks/19/path = NodePath("StatsComp:modulate")
-tracks/19/interp = 1
-tracks/19/loop_wrap = true
-tracks/19/keys = {
+tracks/17/type = "value"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("StatsComp:modulate")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = {
 "times": PackedFloat32Array(0, 45, 45.3),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
-tracks/20/type = "value"
-tracks/20/imported = false
-tracks/20/enabled = true
-tracks/20/path = NodePath("ColorRect:material:shader_parameter/amount")
-tracks/20/interp = 1
-tracks/20/loop_wrap = true
-tracks/20/keys = {
+tracks/18/type = "value"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("ColorRect:material:shader_parameter/amount")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = {
 "times": PackedFloat32Array(0, 45, 45.3),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 0.8]
+}
+tracks/19/type = "method"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath(".")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = {
+"times": PackedFloat32Array(3),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": ["res://Music/Quarion ot Nruter Reven.ogg"],
+"method": &"play_song"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_kjbf5"]
@@ -492,79 +481,79 @@ tracks/7/keys = {
 tracks/8/type = "value"
 tracks/8/imported = false
 tracks/8/enabled = true
-tracks/8/path = NodePath("AudioStreamPlayer2D:volume_db")
+tracks/8/path = NodePath("Camera/LensCircle:visible")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
+"update": 1,
+"values": [true]
 }
 tracks/9/type = "value"
 tracks/9/imported = false
 tracks/9/enabled = true
-tracks/9/path = NodePath("Camera/LensCircle:visible")
+tracks/9/path = NodePath("CreditsComp:position")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
+"update": 0,
+"values": [Vector2(0, 192)]
 }
 tracks/10/type = "value"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("AudioStreamPlayer2D:playing")
+tracks/10/path = NodePath("Camera/LensCircle:scale")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
+"update": 0,
+"values": [Vector2(2, 2)]
 }
 tracks/11/type = "value"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath("CreditsComp:position")
+tracks/11/path = NodePath("ExitText:modulate")
 tracks/11/interp = 1
 tracks/11/loop_wrap = true
 tracks/11/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0, 192)]
+"values": [Color(1, 1, 1, 1)]
 }
 tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("Camera/LensCircle:scale")
+tracks/12/path = NodePath(".:can_exit")
 tracks/12/interp = 1
 tracks/12/loop_wrap = true
 tracks/12/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(2, 2)]
+"update": 1,
+"values": [false]
 }
 tracks/13/type = "value"
 tracks/13/imported = false
 tracks/13/enabled = true
-tracks/13/path = NodePath("ExitText:modulate")
+tracks/13/path = NodePath("AnimationPlayer:speed_scale")
 tracks/13/interp = 1
 tracks/13/loop_wrap = true
 tracks/13/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Color(1, 1, 1, 1)]
+"values": [1.0]
 }
 tracks/14/type = "value"
 tracks/14/imported = false
 tracks/14/enabled = true
-tracks/14/path = NodePath(".:can_exit")
+tracks/14/path = NodePath("TrueEndingPhoto:visible")
 tracks/14/interp = 1
 tracks/14/loop_wrap = true
 tracks/14/keys = {
@@ -576,82 +565,58 @@ tracks/14/keys = {
 tracks/15/type = "value"
 tracks/15/imported = false
 tracks/15/enabled = true
-tracks/15/path = NodePath("AnimationPlayer:speed_scale")
+tracks/15/path = NodePath("Room21:visible")
 tracks/15/interp = 1
 tracks/15/loop_wrap = true
 tracks/15/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [1.0]
+"update": 1,
+"values": [true]
 }
 tracks/16/type = "value"
 tracks/16/imported = false
 tracks/16/enabled = true
-tracks/16/path = NodePath("TrueEndingPhoto:visible")
+tracks/16/path = NodePath("TrueEndingPhoto:scale")
 tracks/16/interp = 1
 tracks/16/loop_wrap = true
 tracks/16/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
+"update": 0,
+"values": [Vector2(2.52632, 2.52632)]
 }
 tracks/17/type = "value"
 tracks/17/imported = false
 tracks/17/enabled = true
-tracks/17/path = NodePath("Room21:visible")
+tracks/17/path = NodePath("TrueEndingPhoto:rotation")
 tracks/17/interp = 1
 tracks/17/loop_wrap = true
 tracks/17/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
+"update": 0,
+"values": [-0.174533]
 }
 tracks/18/type = "value"
 tracks/18/imported = false
 tracks/18/enabled = true
-tracks/18/path = NodePath("TrueEndingPhoto:scale")
+tracks/18/path = NodePath("StatsComp:modulate")
 tracks/18/interp = 1
 tracks/18/loop_wrap = true
 tracks/18/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(2.52632, 2.52632)]
+"values": [Color(1, 1, 1, 0)]
 }
 tracks/19/type = "value"
 tracks/19/imported = false
 tracks/19/enabled = true
-tracks/19/path = NodePath("TrueEndingPhoto:rotation")
+tracks/19/path = NodePath("ColorRect:material:shader_parameter/amount")
 tracks/19/interp = 1
 tracks/19/loop_wrap = true
 tracks/19/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [-0.174533]
-}
-tracks/20/type = "value"
-tracks/20/imported = false
-tracks/20/enabled = true
-tracks/20/path = NodePath("StatsComp:modulate")
-tracks/20/interp = 1
-tracks/20/loop_wrap = true
-tracks/20/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 0)]
-}
-tracks/21/type = "value"
-tracks/21/imported = false
-tracks/21/enabled = true
-tracks/21/path = NodePath("ColorRect:material:shader_parameter/amount")
-tracks/21/interp = 1
-tracks/21/loop_wrap = true
-tracks/21/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
@@ -771,59 +736,59 @@ tracks/8/keys = {
 tracks/9/type = "value"
 tracks/9/imported = false
 tracks/9/enabled = true
-tracks/9/path = NodePath("AudioStreamPlayer2D:volume_db")
+tracks/9/path = NodePath("CreditsComp:position")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(40, 40.7),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.0, -40.0]
-}
-tracks/10/type = "value"
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/path = NodePath("AudioStreamPlayer2D:playing")
-tracks/10/interp = 1
-tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(40.7),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/11/type = "value"
-tracks/11/imported = false
-tracks/11/enabled = true
-tracks/11/path = NodePath("CreditsComp:position")
-tracks/11/interp = 1
-tracks/11/loop_wrap = true
-tracks/11/keys = {
 "times": PackedFloat32Array(0, 3.4, 40.7),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Vector2(0, 192), Vector2(0, 192), Vector2(0, -510)]
 }
-tracks/12/type = "value"
-tracks/12/imported = false
-tracks/12/enabled = true
-tracks/12/path = NodePath("ExitText:modulate")
-tracks/12/interp = 1
-tracks/12/loop_wrap = true
-tracks/12/keys = {
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("ExitText:modulate")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
 "times": PackedFloat32Array(0, 49.6, 49.9),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath(".:can_exit")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0, 49.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("AnimationPlayer:speed_scale")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0, 49.9, 50),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [1.0, 1.0, 0.0]
+}
 tracks/13/type = "value"
 tracks/13/imported = false
 tracks/13/enabled = true
-tracks/13/path = NodePath(".:can_exit")
+tracks/13/path = NodePath("TrueEndingPhoto:visible")
 tracks/13/interp = 1
 tracks/13/loop_wrap = true
 tracks/13/keys = {
-"times": PackedFloat32Array(0, 49.6),
+"times": PackedFloat32Array(39.1, 40.7),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [false, true]
@@ -831,108 +796,87 @@ tracks/13/keys = {
 tracks/14/type = "value"
 tracks/14/imported = false
 tracks/14/enabled = true
-tracks/14/path = NodePath("AnimationPlayer:speed_scale")
+tracks/14/path = NodePath("Room21:visible")
 tracks/14/interp = 1
 tracks/14/loop_wrap = true
 tracks/14/keys = {
-"times": PackedFloat32Array(0, 49.9, 50),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [1.0, 1.0, 0.0]
-}
-tracks/15/type = "value"
-tracks/15/imported = false
-tracks/15/enabled = true
-tracks/15/path = NodePath("TrueEndingPhoto:visible")
-tracks/15/interp = 1
-tracks/15/loop_wrap = true
-tracks/15/keys = {
-"times": PackedFloat32Array(39.1, 40.7),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [false, true]
-}
-tracks/16/type = "value"
-tracks/16/imported = false
-tracks/16/enabled = true
-tracks/16/path = NodePath("Room21:visible")
-tracks/16/interp = 1
-tracks/16/loop_wrap = true
-tracks/16/keys = {
 "times": PackedFloat32Array(40.7),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [false]
 }
-tracks/17/type = "value"
-tracks/17/imported = false
-tracks/17/enabled = true
-tracks/17/path = NodePath("Camera/LensCircle:visible")
-tracks/17/interp = 1
-tracks/17/loop_wrap = true
-tracks/17/keys = {
+tracks/15/type = "value"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("Camera/LensCircle:visible")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [false]
 }
-tracks/18/type = "value"
-tracks/18/imported = false
-tracks/18/enabled = true
-tracks/18/path = NodePath("TrueEndingPhoto:scale")
-tracks/18/interp = 1
-tracks/18/loop_wrap = true
-tracks/18/keys = {
+tracks/16/type = "value"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("TrueEndingPhoto:scale")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = {
 "times": PackedFloat32Array(40.7, 41.1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector2(4, 4), Vector2(2, 2)]
 }
-tracks/19/type = "value"
-tracks/19/imported = false
-tracks/19/enabled = true
-tracks/19/path = NodePath("TrueEndingPhoto:rotation")
-tracks/19/interp = 1
-tracks/19/loop_wrap = true
-tracks/19/keys = {
+tracks/17/type = "value"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("TrueEndingPhoto:rotation")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = {
 "times": PackedFloat32Array(40.7, 41.2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [0.174533, -0.0872665]
 }
-tracks/20/type = "method"
-tracks/20/imported = false
-tracks/20/enabled = true
-tracks/20/path = NodePath(".")
-tracks/20/interp = 1
-tracks/20/loop_wrap = true
-tracks/20/keys = {
-"times": PackedFloat32Array(41),
-"transitions": PackedFloat32Array(1),
+tracks/18/type = "method"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath(".")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = {
+"times": PackedFloat32Array(3, 41),
+"transitions": PackedFloat32Array(1, 1),
 "values": [{
+"args": ["res://Music/Quarion ot Nruter Reven.ogg"],
+"method": &"play_song"
+}, {
 "args": ["photo"],
 "method": &"play_sfx"
 }]
 }
-tracks/21/type = "value"
-tracks/21/imported = false
-tracks/21/enabled = true
-tracks/21/path = NodePath("StatsComp:modulate")
-tracks/21/interp = 1
-tracks/21/loop_wrap = true
-tracks/21/keys = {
+tracks/19/type = "value"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("StatsComp:modulate")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = {
 "times": PackedFloat32Array(0, 45, 45.3),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 2.23518e-06), Color(1, 1, 1, 2.23518e-06), Color(1, 1, 1, 1)]
 }
-tracks/22/type = "value"
-tracks/22/imported = false
-tracks/22/enabled = true
-tracks/22/path = NodePath("ColorRect:material:shader_parameter/amount")
-tracks/22/interp = 1
-tracks/22/loop_wrap = true
-tracks/22/keys = {
+tracks/20/type = "value"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath("ColorRect:material:shader_parameter/amount")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = {
 "times": PackedFloat32Array(0, 45, 45.3),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
@@ -1134,11 +1078,6 @@ texture = SubResource("GradientTexture1D_5jjmd")
 libraries = {
 "": SubResource("AnimationLibrary_3155i")
 }
-
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("5_benn3")
-autoplay = true
-bus = &"Music"
 
 [node name="Room21" parent="." instance=ExtResource("7_gppp7")]
 position = Vector2(0, 300)

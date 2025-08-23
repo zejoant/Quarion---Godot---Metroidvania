@@ -16,6 +16,8 @@ func collect():
 		
 		AudioManager.pause_song()
 		player.disable_movement()
+		player.velocity = Vector2(0, 0)
+		player.position.y = position.y-4
 		player.update_animations = false
 		player.get_node("AnimationPlayer").play("hold_up_item")
 		z_index = 0

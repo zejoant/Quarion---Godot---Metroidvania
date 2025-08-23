@@ -5,6 +5,7 @@ extends StaticBody2D
 @export var id : int
 @export_enum("up", "down", "left", "right") var direction = "up"
 @export_enum("open", "closed") var initial_state = "closed"
+@export var speed: float = 1
 @export var sfxs : AudioLibrary
 
 var opened_doors
@@ -29,7 +30,7 @@ func open():
 	$OpenGlow.visible = true
 	self.create_tween().tween_property($OpenGlow, "modulate:a", 0, 0.5)
 	self.create_tween().tween_property($OpenGlow, "scale", Vector2(5, 5), 0.5)
-	await self.create_tween().tween_property(self, "position", origin - length*8*dir, 1).finished
+	await self.create_tween().tween_property(self, "position", origin - length*8*dir, speed).finished
 	$TopSprite.visible = false
 	$ColorSprite.visible = false
 	$BottomSprite.visible = false

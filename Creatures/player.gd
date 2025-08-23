@@ -56,6 +56,7 @@ var jump_count: int = 0
 @export_group("Items")
 @export_enum("uncollected", "collected", "used") var green_key_state = "uncollected"
 @export_enum("uncollected", "collected", "used") var red_key_state = "uncollected"
+@export_enum("uncollected", "collected", "used") var blue_key_state = "uncollected"
 @export_range(0, 5) var amulet_pieces: int = 0
 @export var has_item_map = false
 @export var has_bubble = false
@@ -125,7 +126,7 @@ func _physics_process(delta):
 		
 		if is_on_wall():
 			affecting_force = 0
-			if can_snap_up:
+			if can_snap_up and is_on_floor():
 				snap_up()
 			can_snap_up = false
 		else:
@@ -192,14 +193,14 @@ func debug_inputs():
 		AudioManager.play_audio(sfxs.get_sfx("jump"))
 		#get_parent().secret_boss_beaten = true
 		#get_parent().red_boss_beaten = true
-		#has_blue_blocks = true
+		has_blue_blocks = true
 		has_dash = true
 		has_wallclimb = true
 		has_double_jump = true
 		#has_freeze = true
 		#get_parent().get_tilemap().change_water_tiles()
-		bubble_action(true, false)
-		update_apple_count(50, true)
+		#bubble_action(true, false)
+		#update_apple_count(50, true)
 		#get_parent().apple_total = 50
 		#get_parent().completion_percentage = 99
 		#has_item_map = true

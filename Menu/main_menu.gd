@@ -12,6 +12,7 @@ func _ready():
 	self.create_tween().tween_property($Menu/StopMouse, "modulate:a", 0, 1)
 	_on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
+	AudioManager.play_song(load("res://Music/Welcome to Noirauq.ogg"))
 
 
 func _on_joy_connection_changed(_device_id, connected):
@@ -40,6 +41,7 @@ func _on_continue_button_pressed():
 		disable_buttons()
 		self.create_tween().tween_property($Menu, "offset:x", -150, 0.2)
 		$Menu/VersionNumber.visible = false
+		AudioManager.stop_song(0.75)
 		get_tree().create_tween().tween_property($FadeToBlack, "color", Color(0, 0, 0, 1), 0.5)
 		await get_tree().create_timer(0.8, false).timeout
 		

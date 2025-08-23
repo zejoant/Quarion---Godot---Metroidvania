@@ -13,6 +13,7 @@ var fade_tween
 
 var freeze_sfx_cooldown = 0
 var rng = RandomNumberGenerator.new()
+@onready var player = get_node_or_null("/root/World/Player")
 
 var animated_tiles: PackedVector2Array = PackedVector2Array([
 	Vector2i(2, 11), Vector2i(2, 12), Vector2i(2, 13), Vector2i(2, 14), Vector2i(2, 15), Vector2i(2, 16), Vector2i(2, 17), Vector2i(4, 17), Vector2i(6, 14), Vector2i(6, 15), Vector2i(6, 16), Vector2i(10, 11), Vector2i(10, 12), Vector2i(10, 14), Vector2i(10, 15), Vector2i(12, 14), Vector2i(12, 15), Vector2i(14, 11), Vector2i(28, 5), 
@@ -36,7 +37,6 @@ func check_for_collected_tiles():
 		custom_data = get_custom_data_with_coords(cell)
 		if custom_data != "no tile data":
 			erase_cell(layer, cell)
-
 
 #looks through the tiles in layer 0 and if functional; replaces them with an object
 func check_for_functional_tiles():
@@ -71,7 +71,7 @@ func replace_tiles_with_object(tile_pos):
 	if custom_data == "Boundary":
 		set_cell(layer, tile_pos, 1, Vector2i(1, 13), 0)
 	
-	elif world.get_node("Player").has_blue_blocks and custom_data == "BlueBlock": #loads solid blue blocks
+	elif player.has_blue_blocks and custom_data == "BlueBlock": #loads solid blue blocks
 		set_cell(layer, tile_pos, 0, Vector2i(38, 2), 0)
 
 #returns custom data based on rid
@@ -144,8 +144,10 @@ func resume_animated_tiles(): #dum ass animatedtexture resource not pausing when
 func freeze_water_tile(body_rid):
 	var tile_coords = get_coords_for_body_rid(body_rid)
 	var tile_info = get_cell_tile_data(0, tile_coords)
+	if !tile_info:
+		return
 	var c_data = tile_info.get_custom_data("Functional Tiles")
-	if tile_info != null and (c_data == "Water" or c_data == "WaterFall"):
+	if c_data == "Water" or c_data == "WaterFall":
 		freeze_sfx_cooldown -= 1
 		if freeze_sfx_cooldown <= 0:
 			AudioManager.play_audio(sfxs.get_sfx("freeze"), rng.randf_range(1, 2), rng.randf_range(0.9, 1))
