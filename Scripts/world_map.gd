@@ -13,6 +13,7 @@ var in_subarea: bool = false
 var map_debug_mode = false
 
 var visited_rooms: int = 0
+#var temp_apple_removal: Array[Vector2i]
 
 func _ready():
 	world = get_node("/root/World")
@@ -61,10 +62,10 @@ func add_room(room_coords: Vector2i):
 		latest_added_room = room_coords
 		%RoomMap.set_cell(0, room_coords, 0, room_coords, 0)
 		visited_rooms += 1
-		if room_coords != Vector2i(0, 0) and room_coords != Vector2i(1, 0):
-			world.add_to_completion_percentage("Room")
+		#if room_coords != Vector2i(0, 0) and room_coords != Vector2i(1, 0):
+		world.add_to_completion_percentage("Room")
 	
-	if visited_rooms == 80:
+	if visited_rooms == 90:
 		SteamManager.get_achivement("FullMap")
 
 func add_apple_from_room(pos: Vector2):
@@ -76,8 +77,29 @@ func add_apple_from_pos(pos: Vector2i):
 	%ItemMap.set_cell(0, pos, 1, Vector2i(0, 0), 0)
 
 func remove_apple_from_map(pos: Vector2):
-	var item_map_pos = Vector2(38.0 * world.room_coords.x + pos.x/8.0, 24.0 * world.room_coords.y + pos.y/8.0 - 4) / 4.0
-	%ItemMap.erase_cell(0, Vector2i(item_map_pos.round()))
+	var item_map_pos = (Vector2(38.0 * world.room_coords.x + pos.x/8.0, 24.0 * world.room_coords.y + pos.y/8.0 - 4) / 4.0).round()
+	#temp_apple_removal.append(Vector2i(item_map_pos))
+	#%ItemMap.erase_cell(0, Vector2i(item_map_pos))
+	%ItemMap.set_cell(0, item_map_pos, 1, Vector2i(2, 1), 0)
+
+func replace_invis_with_apple():
+	for cell_coords in %ItemMap.get_used_cells(0):
+		if %ItemMap.get_cell_atlas_coords(0, cell_coords) == Vector2i(2, 1):
+			%ItemMap.set_cell(0, cell_coords, 1, Vector2i(0, 0), 0)
+
+func delete_invis_apples():
+	for cell_coords in %ItemMap.get_used_cells(0):
+		if %ItemMap.get_cell_atlas_coords(0, cell_coords) == Vector2i(2, 1):
+			%ItemMap.erase_cell(0, cell_coords)
+
+#func return_apples_on_death():
+	#for apple_pos in temp_apple_removal:
+		##if %ItemMap.get_cell_source_id(0, apple_pos) == -1:
+		#%ItemMap.set_cell(0, apple_pos, 1, Vector2i(0, 0), 0)
+	#temp_apple_removal.clear()
+#
+#func clear_temp_apple_array():
+	#temp_apple_removal.clear()
 
 func enable_item_map():
 	%ItemMap.visible = true

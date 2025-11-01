@@ -641,7 +641,7 @@ collision_mask = 2
 
 [node name="NormalColl" type="CollisionShape2D" parent="WaterDetector"]
 shape = SubResource("RectangleShape2D_yubks")
-debug_color = Color(0.0116665, 0, 0.7, 0.419608)
+debug_color = Color(0, 0.606667, 0.7, 0.419608)
 
 [node name="ParticleComps" type="Node2D" parent="."]
 

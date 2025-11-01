@@ -6,6 +6,8 @@ const save_path := "user://save_file.save"
 
 var keymaps: Dictionary
 
+var debug = false
+
 var input_actions = {
 	"Left": "Move left",
 	"Right": "Move right",
@@ -57,6 +59,7 @@ func save_settings():
 	file.store_var(OptionsMenu.use_mouse_for_menus)
 	file.store_var(OptionsMenu.speedrun_timer)
 	file.store_var(OptionsMenu.no_death_mode_unlocked)
+	file.store_var(OptionsMenu.reduced_effects)
 	
 	file.close()
 
@@ -70,6 +73,7 @@ func load_settings():
 		OptionsMenu.use_mouse_for_menus = file.get_var()
 		OptionsMenu.speedrun_timer = file.get_var()
 		OptionsMenu.no_death_mode_unlocked = file.get_var()
+		OptionsMenu.reduced_effects = file.get_var()
 		OptionsMenu.set_loaded_settings()
 		
 		file.close()
@@ -162,4 +166,3 @@ func load_game(world: Node):
 		world.completion_percentage = file.get_var()
 		
 		file.close()
-

@@ -34,15 +34,9 @@ func play_audio(stream: AudioStream, speed: float = 1, volume: float = 1, parent
 			sfxPlayer.volume_db = -40
 			self.create_tween().tween_property(sfxPlayer, "volume_db", volume*40-40, fade_in)
 
-func play_song(stream: AudioStream, playback_pos: float = 0.0, volume: float = 1.0, fade_in: float = 0.0):
-	#if !audioPlayer:
-		#audioPlayer = AudioStreamPlayer.new()
-		#audioPlayer.bus = "Music"
-		#audioPlayer.process_mode = Node.PROCESS_MODE_ALWAYS
-		#add_child(audioPlayer)
+func play_song(stream: AudioStream, playback_pos: float = 0.0, volume: float = 1.0, fade_in: float = 0.0, save_as_prev = true):
 	if song_fade_tween:
 		song_fade_tween.kill()
-	#print(linear_to_db(0.001), ", ", linear_to_db(1))
 	if fade_in:
 		audioPlayer.volume_db = linear_to_db(0.001)
 		song_fade_tween = self.create_tween()
@@ -51,8 +45,9 @@ func play_song(stream: AudioStream, playback_pos: float = 0.0, volume: float = 1
 		audioPlayer.volume_db = linear_to_db(volume)
 		
 	if audioPlayer.has_stream_playback():
-		previous_song = audioPlayer.stream.resource_path
-		previous_song_pos = audioPlayer.get_playback_position()
+		if save_as_prev:
+			previous_song = audioPlayer.stream.resource_path
+			previous_song_pos = audioPlayer.get_playback_position()
 		audioPlayer.stop()
 	
 	if previous_song == respawn_song: #save respawn song pos if song is changed

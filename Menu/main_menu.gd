@@ -13,6 +13,9 @@ func _ready():
 	_on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
 	AudioManager.play_song(load("res://Music/Welcome to Noirauq.ogg"))
+	
+	#if !FileAccess.file_exists("user://save_file.save"):
+	#	$Menu/MarginContainer/VBoxContainer/VBoxContainer/ContinueButton.disabled = true
 
 
 func _on_joy_connection_changed(_device_id, connected):
@@ -38,9 +41,11 @@ func _on_continue_button_pressed():
 	#Input.joy_connection_changed.disconnect(_on_joy_connection_changed)
 	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
 	if FileAccess.file_exists("user://save_file.save"):
+		check_debug()
 		disable_buttons()
 		self.create_tween().tween_property($Menu, "offset:x", -150, 0.2)
 		$Menu/VersionNumber.visible = false
+		$Menu/LinkButton.visible = false
 		AudioManager.stop_song(0.75)
 		get_tree().create_tween().tween_property($FadeToBlack, "color", Color(0, 0, 0, 1), 0.5)
 		await get_tree().create_timer(0.8, false).timeout
@@ -53,9 +58,11 @@ func _on_continue_button_pressed():
 		_on_new_game_button_pressed()
 
 func _on_new_game_button_pressed():
+	check_debug()
 	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
 	disable_buttons()
 	$Menu/VersionNumber.visible = false
+	$Menu/LinkButton.visible = false
 	self.create_tween().tween_property($Menu, "offset:x", -150, 0.2)
 	
 	if !no_death_mode_unlocked:
@@ -64,7 +71,11 @@ func _on_new_game_button_pressed():
 		in_mode_menu = true
 		$NewGameMode.visible = true
 		_on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
-	
+
+func check_debug():
+	if Input.is_key_pressed(KEY_D) and Input.is_key_pressed(KEY_B) and Input.is_key_pressed(KEY_G):
+		SaveManager.debug = true
+
 func disable_buttons():
 	$Menu/MarginContainer/VBoxContainer/VBoxContainer/NewGameButton.disabled = true
 	$Menu/MarginContainer/VBoxContainer/VBoxContainer/ContinueButton.disabled = true

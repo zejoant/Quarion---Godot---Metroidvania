@@ -1,7 +1,10 @@
-res://world.tscn
+res://Menu/main_menu.tscn
 res://Themes/button_theme_new.tres
+res://world.tscn
 res://world_map.tscn
 res://tile_map.tscn
 res://camera.tscn
 res://Creatures/player.tscn
 res://Creatures/ancient_hermit.tscn
+res://Creatures/forsaken_ally.tscn
+res://Creatures/starlight_guardian.tscn

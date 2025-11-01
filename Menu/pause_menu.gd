@@ -7,6 +7,8 @@ var paused = false
 
 var song_paused: bool
 
+@onready var world = get_node("/root/World")
+
 func _ready():
 	hide()
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
@@ -26,8 +28,8 @@ func _on_joy_connection_changed(_device_id, connected):
 
 func pause_menu():
 	if paused:
-		if get_node("/root/World").get_tilemap():
-			get_node("/root/World").get_tilemap().resume_animated_tiles()
+		if world.get_tilemap():
+			world.get_tilemap().resume_animated_tiles()
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		hide()
 		paused = false
@@ -35,8 +37,8 @@ func pause_menu():
 		get_tree().paused = false
 		$CanvasLayer/StopMouse.mouse_filter = MOUSE_FILTER_IGNORE
 	else:
-		if get_node("/root/World").get_tilemap():
-			get_node("/root/World").get_tilemap().pause_animated_tiles()
+		if world.get_tilemap():
+			world.get_tilemap().pause_animated_tiles()
 		song_paused = AudioManager.audioPlayer.stream_paused
 		AudioManager.pause_song()
 		get_tree().paused = true
@@ -56,6 +58,9 @@ func _on_resume_button_pressed():
 func _on_quit_button_pressed():
 	AudioManager.play_audio(sfxs.get_sfx("click"),1, 1.4)
 	AudioManager.stop_song()
+	#get_node("/root/World/WorldMap").return_apples_on_death()
+	if world.red_boss_beaten and !world.secret_boss_beaten:
+			world.red_boss_beaten = false
 	SaveManager.save_game(get_node("/root/World"))
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://Menu/main_menu.tscn")

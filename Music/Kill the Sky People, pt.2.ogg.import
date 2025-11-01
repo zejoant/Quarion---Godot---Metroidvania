@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://rxu8dv28ed4d"
+path="res://.godot/imported/Kill the Sky People, pt.2.ogg-3b9970a0a705b814cf7aa2df665ac358.oggvorbisstr"
+
+[deps]
+
+source_file="res://Music/Kill the Sky People, pt.2.ogg"
+dest_files=["res://.godot/imported/Kill the Sky People, pt.2.ogg-3b9970a0a705b814cf7aa2df665ac358.oggvorbisstr"]
+
+[params]
+
+loop=true
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

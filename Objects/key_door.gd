@@ -20,16 +20,8 @@ func _ready():
 	player = get_node("/root/World/Player")
 	if player[color + "_key_state"] == "used":
 		queue_free()
-	#if color == "green" and player.green_key_state == "used":
-		#queue_free()
-	#elif color == "red" and player.red_key_state == "used":
-		#queue_free()
-	#elif color == "blue" and player.blue_key_state == "used":
-		#queue_free()
 	else:
 		setup()
-	
-	
 
 
 func open():

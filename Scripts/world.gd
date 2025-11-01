@@ -131,6 +131,9 @@ func setup_arrays():
 
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		#$WorldMap.return_apples_on_death()
+		if red_boss_beaten and !secret_boss_beaten:
+			red_boss_beaten = false
 		save_game()
 		await get_tree().create_timer(0.1).timeout
 		get_tree().call_deferred("quit")
@@ -212,10 +215,11 @@ func return_to_checkpoint():
 	#load_data()
 	#if checkpoint_room != room_coords:
 	#player.position = Vector2(-100, -100)
-	change_room(checkpoint_room)
 	player.position = Vector2(checkpoint_pos.x, checkpoint_pos.y)
+	change_room(checkpoint_room)
 
 func temporary_actions_to_permanent(): #saves stuff like clicking on buttons and opening doors to be permanent
+	$WorldMap.delete_invis_apples()
 	opened_doors_saved = opened_doors.duplicate(true)
 	room_state_saved = room_state.duplicate(true)
 	player.apple_count_saved = player.apple_count
@@ -224,6 +228,7 @@ func temporary_actions_to_permanent(): #saves stuff like clicking on buttons and
 		SteamManager.get_achivement("AllApples")
 
 func revert_temporary_actions(): #revers actions like pressing buttons and openings doors if they have not been made permanent
+	$WorldMap.replace_invis_with_apple()
 	opened_doors = opened_doors_saved.duplicate(true)
 	room_state = room_state_saved.duplicate(true)
 	apple_total = apple_total_saved
@@ -333,12 +338,12 @@ func reset_room_objects(group: String = "Resetable"):
 func add_to_completion_percentage(type: String):
 	if type == "Apple": #50x
 		completion_percentage += 0.4
-	elif type == "Room": #78x
-		completion_percentage += 2.0/13.0#0.15
+	elif type == "Room": #90x
+		completion_percentage += 2.0/15.0#2.0/13.0
 	elif type == "PowerUp": #3x
 		completion_percentage += 14
 	elif type == "DoubleJump": #1x
-		completion_percentage += 12
+		completion_percentage += 11
 	elif type == "Freeze": #1x
 		completion_percentage += 2
 	elif type == "Shop": #2x

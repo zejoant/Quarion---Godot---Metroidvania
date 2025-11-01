@@ -24,7 +24,7 @@ func _ready():
 	#$CreditsComp/CompletionTime.text = time_convert(completion_time)
 	#$CreditsComp/CompletionPercentage.text = str(int(completion_percentage), "%")
 	
-	#play_song("res://Music/Old Songs/Chipfezt.mp3")
+	#play_song(load("res://Music/The Dream that Died in Bliss.ogg"))
 	#AudioManager.play_song(load("res://Music/Quarion ot Nruter Reven.ogg"))
 	$Camera.fade("000000", 1, 0, 0.5, 0.5)
 	await get_tree().create_timer(0.5, false).timeout
@@ -66,3 +66,58 @@ func return_after_end():
 
 func play_sfx(sfx_name: String):
 	AudioManager.play_audio(sfxs.get_sfx(sfx_name))
+
+func add_price_cup(category: String):
+	var tween
+	if category == "Deaths":
+		if death_count == 0:
+			$StatsComp/DeathsPrice.region_rect.position.x -= 32
+		elif death_count <= 10:
+			$StatsComp/DeathsPrice.region_rect.position.x -= 16
+		if death_count <= 50:
+			tween = self.create_tween()
+			tween.set_ease(Tween.EASE_IN)
+			tween.set_trans(Tween.TRANS_BACK)
+			tween.parallel().tween_property($StatsComp/DeathsPrice, "modulate:a", 1, 0.2)
+			await tween.parallel().tween_property($StatsComp/DeathsPrice, "scale", Vector2(1, 1), 0.3).finished
+			AudioManager.play_audio(sfxs.get_sfx("cup"))
+		
+	elif category == "Jumps":
+		if jump_count <= 800:
+			$StatsComp/JumpsPrice.region_rect.position.x -= 32
+		elif jump_count <= 1000:
+			$StatsComp/JumpsPrice.region_rect.position.x -= 16
+		if jump_count <= 2000:
+			tween = self.create_tween()
+			tween.set_ease(Tween.EASE_IN)
+			tween.set_trans(Tween.TRANS_BACK)
+			tween.parallel().tween_property($StatsComp/JumpsPrice, "modulate:a", 1, 0.2)
+			await tween.parallel().tween_property($StatsComp/JumpsPrice, "scale", Vector2(1, 1), 0.3).finished
+			AudioManager.play_audio(sfxs.get_sfx("cup"))
+	
+	elif category == "Time":
+		if completion_time < 1200:
+			$StatsComp/TimePrice.region_rect.position.x -= 32
+		elif completion_time <= 1800:
+			$StatsComp/TimePrice.region_rect.position.x -= 16
+		if completion_time <= 2400:
+			tween = self.create_tween()
+			tween.set_ease(Tween.EASE_IN)
+			tween.set_trans(Tween.TRANS_BACK)
+			tween.parallel().tween_property($StatsComp/TimePrice, "modulate:a", 1, 0.2)
+			await tween.parallel().tween_property($StatsComp/TimePrice, "scale", Vector2(1, 1), 0.3).finished
+			AudioManager.play_audio(sfxs.get_sfx("cup"))
+	
+	#elif category == "Percent":
+		#if death_count == 100:
+			#$StatsComp/PercentPrice.region_rect.position.x -= 32
+		#elif death_count <= 95:
+			#$StatsComp/PercentPrice.region_rect.position.x -= 16
+		#if death_count <= 80:
+			#tween = self.create_tween()
+			#tween.set_ease(Tween.EASE_IN)
+			#tween.set_trans(Tween.TRANS_BACK)
+			#tween.parallel().tween_property($StatsComp/PercentPrice, "modulate:a", 1, 0.2)
+			#tween.parallel().tween_property($StatsComp/PercentPrice, "scale", Vector2(1, 1), 0.3)
+	
+	

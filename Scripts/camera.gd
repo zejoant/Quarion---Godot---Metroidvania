@@ -20,17 +20,25 @@ enum CollectedItem {RED_KEY, GREEN_KEY, BLUE_KEY, AMULET}
 var item_display: Array[CollectedItem]
 
 func _ready():
-	$FlashLayer.modulate.a = 0
 	close_p_up_window(true)
+	#await Engine.get_main_loop().process_frame
+	#await ready
+	$FlashLayer.modulate.a = 0
 	$InvertColorLayer/ColorRect.material.set_shader_parameter("strength", 0) #invert color disabled
 	$RadialBlurLayer/ColorRect.material.set_shader_parameter("blur_power", 0) #radical blur disabled
+	
+	if SaveManager.debug:
+		add_child(load("res://debug_info.tscn").instantiate())
 
+	
 func load_items():
 	if get_node("/root/World/Player").green_key_state == "collected":
 		add_collected_item(CollectedItem.GREEN_KEY)
 	if get_node("/root/World/Player").red_key_state == "collected":
 		add_collected_item(CollectedItem.RED_KEY)
-	if get_node("/root/World/Player").amulet_pieces == 5:
+	if get_node("/root/World/Player").blue_key_state == "collected":
+		add_collected_item(CollectedItem.BLUE_KEY)
+	if get_node("/root/World/Player").amulet_pieces == 6:
 		add_collected_item(CollectedItem.AMULET)
 
 func update_apple_count(value: int):
@@ -142,7 +150,7 @@ func collect_amulet_piece():
 	tween = self.create_tween()
 	tween.set_ease(Tween.EASE_IN)
 	tween.set_trans(Tween.TRANS_BACK)
-	if player.amulet_pieces == 5:
+	if player.amulet_pieces == 6:
 		add_collected_item(CollectedItem.AMULET)
 		$UILayer/UIContainer/AmuletSprite.visible = false
 		tween.parallel().tween_property($UILayer/AmuletContainer, "position", $UILayer/UIContainer/AmuletSprite.position, 1)
@@ -177,6 +185,8 @@ func blur(strength: float, time):
 
 func flash(opacity, enter, hold, exit, color: Color = Color(1, 1, 1, 0)):
 	#var start_opacity = $FlashLayer.modulate.a
+	if OptionsMenu.reduced_effects:
+		return
 	var old_color = $FlashLayer.modulate
 	old_color.a = 0
 	$FlashLayer.modulate = color#Color(1, 1, 1, 0)
@@ -198,7 +208,10 @@ func fade(color: String, opacity: float, enter: float, hold: float, exit: float)
 	$FlashLayer.modulate = Color(color + "00")
 	fade_tween = self.create_tween()
 	
-	fade_tween.tween_property($FlashLayer, "modulate:a", opacity, enter) #fade in the new opacity
+	if enter == 0:
+		$FlashLayer.modulate.a = opacity
+	else:
+		fade_tween.tween_property($FlashLayer, "modulate:a", opacity, enter) #fade in the new opacity
 	fade_tween.tween_property($FlashLayer, "modulate:a", opacity, hold) #hold the opacity for a time
 	fade_tween.tween_property($FlashLayer, "modulate:a", 0, exit) #fade out to original opacity
 
@@ -225,6 +238,8 @@ func zoom_camera(amount: float, time: float, aim: Vector2 = Vector2(152, 96)):
 		zoom_tween.parallel().tween_property(self, "position", aim, time)
 
 func radial_blur(power: float = 0.03, duration: float = 0.3, sampling_count: int = 6):
+	if OptionsMenu.reduced_effects:
+		return
 	var callable = Callable(self, "set_shader_value").bind("RadialBlurLayer/ColorRect", "blur_power")
 	$RadialBlurLayer/ColorRect.material.set_shader_parameter("sampling_count", sampling_count)
 	radial_tween = self.create_tween()
@@ -232,6 +247,8 @@ func radial_blur(power: float = 0.03, duration: float = 0.3, sampling_count: int
 
 
 func invert_color(power: float, duration: float):
+	if OptionsMenu.reduced_effects:
+		return
 	var callable = Callable(self, "set_shader_value").bind("InvertColorLayer/ColorRect", "strength")
 	invert_tween = self.create_tween()
 	await invert_tween.tween_method(callable, power, 0.0, duration).finished # args: (method / start value / end value / duration)
@@ -285,6 +302,8 @@ func open_p_up_window(p_up: String):
 	#p_up_window_open = true
 	p_up_tween = self.create_tween()
 	p_up_tween.tween_property($PowerUpTexts/InputIndicator, "modulate:a", 1, 0.2)
+	await get_tree().create_timer(6, false).timeout
+	close_p_up_window()
 
 func hide_ui(show_ui: bool = false):
 	$UILayer/UIContainer.visible = show_ui

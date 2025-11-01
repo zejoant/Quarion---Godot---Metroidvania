@@ -20,7 +20,10 @@ func _ready():
 	#position = Vector2(0, 0)
 	origin = position
 	
-	if extended_time == 0:
+	if anim_tween:
+		anim_tween.kill()
+	
+	if extended_time < 0.1:
 		extended_time = interval
 	
 	setup()
@@ -29,7 +32,7 @@ func _ready():
 	animating = false
 	
 func _physics_process(_delta):
-	if start_extended:
+	if start_extended and !animating:
 		animating = true
 		start_extended = false
 		extend_spike(length*8)

@@ -19,7 +19,7 @@ func _ready():
 
 
 func _input(event):
-	if event.is_action_pressed("Interact") and player.amulet_pieces == 5 and player_in_area:
+	if event.is_action_pressed("Interact") and player_in_area:
 		$InputIndicator.visible = false
 		cam.remove_collected_item(cam.CollectedItem.AMULET)
 		player.amulet_pieces = -1
@@ -40,7 +40,7 @@ func open_mouth_sfx():
 	AudioManager.play_audio(sfxs.get_sfx("Open Mouth"))
 
 func _on_insert_amulet_area_body_entered(body):
-	if body is CharacterBody2D and player.amulet_pieces == 5:
+	if body is CharacterBody2D and player.amulet_pieces == 6:
 		player_in_area = true
 		$InputIndicator.visible = true
 

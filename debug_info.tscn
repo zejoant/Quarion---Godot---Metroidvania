@@ -1,0 +1,159 @@
+[gd_scene load_steps=5 format=3 uid="uid://boai5wv76n8sj"]
+
+[ext_resource type="Script" path="res://debug_info.gd" id="1_7tk48"]
+[ext_resource type="FontFile" uid="uid://dcrk43hh0erpd" path="res://Fonts/Small Font.ttf" id="1_iy8di"]
+[ext_resource type="Theme" uid="uid://clpes5g3k6kou" path="res://Themes/big_font_theme.tres" id="2_3ls7v"]
+
+[sub_resource type="Theme" id="Theme_236k7"]
+Label/colors/font_color = Color(0.686275, 0.65098, 0.552941, 1)
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/constants/line_spacing = 1
+Label/constants/outline_size = 4
+Label/font_sizes/font_size = 8
+Label/fonts/font = ExtResource("1_iy8di")
+
+[node name="DebugInfo" type="CanvasLayer"]
+script = ExtResource("1_7tk48")
+
+[node name="PlayerTitle" type="Label" parent="."]
+offset_left = 3.0
+offset_top = 17.0
+offset_right = 51.0
+offset_bottom = 40.0
+theme = ExtResource("2_3ls7v")
+text = "Player"
+
+[node name="XPos" type="Label" parent="."]
+offset_left = 3.0
+offset_top = 26.0
+offset_right = 43.0
+offset_bottom = 49.0
+theme = SubResource("Theme_236k7")
+text = "x_pos: x"
+
+[node name="YPos" type="Label" parent="."]
+offset_left = 3.0
+offset_top = 34.0
+offset_right = 43.0
+offset_bottom = 57.0
+theme = SubResource("Theme_236k7")
+text = "y_pos: x"
+
+[node name="XSpeed" type="Label" parent="."]
+offset_left = 3.0
+offset_top = 42.0
+offset_right = 43.0
+offset_bottom = 65.0
+theme = SubResource("Theme_236k7")
+text = "x_speed: x"
+
+[node name="YSpeed" type="Label" parent="."]
+offset_left = 3.0
+offset_top = 50.0
+offset_right = 43.0
+offset_bottom = 73.0
+theme = SubResource("Theme_236k7")
+text = "y_speed: y"
+
+[node name="CanJump" type="Label" parent="."]
+offset_left = 3.0
+offset_top = 58.0
+offset_right = 46.0
+offset_bottom = 81.0
+theme = SubResource("Theme_236k7")
+text = "is_on_floor: "
+
+[node name="Force" type="Label" parent="."]
+offset_left = 3.0
+offset_top = 66.0
+offset_right = 46.0
+offset_bottom = 89.0
+theme = SubResource("Theme_236k7")
+
+[node name="JumpCount" type="Label" parent="."]
+offset_left = 3.0
+offset_top = 74.0
+offset_right = 46.0
+offset_bottom = 97.0
+theme = SubResource("Theme_236k7")
+text = "jump_count: "
+
+[node name="DeathCount" type="Label" parent="."]
+offset_left = 3.0
+offset_top = 82.0
+offset_right = 46.0
+offset_bottom = 105.0
+theme = SubResource("Theme_236k7")
+text = "death_count: "
+
+[node name="CheckpointRoom" type="Label" parent="."]
+offset_left = 3.0
+offset_top = 91.0
+offset_right = 49.0
+offset_bottom = 114.0
+theme = SubResource("Theme_236k7")
+text = "cp_room: "
+
+[node name="CheckpointPos" type="Label" parent="."]
+offset_left = 3.0
+offset_top = 99.0
+offset_right = 49.0
+offset_bottom = 122.0
+theme = SubResource("Theme_236k7")
+text = "cp_pos"
+
+[node name="BossLabels" type="Node2D" parent="."]
+position = Vector2(0, 35)
+
+[node name="SunBossTitle" type="Label" parent="BossLabels"]
+offset_left = 3.0
+offset_top = 78.0
+offset_right = 59.0
+offset_bottom = 101.0
+theme = ExtResource("2_3ls7v")
+text = "Boss"
+
+[node name="Health" type="Label" parent="BossLabels"]
+offset_left = 3.0
+offset_top = 88.0
+offset_right = 46.0
+offset_bottom = 111.0
+theme = SubResource("Theme_236k7")
+text = "health:"
+
+[node name="BossState" type="Label" parent="BossLabels"]
+offset_left = 3.0
+offset_top = 96.0
+offset_right = 46.0
+offset_bottom = 119.0
+theme = SubResource("Theme_236k7")
+text = "boss_state:"
+
+[node name="AttackState" type="Label" parent="BossLabels"]
+offset_left = 3.0
+offset_top = 104.0
+offset_right = 49.0
+offset_bottom = 127.0
+theme = SubResource("Theme_236k7")
+text = "attack_state:"
+
+[node name="Other1" type="Label" parent="BossLabels"]
+offset_left = 3.0
+offset_top = 112.0
+offset_right = 49.0
+offset_bottom = 135.0
+theme = SubResource("Theme_236k7")
+
+[node name="Other2" type="Label" parent="BossLabels"]
+offset_left = 3.0
+offset_top = 119.0
+offset_right = 49.0
+offset_bottom = 142.0
+theme = SubResource("Theme_236k7")
+
+[node name="Other3" type="Label" parent="BossLabels"]
+offset_left = 3.0
+offset_top = 127.0
+offset_right = 49.0
+offset_bottom = 150.0
+theme = SubResource("Theme_236k7")

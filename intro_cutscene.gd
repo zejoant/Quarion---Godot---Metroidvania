@@ -39,3 +39,9 @@ func play_sfx(sfx_name: String):
 func play_song(song_name: String):
 	AudioManager.play_song(load(song_name))
 	#AudioManager.play_song(load("res://Music/Welcome to Noirauq.ogg"), start)
+
+
+func _on_tree_exiting():
+	$Camera/FlashLayer.modulate.a = 0
+	$Camera/InvertColorLayer/ColorRect.material.set_shader_parameter("strength", 0) #invert color disabled
+	$Camera/RadialBlurLayer/ColorRect.material.set_shader_parameter("blur_power", 0) #radical blur disabled

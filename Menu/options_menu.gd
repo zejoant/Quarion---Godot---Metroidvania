@@ -12,6 +12,7 @@ static var use_mouse_for_menus = true
 static var speedrun_timer = false
 
 static var no_death_mode_unlocked = false
+static var reduced_effects = false
 
 var previous_window_mode = DisplayServer.WINDOW_MODE_WINDOWED
 
@@ -35,6 +36,7 @@ func _ready():
 	
 	$MarginContainer/VBoxContainer/MouseHBox/MouseMenusCheck.button_pressed = use_mouse_for_menus
 	$MarginContainer/VBoxContainer/MouseHBox/TimerCheck.button_pressed = speedrun_timer
+	$MarginContainer/VBoxContainer/MouseHBox/EffectsCheck.button_pressed = reduced_effects
 	
 	_on_joy_connection_changed(0, Input.get_connected_joypads().size() > 0)
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
@@ -52,12 +54,12 @@ func _on_joy_connection_changed(_device_id, connected):
 	
 	if !connected:
 		$MarginContainer/VBoxContainer/MouseHBox/MouseMenusCheck.visible = true
-		$MarginContainer/VBoxContainer/VideoVBox/BorderlessCheck.focus_neighbor_bottom = "../../MouseHBox/MouseMenusCheck"
-		$MarginContainer/VBoxContainer/BackHBox/BackButton.focus_neighbor_top = "../../MouseHBox/MouseMenusCheck"
+		#$MarginContainer/VBoxContainer/VideoVBox/BorderlessCheck.focus_neighbor_bottom = "../../MouseHBox/MouseMenusCheck"
+		#$MarginContainer/VBoxContainer/BackHBox/BackButton.focus_neighbor_top = "../../MouseHBox/MouseMenusCheck"
 	else:
 		$MarginContainer/VBoxContainer/MouseHBox/MouseMenusCheck.visible = false
-		$MarginContainer/VBoxContainer/VideoVBox/BorderlessCheck.focus_neighbor_bottom = "../../MouseHBox/TimerCheck"#"../../BackHBox/BackButton"
-		$MarginContainer/VBoxContainer/BackHBox/BackButton.focus_neighbor_top = "../../MouseHBox/TimerCheck"#"../../VideoVBox/BorderlessCheck"
+		#$MarginContainer/VBoxContainer/VideoVBox/BorderlessCheck.focus_neighbor_bottom = "../../MouseHBox/TimerCheck"#"../../BackHBox/BackButton"
+		#$MarginContainer/VBoxContainer/BackHBox/BackButton.focus_neighbor_top = "../../MouseHBox/TimerCheck"#"../../VideoVBox/BorderlessCheck"
 
 func _input(event):
 	if event.is_action_pressed("ui_cancel"):
@@ -134,8 +136,6 @@ func _on_fullscreen_check_toggled(toggled_on):
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 		fullscreen = true
 	else:
-		#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		#print(DisplayServer.window_get_size())
 		DisplayServer.window_set_mode(previous_window_mode)
 		fullscreen = false
 
@@ -161,14 +161,14 @@ func _on_timer_check_toggled(toggled_on):
 	speedrun_timer = toggled_on
 
 static func set_loaded_settings():
-	if sfx_slider_value == 0:
-		AudioServer.set_bus_mute(2, true)
-	else:
-		AudioServer.set_bus_volume_db(2, linear_to_db(sfx_slider_value))
-	if music_slider_value == 0:
-		AudioServer.set_bus_mute(1, true)
-	else:
-		AudioServer.set_bus_volume_db(1, linear_to_db(music_slider_value))
+	#if sfx_slider_value == 0:
+	#	AudioServer.set_bus_mute(2, true)
+	#else:
+	AudioServer.set_bus_volume_db(2, linear_to_db(sfx_slider_value))
+	#if music_slider_value == 0:
+	#	AudioServer.set_bus_mute(1, true)
+	#else:
+	AudioServer.set_bus_volume_db(1, linear_to_db(music_slider_value))
 	
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, borderless)
 	if fullscreen:
@@ -183,3 +183,6 @@ func _on_keybind_button_pressed():
 	keybind_menu.back_scene = back_scene
 	get_parent().add_child(keybind_menu)
 	queue_free()
+
+func _on_effects_check_toggled(toggled_on):
+	reduced_effects = toggled_on

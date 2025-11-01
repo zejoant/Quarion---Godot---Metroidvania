@@ -1,4 +1,4 @@
-[gd_scene load_steps=88 format=3 uid="uid://d0qq6rrcgfcy7"]
+[gd_scene load_steps=92 format=3 uid="uid://d0qq6rrcgfcy7"]
 
 [ext_resource type="Script" path="res://Creatures/ancient_hermit.gd" id="1_20jgg"]
 [ext_resource type="Texture2D" uid="uid://b4a3gpanglo75" path="res://Assets/Character Sprite Sheet.png" id="1_q7f17"]
@@ -373,6 +373,34 @@ tracks/1/keys = {
 "values": [Vector2(0, 0), Vector2(7, 0), Vector2(4.5, 0), Vector2(6.5, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_yf742"]
+resource_name = "death_fall"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BossSprite:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(96, 288, 32, 32)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BossSprite:offset")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(4, 3)]
+}
+
 [sub_resource type="Animation" id="Animation_sghec"]
 resource_name = "hands_together"
 length = 0.001
@@ -509,6 +537,18 @@ tracks/1/keys = {
 "update": 1,
 "values": [Vector2(0, 0)]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("StaffRaise:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_p3cml"]
 resource_name = "levitate_hands_up"
@@ -536,6 +576,91 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [Vector2(0, 3)]
+}
+
+[sub_resource type="Animation" id="Animation_enmlp"]
+resource_name = "lie_on_ground"
+length = 0.60001
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BossSprite:offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(0, 4)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BossSprite:region_rect")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Rect2(0, 288, 32, 32), Rect2(32, 288, 32, 32)]
+}
+
+[sub_resource type="Animation" id="Animation_uoqq6"]
+resource_name = "petrify"
+length = 1.30001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BossSprite:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.46, 1.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [Rect2(128, 288, 32, 32), Rect2(160, 288, 32, 48), Rect2(192, 288, 32, 48), Rect2(64, 288, 32, 32)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BossSprite:offset")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3, 1.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [Vector2(0, 4), Vector2(0, -4), Vector2(0, 4)]
+}
+
+[sub_resource type="Animation" id="Animation_tkhge"]
+resource_name = "petrify_instant"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BossSprite:offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(0, 4)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BossSprite:region_rect")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(64, 288, 32, 32)]
 }
 
 [sub_resource type="Animation" id="Animation_qxl1t"]
@@ -797,6 +922,18 @@ tracks/1/keys = {
 "update": 1,
 "values": [Rect2(176, 64, 16, 32), Rect2(160, 48, 16, 48), Rect2(240, 64, 8, 8)]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("StaffRaise:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_85wkh"]
 _data = {
@@ -806,11 +943,15 @@ _data = {
 "build_up": SubResource("Animation_qod6j"),
 "dash_slash": SubResource("Animation_5mqv0"),
 "dash_wind_up": SubResource("Animation_dmrls"),
+"death_fall": SubResource("Animation_yf742"),
 "hands_together": SubResource("Animation_sghec"),
 "hold_out_staff_right": SubResource("Animation_iao1p"),
 "implode": SubResource("Animation_vh6ft"),
 "levitate": SubResource("Animation_phhgn"),
 "levitate_hands_up": SubResource("Animation_p3cml"),
+"lie_on_ground": SubResource("Animation_enmlp"),
+"petrify": SubResource("Animation_uoqq6"),
+"petrify_instant": SubResource("Animation_tkhge"),
 "point_staff": SubResource("Animation_qxl1t"),
 "raise_staff": SubResource("Animation_2hpme"),
 "side_swing": SubResource("Animation_go7ft"),

@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bbcuafrlc8tnb"]
+[gd_scene load_steps=29 format=3 uid="uid://bbcuafrlc8tnb"]
 
 [ext_resource type="Script" path="res://Menu/main_menu.gd" id="1_af00c"]
 [ext_resource type="Script" path="res://Scripts/Classes/audio_library.gd" id="2_j2owd"]
@@ -64,7 +64,7 @@ texture_margin_right = 12.0
 texture_margin_bottom = 6.0
 region_rect = Rect2(12, 43, 56, 26)
 
-[sub_resource type="Theme" id="Theme_pjanq"]
+[sub_resource type="Theme" id="Theme_cehi6"]
 default_font_size = 8
 Button/colors/font_color = Color(1, 1, 1, 1)
 Button/colors/font_outline_color = Color(0, 0, 0, 1)
@@ -76,6 +76,62 @@ Button/styles/focus = SubResource("StyleBoxTexture_j6nx3")
 Button/styles/hover = SubResource("StyleBoxTexture_m3q7b")
 Button/styles/normal = SubResource("StyleBoxTexture_iyykc")
 Button/styles/pressed = SubResource("StyleBoxTexture_y31l4")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2582c"]
+texture = ExtResource("9_2ke7m")
+texture_margin_left = 8.0
+texture_margin_top = 5.0
+texture_margin_right = 8.0
+texture_margin_bottom = 5.0
+region_rect = Rect2(16, 44, 48, 24)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0214j"]
+texture = ExtResource("9_2ke7m")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(73, 11, 63, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ueihy"]
+texture = ExtResource("9_2ke7m")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(73, 11, 63, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_34pbt"]
+texture = ExtResource("9_2ke7m")
+texture_margin_left = 12.0
+texture_margin_top = 5.0
+texture_margin_right = 12.0
+texture_margin_bottom = 5.0
+expand_margin_top = 1.0
+region_rect = Rect2(12, 11, 56, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pdily"]
+texture = ExtResource("9_2ke7m")
+texture_margin_left = 12.0
+texture_margin_top = 6.0
+texture_margin_right = 12.0
+texture_margin_bottom = 6.0
+region_rect = Rect2(12, 43, 56, 26)
+
+[sub_resource type="Theme" id="Theme_pjanq"]
+default_font_size = 8
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/constants/outline_size = 4
+Button/font_sizes/font_size = 8
+Button/fonts/font = ExtResource("8_r42y0")
+Button/styles/disabled = SubResource("StyleBoxTexture_2582c")
+Button/styles/focus = SubResource("StyleBoxTexture_0214j")
+Button/styles/hover = SubResource("StyleBoxTexture_ueihy")
+Button/styles/normal = SubResource("StyleBoxTexture_34pbt")
+Button/styles/pressed = SubResource("StyleBoxTexture_pdily")
 
 [sub_resource type="Gradient" id="Gradient_1ot73"]
 offsets = PackedFloat32Array(0, 0.35, 0.62, 1)
@@ -147,6 +203,15 @@ theme = ExtResource("5_v0tn8")
 theme_override_constants/h_separation = 0
 text = "New Game"
 
+[node name="MapMakerButton" type="Button" parent="Menu/MarginContainer/VBoxContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+focus_neighbor_top = NodePath("../ContinueButton")
+focus_neighbor_bottom = NodePath("../OptionsButton")
+theme = SubResource("Theme_cehi6")
+theme_override_constants/h_separation = 0
+text = "Map Maker"
+
 [node name="OptionsButton" type="Button" parent="Menu/MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../NewGameButton")
@@ -168,7 +233,7 @@ offset_right = 303.0
 offset_bottom = 193.0
 theme = ExtResource("7_ajjnw")
 theme_override_colors/font_color = Color(0.341176, 0.321569, 0.505882, 1)
-text = "Version 1.0.0"
+text = "Version 1.0.9"
 
 [node name="StopMouse" type="ColorRect" parent="Menu"]
 anchors_preset = 15
@@ -179,6 +244,21 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
+
+[node name="LinkButton" type="LinkButton" parent="Menu"]
+z_index = -1
+offset_left = 2.0
+offset_top = 182.0
+offset_right = 31.0
+offset_bottom = 190.0
+theme_override_colors/font_color = Color(0.341176, 0.321569, 0.505882, 1)
+theme_override_colors/font_hover_color = Color(0.470588, 0.705882, 0.360784, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("8_r42y0")
+theme_override_font_sizes/font_size = 8
+text = "Discord"
+uri = "https://discord.gg/BdYJAqNRgx"
 
 [node name="NewGameMode" type="CanvasLayer" parent="."]
 visible = false

@@ -15,7 +15,7 @@ func _ready():
 	player = get_node("/root/World/Player")
 	#$AnimationPlayer.play("Default")
 	scale = Vector2(0, 0)
-	AudioManager.play_audio(sfxs.get_sfx("charge up"))
+	AudioManager.play_audio(sfxs.get_sfx("charge up"), 1, 0.9)
 	
 	if homing:	
 		var yellow_gradient_data := {
@@ -37,8 +37,8 @@ func _physics_process(_delta):
 	else:
 		if $TrailParticles.visible != true:
 			get_node("/root/World/Camera").invert_color(0.7, 0.3)
-			AudioManager.play_audio(sfxs.get_sfx("shot 1"))
-			AudioManager.play_audio(sfxs.get_sfx("shot 2"))
+			AudioManager.play_audio(sfxs.get_sfx("shot 1"), 1, 0.9)
+			AudioManager.play_audio(sfxs.get_sfx("shot 2"), 1, 0.9)
 			$TrailParticles.visible = true
 			scale = Vector2(1, 1)
 			if target_player:

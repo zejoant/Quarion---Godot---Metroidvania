@@ -4,6 +4,8 @@ extends StaticBody2D
 @export var id : int
 var opened_doors
 
+var can_be_pressed = false
+
 #next free id is 14
 
 # Called when the node enters the scene tree for the first time.
@@ -12,12 +14,16 @@ func _ready():
 	if opened_doors[id]:
 		$ButtonSprite.region_rect = Rect2(32, 104, 16, 8)
 		$ClickArea/ButtonClickColl.disabled = true
+	
+	await self.create_tween().tween_interval(0.5).finished
+	can_be_pressed = true
 
 func _on_click_area_body_entered(_body):
-	$AnimationPlayer.play("ButtonClick")
-	AudioManager.play_audio(sfxs.get_sfx("click"))
-	opened_doors[id] = true
-	
-	for node in get_parent().get_children():
-		if node.name.contains("ButtonDoor") and id == node.id:
-			node.open()
+	if can_be_pressed:
+		$AnimationPlayer.play("ButtonClick")
+		AudioManager.play_audio(sfxs.get_sfx("click"))
+		opened_doors[id] = true
+		
+		for node in get_parent().get_children():
+			if node.name.contains("ButtonDoor") and id == node.id:
+				node.open()

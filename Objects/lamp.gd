@@ -1,11 +1,11 @@
 extends StaticBody2D
 
-var world
+@onready var world = get_node("/root/World")
+#@onready var world_map = get_node("/root/World/WorldMap")
 var sfx = preload("res://Sfx/checkpoint2.wav")
 var cooldown : bool = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	world = get_node("/root/World")
 	if world.no_death_mode:
 		queue_free()
 		return
@@ -26,6 +26,8 @@ func activate():
 			else:
 				world.save_checkpoint_room(position)
 			world.reset_room_objects("Crumble")
+			#world_map.delete_invis_apples()
+			#get_node("/root/World/WorldMap").clear_temp_apple_array()
 			world.temporary_actions_to_permanent()
 			world.save_game()
 		cooldown = true

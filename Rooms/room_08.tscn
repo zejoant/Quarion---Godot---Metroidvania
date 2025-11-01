@@ -24,4 +24,4 @@ layer_4/tile_data = PackedInt32Array(1441821, 1572864, 23, 1310749, 1572864, 23,
 
 [node name="Key" parent="." instance=ExtResource("2_0mb7x")]
 position = Vector2(72, 84)
-type = "red"
+type = "blue"

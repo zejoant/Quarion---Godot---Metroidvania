@@ -1,4 +1,4 @@
-[gd_scene load_steps=52 format=3 uid="uid://cwafd3q5y7u6m"]
+[gd_scene load_steps=55 format=3 uid="uid://cwafd3q5y7u6m"]
 
 [ext_resource type="Script" path="res://outro_cutscene.gd" id="1_67kqt"]
 [ext_resource type="Texture2D" uid="uid://bn306u45m6wu1" path="res://Assets/Line Particle.png" id="1_qhqm7"]
@@ -8,12 +8,14 @@
 [ext_resource type="Script" path="res://Scripts/Classes/sound_effect.gd" id="3_l6yqt"]
 [ext_resource type="Shader" path="res://Shaders/pixelate.gdshader" id="4_7merp"]
 [ext_resource type="AudioStream" uid="uid://c6lqn8mannaey" path="res://Sfx/photo slide.wav" id="4_ev7e6"]
+[ext_resource type="AudioStream" uid="uid://c1l5rfwpk0e42" path="res://Sfx/price cup.wav" id="5_xhu1v"]
 [ext_resource type="FontFile" uid="uid://nf83gnipy1pm" path="res://Fonts/Big Font.ttf" id="6_j7a2d"]
 [ext_resource type="PackedScene" uid="uid://c412d8dttjo6j" path="res://Rooms/room_21.tscn" id="7_gppp7"]
 [ext_resource type="Texture2D" uid="uid://blrke6p7xbb7e" path="res://Assets/Tileset.png" id="8_3oukq"]
 [ext_resource type="Texture2D" uid="uid://xbljxdld76ae" path="res://Assets/True Ending Photo.png" id="10_l5lmt"]
 [ext_resource type="Texture2D" uid="uid://dkt3i4vijtw41" path="res://Assets/MenuTextures/Title.png" id="12_eo0kh"]
 [ext_resource type="Theme" uid="uid://cy86cwc1oigm7" path="res://Themes/small_font_theme.tres" id="13_egapq"]
+[ext_resource type="Texture2D" uid="uid://1b4si2ytk217" path="res://Assets/Sprite Sheet.png" id="14_ldoc1"]
 [ext_resource type="Shader" path="res://Shaders/palette_swap.gdshader" id="15_4vi3d"]
 [ext_resource type="Texture2D" uid="uid://srrdnqsgkk6u" path="res://Assets/Player Palettes.png" id="16_7ny7u"]
 [ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="16_tvxl6"]
@@ -23,9 +25,14 @@ script = ExtResource("3_l6yqt")
 tag = "photo"
 stream = ExtResource("4_ev7e6")
 
+[sub_resource type="Resource" id="Resource_0e3yo"]
+script = ExtResource("3_l6yqt")
+tag = "cup"
+stream = ExtResource("5_xhu1v")
+
 [sub_resource type="Resource" id="Resource_6g3le"]
 script = ExtResource("2_xygkw")
-sound_effects = Array[ExtResource("3_l6yqt")]([SubResource("Resource_t2gnu")])
+sound_effects = Array[ExtResource("3_l6yqt")]([SubResource("Resource_t2gnu"), SubResource("Resource_0e3yo")])
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_qt2ou"]
 load_path = "res://.godot/imported/Line Particle.png-ca29923f7b62240508620dc4fd1bee4a.ctex"
@@ -371,11 +378,20 @@ tracks/19/path = NodePath(".")
 tracks/19/interp = 1
 tracks/19/loop_wrap = true
 tracks/19/keys = {
-"times": PackedFloat32Array(3),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(3, 46.3, 46.9, 47.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "values": [{
 "args": ["res://Music/Quarion ot Nruter Reven.ogg"],
 "method": &"play_song"
+}, {
+"args": ["Deaths"],
+"method": &"add_price_cup"
+}, {
+"args": ["Jumps"],
+"method": &"add_price_cup"
+}, {
+"args": ["Time"],
+"method": &"add_price_cup"
 }]
 }
 
@@ -851,7 +867,7 @@ tracks/18/keys = {
 "times": PackedFloat32Array(3, 41),
 "transitions": PackedFloat32Array(1, 1),
 "values": [{
-"args": ["res://Music/Quarion ot Nruter Reven.ogg"],
+"args": ["res://Music/The Dream that Died in Bliss.ogg"],
 "method": &"play_song"
 }, {
 "args": ["photo"],
@@ -1264,6 +1280,14 @@ theme = ExtResource("13_egapq")
 text = "#"
 horizontal_alignment = 1
 
+[node name="DeathsPrice" type="Sprite2D" parent="StatsComp"]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(180, 361)
+scale = Vector2(3, 3)
+texture = ExtResource("14_ldoc1")
+region_enabled = true
+region_rect = Rect2(128, 16, 16, 16)
+
 [node name="JumpsTitle" type="Label" parent="StatsComp"]
 offset_top = 372.0
 offset_right = 304.0
@@ -1279,6 +1303,14 @@ offset_bottom = 393.0
 theme = ExtResource("13_egapq")
 text = "#"
 horizontal_alignment = 1
+
+[node name="JumpsPrice" type="Sprite2D" parent="StatsComp"]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(180, 389)
+scale = Vector2(3, 3)
+texture = ExtResource("14_ldoc1")
+region_enabled = true
+region_rect = Rect2(128, 16, 16, 16)
 
 [node name="TimeTitle" type="Label" parent="StatsComp"]
 offset_top = 400.0
@@ -1296,6 +1328,14 @@ theme = ExtResource("13_egapq")
 text = "#"
 horizontal_alignment = 1
 
+[node name="TimePrice" type="Sprite2D" parent="StatsComp"]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(180, 417)
+scale = Vector2(3, 3)
+texture = ExtResource("14_ldoc1")
+region_enabled = true
+region_rect = Rect2(128, 16, 16, 16)
+
 [node name="PercentTitle" type="Label" parent="StatsComp"]
 offset_top = 428.0
 offset_right = 304.0
@@ -1311,6 +1351,14 @@ offset_bottom = 449.0
 theme = ExtResource("13_egapq")
 text = "#"
 horizontal_alignment = 1
+
+[node name="PercentPrice" type="Sprite2D" parent="StatsComp"]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(180, 445)
+scale = Vector2(3, 3)
+texture = ExtResource("14_ldoc1")
+region_enabled = true
+region_rect = Rect2(128, 16, 16, 16)
 
 [node name="ExitText" type="Label" parent="."]
 z_index = 49

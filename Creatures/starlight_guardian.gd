@@ -39,6 +39,7 @@ var bounce_accel: float
 var bullet_scene = preload("res://Objects/bullet.tscn")
 
 func _ready():
+	print(health)
 	var room_states = get_node("/root/World").get_room_state()
 	for pos in room_states:
 		if Vector2i($ActivateBossColl.position) == Vector2i(pos): #check if boss has been defeated
@@ -58,7 +59,7 @@ func _physics_process(_delta):
 			boss_state = 0
 			attack_state = 0
 			bullet_count = 0
-			await get_tree().create_timer(rng.randf_range(3-difficulty*0.7, 4-difficulty), false).timeout
+			await get_tree().create_timer(2-difficulty*0.2, false).timeout#rng.randf_range(3-difficulty*0.7, 4-difficulty), false).timeout
 			choose_attack()
 			#boss_state = 1
 			#boss_state = rng.randi_range(1, 1)
@@ -81,16 +82,28 @@ func choose_attack():
 	#var num = rng.randi_range(1+int(float(difficulty)/2.0), 3+int(float(difficulty)/2.0))
 	var attack = last_attack
 	
-	if attack_count >= 3: #chance of lunge gets higher each attack
-		attack = 1
+	#if attack_count >= 3: #chance of lunge gets higher each attack
+		#attack = 1
+	#else:
+		#if difficulty > 0: #after first boss it can do aim shots
+			#while attack == last_attack:
+				#attack = rng.randi_range(2, 4)
+		#else:
+			#while attack == last_attack:
+				#attack = rng.randi_range(2, 3)
+		#attack_count += 1
+
+	if difficulty > 0: #after first boss it can do aim shots
+		if attack_count >= 3: #chance of lunge gets higher each attack
+			attack = 1
+		while attack == last_attack:
+			attack = rng.randi_range(2, 4)
 	else:
-		if difficulty > 0: #after first boss it can do aim shots
-			while attack == last_attack:
-				attack = rng.randi_range(2, 4)
-		else:
-			while attack == last_attack:
-				attack = rng.randi_range(2, 3)
-		attack_count += 1
+		if attack_count >= 2: #chance of lunge gets higher each attack
+			attack = 1
+		while attack == last_attack:
+			attack = rng.randi_range(2, 3)
+	attack_count += 1
 	
 	boss_state = attack
 	last_attack = boss_state
@@ -186,7 +199,8 @@ func lunge():
 func bouncing_attack():
 	if attack_state == 0: #hit ground / bounce
 		attack_state = 1
-		idle_origin = boss.position
+		idle_origin = Vector2(boss.position.x, floor_height*8+8)
+		#idle_origin = boss.position
 		bullet_count += 1
 		
 		homing_speed = (boss.position.x - last_pos.x)

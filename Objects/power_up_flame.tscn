@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=3 uid="uid://buraweurbllqg"]
+[gd_scene load_steps=60 format=3 uid="uid://buraweurbllqg"]
 
 [ext_resource type="Texture2D" uid="uid://clvq6o3fgyc7b" path="res://Assets/Power Up Flames.png" id="1_feq4l"]
 [ext_resource type="Script" path="res://Objects/power_up_flame.gd" id="1_jufde"]
@@ -9,6 +9,7 @@
 [ext_resource type="AudioStream" uid="uid://dp0epi0rhkcul" path="res://Sfx/death explosion.wav" id="6_402j6"]
 [ext_resource type="AudioStream" uid="uid://ctcvftqbmxckp" path="res://Sfx/power up charge.wav" id="7_w43fb"]
 [ext_resource type="AudioStream" uid="uid://ci2fiulivul3j" path="res://Sfx/power up finish.wav" id="8_1hwwo"]
+[ext_resource type="AudioStream" uid="uid://dbrwyu3bewu6j" path="res://Sfx/anticipation.wav" id="9_pvjv8"]
 
 [sub_resource type="Resource" id="Resource_4byur"]
 script = ExtResource("3_8mdg3")
@@ -35,9 +36,14 @@ script = ExtResource("3_8mdg3")
 tag = "p_up_finish"
 stream = ExtResource("8_1hwwo")
 
+[sub_resource type="Resource" id="Resource_r3qpf"]
+script = ExtResource("3_8mdg3")
+tag = "charge_2"
+stream = ExtResource("9_pvjv8")
+
 [sub_resource type="Resource" id="Resource_j8bfh"]
 script = ExtResource("2_6e3c5")
-sound_effects = Array[ExtResource("3_8mdg3")]([SubResource("Resource_4byur"), SubResource("Resource_dxt4u"), SubResource("Resource_h164u"), SubResource("Resource_2f1qv"), SubResource("Resource_ej56f")])
+sound_effects = Array[ExtResource("3_8mdg3")]([SubResource("Resource_4byur"), SubResource("Resource_dxt4u"), SubResource("Resource_h164u"), SubResource("Resource_2f1qv"), SubResource("Resource_ej56f"), SubResource("Resource_r3qpf")])
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q1owa"]
 size = Vector2(10, 11)

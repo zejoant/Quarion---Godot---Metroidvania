@@ -4,6 +4,7 @@ extends Area2D
 @export var sfxs : AudioLibrary
 var player
 var cam
+@onready var world = get_node("/root/World")
 
 var player_in_area: bool = false
 
@@ -15,7 +16,7 @@ func _ready():
 	cam = get_node("/root/World/Camera")
 	setup()
 	
-	for pos in get_node("/root/World").get_room_state():
+	for pos in world.get_room_state():
 		if Vector2i(position) == Vector2i(pos): #check if door has already been opened
 			$Key.visible = true
 			$Key.rotation_degrees = 90
@@ -41,7 +42,8 @@ func _input(event):
 
 
 func unlock():
-	get_node("/root/World").save_room_state(position, true) #save state of key slot
+	world.save_room_state(position, true) #save state of key slot
+	world.temporary_actions_to_permanent()
 	
 	for node in get_parent().get_children():
 		if node.name.contains("KeyDoor") and color == node.color:

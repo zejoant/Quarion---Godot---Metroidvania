@@ -5,7 +5,7 @@ extends StaticBody2D
 @onready var player = get_node("/root/World/Player")
 
 func _ready():
-	for pos in get_node("/root/World").get_room_state():
+	for pos in world.get_room_state():
 		if Vector2i(position/8) == Vector2i(pos): #check if boss has been defeated
 			queue_free()
 			return
@@ -13,6 +13,7 @@ func _ready():
 
 func collect():
 	world.save_room_state(position/8, true)
+	$AmuletColl.set_deferred("disabled", true)
 	AudioManager.play_audio(sfxs.get_sfx("collect"))
 	
 	AudioManager.pause_song()

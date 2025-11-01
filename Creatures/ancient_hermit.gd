@@ -58,9 +58,14 @@ var cirplosion = preload("res://Objects/circle_explosion.tscn")
 var staff_bullet = preload("res://Objects/staff_bullet.tscn")
 
 func _ready():
-	
+	print(health)
 	if get_node("/root/World").secret_boss_beaten:
-		queue_free()
+		z_index = 4
+		position = Vector2(152, 18.5*8)
+		set_hit_mode(HitMode.GHOST)
+		boss_state = BossState.IDLE
+		$AnimationPlayer.play("petrify_instant")
+		#queue_free()
 		return
 	#for pos in get_node("/root/World").get_room_state():
 		#if Vector2i(position) == Vector2i(pos): #check if boss has been defeated
@@ -99,6 +104,8 @@ func _physics_process(_delta):
 			#set_hit_mode(HitMode.HIT)
 			if tween1:
 				tween1.kill()
+			if $WarningArea.modulate.a != 0:
+				$WarningArea.modulate.a = 0
 			tween1 = self.create_tween()
 			if health > 3:
 				await tween1.tween_interval(1).finished
@@ -128,7 +135,8 @@ func _physics_process(_delta):
 		time += 1
 	
 	if hermit_flee:
-		p.get_node("HermitFleeSprite").position = Vector2(152.0 - float(time/2.2), 96.0 - sin(float(time)/20.0)*sqrt(float(time)/4.0) - float(time/4.0))
+		#p.get_node("HermitFleeSprite").position = Vector2(152.0 - float(time/2.2), 96.0 - sin(float(time)/20.0)*sqrt(float(time)/4.0) - float(time/4.0))
+		p.get_node("HermitFleeSprite").position = Vector2(position.x - float(time/2.2), position.y - sin(float(time)/20.0)*sqrt(float(time)/4.0) - float(time/4.0))
 		time += 1
 
 func second_phase_fakout():
@@ -171,14 +179,15 @@ func second_phase_fakout():
 		await get_tree().create_timer(2, false).timeout
 		position = Vector2(-100, -100)
 		lev_origin = position
-		AudioManager.resume_song()	
+		#AudioManager.resume_song()	
+		AudioManager.play_song(load("res://Music/Kill the Sky People, pt.2.ogg"), 0, 1, 0, false)
 		self.create_tween().tween_method(AudioManager.set_speed, 0.01, 1, 0.8)
 		await get_tree().create_timer(0.5, false).timeout
 		$BossSprite.visible = true
 		afterimage_active = true
 		teleport(Vector2(152, 72), true, 0, "levitate", false)
 		await get_tree().create_timer(0.21, false).timeout
-		AudioManager.play_audio(sfxs.get_sfx("scream"), 1, 1.5)
+		AudioManager.play_audio(sfxs.get_sfx("scream"), 1, 1.2)
 		get_node("/root/World/Camera").radial_blur(0.03, 1, 12)
 		await get_tree().create_timer(0.5, false).timeout
 		boss_state = BossState.CHOOSE_ATTACK
@@ -334,7 +343,7 @@ func staff_shots():
 			if health > 3:
 				await tween1.tween_interval(1.1).finished
 			else:
-				await tween1.tween_interval(0.2).finished
+				await tween1.tween_interval(0.3).finished
 			attack_state = 1
 
 func circle_explosions():
@@ -471,9 +480,13 @@ func around_shots():
 		$BossSprite.scale.x = 1
 		$AnimationPlayer.play("hold_out_staff_right")
 		$StaffChargeParticles.emitting = true
-		AudioManager.play_audio(sfxs.get_sfx("charge"), 2)
 		tween1 = self.create_tween()
-		await tween1.tween_interval(1).finished
+		if health > 3:
+			AudioManager.play_audio(sfxs.get_sfx("charge"), 2)
+			await tween1.tween_interval(1).finished
+		else:
+			AudioManager.play_audio(sfxs.get_sfx("charge"), 4)
+			await tween1.tween_interval(0.5).finished
 		attack_state = 1
 	
 	if attack_state == 1 or attack_state == 2:
@@ -517,11 +530,12 @@ func around_shots():
 func side_beams():
 	if attack_state == 0:
 		enable_wallspikes()
+		set_hit_mode(HitMode.GHOST)
 		#p.get_node("WallSpikeComps/WallSpikes").position.y = 0
 		attack_state = -1
 		air_state = AirState.SIDE_LEVITATING
 		var side = rng.randi_range(0, 1)
-		teleport(Vector2(16 + side*272, 192-64), true)
+		teleport(Vector2(16 + side*272, 192-64), true, 0, "none", false)
 		if side == 0:
 			$BossSprite.scale.x = -1
 		else:
@@ -534,6 +548,7 @@ func side_beams():
 		$BossSprite.offset = Vector2(1, 3)
 		tween1 = self.create_tween()
 		await tween1.tween_interval(1).finished
+		set_hit_mode(HitMode.HIT)
 		attack_state = 1
 	
 	if attack_state == 1:
@@ -559,9 +574,17 @@ func side_beams():
 				tween1 = self.create_tween()
 				await tween1.tween_interval(0.3).finished
 				
-				side_shot_spawn_beam(Vector2(position.x, 152), true)
-				if r >= 5:
-					side_shot_spawn_beam(Vector2(position.x, 152-(48-(r-5)*24)), false)
+				if r == 4:
+					side_shot_spawn_beam(Vector2(position.x, 152-24), true)
+					side_shot_spawn_beam(Vector2(position.x, 152-48), true)
+				elif r == 5:
+					side_shot_spawn_beam(Vector2(position.x, 152), true)
+					side_shot_spawn_beam(Vector2(position.x, 152), true)
+				elif r == 6:
+					side_shot_spawn_beam(Vector2(position.x, 152), true)
+					side_shot_spawn_beam(Vector2(position.x, 152-48), true)
+				#if r >= 5:
+				#	side_shot_spawn_beam(Vector2(position.x, 152-(48-(r-5)*24)), false)
 				tween1 = self.create_tween()
 				await tween1.tween_interval(0.3).finished
 				
@@ -726,8 +749,11 @@ func intro_sequence():
 		player.position.x = 303
 	else:
 		player.position.x = 1
-		
-	if !has_seen_intro:
+	
+	var temp_intro_seen = has_seen_intro
+	has_seen_intro = true
+	
+	if !temp_intro_seen:
 		$AnimationPlayer.play("point_staff")
 		player.paused = true
 		p.get_node("Red").visible = true
@@ -784,8 +810,8 @@ func intro_sequence():
 	player.get_node("ParticleComps/DashParticles").lifetime = 3
 	p.get_node("Gate").close()
 	p.get_node("Gate2").close()
-	if !has_seen_intro:
-		has_seen_intro = true
+	if !temp_intro_seen:
+		#has_seen_intro = true
 		AudioManager.resume_song()
 		AudioManager.play_song(load("res://Music/Kill the Sky People.ogg"), 8.7)
 	
@@ -805,13 +831,13 @@ func intro_sequence():
 		$AnimationPlayer.play("levitate")
 		await get_tree().create_timer(0.8, false).timeout
 		cam.radial_blur(0.03, 0.6, 12)
-		AudioManager.play_audio(sfxs.get_sfx("scream"), 1, 1.5)
+		AudioManager.play_audio(sfxs.get_sfx("scream"), 1, 1.2)
 	else:
 		teleport(lev_origin, false)
 		await get_tree().create_timer(0.21, false).timeout
 		AudioManager.resume_song()
 		AudioManager.play_song(load("res://Music/Kill the Sky People.ogg"), 17.35)
-		AudioManager.play_audio(sfxs.get_sfx("scream"), 1, 1.5)
+		AudioManager.play_audio(sfxs.get_sfx("scream"), 1, 1.2)
 		cam.radial_blur(0.03, 0.6, 12)
 	player.disable_movement(false)
 
@@ -992,62 +1018,92 @@ func _hit_on_head(body):
 			boss_state = BossState.CHOOSE_ATTACK
 
 func die():
-	#cam.flash(1, 0, 0.1, 0.2)
-	player.velocity = Vector2(0, 0)
+	for child in p.get_children():
+		if child.is_in_group("HermitDieDelete"):
+			child.queue_free()
+	
+	ForsakenAlly.has_seen_intro = false
+	player.bubble_action(false, true, false)
 	player.disable_movement(true)
-	player.visible = false
-	player.paused = true
-	player.position.y = 20*8
+	player.can_die = false
 	p.get_node("BlackCover").modulate.a = 1
 	set_hit_mode(HitMode.GHOST)
 	AudioManager.stop_song()
 	boss_state = BossState.IDLE
 	get_node("/root/World").secret_boss_beaten = true
-	#get_node("/root/World").save_room_state(Vector2(168, 148))
 	player.bubble_invincibility_time = 0.3
 	SteamManager.get_achivement("HermitBoss")
 	get_node("/root/World").add_to_completion_percentage("Hermit")
 	
+	var in_air = true
+	if air_state == AirState.GROUNDED:
+		in_air = false
 	air_state = AirState.GROUNDED
-	position = Vector2(152, 96)
-	cam.zoom_camera(1.4, 0)
-	#position = Vector2(152, 72)
-	#if position != Vector2(152, 72):
-	#	teleport(Vector2(152, 72), true)
-	#	await get_tree().create_timer(0.42, false).timeout
+	$AnimationPlayer.play("death_fall")
+	if position.x > 152:
+		if $BossSprite.scale.x == 1:
+			$BossSprite.scale.x = -1
+		player.get_node("Sprite2D").scale.x = -1
+		self.create_tween().tween_property(self, "position:x", position.x - 32, 1)
+	else:
+		if $BossSprite.scale.x == -1:
+			$BossSprite.scale.x = 1
+		player.get_node("Sprite2D").scale.x = 1
+		self.create_tween().tween_property(self, "position:x", position.x + 32, 1)
 	
-	$AnimationPlayer.play("implode")
-	AudioManager.play_audio(sfxs.get_sfx("explode_charge"), 1.543, 1, self)
-	await get_tree().create_timer(3.5, false).timeout
-	cam.invert_color(1, 0.2)
+	tween1 = self.create_tween()
+	tween1.set_trans(Tween.TRANS_QUART)
+	if !in_air:
+		tween1.set_ease(Tween.EASE_OUT)
+		tween1.tween_property(self, "position:y", 140, 0.5)
+		
+	tween1.set_ease(Tween.EASE_IN)
+	if in_air:
+		await tween1.tween_property(self, "position:y", 18.5*8, 1).finished
+	else:
+		await tween1.tween_property(self, "position:y", 18.5*8, 0.5).finished
 	AudioManager.play_audio(sfxs.get_sfx("hit"))
-	AudioManager.play_audio(sfxs.get_sfx("death_explosion"))
+	cam.invert_color(1, 0.2)
+	cam.shake(4, 0.03, 3)
+	air_state = AirState.GROUNDED
 	
-	$BossSprite.visible = false
+	$AnimationPlayer.play("lie_on_ground")
+	await get_tree().create_timer(3, false).timeout
+	$AnimationPlayer.play("petrify")
+	await get_tree().create_timer(0.3, false).timeout
+	AudioManager.play_audio(sfxs.get_sfx("swing"))
+	await get_tree().create_timer(1, false).timeout
+	$RingExplosionParticles.position -= Vector2(4, 12)
+	$PixelExplosionParticles.position -= Vector2(4, 12)
 	$RingExplosionParticles.emitting = true
 	$PixelExplosionParticles.emitting = true
-	await get_tree().create_timer(0.1, false).timeout
-	
-	AudioManager.play_audio(sfxs.get_sfx("scream"), 1, 1.5)
+	cam.shake(4, 0.03, 3)
+	AudioManager.play_audio(sfxs.get_sfx("dash"), 1, 1.2)
+	AudioManager.play_audio(sfxs.get_sfx("scream"), 1, 1.2)
 	p.get_node("HermitFleeSprite").position = position
+	
 	p.get_node("HermitFleeSprite").modulate.a = 0.6
 	hermit_flee = true
 	time = 0
 	
-	await get_tree().create_timer(2.2, false).timeout
+	#await get_tree().create_timer(2.2, false).timeout
+	await get_tree().create_timer(5, false).timeout
 	p.get_node("HermitFleeSprite").modulate.a = 0
 	p.create_tween().tween_property(p.get_node("BlackCover"), "modulate:a", 0, 1)
 	cam.zoom_camera(1, 1)
 	player.visible = true
 	player.paused = false
 	player.disable_movement(false)
+	player.can_die = true
 	afterimage_active = false
 	$BossSprite.material.set_shader_parameter("strength", 0)
 	p.get_node("Gate").open()
 	p.get_node("Gate2").open()
 	cam.hide_ui(true)
 	AudioManager.resume_previous_song()
-	call_deferred("queue_free")
+	await get_tree().create_timer(1, false).timeout
+	z_index = 4
+	#call_deferred("queue_free")
 
 func _on_water_touched(body_rid, body, _body_shape_index, _local_shape_index):
 	if body is TileMap:

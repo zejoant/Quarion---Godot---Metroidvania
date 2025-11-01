@@ -220,7 +220,7 @@ particles_anim_h_frames = 5
 particles_anim_v_frames = 1
 particles_anim_loop = false
 
-[node name="CircleExplosion" type="StaticBody2D" groups=["Enemy"]]
+[node name="CircleExplosion" type="StaticBody2D" groups=["Enemy", "HermitDieDelete"]]
 z_index = 5
 scale = Vector2(1e-05, 1e-05)
 collision_layer = 2

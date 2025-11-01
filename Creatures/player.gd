@@ -151,7 +151,8 @@ func check_inputs(dead_input: bool = false):
 	if Input.is_action_just_pressed("Quick Respawn") and (can_move or is_dead) and (!get_parent().red_boss_beaten or get_parent().secret_boss_beaten) and can_quick_respawn and !get_parent().no_death_mode:
 		die(true)
 	if !dead_input:
-		debug_inputs()
+		if SaveManager.debug:
+			debug_inputs()
 		if !can_move:
 			return
 			
@@ -191,23 +192,27 @@ func check_inputs(dead_input: bool = false):
 func debug_inputs():
 	if Input.is_action_just_pressed("Debug"):
 		AudioManager.play_audio(sfxs.get_sfx("jump"))
+		#jump_count = 500
+		#death_count = 51
+		#get_parent().set_speedrun_time(1800)
 		#get_parent().secret_boss_beaten = true
 		#get_parent().red_boss_beaten = true
-		has_blue_blocks = true
+		#has_blue_blocks = true
 		has_dash = true
 		has_wallclimb = true
 		has_double_jump = true
 		#has_freeze = true
 		#get_parent().get_tilemap().change_water_tiles()
-		#bubble_action(true, false)
-		#update_apple_count(50, true)
-		#get_parent().apple_total = 50
+		bubble_action(true, false)
+		update_apple_count(49, true)
+		get_parent().apple_total = 49
 		#get_parent().completion_percentage = 99
 		#has_item_map = true
 		#get_parent().get_node("WorldMap/MapComps/ItemMap").visible = true
 		#green_key_state = "collected"
 		#red_key_state = "collected"
-		#get_parent().get_node("Camera").enable_amulet_pieces(4)
+		#blue_key_state = "collected"
+		get_parent().get_node("Camera").enable_amulet_pieces(5)
 	if Input.is_action_just_pressed("Debug Checkpoint") and is_on_floor():
 		AudioManager.play_audio(sfxs.get_sfx("jump"))
 		get_parent().save_checkpoint_room(position)
@@ -266,6 +271,8 @@ func die(quick_respawn: bool = false, ignore_can_die: bool = false):
 			is_dead = true
 			if !bubble_popped:
 				bubble_action(false, true, false)
+			if world_map.open:
+				world_map.open_or_close()
 			
 			update_palette(7, false)
 			update_animations = false
@@ -308,12 +315,16 @@ func respawn_at_checkpoint():
 	$ParticleComps/DeathParticles/PixelExplosionParticles.amount = 70
 	
 	can_quick_respawn = false
-	get_node("/root/World/Camera").flash(1, 0, 0.2, 0.3)
+	if OptionsMenu.reduced_effects:
+		get_node("/root/World/Camera").fade("000000", 1, 0, 0.2, 0.3)
+	else:
+		get_node("/root/World/Camera").flash(1, 0, 0.2, 0.3)
 	velocity = Vector2(0, 0)
 	dashing = false
 	dash_timer = dash_lim
 	affecting_force = 0
 	AudioManager.resume_respawn_song()
+	#world_map.replace_invis_with_apple()
 	get_parent().revert_temporary_actions()
 	get_parent().return_to_checkpoint()
 	$Sprite2D.visible = true
@@ -508,12 +519,13 @@ func process_dash():
 		
 	if dash_timer == dash_lim:
 		$Area2D/EnemyColl.position.x = 0
-		#$Area2D/EnemyColl.scale.x = 1
+		$Area2D/EnemyColl.scale.x = 1
 		$ParticleComps/DashParticles.emitting = false
 		dashing = false
 	
 	if dash_timer == 1:
-		$Area2D/EnemyColl.position.x = -5 * $Sprite2D.scale.x
+		$Area2D/EnemyColl.position.x = -3 * $Sprite2D.scale.x
+		$Area2D/EnemyColl.scale.x = 2
 	
 	if dash_timer == 2:
 		var c = load("res://Particles/speed_circle.tscn").instantiate()

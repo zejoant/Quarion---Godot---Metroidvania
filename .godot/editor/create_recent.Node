@@ -1,4 +1,13 @@
-CollisionShape2D
+Label
 Node2D
+CanvasLayer
+CanvasGroup
+Sprite2D
+LinkButton
+ColorRect
+HBoxContainer
+CharacterBody2D
+CollisionShape2D
+Area2D
 StaticBody2D
 CollisionPolygon2D

@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://xlhqgyxr5f5s"]
+[gd_scene load_steps=29 format=3 uid="uid://xlhqgyxr5f5s"]
 
 [ext_resource type="Script" path="res://Menu/options_menu.gd" id="1_x504m"]
 [ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="2_a3tmx"]
@@ -56,7 +56,7 @@ CheckBox/styles/focus = SubResource("StyleBoxTexture_vvhc8")
 CheckBox/styles/hover = SubResource("StyleBoxTexture_vvhc8")
 CheckBox/styles/hover_pressed = SubResource("StyleBoxTexture_vvhc8")
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uwmf5"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kekjq"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aiwof"]
 texture = ExtResource("4_dsysb")
@@ -114,8 +114,6 @@ Button/styles/hover = SubResource("StyleBoxTexture_m3q7b")
 Button/styles/normal = SubResource("StyleBoxTexture_iyykc")
 Button/styles/pressed = SubResource("StyleBoxTexture_y31l4")
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kekjq"]
-
 [node name="OptionsMenu" type="Control"]
 process_mode = 3
 layout_mode = 3
@@ -164,7 +162,9 @@ text = "Audio Settings"
 horizontal_alignment = 1
 
 [node name="AudioHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+size_flags_horizontal = 4
 
 [node name="SfxVBox" type="VBoxContainer" parent="MarginContainer/VBoxContainer/AudioHBox"]
 layout_mode = 2
@@ -182,10 +182,9 @@ horizontal_alignment = 1
 layout_mode = 2
 focus_neighbor_top = NodePath("../../../BackHBox/BackButton")
 theme = ExtResource("6_wbg1x")
-min_value = 0.001
 max_value = 1.0
 step = 0.1
-value = 0.001
+value = 0.5
 
 [node name="MusicVbox" type="VBoxContainer" parent="MarginContainer/VBoxContainer/AudioHBox"]
 layout_mode = 2
@@ -203,10 +202,9 @@ horizontal_alignment = 1
 layout_mode = 2
 focus_neighbor_top = NodePath("../../../BackHBox/KeybindButton")
 theme = ExtResource("6_wbg1x")
-min_value = 0.001
 max_value = 1.0
 step = 0.1
-value = 0.001
+value = 0.5
 
 [node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -214,7 +212,7 @@ theme = ExtResource("3_b7aa4")
 text = "Video Settings"
 horizontal_alignment = 1
 
-[node name="VideoVBox" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="VideoVBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 0
@@ -222,17 +220,23 @@ theme_override_constants/separation = 0
 [node name="FullscreenCheck" type="CheckBox" parent="MarginContainer/VBoxContainer/VideoVBox"]
 layout_mode = 2
 focus_neighbor_left = NodePath("../../AudioHBox/SfxVBox/SfxSlider")
-focus_neighbor_right = NodePath("../../AudioHBox/MusicVbox/MusicSlider")
-focus_neighbor_bottom = NodePath("../BorderlessCheck")
+focus_neighbor_bottom = NodePath("../../MouseHBox/TimerCheck")
 theme = ExtResource("8_hcnu7")
 text = "Fullscreen"
 
 [node name="BorderlessCheck" type="CheckBox" parent="MarginContainer/VBoxContainer/VideoVBox"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../FullscreenCheck")
-focus_neighbor_bottom = NodePath("../../MouseHBox/MouseMenusCheck")
+focus_neighbor_top = NodePath("../../AudioHBox/MusicVbox/MusicSlider")
+focus_neighbor_bottom = NodePath("../../MouseHBox/TimerCheck")
 theme = ExtResource("8_hcnu7")
 text = "Borderless"
+
+[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_b7aa4")
+text = "Miscellaneous"
+horizontal_alignment = 1
+vertical_alignment = 2
 
 [node name="MouseHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -240,7 +244,7 @@ alignment = 1
 
 [node name="MouseMenusCheck" type="CheckBox" parent="MarginContainer/VBoxContainer/MouseHBox"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../../VideoVBox/BorderlessCheck")
+focus_neighbor_top = NodePath("../../VideoVBox/FullscreenCheck")
 focus_neighbor_bottom = NodePath("../../BackHBox/BackButton")
 theme = SubResource("Theme_04gwd")
 button_pressed = true
@@ -248,46 +252,44 @@ text = "Mouse for Menus"
 
 [node name="TimerCheck" type="CheckBox" parent="MarginContainer/VBoxContainer/MouseHBox"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../../VideoVBox/BorderlessCheck")
-focus_neighbor_bottom = NodePath("../../BackHBox/KeybindButton")
+focus_neighbor_top = NodePath("../../VideoVBox/FullscreenCheck")
+focus_neighbor_bottom = NodePath("../../BackHBox/BackButton")
 theme = SubResource("Theme_04gwd")
 text = "Speedrun Timer"
 
+[node name="EffectsCheck" type="CheckBox" parent="MarginContainer/VBoxContainer/MouseHBox"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../../VideoVBox/BorderlessCheck")
+focus_neighbor_bottom = NodePath("../../BackHBox/KeybindButton")
+theme = SubResource("Theme_04gwd")
+text = "Reduced Effects"
+
 [node name="BackHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-
-[node name="HSeparatorL" type="VSeparator" parent="MarginContainer/VBoxContainer/BackHBox"]
-layout_mode = 2
-theme_override_constants/separation = 16
-theme_override_styles/separator = SubResource("StyleBoxEmpty_uwmf5")
+alignment = 1
 
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer/BackHBox"]
-custom_minimum_size = Vector2(54, 0)
+custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
-size_flags_horizontal = 3
-focus_neighbor_top = NodePath("../../MouseHBox/MouseMenusCheck")
+focus_neighbor_top = NodePath("../../MouseHBox/TimerCheck")
 focus_neighbor_right = NodePath("../KeybindButton")
 focus_neighbor_bottom = NodePath("../../AudioHBox/SfxVBox/SfxSlider")
 theme = ExtResource("3_ghitf")
 text = "Back"
 
-[node name="Control" type="Control" parent="MarginContainer/VBoxContainer/BackHBox"]
+[node name="HSeparatorR" type="VSeparator" parent="MarginContainer/VBoxContainer/BackHBox"]
 layout_mode = 2
-size_flags_horizontal = 3
+theme_override_constants/separation = 24
+theme_override_styles/separator = SubResource("StyleBoxEmpty_kekjq")
 
 [node name="KeybindButton" type="Button" parent="MarginContainer/VBoxContainer/BackHBox"]
+custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 focus_neighbor_left = NodePath("../BackButton")
-focus_neighbor_top = NodePath("../../MouseHBox/TimerCheck")
+focus_neighbor_top = NodePath("../../MouseHBox/EffectsCheck")
 focus_neighbor_bottom = NodePath("../../AudioHBox/MusicVbox/MusicSlider")
 theme = SubResource("Theme_ar8ty")
 text = "Keybinds"
-
-[node name="HSeparatorR" type="VSeparator" parent="MarginContainer/VBoxContainer/BackHBox"]
-layout_mode = 2
-theme_override_constants/separation = 16
-theme_override_styles/separator = SubResource("StyleBoxEmpty_kekjq")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = 2
@@ -305,5 +307,6 @@ color = Color(1, 1, 1, 0)
 [connection signal="toggled" from="MarginContainer/VBoxContainer/VideoVBox/BorderlessCheck" to="." method="_on_borderless_check_toggled"]
 [connection signal="toggled" from="MarginContainer/VBoxContainer/MouseHBox/MouseMenusCheck" to="." method="_on_mouse_menus_check_toggled"]
 [connection signal="toggled" from="MarginContainer/VBoxContainer/MouseHBox/TimerCheck" to="." method="_on_timer_check_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/MouseHBox/EffectsCheck" to="." method="_on_effects_check_toggled"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/BackHBox/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/BackHBox/KeybindButton" to="." method="_on_keybind_button_pressed"]

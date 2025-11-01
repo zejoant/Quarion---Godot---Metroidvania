@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bt6vw04wbyjie"
+path="res://.godot/imported/Weerboath Maekennettoam.ogg-e2baf403241d4a5d731dfc2e4dbd48e1.oggvorbisstr"
+
+[deps]
+
+source_file="res://Music/Weerboath Maekennettoam.ogg"
+dest_files=["res://.godot/imported/Weerboath Maekennettoam.ogg-e2baf403241d4a5d731dfc2e4dbd48e1.oggvorbisstr"]
+
+[params]
+
+loop=true
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

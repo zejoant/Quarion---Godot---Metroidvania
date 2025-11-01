@@ -1,4 +1,4 @@
-[gd_scene load_steps=66 format=3 uid="uid://ibrctco0fpdp"]
+[gd_scene load_steps=67 format=3 uid="uid://ibrctco0fpdp"]
 
 [ext_resource type="Script" path="res://Creatures/forsaken_ally.gd" id="1_2os6r"]
 [ext_resource type="PackedScene" uid="uid://bw1r3nxt3ya8x" path="res://Objects/gate.tscn" id="1_exbt4"]
@@ -727,6 +727,57 @@ tracks/2/keys = {
 "values": [true]
 }
 
+[sub_resource type="Animation" id="Animation_agxyq"]
+resource_name = "HermitEnter"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ForsakenAlly/Aim/ShotBlastSprite:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Vector2(0, 16), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ForsakenAlly/Aim/ShotBlastSprite:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [1.5708, -1.5708]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("ForsakenAlly/Aim/ShotBlastSprite:region_rect")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [Rect2(0, 64, 64, 32), Rect2(0, 96, 64, 32), Rect2(0, 80, 64, 16)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("ForsakenAlly/Aim/ShotBlastSprite:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
 [sub_resource type="Animation" id="Animation_mgba4"]
 length = 0.001
 tracks/0/type = "value"
@@ -813,12 +864,37 @@ tracks/6/keys = {
 "update": 0,
 "values": [Color(1, 1, 1, 0)]
 }
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("ForsakenAlly/Aim/ShotBlastSprite:position")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(0, 0)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("ForsakenAlly/Aim/ShotBlastSprite:rotation")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1.5708]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_wsg3y"]
 _data = {
 "Aim Line Blink": SubResource("Animation_d8byb"),
 "Aim Line Flash": SubResource("Animation_2hvfq"),
 "Dive Impact": SubResource("Animation_71s7e"),
+"HermitEnter": SubResource("Animation_agxyq"),
 "RESET": SubResource("Animation_mgba4")
 }
 
@@ -976,6 +1052,7 @@ position = Vector2(0, -16)
 
 [node name="ShotBlastSprite" type="Sprite2D" parent="ForsakenAlly/Aim"]
 visible = false
+z_index = 5
 rotation = -1.5708
 texture = ExtResource("3_r8rlm")
 flip_h = true

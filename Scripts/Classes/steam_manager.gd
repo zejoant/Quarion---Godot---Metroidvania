@@ -25,7 +25,7 @@ func _ready():
 	#clear_all_achivements()
 
 func get_achivement(achivement_name: String):
-	if valid_steam_user and !Steam.getAchievement(achivement_name)["achieved"]:
+	if valid_steam_user and !Steam.getAchievement(achivement_name)["achieved"] and !SaveManager.debug:
 		Steam.setAchievement(achivement_name)
 		Steam.storeStats()
 

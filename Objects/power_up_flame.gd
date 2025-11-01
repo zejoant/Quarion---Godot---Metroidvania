@@ -16,6 +16,8 @@ func _ready():
 	$FlameSprite.play(type)
 
 func _on_collected_by_player(body):
+	world.save_checkpoint_room(body.position)
+	world.temporary_actions_to_permanent()
 	if type == "SkyfishAura":
 		body.has_blue_blocks = true
 		world.add_to_completion_percentage("PowerUp")

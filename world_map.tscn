@@ -153,6 +153,7 @@ texture = ExtResource("4_u75n4")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
+2:1/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_lou3f"]
 tile_size = Vector2i(4, 4)

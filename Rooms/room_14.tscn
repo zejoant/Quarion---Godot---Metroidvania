@@ -21,7 +21,7 @@ position = Vector2(268, 36)
 direction = "down"
 
 [node name="MovingPlatform3" parent="." instance=ExtResource("2_v4572")]
-position = Vector2(148, 68)
+position = Vector2(148, 67)
 direction = "left"
 width = 4
 

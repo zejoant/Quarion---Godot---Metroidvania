@@ -5,8 +5,10 @@ extends StaticBody2D
 @onready var player = get_node("/root/World/Player")
 @onready var cam = get_node("/root/World/Camera")
 
+@onready var world = get_node("/root/World")
+
 func _ready():
-	for pos in get_node("/root/World").get_room_state():
+	for pos in world.get_room_state():
 		if Vector2i(position/8) == Vector2i(pos): #check if boss has been defeated
 			queue_free()
 	if type == "red":
@@ -15,7 +17,8 @@ func _ready():
 		$KeySprite.region_rect.position.x -= 16
 
 func collect():
-	get_node("/root/World").save_room_state(position/8, true)
+	world.save_room_state(position/8, true)
+	world.temporary_actions_to_permanent()
 	AudioManager.play_audio(sfxs.get_sfx("collect"))
 	
 	AudioManager.pause_song()
